@@ -56,6 +56,9 @@ require_once("../../function/StartConnect.inc");
     width: 100%;
     border-collapse: collapse;
   }
+  .error-border {
+  border: 2px solid red;
+}
 </style>
 
 <head>
@@ -779,36 +782,45 @@ where name='PA Nature of Business'";
               </td>
             </tr>
             <tr>
-              <td>Brand : </td>
+              <td>Brand : <span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_make">
+                <select name="insured_auto_vehicle_make" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
                   <option value="BMW">
                     BMW
                   </option>
+                  <option value="Toyota">
+                  Toyota
+                  </option>
 
                 </select>
               </td>
               <th>&nbsp;</th>
-              <td>Model : </td>
+              <td>Model : <span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_model">
+                <select name="insured_auto_vehicle_model" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
                   <option value="52966">
                     52966
                   </option>
+                  <option value="52967">
+                    52967
+                  </option>
+                  <option value="52968">
+                    52968
+                  </option>
 
                 </select>
               </td>
             </tr>
             <tr>
-              <td>Vehicle Reg Year :</td>
+              <td>Vehicle Reg Year :<span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_vehicleRegYear">
+                <select name="insured_auto_vehicle_vehicleRegYear" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -824,8 +836,8 @@ where name='PA Nature of Business'";
                 </select>
 
               <th>&nbsp;</th>
-              <td>Reg No. : </td>
-              <td><input type="text" name="insured_auto_vehicle_regNo" maxlength="60" /></td>
+              <td>Reg No. : <span style="color:red">*</span></td>
+              <td><input type="text" name="insured_auto_vehicle_regNo" maxlength="60"  required/></td>
             </tr>
             <tr>
               <td style="float: inline-start;">Insuring With COE : </td>
@@ -840,9 +852,9 @@ where name='PA Nature of Business'";
                 </div>
               </td>
               <th></th>
-              <td>Age Condition Basis : </td>
+              <td>Age Condition Basis : <span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_ageConditionBasis">
+                <select name="insured_auto_vehicle_ageConditionBasis" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -876,16 +888,16 @@ where name='PA Nature of Business'";
               </td>
             </tr>
             <tr>
-              <td>Vehicle Usage : </td>
+              <td>Vehicle Usage : <span style="color:red">*</span></td>
               <td>
-                <input type="text" name="insured_auto_vehicle_vehicleUsage" maxlength="60" />
+                <input type="text" name="insured_auto_vehicle_vehicleUsage" maxlength="60"  required/>
 
               </td>
               <th>&nbsp;</th>
             </tr>
             <tr>
-              <td>Mileage Condition : </td>
-              <td><select name="insured_auto_vehicle_mileageCondition">
+              <td>Mileage Condition : <span style="color:red">*</span></td>
+              <td><select name="insured_auto_vehicle_mileageCondition" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -905,18 +917,18 @@ where name='PA Nature of Business'";
                 </select>
 
               <th>&nbsp;</th>
-              <td>Mileage Declaration :</td>
+              <td>Mileage Declaration : <span style="color:red">*</span></td>
               <td>
-                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" />
+                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" required/>
               </td>
 
             </tr>
             <tr>
-              <td>Engine No. : </td>
-              <td><input type="text" name="insured_auto_vehicle_engineNo" maxlength="60" /></td>
+              <td>Engine No. : <span style="color:red">*</span></td>
+              <td><input type="text" name="insured_auto_vehicle_engineNo" maxlength="60" required/></td>
               <th>&nbsp;</th>
-              <td>Chassis No. : </td>
-              <td><input type="text" name="insured_auto_vehicle_chassisNo" maxlength="60" /></td>
+              <td>Chassis No. : <span style="color:red">*</span></td>
+              <td><input type="text" name="insured_auto_vehicle_chassisNo" maxlength="60" required/></td>
             </tr>
             <tr>
               <td>Hire Purchase Company: <span style="color:red">*</span></td>
@@ -1391,72 +1403,74 @@ where name='PA Nature of Business'";
 
         <!--Form Insured List Plan info -->
         <div class="table">
-          <table id="table-form">
-            <tr>
-              <td>
-                <h1>Plan Info</h1>
-              </td>
-            </tr>
-            <tr>
-              <td style="white-space:nowrap">Plan Id : <span style="color:red">*</span> </td>
-              <td>
-                <select id="planSelect" name="planId" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                </select>
-              </td>
-              <th></th>
-              <td style="white-space: nowrap; ">Plan Poi :</td>
-              <td colspan="2">
-                <input type="text" id="planPoiSelect" name="planPoi" readonly>
-              </td>
-            </tr>
-            <tr>
-              <td>Cover List</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
-              <td>
-                <select name="plan_cover_list" id="planCoverList" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                </select>
-              </td>
-              <td style="padding-left:20px">Cover Code: <span style="color:red">*</span> </td>
-              <td style="width:70px">
-                <p id="planCoverCode"></p>
-              </td>
-              <td>Limit Amount:</td>
-              <td>
-                <p id="planCoverLimitAmount"></p>
-              </td>
-            </tr>
-            <tr>
-              <td style="float:inline-start; padding-left:20px">Selected Flag : <span style="color:red">*</span></td>
-              <td>
-                <div class="form-check">
-                  <input type="radio" class="form-check-input" id="is_selected_flag_yes" name="plan_selected_flag" value="Yes" checked>
-                  <label class="form-check-label" for="is_selected_flag_yes">Yes</label>
-                </div>
-                <div class="form-check">
-                  <input type="radio" class="form-check-input" id="is_selected_flag_no" name="plan_selected_flag" value="No">
-                  <label class="form-check-label" for="is_selected_flag_no">No</label>
-                </div>
-              </td>
-              <!-- <td>buyUpOrbuyDownExcess:</td>
-              <td><input type="text" name="plan_buy_up_or_down_excess" maxlength="60" size="15" /></td> -->
-            </tr>
-            <tr>
-              <td>
-                <button type="button" class="button payment" id="btnPaymentOnline" style="margin-left: 20px;" onclick="validateAndSubmitFormCallPremium()">See plan</button>
+  <table id="table-form">
+    <tr>
+      <td>
+        <h1>Plan Info</h1>
+      </td>
+    </tr>
+    <tr>
+      <td style="white-space:nowrap">Plan Id : <span style="color:red">*</span> </td>
+      <td>
+        <select id="planSelect" name="planId" required>
+          <option value="">
+            <-- Please select an option -->
+          </option>
+        </select>
+      </td>
+      <th></th>
+      <td style="white-space: nowrap;">Plan Poi :</td>
+      <td colspan="2">
+        <input type="text" id="planPoiSelect" name="planPoi" readonly>
+      </td>
+    </tr>
+    <tr>
+      <td>Cover List</td>
+      <td></td>
+    </tr>
+    <tbody id="coverListBody">
+      <tr class="cover-row">
+        <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
+        <td>
+          <select name="plan_cover_list[]" class="planCoverList" required>
+            <option value="">
+              <-- Please select an option -->
+            </option>
+          </select>
+        </td>
+        <td style="padding-left:20px">Cover Code: <span style="color:red">*</span> </td>
+        <td style="width:70px">
+          <p class="planCoverCode"></p>
+        </td>
+        <td>Limit Amount:</td>
+        <td>
+          <p class="planCoverLimitAmount"></p>
+        </td>
+        <td>
+          <button type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>
+        <button type="button" class="button add-cover" onclick="addCoverRow()">Add Cover</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button type="button" class="button payment" id="btnPaymentOnline" style="margin-left: 20px;" onclick="validateAndSubmitFormCallPremium()">See plan</button>
+      </td>
+    </tr>
+  </table>
+</div>
 
-              </td>
-            </tr>
-          </table>
-        </div>
+
 
       </fieldset>
 
