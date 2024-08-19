@@ -11,10 +11,11 @@ require_once("../../function/StartConnect.inc");
   #remark-c-contanier,
   #remark-c-input,
   #insured-list-home,
+  #isPolicyHolderDrivingRow,
   #insured-list-auto {
     display: none;
   }
-
+  
   h2 {
     border-bottom: none !important;
   }
@@ -82,6 +83,7 @@ require_once("../../function/StartConnect.inc");
   <script src="../scripts/app_singaporeAPI.js"></script>
   <script src="../scripts/singapore_database.js"></script>
   <script src="../scripts/app_singaporePolicy.js"></script>
+  <script src="../scripts/app_singaporeForm.js"></script>
 
   <script>
     const campaignID = <?php echo json_encode($_GET["campaign_id"]); ?>;
@@ -507,19 +509,20 @@ where name='PA Occupation'";
               <td><input type="text" name="postCode" maxlength="60" required /></td>
             </tr>
 
-            <tr>
-              <td style="float:inline-start">isPolicyHolderDriving : <span style="color:red">*</span></td>
-              <td>
-                <div class="form-check">
-                  <input type="radio" class="form-check-input" id="isPolicyHolderDrivingYes" name="isPolicyHolderDriving" value="2" checked>
-                  <label class="form-check-label" for="isPolicyHolderDrivingYes">Yes</label>
-                </div>
-                <div class="form-check">
-                  <input type="radio" class="form-check-input" id="isPolicyHolderDrivingNo" name="isPolicyHolderDriving" value="1">
-                  <label class="form-check-label" for="isPolicyHolderDrivingNo">No</label>
-                </div>
-              </td>
-            </tr>
+            <tr id="isPolicyHolderDrivingRow">
+  <td style="float:inline-start">isPolicyHolderDriving : <span style="color:red">*</span></td>
+  <td>
+    <div class="form-check">
+      <input type="radio" class="form-check-input" id="isPolicyHolderDrivingYes" name="isPolicyHolderDriving" value="2" checked>
+      <label class="form-check-label" for="isPolicyHolderDrivingYes">Yes</label>
+    </div>
+    <div class="form-check">
+      <input type="radio" class="form-check-input" id="isPolicyHolderDrivingNo" name="isPolicyHolderDriving" value="1">
+      <label class="form-check-label" for="isPolicyHolderDrivingNo">No</label>
+    </div>
+  </td>
+</tr>
+
           </table>
         </div>
 
@@ -1445,7 +1448,9 @@ where name='PA Nature of Business'";
         <td>Limit Amount:</td>
         <td>
           <p class="planCoverLimitAmount"></p>
+          <input type="hidden" class="selectedFlagInput" value="">
         </td>
+       
         <td>
           <button type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
         </td>

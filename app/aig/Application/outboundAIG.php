@@ -4,7 +4,6 @@ include "../../../dbconn.php";
 include "../../../util.php";
 include "../../../license.php";
 include "../../../wlog.php";
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -62,7 +61,8 @@ function DBInsertQuotationData($formData, $response)
         echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
         exit();
     }
-
+ 
+    
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $productId = isset($formData['productId']) ? $formData['productId'] : 0;
     $distributionChannel = isset($formData['distributionChannel']) ? $formData['distributionChannel'] : 0;
@@ -73,8 +73,9 @@ function DBInsertQuotationData($formData, $response)
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
-    $quoteLapseDate = isset($response['quoteLapseDate']) ? $response['quoteLapseDate'] : '2024-08-07T17:00:00.000Z';
-
+    $quoteLapseDate = isset($response['quoteLapseDate'])
+    ? transformDate($response['quoteLapseDate'])
+    : '2024-08-07T17:00:00.000Z';
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
@@ -138,6 +139,97 @@ function DBInsertPolicyData($policyId, $response) {
     $dbconn->dbconn->close();
 }
 
+function DBInsertPlanInfoWithCovers($planInfo) {
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    // Insert plan information
+    $sqlPlan = "INSERT INTO plan_info (plan_id, plan_description, plan_poi, plan_code, net_premium) VALUES (?, ?, ?, ?, ?)";
+
+    if ($stmtPlan = $dbconn->dbconn->prepare($sqlPlan)) {
+        $stmtPlan->bind_param("isids",
+            $planInfo['planId'],
+            $planInfo['planDescription'],
+            $planInfo['planPoi'],
+            $planInfo['planCode'],
+            $planInfo['netPremium']
+        );
+
+        if ($stmtPlan->execute()) {
+            // Get the last inserted plan_id for use in cover insertions
+            $planId = $dbconn->dbconn->insert_id;
+        } else {
+            echo json_encode(array("result" => "error", "message" => "Plan data insertion failed: " . $stmtPlan->error));
+            $stmtPlan->close();
+            $dbconn->dbconn->close();
+            return;
+        }
+
+        $stmtPlan->close();
+    } else {
+        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement for plan data: " . $dbconn->dbconn->error));
+        $dbconn->dbconn->close();
+        return;
+    }
+
+    // Insert cover information
+    $sqlCover = "INSERT INTO cover_list (plan_id, cover_id, cover_code, cover_description, cover_name, auto_attached, optional_flag, cover_type, cover_premium, limit_display, final_excess, selected_flag) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    if ($stmtCover = $dbconn->dbconn->prepare($sqlCover)) {
+        foreach ($planInfo['coverList'] as $cover) {
+            // Convert boolean to integer (0 or 1)
+            $autoAttached = $cover['autoAttached'] ? 1 : 0;
+            $optionalFlag = $cover['optionalFlag'] ? 1 : 0;
+            $selectedFlag = $cover['selectedFlag'] ? 1 : 0;
+
+            // Bind parameters for cover information
+            $stmtCover->bind_param("iissssiiisid",
+                $planId,
+                $cover['id'],
+                $cover['code'],
+                $cover['description'],
+                $cover['name'],
+                $autoAttached,
+                $optionalFlag,
+                $cover['type'],
+                $cover['premium'],
+                $cover['limitDisplay'],
+                $cover['finalExcess'],
+                $selectedFlag
+            );
+
+            // Execute the statement for each cover
+            if (!$stmtCover->execute()) {
+                echo json_encode(array("result" => "error", "message" => "Cover data insertion failed: " . $stmtCover->error));
+                break; // Exit loop if error occurs
+            }
+        }
+
+        echo json_encode(array("result" => "success", "message" => "All cover data inserted successfully"));
+
+        // Close the statement
+        $stmtCover->close();
+    } else {
+        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement for cover data: " . $dbconn->dbconn->error));
+    }
+
+    // Close the database connection
+    $dbconn->dbconn->close();
+}
+
+
+
+
+
+
+
+
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -159,6 +251,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = isset($data['data']) ? $data['data'] : "";
             $response = isset($data['response']) ? $data['response'] : array();
             DBInsertPolicyData($data,$response);
+        } elseif ($data['action'] === 'insertPremiumData') {
+            $data = isset($data['data']) ? $data['data'] : "";
+            DBInsertPlanInfoWithCovers($data);
         } 
         else {
             echo json_encode(array("result" => "error", "message" => "Invalid action"));
@@ -168,4 +263,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } else {
     echo json_encode(array("result" => "error", "message" => "Invalid request method"));
+}
+function transformDate($dateString) {
+    $dateParts = explode('/', $dateString);
+
+    if (count($dateParts) === 3) {
+        // Reformat to YYYY-MM-DD
+        $formattedDate = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
+
+        // Create a DateTime object with the formatted date
+        $date = new DateTime($formattedDate);
+
+        // Return the date in ISO 8601 format
+        return $date->format(DateTime::ISO8601);
+    } else {
+        throw new Exception("Invalid date format: $dateString");
+    }
 }

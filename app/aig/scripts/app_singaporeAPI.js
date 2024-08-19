@@ -1,66 +1,8 @@
 let planData = null;
-const token =
-  "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULjZxbDQxeTIyMnlGdms3UUFteGV4b043SWdnSWJyRTlVWDk1V19KRzJLX0UiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjM5OTMxNzksImV4cCI6MTcyNDAwMDM3OSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.Zl_SQ3_F_1hqg4U7lsMy2ZY0gFUugFnKpMGxhWapnGcDlg7WmLpGowrm9ZQkvC_N-KVgKR0_OcnHvviKfNjAmzbtVvoPDy8IGgpw3vWQ4UFTz37iedNTT7od3R_cG7_hKxThMU5mBkdZvMjUaDKOmDURm8ZB-hzAOBvpAkPpvAriCXuUpce22cAvJ2uAJBt-oqmjet6fgD6qtsIxaBrftlWu1vX_N_KOdhWd4b_Mdj8RfAyqg-wabpf2TGCjczRMODw-krtXKIt1-dyt8fc7UEJ4NmCHk-eiPLsG4IXUVJyy1MaeuQUOptg9Qpm0tcJq-1yRhIDTdxNXcmREH9Ttxw";
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("planSelect").addEventListener("change", function () {
-    var planId = this.value;
-    var planPoiSelect = document.getElementById("planPoiSelect");
-    var planCoverList = document.getElementById("planCoverList");
-    const planListData = planData.insuredList[0];
-    planCoverList.innerHTML =
-      '<option value=""> <-- Please select an option --> </option>';
-    if (planId && planListData.planList[planId]) {
-      var plan = planListData.planList[planId];
-      if (plan.planPoi) {
-        planPoiSelect.value = plan.planPoi;
-      }
-      if (plan.coverList) {
-        var coverOptions =
-          '<option value=""> <-- Please select an option --> </option>';
-        for (const coverId in plan.coverList) {
-          if (plan.coverList.hasOwnProperty(coverId)) {
-            const cover = plan.coverList[coverId];
-            coverOptions +=
-              '<option value="' + coverId + '">' + cover.name + "</option>";
-          }
-        }
-        planCoverList.innerHTML = coverOptions;
-      }
-    }
-  });
-  document
-    .getElementById("planCoverList")
-    .addEventListener("change", function () {
-      var coverId = this.value;
-      if (coverId) {
-        const coverDetails = getCoverDetails(coverId);
-        console.log("coverDetails", coverDetails);
-        if (coverDetails) {
-          const planCoverCode = document.getElementById("planCoverCode");
-          const planCoverLimitAmount = document.getElementById(
-            "planCoverLimitAmount"
-          );
-          planCoverCode.innerHTML = `${coverDetails.code}`;
-          planCoverLimitAmount.innerHTML = coverDetails.limitAmount
-            ? `${parseFloat(coverDetails.limitAmount).toLocaleString()}`
-            : 0;
-
-          const valueToSelect = coverDetails.selectedFlag ? "Yes" : "No";
-
-          const radioButton = document.querySelector(
-            `input[name="plan_selected_flag"][value="${valueToSelect}"]`
-          );
-
-          if (radioButton) {
-            radioButton.checked = true;
-          }
-        } else {
-          console.warn("No details found for Cover ID:", coverId);
-        }
-      }
-    });
-});
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULjZWTFlnMkdta25IdWJCRHdNbGVjalIzSndUZTE5MzB4QzBRUlNPS2RjNGciLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQwNTg4OTksImV4cCI6MTcyNDA2NjA5OSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.KpTDc8RJsmf4w7bhfPjaKd6vCCpVmv_6Njk6MMicgxSkh-iq_m_2xWwIij9Htlrug8cTfpk_B7rOF7cOWOVQzqmYJqD7DdW6EkS4IHyC74H-6MjGMKlEj27iJ34xiZ9cBcRbBos9NvZm3ryQR-x4Gks_B3QQpg7dGolIlLLA0Bi4c61qGUyfKABdxOZb-XVolT_TW29MwPJJOUU_JbiE6RYAEKdeB8ErvEwt-VTAjzSLORl0lRtWa7VzzxwyPPEtQ3j8XnAcy0KSY1iV7xc6-pK0Lz-IZQBDcXhCnuxdwdHY8THohih7m3nqZqQaOhfYTsMgWioWJEOAstxb3z2JPQ"
+  
+  
+  
 
 function fetchPremium(requestBody) {
   console.log("Fetching plan data...");
@@ -85,7 +27,18 @@ function fetchPremium(requestBody) {
       ) {
         planData = data.Policy;
         populatePlanSelect(planData.insuredList[0].planList);
-        // Update this according to your actual data structure
+
+        //addplan to db
+        jQuery.agent
+        .insertPremiumData(planData.insuredList[0].planList["1"])
+        .then((response) => {
+          if (response?.result == "success") {
+            console.log("Response:", response);
+          }
+        })
+        .catch((error) => {
+          console.log("Error occurred:", error);
+        });
         return planData;
       } else {
         console.error("Invalid API response:", data);
@@ -289,58 +242,7 @@ const handleRequestBody = () => {
     producerCode: "0002466000",
     campaignCode: "",
   };
-  //   const requestBodyAuto = {
-  //     productId: 600000080,
-  //     distributionChannel: 10,
-  //     policyEffDate: "2024-08-10T00:00:00.000Z",
-  //     ncdInfo: {
-  //       ncdLevel: 1,
-  //     },
-  //     policyHolderInfo: {
-  //       customerType: "0",
-  //       individualPolicyHolderInfo: {
-  //         isPolicyHolderDriving: "2",
-  //       },
-  //     },
-  //   insuredList: [
-  //     {
-  //       vehicleInfo: {
-  //         make: "BMW",
-  //         model: "52966",
-  //         vehicleRegYear: "2016",
-  //         regNo: "SKE7499S",
-  //         insuringWithCOE: "2",
-  //         ageConditionBasis: "2",
-  //         offPeakCar: "1",
-  //         mileageCondition: "1838000061",
-  //       },
-  //   driverInfo: [
-  //     {
-  //       driverType: "5",
-  //       driverDOB: "1991-11-01T16:00:00.000Z",
-  //       driverGender: "M",
-  //       driverMaritalStatus: "M",
-  //       drivingExperience: "11",
-  //       occupation: "18",
-  //       claimExperience: "N",
-  //       claimInfo: [
-  //         {
-  //           dateOfLoss: "2024-07-25T00:00:00.000Z",
-  //           lossDescription: "Own Damage",
-  //           claimNature: "1",
-  //           claimsAmount: 1200.5,
-  //           status: 3,
-  //           insuredLiability: 1,
-  //         },
-  //       ],
-  //     },
-  //   ],
-  //     },
-  //   ],
-  //     producerCode: "0002466000",
-  //     campaignCode: "",
-  //   };
-  const requestBodyAh = {
+    const requestBodyAh = {
     propDate: "2024-07-26T18:25:43.511Z",
     productId: "600000060",
     distributionChannel: 10,
@@ -417,16 +319,29 @@ const handleRequiredField = () => {
 
 //see plan
 function validateAndSubmitFormCallPremium() {
-  const formData = new FormData(document.getElementById("application"));
+  const formElement = document.getElementById("application");
+  const formData = new FormData(formElement);
   const requiredFields = handleRequiredField();
   let allFieldsFilled = true;
 
+  // Remove previous error styles
+  requiredFields.forEach((field) => {
+    const inputElement = formElement.querySelector(`[name="${field}"]`);
+    if (inputElement) {
+      inputElement.classList.remove("error-border");
+    }
+  });
+
   requiredFields.forEach((field) => {
     const value = formData.get(field);
-    console.log(`"${field} :"${value}"`);
+    const inputElement = formElement.querySelector(`[name="${field}"]`);
+
     if (value === null || value.trim() === "" || value === "") {
       allFieldsFilled = false;
       console.log(`Field "${field}" is required.`);
+      if (inputElement) {
+        inputElement.classList.add("error-border");
+      }
     }
   });
 
@@ -437,35 +352,10 @@ function validateAndSubmitFormCallPremium() {
   }
 
   const apiBody = handleRequestBody();
-  console.log("apiBody", apiBody);
   if (apiBody) {
     fetchPremium(apiBody);
+
   }
 }
 
-function populatePlanSelect(planList) {
-  const planSelect = document.getElementById("planSelect");
-  let planListOptions =
-    '<option value=""> <-- Please select an option --> </option>';
 
-  for (const planId in planList) {
-    if (planList.hasOwnProperty(planId)) {
-      const plan = planList[planId];
-      planListOptions += `<option value="${planId}">${plan.planDescription} (${plan.planPoi})</option>`;
-    }
-  }
-
-  planSelect.innerHTML = planListOptions;
-}
-
-function getCoverDetails(coverId) {
-  const planList = planData.insuredList[0].planList;
-  for (const planId in planList) {
-    const plan = planList[planId];
-    const coverList = plan.coverList;
-    if (coverList.hasOwnProperty(coverId)) {
-      return coverList[coverId];
-    }
-  }
-  return null;
-}

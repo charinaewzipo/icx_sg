@@ -15,6 +15,7 @@
           dataType: "text",
           success: function (response) {
             try {
+              console.log("response",response)
               const cleanedResponse = response.trim();
               const jsonResponse = JSON.parse(cleanedResponse);
               resolve(jsonResponse);
@@ -56,6 +57,26 @@
           action: "insertPolicy",
           data:data,
           response: response
+        }),
+        dataType: "json",
+        success: function (response) {
+          console.log("Insert Response:", response);
+          // Handle the response data here
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX Error:", error);
+          // Handle the error here
+        }
+      });
+    },
+    insertPremiumData: function (data) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "insertPremiumData",
+          data:data
         }),
         dataType: "json",
         success: function (response) {
