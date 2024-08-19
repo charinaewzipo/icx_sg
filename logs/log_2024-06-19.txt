@@ -1,0 +1,357 @@
+2024-06-19 16:19:55 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-06-19 16:19:55 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-06-19 16:19:55 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.6' 
+2024-06-19 16:19:56 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-06-19 16:19:56 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.6', '6672a2bc00240' , NOW() );
+2024-06-19 16:19:56 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.6', 'Login' , NOW() );
+2024-06-19 16:19:56 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:19:57 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-06-19 16:19:57 page: 0
+2024-06-19 16:19:57 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-06-19 16:20:03 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:20:03 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-06-19 16:20:03 page: 0
+2024-06-19 16:20:03 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-06-19 16:38:25  SELECT agent_id , first_name , last_name  , img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE  agent_id = 234 
+2024-06-19 16:41:25  SELECT agent_id , first_name , last_name  , img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE  agent_id = 234 
+2024-06-19 16:50:24 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-06-19 16:50:24 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-06-19 16:50:24 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.6' 
+2024-06-19 16:50:24 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-06-19 16:50:24 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.6', '6672a9e0becd9' , NOW() );
+2024-06-19 16:50:24 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.6', 'Login' , NOW() );
+2024-06-19 16:50:25 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:50:25 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-06-19 16:50:25 page: 0
+2024-06-19 16:50:25 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-06-19 16:53:01 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:53:02 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 ORDER BY app.create_date  DESC 
+2024-06-19 16:53:02 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 16:53:05 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:54:12 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:54:14 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:54:14 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 16:54:14 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 ORDER BY app.create_date  DESC 
+2024-06-19 16:54:16 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:55:31 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:58:11 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 16:58:11 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 16:58:11 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:00:05 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:00:05 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:00:05 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:00:51 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:00:51 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:00:51 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:02:47 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:02:48 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:02:48 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:08:57 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:08:57 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:08:57 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:09:43 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:09:44 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:09:44 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:12:47 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:12:47 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:12:47 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:17:17 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:17:17 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:17:17 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:23:39 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:23:39 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:23:39 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:24:48 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:24:48 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:24:48 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 ORDER BY app.create_date  DESC 
+2024-06-19 17:25:06 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:25:06 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:25:06 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:25:56 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:25:56 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:25:56 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:27:47 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:27:47 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:27:47 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:29:22 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:29:22 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:29:22 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:30:39 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:30:39 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:30:39 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:31:13 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:31:13 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:31:13 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:32:32 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:32:32 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND download_status = 1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:32:33 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:33:47 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-06-19 17:33:48 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-06-19 17:33:48 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-06-19 17:34:50 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status,
+	(SELECT concat(first_name_th,' ',last_name_th) as agent_name FROM t_agents where agent_id = qcqa.update_by) as agentUpdateBy
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) AND app.agent_id = '1'  ORDER BY app.create_date  DESC 

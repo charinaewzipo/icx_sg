@@ -1,0 +1,38 @@
+/* .softphone {
+    width: 200;
+    height: 450px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 202;
+} */
+
+.softphone {
+    padding: 0px;
+    height: 455px;
+    z-index: 202;
+}
+
+.io {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: 22px;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a.handle {
+    color:white;
+    text-decoration: none;
+}
+
+.softphone .handle {
+    background-color:olive;
+}
+
+body > div > iframe {
+    width: inherit;
+    height: inherit;
+    border: none;
+}

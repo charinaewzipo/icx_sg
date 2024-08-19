@@ -1,0 +1,78 @@
+[20-Sep-2023 18:00:41 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:00:41 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 18:00:54 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:00:54 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 18:01:04 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:01:04 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 18:03:21 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:03:27 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:03:33 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:03:42 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:03:42 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 18:03:43 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:03:43 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 18:03:53 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 18:03:53 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 19:46:07 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:46:07 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 19:47:09 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:47:09 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 19:47:18 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:47:18 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 19:47:19 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:47:19 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 19:47:19 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:47:19 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 19:47:34 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:47:34 Asia/Bangkok] PHP Warning:  fopen(D:\html/logs/log_2023-09-20.txt): failed to open stream: Permission denied in D:\html\wlog.php on line 19
+[20-Sep-2023 19:48:22 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:48:29 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:51:48 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\home.php on line 2
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: uid in D:\html\home.php on line 241
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 242
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 243
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 244
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 245
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 260
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 261
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 271
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 282
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\home.php on line 283
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Notice:  Undefined variable: pfile in D:\html\subMenu.php on line 27
+[20-Sep-2023 19:51:49 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:51:56 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:52:06 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:52:19 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:55:24 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:56:39 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:56:50 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:57:23 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:58:10 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:58:35 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:58:54 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 19:59:48 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:01:06 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:05:11 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:05:18 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:07:19 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:11:46 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:11:56 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:15:25 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:15:59 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:19:33 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:19:36 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:23:54 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:23:56 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:23:56 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:24:09 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:24:11 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:24:15 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:26:14 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:26:14 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:26:16 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:26:21 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:27:22 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:27:24 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:27:38 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1
+[20-Sep-2023 20:27:41 Asia/Bangkok] PHP Warning:  session_start(): open(session\sess_hv26ge7ah04a5unb5shce6nfk2, O_RDWR) failed: No such file or directory (2) in D:\html\index_process.php on line 1

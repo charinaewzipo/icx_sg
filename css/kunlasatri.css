@@ -1,0 +1,22 @@
+@CHARSET "UTF-8";
+
+@font-face {
+    font-family: 'kunlasatri';
+    src: url('../fonts/kunlasatri/Kunlasatri-Light.ttf');
+}
+@font-face {
+    font-family: 'bangna';
+    src: url('../fonts/wdb_bangna/WDB_Bangna.ttf');
+}
+@font-face {
+    font-family: 'lane';
+    src: url('../fonts/lane/LANENAR_.ttf');
+}
+@font-face {
+    font-family: 'lato';
+    src: url('../fonts/lato/Lato-Light.ttf');
+}
+@font-face {
+    font-family: 'raleway';
+    src: url('../fonts/raleway/Raleway-Regular.otf');
+}

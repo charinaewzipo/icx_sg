@@ -1,0 +1,277 @@
+@charset "utf-8";
+/* CSS for Application page  */
+
+* {
+padding : 0;
+margin : 0;
+}
+
+body {
+	font-family : Tahoma;
+	font-size : 16px;
+	color : #333333;
+	background-color: #F8F8F8;
+	background-image: url(../images/bg.gif);
+	background-repeat: repeat-x;
+}
+h1 {
+	font-size: 16px;
+	font-weight: bold;
+	font-family: Tahoma;
+}
+h2 {
+	font-size: 16px;
+	font-weight: bold;
+	border-bottom: 2px solid #ccc;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	padding-bottom: 3px;
+	color: #001871;
+}
+
+
+#content {
+	padding : 0;
+	margin : 0px auto;
+	width : 1000px;
+	background-color: #FBFDF8;
+	height: auto;
+	border: 1px solid #E4E1D0;
+	font-family: Tahoma;
+	font-size: 16px;
+}
+
+
+#header {
+	height: 90px;
+	background-color: #28348B;
+	width: 100%;
+	background-image: url(../images/header_aig.png);
+	background-repeat:no-repeat;
+}
+#logo {
+	background-image: url(../images/logo.jpg);
+	background-repeat: no-repeat;
+	height: 59px;
+	width: 171px;
+	margin-left: 20px;
+}
+#top-detail {
+	color: #333333;
+	width: 100%;
+	background-image: url(../images/pagetop_gradient.gif);
+	background-repeat: repeat-x;
+	height: 43px;
+	padding-top: 3px;
+}
+#top-detail #user-detail {
+	width: 440px;
+	float: right;
+	padding-right: 10px;
+}
+#top-detail #app-detail {
+	width: 440px;
+	float: left;
+	padding-left: 10px;
+}
+#form-content {
+	width: 960px;
+	border: 1px solid #CCCCCC;
+	margin-left: 10px;
+	padding: 10px;
+	background-color: #ececec;
+	
+	background-repeat: repeat-x;
+}
+#form-content #head-linebuttom {
+}
+
+#table-form {
+}
+#table-form img {
+	position: absolute;
+	text-decoration: none;
+	border: 0;
+}
+
+#table-form th {
+	width: 50px;
+}
+
+#form-content legend {
+	font-size: 16px;
+	font-weight: bold;
+	color: #001871;
+}
+table tr{
+	height: 25px;
+}
+
+#question{
+}
+
+#answer{
+	margin: 5px 0 5px 0;
+	padding: 10px 20px 10px 20px;
+}
+input[disabled='disabled']{
+	background-color:#CCC;
+}
+
+.container {
+	max-width: 1000px;
+	margin-right:auto;
+	margin-left:auto;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	min-height:100vh;
+}
+
+
+.table {
+	width:100%;
+	border:1px solid $color-form-highlight;
+	background:#ddd;
+}
+
+.table-header {
+	display:flex;
+	width:100%;
+	background:#130e5c;
+	padding:($half-spacing-unit * 1.5) 0;
+}
+
+.table-row {
+	display:flex;
+	width:100%;
+	padding:($half-spacing-unit * 1.5) 0;
+	
+	&:nth-of-type(odd) {
+		background:$color-form-highlight;
+	}
+}
+
+.header__item {
+	flex: 1 1 20%;
+	text-align:center;
+	color:white;
+	padding : 5px;
+
+}
+
+.table-data {
+	flex: 1 1 20%;
+	text-align:center;
+	padding : 5px;
+
+}
+
+.header__item {
+	text-transform:uppercase;
+}
+
+.filter__link {
+	color:white;
+	text-decoration: none;
+	position:relative;
+	display:inline-block;
+	padding-left:$base-spacing-unit;
+	padding-right:$base-spacing-unit;
+	
+	&::after {
+		content:'';
+		position:absolute;
+		right:-($half-spacing-unit * 1.5);
+		color:white;
+		font-size:$half-spacing-unit;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	
+	&.desc::after {
+		content: '(desc)';
+	}
+
+	&.asc::after {
+		content: '(asc)';
+	}
+	
+}
+
+.button:hover:enabled {
+	background-color:#130e5c;
+	transition: 0.7s;
+	cursor: pointer;
+}
+
+button:hover:disabled {
+    background-color:#52525e;
+	transition: 0.7s;
+	cursor:no-drop;
+}
+
+.button {
+
+    top:50%;
+    background-color:#52525e;
+    color: #fff;
+    border:none; 
+    border-radius:10px; 
+    padding:5px;
+    min-height:20px; 
+    min-width: 100px;
+  }
+
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('../../../../images/loading.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .modal {
+    display: block;
+}
+
+label.error, label.error {
+	/* remove the next line when you have trouble in IE6 with labels in list */
+	color: red;
+	font-style: italic
+}
+div.error { display: none; }
+input:focus { border: 1px dotted black; }
+input.error { border: 1px dotted red; }
+select.error { border: 1px dotted red; }
+
+
+textarea
+{
+	font-family: Tahoma;
+ 	font-size: 14px;
+}
+input[type="text"]
+{
+	font-size:14px;
+	padding: 2px;
+}
+select 
+{
+	font-size:14px;
+	padding: 2px;
+}

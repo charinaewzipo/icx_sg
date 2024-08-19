@@ -1,0 +1,131 @@
+<!--  Agent Performance Report V1.0 Fri 20 2558  -->
+
+<!-- Agent Permance Report  -->
+<div id="report-pane">
+		<ul style="width:100%; list-style:none; margin:0;padding:0;">
+ 			<li>
+ 				<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+ 				<div style="width:60%;float:left; border-bottom:1px dashed #ddd">
+ 						<div style="position:relative;">
+								<div class="report-back-main" style="float:left; display:inline-block;cursor:pointer; ">
+									<i class="icon-circle-arrow-left icon-3x" style="color:#666; "></i>
+								</div>
+								<div style="display:inline-block; float:left; margin-left:5px;">
+								<h2 style="font-family:raleway; color:#666666; margin:0; padding:0">&nbsp;Confirm Call Report</h2>
+								<div class="stack-subtitle" style="color:#777777; ">&nbsp; Confirm Call</div>
+								</div>
+								<div style="clear:both"></div>
+						</div>
+	 			</div>
+	 			<div style="width:25%;float:left;">
+	 			 &nbsp;
+	 			</div>
+	 			<div style="clear:both"></div>
+ 			</li>
+              <li style="padding:5px; margin-top:15px;">
+	 			<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+<!--<form class="form-horizontal" id="my_form" name="date" method="post">-->
+ 				<div style="width:35%;float:left;color:#666; font-size:16px;">
+ 				 	<span style="font-size:15px; line-height:30px;width:160px;display:inline-block;">TPA Upload Start Date </span> :
+ 					<input type="text" id="start_date" name="startdate"  style="width:250px; " autocomplete="off" placeholder="วันที่เริ่ม" class="text-center calendar_en">
+ 				</div>
+ 					<div style="width:50%;float:right;">
+ 					<div style="color:#666;">
+ 						 <span style="font-size:15px; line-height:30px;width:160px;display:inline-block;">TPA Upload End Date</span> :
+ 						<input type="text" id="end_date" name="enddate"  style="width:250px;" autocomplete="off" placeholder="วันที่สิ้นสุด" class="text-center calendar_en">
+ 					</div>
+ 				</div>
+                
+ 				<div style="clear:both"></div>
+ 			</li>
+ 			<li style="text-align:center;padding:20px;">
+ 				<div>
+ 						 <button class="btn btn-primary search-confirm-call-btn" style="border-radius:3px; width:110px;"> Search </button> &nbsp;&nbsp;
+    					 <button class="btn btn-default search-confirm-call-btn-clear" style="border-radius:3px; width:110px;"> Clear </button> 
+ 				</div>
+ 			</li>
+ 		</ul>
+ 		
+ 		<div style="padding:5px 0">
+ 				<button class="btn btn-default search-confirm-call-export" style="border-radius:3px; width:150px; background-color:#ff9800; color:#fff; border:1px solid #e2e2e2"><i class="icon-download" style="font-size:20px"></i> Excel Download </button> 
+ 		</div>
+ 	
+ 		<table class="table table-bordered zebra" id="confirm-call-table">
+ 			<thead>
+ 				<tr class="primary">
+                    <td class="text-center"> AppID </td>
+                    <td class="text-center"> Customer Name </td>
+ 					<td class="text-center"> Agent Name</td>
+ 					<td class="text-center"> Sale Date  </td>
+ 					<td class="text-center"> Approve Date </td>
+					<td class="text-center"> TPA Upload Date </td>
+ 					<td class="text-center"> AppStatus </td>
+ 					<td class="text-center"> ConfirmID </td>
+ 				</tr>
+ 			</thead>
+ 			<tbody>
+ 				<tr>
+ 					<td colspan="8" class="text-center"> No data found </td>
+ 				</tr>
+ 			</tbody>
+ 			<tfoot>
+ 			</tfoot>
+ 		</table>
+
+</div>
+
+<!-- end agent performance report -->
+
+<script>
+ $(function(){
+
+	 $('.calendar_en').datepicker({  dateFormat: 'dd/mm/yy' });
+	 $.rpt.getcmp();
+	 $.rpt.getgroup();
+	 
+	 $('[name=agentp_search_group]').change( function(){
+		 var self = $(this);
+			if( self.val() == ""){
+				 var option = "<option value=''> &nbsp; </option>";
+				 $('[name=agentp_search_team]').text('').append(option);
+			}else{
+				$.rpt.getteam( self.val() );
+			}
+	});
+
+		
+	 //agent report back to main menu
+	 $('.report-back-main').click( function(e){
+			$('#report').fadeOut( 'fast' , function(){
+				$('#select-report').fadeIn('medium');
+				$(this).html('');
+			});
+	});
+
+
+		//btn search agent permance
+		//report1
+		$('.search-confirm-call-btn').click( function(e){
+				e.preventDefault();
+				$.rpt.confirm_call_report();
+		});
+
+		$('.search-confirm-call-btn-clear').click( function(e){
+				e.preventDefault();
+                $('#start_date').val('');
+                $('#end_date').val('');
+				//clear search
+		});
+
+		$('.search-confirm-call-export').click( function(e){
+				e.preventDefault();
+				$.rpt.confirm_call_export();
+		});
+		
+
+ })
+ </script>

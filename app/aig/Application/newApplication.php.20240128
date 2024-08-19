@@ -1,0 +1,1049 @@
+<?php
+
+ob_start();
+session_start();
+
+require_once("../../function/currentDateTime.inc");
+require_once("../../function/StartConnect.inc");
+//include("../../function/checkSession.php");
+?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="css/stylesheet.css" type="text/css" />
+
+  <link href="../../css/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+
+  <script>
+		var uid = <?php echo $_SESSION["uid"]; ?>;
+	</script>
+  <script src="../../scripts/jquery-2.2.4.min.js"></script>
+  <script src="../../scripts/jquery-ui.min.js"></script>
+  <script src="../../scripts/jquery-ui-datepicker-th.js"></script>
+  <script src="../../scripts/moment.min.js"></script>
+  <script src="../../scripts/jquery.validate.min.js"></script>
+
+  <title>Application Form</title>
+  <script type="text/javascript" src="../scripts/function.js?v=<?=time();?>"></script>
+  <script type="text/javascript" src="../scripts/jsvalidate.js?v=<?=time();?>"></script>
+  <SCRIPT type="text/javascript" src="js/app.js?v=<?=time();?>"></script>
+
+</head>
+
+<body>
+
+  <?php
+
+  $campaign_id = $_GET["campaign_id"];
+  $calllist_id = $_GET["calllist_id"];
+  $agent_id = $_GET["agent_id"];
+  $import_id = $_GET["import_id"];
+  $lv = $_SESSION["pfile"]["lv"];
+
+  $Owner = $objResult["agent_id"];
+  $strSQL2 = "SELECT * FROM t_agents WHERE agent_id = '$agent_id' ";
+  $result2 = mysql_query($strSQL2);
+  while ($objResult2 = mysql_fetch_array($result2)) {
+    $first_name = $objResult2["first_name"];
+    $last_name = $objResult2["last_name"];
+    $tsr_code = $objResult2["sales_agent_code"];
+    $license_code = $objResult2["sales_license_code"];
+    $team_id = $objResult2["team_id"];
+  }
+
+  $strSQL3 = "SELECT first_name,last_name,tel1,id_num FROM t_calllist WHERE calllist_id = '$calllist_id' ";
+  $result3 = mysql_query($strSQL3);
+  while ($objResult3 = mysql_fetch_array($result3)) {
+    $cust_first_name = $objResult3["first_name"];
+    $cust_last_name = $objResult3["last_name"];
+    $Mobile1 = $objResult3["tel1"];
+    $id_num = $objResult3["id_num"];
+  }
+  $Mobile1_Display = "XXXXXX" . substr($Mobile1, -4);
+
+  $strSQL4 = "SELECT c.campaign_name,c.max_insured,c.max_beneficiary,c.campaign_test_code,c.url_billing_payment,c.url_online_payment,c.check_bin FROM t_campaign c WHERE c.campaign_id = '$campaign_id' ";
+  $result4 = mysql_query($strSQL4);
+  while ($objResult4 = mysql_fetch_array($result4)) {
+    $campaign_name = $objResult4["campaign_name"];
+    $max_insured = $objResult4["max_insured"];
+    $max_beneficiary = $objResult4["max_beneficiary"];
+    $campaign_test_code = $objResult4["campaign_test_code"];
+    $url_billing_payment = $objResult4["url_billing_payment"];
+    $url_online_payment = $objResult4["url_online_payment"];
+    $check_bin = $objResult4["check_bin"];
+  }
+
+  $hide = 'style="display:none"';
+
+  ?>
+
+
+  <div id="content">
+    <div id="header">
+      <!--<div id="logo"></div>-->
+    </div>
+    <div id="top-detail">
+      <div id="app-detail">
+        <table>
+          <tr>
+            <td>
+              <h1>Product Name : </h1>
+            </td>
+            <td><?php echo $campaign_name ?></td>
+          </tr>
+        </table>
+      </div>
+      <div id="user-detail">
+        <table align="right">
+          <tr>
+            <td>
+              <h1>Date : </h1>
+            </td>
+            <td>
+              <?php echo "$currentdate_app" ?>
+            </td>
+            <td>&nbsp;</td>
+            <td>
+              <h1>License : </h1>
+            </td>
+            <td>
+              <?php print $license_code; ?>
+            </td>
+            <td>&nbsp;</td>
+            <td>
+              <h1>TSR : </h1>
+            </td>
+            <td>
+              <?php echo $first_name; ?>&nbsp;
+              <?php echo $last_name; ?>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <form id="application">
+      <!--start  form 1 -->
+      <div>
+        <fieldset id="form-content">
+          <table id="table-form">
+            <tr>
+              <td>เลขที่ใบสมัคร : </td>
+              <td><input type="text" name="App_ID" maxlength="15" value="<?php echo "$Run_no" ?>" /></td>
+              <td colspan="30">&nbsp;</td>
+              <td>วันที่ขาย : </td>
+              <td><input type="text" name="Submit_Date" maxlength="10" value="<?php echo "$currentdate_app" ?>" /></td>
+              <td colspan="30">&nbsp;</td>
+              <td>วันที่คุ้มครอง : </td>
+              <td>
+                <input type="text" name="Effective_Date" />
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+      </div>
+      <!--end  form 1 -->
+
+      <!--start  form 2-->
+      <div>
+        <fieldset id="form-content">
+          <br />
+          <h1>คำถามเกี่ยวกับข้อมูลส่วนบุคคลของผู้ขอเอาประกันภัย และรายละเอียดการขอเอาประกันภัย</h1><br />
+          <legend>ผู้เอาประกัน</legend>
+
+          <table id="table-form">
+            <tr>
+              <td>คำนำหน้าผู้เอาประกัน : <span style="color:red">*</span></td>
+              <td>
+                <select name="TITLE">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select>
+              </td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>ชื่อผู้เอาประกัน (ไทย) : <span style="color:red">*</span></td>
+              <td><input type="text" name="FIRSTNAME" value="<?php echo $cust_first_name; ?>" />
+                  <input type="hidden" name="id_num" value="<?php echo $id_num; ?>"/>
+              </td>
+              <th>&nbsp;</th>
+              <td>นามสกุล (ไทย) : <span style="color:red">*</span></td>
+              <td><input type="text" name="LASTNAME" value="<?php echo $cust_last_name; ?>">
+              </td>
+            </tr>
+            <tr>
+              <td>เพศ : <span style="color:red">*</span></td>
+              <td><select name="SEX">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+            <tr>
+              <td>วัน/เดือน/ปี เกิด : <span style="color:red">*</span></td>
+              <td>
+                <input id="datepicker" type="text" name="DOB_V" />
+                <input type="hidden" name="DOB" />
+              </td>
+              <th>&nbsp;</th>
+              <td>อายุ : <span style="color:red">*</span></td>
+              <td><input id="age" type="text" name="ADE_AT_RCD" size="8" readonly /> &nbsp;ปี
+              </td>
+
+
+            </tr>
+            <tr>
+              <td>เลขที่บัตรประชาชน : <span style="color:red">*</span></td>
+              <td><input type="text" name="IDCARD" size="20" /></td>
+              <th>&nbsp;</th>
+              <td>สถานภาพ : <span style="color:red">*</span></td>
+              <td>
+                <select name="INSURED_STATUS">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="โสด">โสด</option>
+                  <option value="สมรส">สมรส</option>
+                  <option value="หม้าย">หม้าย</option>
+                  <option value="หย่าร้าง">หย่าร้าง</option>
+                  <option value="แยกกันอยู่">แยกกันอยู่</option>
+                </select>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Email : </td>
+              <td><input type="text" name="EMAIL" maxlength="50" size="30" value="<?php echo $row["EMAIL"]; ?>" /></td>
+              <th>&nbsp;</th>
+              <td></td>
+              <td>
+              </td>
+            </tr>
+
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td><b>ที่อยู่ปัจจุบัน</b></td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>ที่อยู่ 1 : <span style="color:red">*</span></td>
+              <td><input type="text" name="ADDRESSNO1" size="45" /></td>
+            </tr>
+            <tr>
+              <td>ที่อยู่ 2 : </td>
+              <td><input type="text" name="BUILDING1" size="45" /></td>
+            </tr>
+            <tr>
+            <td>จังหวัด : <span style="color:red">*</span></td>
+              <td>
+                <select name="PROVINCE1" id="province1" onchange="show_DISTRICT(this.value)">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_address GROUP BY PROVINCE_TH ORDER BY PROVINCE_TH ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["PROVINCE_TH"]; ?>">
+                      <?php echo $objResuut["PROVINCE_TH"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select>
+              </td>
+              <th>&nbsp;</th>
+              <td>เขต/อำเภอ : <span style="color:red">*</span></td>
+              <td><select name="DISTRICT1" id="district1"
+                  onchange="show_SUBDISTRICT(this.value,document.getElementById('province1').value)">
+                  <option value=""><-- โปรดระบุ --></option>
+                </select></td>
+              
+            </tr>
+            <tr>
+            <td>แขวง/ตำบล : <span style="color:red">*</span></td>
+              <td><select name="SUB_DISTRICT1" id="Sub_district1"
+                  onchange="show_ZIPCODE(this.value,document.getElementById('district1').value,document.getElementById('province1').value)">
+                  <option value=""><-- โปรดระบุ --></option>
+                </select></td>
+                <th>&nbsp;</th>
+                <td>รหัสไปรษณีย์ : <span style="color:red">*</span></td>
+              <td><select name="ZIPCODE1" id="zipcode1">
+                  <option value=""><-- โปรดระบุ --></option>
+                </select></td>
+            </tr>
+            <tr>
+            <td>โทรศัพท์มือถือ : <span style="color:red">*</span></td>
+              <td><input type="text" name="MOBILE1_DISPLAY" value="<?php echo $Mobile1_Display; ?>" size="15" required readonly />
+              <input type="hidden" name="MOBILE1" value="<?php echo $Mobile1; ?>">
+              </td>
+              <th>&nbsp;</th>
+              <td>โทรศัพท์บ้าน : </td>
+              <td><input type="text" name="TELEPHONE1" size="15" /></td>
+            </tr>
+            <tr>
+                <td>
+                  
+                </td>
+                <td <?php if($campaign_test_code!='SMK'){ echo $hide;} ?>>
+                <?php
+                  if ($row["smoke"] == '1') {
+                    $CHK_SMOKE = 'checked';
+                  }
+                  else{
+                    $CHK_SMOKE = '';
+                  }
+                ?>
+                    <input type="checkbox" id="SMOKE" name="SMOKE" value="1" <?php echo $CHK_SMOKE; ?> ><label for="vehicle1"> สูบบุหรี่ </label>
+                </td>
+            </tr>
+
+          </table>
+        </fieldset>
+      </div>
+      <!--end  form 2-->
+
+      <br />
+
+      <div>
+        <fieldset id="form-content">
+          <legend>แบบประกันภัย</legend>
+          <table id="table-form">
+            <tr>
+              <td>แบบประกันภัย : <span style="color:red">*</span></td>
+              <td>
+                <select name="PRODUCT_NAME" onchange="getPremiumD2C()">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                    $strSQL = "SELECT DISTINCT PRODUCTNAME_TH FROM t_aig_doublecare_product WHERE campaign_id = '$campaign_id'";
+                    $objQuery = mysql_query($strSQL);
+                    while ($objResuut = mysql_fetch_array($objQuery)) {
+                      ?>
+                      <option value="<?php echo $objResuut["PRODUCTNAME_TH"]; ?>">
+                        <?php echo $objResuut["PRODUCTNAME_TH"]; ?>
+                      </option>
+                      <?php
+                    }
+                  ?>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>แผนประกันภัย : <span style="color:red">*</span></td>
+              <td><select name="COVERAGE_NAME" onchange="getPremiumD2C()">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                    $strSQL = "SELECT DISTINCT PLAN FROM t_aig_doublecare_product WHERE campaign_id = '$campaign_id'";
+                    $objQuery = mysql_query($strSQL);
+                    while ($objResuut = mysql_fetch_array($objQuery)) {
+                      ?>
+                      <option value="<?php echo $objResuut["PLAN"]; ?>">
+                        <?php echo $objResuut["PLAN"]; ?>
+                      </option>
+                      <?php
+                    }
+                  ?>
+                </select>&nbsp;
+                  Plan Layer Code: <input type="text" name="PLAN_LAYER_CODE" id="PLAN_LAYER_CODE" readonly></td>
+            </tr>
+            <td>การชำระเงิน : <span style="color:red">*</span></td>
+            <td><select name="PAYMENTFREQUENCY" onchange="getPremiumD2C()">
+                <option value=""><-- โปรดระบุ --></option>
+                <option value="รายเดือน">รายเดือน</option>
+                <option value="รายปี">รายปี</option>
+              </select></td>
+            </tr>
+            <tr>
+              <td>เบี้ยประกันภัยรวม : <span style="color:red">*</span></td>
+              <td>
+                <input type="text" name="INSTALMENT_PREMIUM" id="INSTALMENT_PREMIUM" maxlength="15" value="" readonly /> บาท&nbsp;
+                ยอดที่ใช้ตัด Payment : <input type="text" name="INSTALMENT_COPY" id="INSTALMENT_COPY" maxlength="15" value="" readonly
+                 />
+                บาท
+              </td>
+            </tr>
+          </table><br />
+
+          <span style="color:red">* ในกรณี ที่เป็นแบบประกัน คู่สมรส จะต้องมีการกรอก ผู้เอาประกันเพิ่มเติม</label></span>
+          <!--Insure 2-->
+          <div <?php if($max_insured<2){ echo $hide;} ?>>
+          <div>
+            <h2>ผู้เอาประกันที่ 2 (คู่สมรส)</h2>
+          </div>
+          <table id="table-form">
+            <tr>
+              <td>คำนำหน้า : </td>
+              <td>
+                <select name="INSURED_TITLE2">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select>
+              </td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>ชื่อ : </td>
+              <td><input type="text" name="INSURED_NAME2" maxlength="60" size="35" /></td>
+              <th>&nbsp;</th>
+              <td>นามสกุล : </td>
+              <td><input type="text" name="INSURED_LASTNAME2" maxlength="60" size="35" /></td>
+            </tr>
+            <tr>
+              <td>วัน/เดือน/ปี เกิด : </td>
+              <td>
+                <input id="datepicker2" type="text" name="INSURED_DOB2_V" maxlength="10" />
+                <input type="hidden" name="INSURED_DOB2" maxlength="10" />
+              </td>
+              <th>&nbsp;</th>
+              <td>ความสัมพันธ์ : </td>
+              <td><select name="INSURED_RELATIONSHIP2">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'relationship' and code in ('S','D','O') ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select></td>
+            <tr>
+              <td>เพศ : </td>
+              <td><select name="INSURED_SEX2">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+            </tr>
+          </table>
+          </div>
+
+            <!--Insure 3-->
+            <div <?php if($max_insured<3){ echo $hide;} ?>>
+            <div><h2>ผู้เอาประกันที่ 3</h2></div>
+              <table id="table-form">
+                  <tr>
+                    <td>คำนำหน้า : </td>
+                            <td>
+                              <select name="INSURED_TITLE3" >
+                                <option value=""><-- โปรดระบุ --></option>
+                                <?php
+                                                      $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                                                      $objQuery = mysql_query($strSQL);
+                                                      while($objResuut = mysql_fetch_array($objQuery))
+                                                      {
+                                                      ?>
+                                                      <option value="<?php echo $objResuut["name"];?>"><?php  echo $objResuut["name"];?></option>
+                                                      <?php
+                                                      }
+                                                      ?>
+                              </select></td>
+                            <td>&nbsp;</td>
+                          </tr>
+                          <tr>
+                            <td>ชื่อ : </td>
+                            <td><input type="text" name="INSURED_NAME3" maxlength="60" size="35" /></td>
+                            <th>&nbsp;</th>
+                            <td>นามสกุล  : </td>
+                            <td><input type="text" name="INSURED_LASTNAME3" maxlength="60" size="35" /></td>
+                          </tr>
+                          <tr>
+                            <td>วัน/เดือน/ปี เกิด : </td>
+                            <td>
+                            <input id="datepicker3" type="text" name="INSURED_DOB3_V" maxlength="10" />
+                            <input type="hidden" name="INSURED_DOB3" maxlength="10" />
+                            </td>                             
+                            <th>&nbsp;</th>
+                            <td>ความสัมพันธ์ : </td>
+                              <td><select name="INSURED_RELATIONSHIP3" >
+                                  <option value=""><-- โปรดระบุ --></option>
+                                  <?php
+                                      $strSQL = "SELECT * FROM t_aig_pancode where type = 'relationship' and code in ('S','D','O') ORDER BY id ASC";
+                                      $objQuery = mysql_query($strSQL);
+                                      while($objResuut = mysql_fetch_array($objQuery))
+                                      {
+                                      ?>
+                                      <option value="<?php  echo $objResuut["name"];?>"><?php  echo $objResuut["name"];?></option>
+                                      <?php
+                                      }
+                                    ?>
+                          </select></td>
+            <tr>
+              <td>เพศ : </td>
+              <td><select name="INSURED_SEX3">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+                    </tr>
+                </table>
+            </div>
+
+            <!--Insure 4-->
+            <div <?php if($max_insured<4){ echo $hide;} ?>>
+            <div><h2>ผู้เอาประกันที่ 4</h2></div>
+              <table id="table-form">
+                  <tr>
+                    <td>คำนำหน้า : </td>
+                            <td>
+                              <select name="INSURED_TITLE4" >
+                                <option value=""><-- โปรดระบุ --></option>
+                                <?php
+                                                      $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                                                      $objQuery = mysql_query($strSQL);
+                                                      while($objResuut = mysql_fetch_array($objQuery))
+                                                      {
+                                                      ?>
+                                                      <option value="<?php echo $objResuut["name"];?>"><?php  echo $objResuut["name"];?></option>
+                                                      <?php
+                                                      }
+                                                      ?>
+                              </select></td>
+                            <td>&nbsp;</td>
+                          </tr>
+                          <tr>
+                            <td>ชื่อ : </td>
+                            <td><input type="text" name="INSURED_NAME4" maxlength="60" size="35" /></td>
+                            <th>&nbsp;</th>
+                            <td>นามสกุล  : </td>
+                            <td><input type="text" name="INSURED_LASTNAME4" maxlength="60" size="35" /></td>
+                          </tr>
+                          <tr>
+                            <td>วัน/เดือน/ปี เกิด : </td>
+                            <td>
+                            <input id="datepicker4" type="text" name="INSURED_DOB4_V" maxlength="10" />
+                            <input type="hidden" name="INSURED_DOB4" maxlength="10" />
+                            </td>                              
+                            <th>&nbsp;</th>
+                            <td>ความสัมพันธ์ : </td>
+                              <td><select name="INSURED_RELATIONSHIP4" >
+                                  <option value=""><-- โปรดระบุ --></option>
+                                  <?php
+                                      $strSQL = "SELECT * FROM t_aig_pancode where type = 'relationship' and code in ('S','D','O') ORDER BY id ASC";
+                                      $objQuery = mysql_query($strSQL);
+                                      while($objResuut = mysql_fetch_array($objQuery))
+                                      {
+                                      ?>
+                                      <option value="<?php  echo $objResuut["name"];?>"><?php  echo $objResuut["name"];?></option>
+                                      <?php
+                                      }
+                                    ?>
+                          </select></td>
+            <tr>
+              <td>เพศ : </td>
+              <td><select name="INSURED_SEX4">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+                    </tr>
+                </table>
+            </div>
+
+            <!--Insure 5-->
+            <div <?php if($max_insured<5){ echo $hide;} ?>>
+            <div><h2>ผู้เอาประกันที่ 5</h2></div>
+              <table id="table-form">
+                  <tr>
+                    <td>คำนำหน้า : </td>
+                            <td>
+                              <select name="INSURED_TITLE5" >
+                                <option value=""><-- โปรดระบุ --></option>
+                                <?php
+                                                      $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                                                      $objQuery = mysql_query($strSQL);
+                                                      while($objResuut = mysql_fetch_array($objQuery))
+                                                      {
+                                                      ?>
+                                                      <option value="<?php echo $objResuut["name"];?>"><?php  echo $objResuut["name"];?></option>
+                                                      <?php
+                                                      }
+                                                      ?>
+                              </select></td>
+                            <td>&nbsp;</td>
+                          </tr>
+                          <tr>
+                            <td>ชื่อ : </td>
+                            <td><input type="text" name="INSURED_NAME5" maxlength="60" size="35" /></td>
+                            <th>&nbsp;</th>
+                            <td>นามสกุล  : </td>
+                            <td><input type="text" name="INSURED_LASTNAME5" maxlength="60" size="35" /></td>
+                          </tr>
+                          <tr>
+                            <td>วัน/เดือน/ปี เกิด : </td>
+                            <td>
+                            <input id="datepicker5" type="text" name="INSURED_DOB5_V" maxlength="10" />
+                            <input type="hidden" name="INSURED_DOB5" maxlength="10" />
+                            </td>                               
+                            <th>&nbsp;</th>
+                            <td>ความสัมพันธ์ : </td>
+                              <td><select name="INSURED_RELATIONSHIP5" >
+                                  <option value=""><-- โปรดระบุ --></option>
+                                  <?php
+                                      $strSQL = "SELECT * FROM t_aig_pancode where type = 'relationship' and code in ('S','D','O') ORDER BY id ASC";
+                                      $objQuery = mysql_query($strSQL);
+                                      while($objResuut = mysql_fetch_array($objQuery))
+                                      {
+                                      ?>
+                                      <option value="<?php  echo $objResuut["name"];?>"><?php  echo $objResuut["name"];?></option>
+                                      <?php
+                                      }
+                                    ?>
+                          </select></td>
+            <tr>
+              <td>เพศ : </td>
+              <td><select name="INSURED_SEX5">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+                    </tr>
+                </table>
+                </div>
+
+        </fieldset>
+      </div>
+      <!--end  form 5-->
+      <br />
+
+      <!--start  form 7-->
+      <div>
+        <fieldset id="form-content">
+          <legend>ผู้รับผลประโยชน์</legend>
+          <div style="padding: 10px 50px 10px 50px ;  "><input type="checkbox" id="GIVEN_BENAFICIARY"
+              name="GIVEN_BENAFICIARY" value="1">
+            <label for="vehicle1"> ระบุเป็น ทายาทโดยธรรม &nbsp;&nbsp;<span style="color:red">* ถ้าระบุ
+                ไม่ต้องทำการกรอกข้อมูลผู้รับผลประโยชน์</label></span><br>
+          </div>
+          <div <?php if($max_beneficiary<1){ echo $hide;} ?>>
+          <div>
+            <h2>ผู้รับผลประโยชน์ 1</h2>
+          </div>
+          <table id="table-form">
+            <tr>
+              <td>คำนำหน้า : </td>
+              <td>
+                <select name="BENEFICIARY_TITLE1">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select>
+              </td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>ชื่อ : </td>
+              <td><input type="text" name="BENEFICIARY_NAME1" maxlength="60" size="35" /></td>
+              <th>&nbsp;</th>
+              <td>นามสกุล : </td>
+              <td><input type="text" name="BENEFICIARY_LASTNAME1" maxlength="60" size="35" /></td>
+            </tr>
+            <tr>
+              <td>ความสัมพันธ์ : </td>
+              <td><select name="BENEFICIARY_RELATIONSHIP1">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'relationship' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select></td>
+              <th>&nbsp;</th>
+              <td>ร้อยละของผลประโยชน์ : </td>
+              <td><input type="text" name="BENEFICIARY_BENEFIT1" maxlength="3" size="8" /></td>
+            </tr>
+            <tr>
+              <td>เพศ : </td>
+              <td><select name="BENEFICIARY_SEX1">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+          </table>
+          </div>
+
+          <div <?php if($max_beneficiary<2){ echo $hide;} ?>>
+          <div>
+            <h2>ผู้รับผลประโยชน์ 2</h2>
+          </div>
+          <table id="table-form">
+            <tr>
+              <td>คำนำหน้า : </td>
+              <td>
+                <select name="BENEFICIARY_TITLE2">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select>
+              </td>
+              <td>&nbsp;</td>
+            </tr>
+            <td>ชื่อ : </td>
+            <td><input type="text" name="BENEFICIARY_NAME2" maxlength="60" size="35" /></td>
+            <th>&nbsp;</th>
+            <td>นามสกุล : </td>
+            <td><input type="text" name="BENEFICIARY_LASTNAME2" maxlength="60" size="35" /></td>
+            </tr>
+            <tr>
+              <td>ความสัมพันธ์ : </td>
+              <td><select name="BENEFICIARY_RELATIONSHIP2">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'relationship' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select></td>
+              <th>&nbsp;</th>
+              <td>ร้อยละของผลประโยชน์ : </td>
+              <td><input type="text" name="BENEFICIARY_BENEFIT2" maxlength="3" size="8" /></td>
+            </tr>
+            <tr>
+              <td>เพศ : </td>
+              <td><select name="BENEFICIARY_SEX2">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+          </table>
+          </div>
+
+          <div <?php if($max_beneficiary<3){ echo $hide;} ?>>
+          <div>
+            <h2>ผู้รับผลประโยชน์ 3</h2>
+          </div>
+          <table id="table-form">
+            <tr>
+              <td>คำนำหน้า : </td>
+              <td>
+                <select name="BENEFICIARY_TITLE3">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select>
+              </td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>ชื่อ : </td>
+              <td><input type="text" name="BENEFICIARY_NAME3" maxlength="60" size="35" /></td>
+              <th>&nbsp;</th>
+              <td>นามสกุล : </td>
+              <td><input type="text" name="BENEFICIARY_LASTNAME3" maxlength="60" size="35" /></td>
+            </tr>
+            <tr>
+              <td>ความสัมพันธ์ : </td>
+              <td><select name="BENEFICIARY_RELATIONSHIP3">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'relationship' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select></td>
+              <th>&nbsp;</th>
+              <td>ร้อยละของผลประโยชน์ : </td>
+              <td><input type="text" name="BENEFICIARY_BENEFIT3" maxlength="3" size="8" /></td>
+            </tr>
+            <tr>
+              <td>เพศ : </td>
+              <td><select name="BENEFICIARY_SEX3">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+          </table>
+          </div>
+
+          <div <?php if($max_beneficiary<4){ echo $hide;} ?>>
+          <div>
+            <h2>ผู้รับผลประโยชน์ 4</h2>
+          </div>
+          <table id="table-form">
+            <tr>
+              <td>คำนำหน้า : </td>
+              <td>
+                <select name="BENEFICIARY_TITLE4">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'titlename' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select>
+              </td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>ชื่อ : </td>
+              <td><input type="text" name="BENEFICIARY_NAME4" maxlength="60" size="35" /></td>
+              <th>&nbsp;</th>
+              <td>นามสกุล : </td>
+              <td><input type="text" name="BENEFICIARY_LASTNAME4" maxlength="60" size="35" /></td>
+            </tr>
+            <tr>
+              <td>ความสัมพันธ์ : </td>
+              <td><select name="BENEFICIARY_RELATIONSHIP4">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_pancode where type = 'relationship' ORDER BY id ASC";
+                  $objQuery = mysql_query($strSQL);
+                  while ($objResuut = mysql_fetch_array($objQuery)) {
+                    ?>
+                    <option value="<?php echo $objResuut["name"]; ?>">
+                      <?php echo $objResuut["name"]; ?>
+                    </option>
+                    <?php
+                  }
+                  ?>
+                </select></td>
+              <th>&nbsp;</th>
+              <td>ร้อยละของผลประโยชน์ : </td>
+              <td><input type="text" name="BENEFICIARY_BENEFIT4" maxlength="3" size="8" /></td>
+            </tr>
+            <tr>
+              <td>เพศ : </td>
+              <td><select name="BENEFICIARY_SEX4">
+                  <option value=""><-- โปรดระบุ --></option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select></td>
+              <th>&nbsp;</th>
+            </tr>
+          </table>
+          </div>
+        </fieldset>
+      </div>
+      <br />
+
+      <div>
+        <fieldset id="form-content">
+          <legend>Consent</legend>
+          <div class="table">
+
+            <div style="padding: 10px 50px 10px 50px ;  ">
+              <label for="APP_CONSENT_YES"><input type="radio" id="APP_CONSENT_YES" name="APP_CONSENT" value="Y"> 
+              ยินยอมให้เปิดเผยข้อมูล </label><label id="APP_CONSENT-error" class="error" for="APP_CONSENT"></label>
+              <BR>
+              <label for="APP_CONSENT_NO"><input type="radio" id="APP_CONSENT_NO" name="APP_CONSENT" value="N">
+              ไม่ยินยอมให้เปิดเผยข้อมูล &nbsp;&nbsp;<span style="color:red">* กรณีลูกค้าไม่ให้ความยินยอมส่งข้อมูลสรรพากร ลดหย่อนภาษี</label></span><br>
+            </div>
+
+          </div>
+
+        </fieldset>
+      </div>
+      <br />
+
+      <div>
+        <fieldset id="form-content">
+          <legend>Payment</legend>
+          <div class="table">
+            <div class="table-header">
+              <div class="header__item">Payment Type</div>>
+              <div class="header__item">Action</div>
+            </div>
+            <div class="table-content">
+              <div class="table-row" <?php if($url_billing_payment ==''){ echo $hide;} ?>>
+                <div class="table-data">Change card number and generate billing</div>
+                <div class="table-data"><button type="button" class="button payment"
+                    onclick="window.open('<?php echo $url_billing_payment; ?>')">Payment</button>
+                </div>
+              </div>
+              <div class="table-row" <?php if($url_online_payment ==''){ echo $hide;} ?>>
+                <div class="table-data">Online Payment Gateway </div>
+                <div class="table-data"><button type="button" class="button payment"
+                    onclick="window.open('<?php echo $url_online_payment; ?>')">Payment</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <br />
+      <div>
+        <fieldset id="form-content">
+          <legend>Additional</legend>
+          <table id="table-form">
+            <tr>
+              <td>ชื่อหน้าบัตร : <span style="color:red">*</span></td>
+              <td><input type="text" name="ACCOUNT_NAME" maxlength="50" size="30" />
+              </td>
+              <td>
+                <button type="button" class="button" id="secure_pause">Pause</button>
+                <button type="button" class="button" id="unsecure_pause"
+                  style="padding-left=5px;margin-left:10px;">Resume</button>
+
+              </td>
+            </tr>
+            <tr>
+              <td>จ่ายงวดแรก : </td>
+              <td><input type="checkbox" id="FIRST_PAYMENT" name="FIRST_PAYMENT" value="1" />
+              </td>
+            </tr>
+            <tr>
+              <td>วันหมดอายุบัตร : </td>
+              <td><input type="text" name="ACCOUNT_EXPIRE" maxlength="5" size="5" />
+              </td>
+            </tr>
+            <tr>
+              <td>Payment Key : <span style="color:red">*</span></td>
+              <td>
+                <input type="text" name="payment_key" id="payment_key" size="50" maxlength="100" value="" />
+                <?php
+                    $SQL = "SELECT campaign_id,BIN_Number FROM t_aig_bin";
+                    $result = mysql_query($SQL, $Conn) or die("ไม่สามารถเรียกดูข้อมูลได้");
+                    $rows = array();
+                    while ($rs = mysql_fetch_array($result)) {
+                      $rows[] = $rs;
+                    }
+                    $binResult = json_encode($rows);
+                  ?>
+                  <div style="display:none" id="divBin"><?php echo $binResult; ?></div>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+      </div>
+      <br />
+      <div>
+        <fieldset id="form-content">
+          Note TSR :
+          <textarea rows="5" name="REMARK" cols="100"></textarea>
+        </fieldset>
+      </div>
+      <br />
+      <!--start  form 7-->
+      <div>
+        <fieldset id="form-content">
+          <table id="table-form">
+            <tr>
+              <td>Application Status &nbsp;</td>
+              <td><select name="AppStatus">
+                    <?php
+                      $statusSQL = "SELECT * FROM t_app_status WHERE isActive=1 AND level= (SELECT level_id FROM t_agents WHERE agent_id = '$agent_id')";
+                      $status = mysql_query($statusSQL, $Conn) or die("ไม่สามารถเรียกดูข้อมูลได้");
+                      while ($st = mysql_fetch_array($status)) {
+                          echo "<option value=\"".$st["status"]."\">".$st["status"]."</option>";
+                      }
+                      ?>
+                </select></td>
+              <th>&nbsp;</th>
+
+              <input type="hidden" name="campaign_id" id="campaign_id" value="<?php echo $campaign_id; ?>" />
+              <input type="hidden" name="calllist_id" value="<?php echo $calllist_id; ?>" />
+              <input type="hidden" name="agent_id" value="<?php echo $agent_id; ?>" />
+              <input type="hidden" name="import_id" value="<?php echo $import_id; ?>" />
+              <input type="hidden" name="team_id" value="<?php echo $team_id; ?>" />
+              <input type="hidden" name="check_bin" id="check_bin" value="<?php echo $check_bin; ?>">
+              <?php
+              if ($lv > 1) {
+                ?>
+
+              <?php } ?>
+              <th>&nbsp;</th>
+              <td><button type="button" class="button" id="submit">Save</button></td>
+            </tr>
+          </table>
+        </fieldset>
+      </div>
+    </form>
+    <!--end  form 7-->
+    <br />
+  </div>
+  <div class="modal"></div>
+</body>
+
+</html>

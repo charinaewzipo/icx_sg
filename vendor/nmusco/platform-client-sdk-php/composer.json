@@ -1,0 +1,39 @@
+{
+    "name": "nmusco/platform-client-sdk-php",
+    "description": "",
+    "keywords": [
+        "php",
+        "sdk",
+        "api",
+        "purecloud",
+        "genesys"        
+    ],
+    "homepage": "https://github.com/nmusco/platform-client-sdk-php",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Nicholas Musco",
+            "homepage": "https://github.com/nmusco/platform-client-sdk-php"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^6.4",
+        "league/oauth2-client": "^2.0",
+        "slacker775/oauth2-tokenstorage" : "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "squizlabs/php_codesniffer": "~2.6",
+        "friendsofphp/php-cs-fixer": "~2.12"
+    },
+    "autoload": {
+        "psr-4": { "PureCloudPlatform\\Client\\V2\\" : "lib/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "PureCloudPlatform\\Client\\V2\\" : "test/" }
+    }
+}

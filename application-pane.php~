@@ -1,0 +1,249 @@
+<!-- start agent-main-pane -->
+<?php include "dbconn.php"?>
+<?php include "util.php"  ?> 
+<div id="app-main-pane">
+
+<input type="hidden" name="aid">
+
+  	<div style="">
+  		<div style="display:inline-block;float:left;"> <img src="images/MTL.jpg" style="width:66px; height:66px; border-radius:50%; border:3px solid #fff;" class="shadow"></div>
+  		<div style="display:inline-block;float:left;  ">
+	  		<h2 class="page-title" style="font-family:raleway; margin:0; padding:5px; text-indent:8px;"> เมืองไทยประกันชีวิต  </h2>
+			<div class="stack-subtitle" style="color:#777777;position:relative; top:-5px; text-indent:15px;">Application Order</div>
+  		</div>
+  		<!--<div style="float:right; margin-top:15px;">
+  		 		<button class="btn btn-success  new-app" style="border-radius:3px"> Create New Application </button>
+  		</div>-->
+  		<div style="clear:left"></div>
+	</div>
+ 		<hr style="border-bottom: 1px dashed #777777; ">
+ 		<ul style="width:100%; list-style:none; margin:0;padding:0;">
+ 			<li>
+ 				<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+ 				<div style="width:60%;float:left; border-bottom:1px dashed #ddd">
+	 					<h3 style="font-family:raleway; color:#666; padding:10px; margin:0; float:left;"><i class="icon-search"></i> Search</h3>
+	 			</div>
+	 			<div style="width:25%;float:left;">
+	 			 &nbsp;
+	 			</div>
+	 			<div style="clear:both"></div>
+ 			</li>
+ 				<li style="padding:5px; margin-top:15px;">
+	 			<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+ 				<div style="width:35%;float:left; ">
+ 					 <span style="font-size:15px; line-height:30px; color:#666">Customer Name &nbsp;&nbsp;: </span>
+ 					 <input type="text" name="search_cust" style="width:250px;" autocomplete="off" placeholder="ระบุชื่อลูกค้า">
+ 				</div>
+ 					<div style="width:50%;float:right;">
+ 						<?php
+ 					    		session_start();
+		 						$lv = $_SESSION["pfile"]["lv"];
+								$uid = $_SESSION["uid"];
+		 						if($lv > 1){
+ 						?>
+ 					<div>
+ 						 <span style="font-size:15px; line-height:30px; color:#666">Owner Name &nbsp;&nbsp;: </span>
+           <select style="width:250px; height:30px;" name="search_agent">
+		<option value="">ALL</option>
+			<?php
+
+				$dbconn = new dbconn;  
+				$res = $dbconn->createConn();
+				$sql = "SELECT agent_id , CONCAT( first_name,' ',last_name) as name FROM t_agents "; 
+				switch( $lv ){
+				     case 1 :  $sql = $sql." WHERE app.agent_id =  ".dbNumberFormat($_SESSION["uid"]); break;
+			             case 2 : 
+			   	     case 3 :  $sql = $sql." WHERE team_id = ( SELECT team_id FROM t_agents WHERE agent_id = ".dbNumberFormat($uid).") "; break;
+				     case 4 : $sql = $sql." WHERE group_id = ( SELECT group_id FROM t_agents WHERE agent_id = ".dbNumberFormat($uid).") "; break;
+			 	}//end switch
+
+	 			
+ 			        $result = $dbconn->executeQuery($sql);
+				while($rs=mysql_fetch_array($result)){   
+					echo "<option value='".$rs['agent_id']."'> ".$rs['name']."</option>";
+				}
+
+			?>
+
+           </select>
+ 					</div>
+ 					  <?php
+ 								}
+ 					   ?>
+ 				</div>
+ 				<div style="clear:both"></div>
+ 			</li>
+ 			<li style="padding:5px; ">
+	 			<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+ 				<div style="width:35%;float:left; ">
+ 					 <span style="font-size:15px; line-height:30px; color:#666">Quotation No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </span>
+ 					 <input type="text" name="search_quono" style="width:250px;" autocomplete="off" placeholder="ระบุหมายเลข Quotation">
+ 				</div>
+ 					<div style="width:50%;float:right;">
+ 					<div>
+ 						 <span style="font-size:15px; line-height:30px;color:#666">App Status  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </span>
+             <select style="width:250px; height:30px;" name="search_sts">
+			  <option value="">ALL</option>
+			  <option value="Pending">Pending</option>
+			  <option value="Submit" >Submit</option>
+			  <option value="Approved">Approved</option>
+		          <option value="QC_Approved">QC_Approved</option>
+			  <option value="QC_Reject">QC_Reject</option>
+			  <option value="Follow Doc">Follow Doc</option>
+			  <option value="Credit Reject">Credit Reject</option>
+			  <option value="Cancel">Cancel</option>
+		 </select>
+ 					</div>
+
+
+
+
+ 				</div>
+ 				<div style="clear:both"></div>
+ 			</li>
+ 			<li style="padding:5px; ">
+ 				<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+ 				<div style="width:35%;float:left; ">
+	 			 <span style="font-size:15px; line-height:28px;color:#444">  Application Create Date  </span>
+	 			</div>
+	 			<div style="clear:both"></div>
+ 			</li>
+ 			<li style="padding:0 5px;">
+	 			<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+ 				<div style="width:35%;float:left;color:#666; font-size:16px;">
+ 				 	<span style="font-size:15px; line-height:30px;width:118px;display:inline-block;">   Start Date </span> :
+ 					<input type="text" name="search_cred"  style="width:250px; " autocomplete="off" placeholder="เลือกวันที่เริ่มสร้าง app" class="text-center calendar_en">
+ 				</div>
+ 					<div style="width:50%;float:right;">
+ 					<div style="color:#666;">
+ 						 <span style="font-size:15px; line-height:30px;width:100px;display:inline-block;"> End Date</span> :
+ 						<input type="text" name="search_endd"  style="width:250px;" autocomplete="off" placeholder="เลือกวันที่สิ้นสุดการสร้าง app" class="text-center calendar_en">
+ 					</div>
+ 				</div>
+ 				<div style="clear:both"></div>
+ 			</li>
+<!--
+ 				<li style="padding:0 5px; ">
+ 				<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+ 				<div style="width:35%;float:left; ">
+	 			 <span style="font-size:15px; line-height:28px;color:#444">  Application Payment Date  </span>
+	 			</div>
+	 			<div style="clear:both"></div>
+ 			</li>
+ 			<li style="padding:5px;">
+	 			<div style="width:15%;float:left;">
+	 			 &nbsp;
+	 			</div>
+ 				<div style="width:35%;float:left; color:#666;font-size:15px;">
+ 					 <span style="line-height:30px;width:118px;display:inline-block;">   Start Date </span> :
+ 					<input type="text" name="search_paidcred"  style="width:250px; " autocomplete="off" placeholder="เลือกวันที่เริ่มเก็บเงิน" class="text-center calendar_en">
+ 				</div>
+ 					<div style="width:50%;float:right;">
+ 					<div style="color:#666;">
+ 						 <span style="font-size:15px; line-height:30px;width:100px;display:inline-block;"> End Date</span>  :
+ 						<input type="text" name="search_paidendd"  style="width:250px;" autocomplete="off" placeholder="เลือกวันที่สิ้นสุดการเก็บเงิน" class="text-center calendar_en">
+ 					</div>
+ 				</div>
+ 				<div style="clear:both"></div>
+ 			</li>
+-->
+ 			<li style="text-align:center;padding:20px;">
+ 				<div>
+ 						 <button class="btn btn-primary search-app" style="border-radius:3px; width:110px;"> Search </button> &nbsp;&nbsp;
+    					 <button class="btn btn-default search-clear" style="border-radius:3px; width:110px;"> Clear </button>
+ 				</div>
+ 			</li>
+ 		</ul>
+
+<br/>
+<br/>
+
+<table id="app-table" class="table table-bordered" style="background-color:#fff;">
+<thead>
+	<tr class="primary">
+		<td class="text-center" style="width:5%"> # </td>
+		<td class="text-center" style="width:10%"> Quotation NO </td>
+		<td class="text-center" style="width:15%"> Customer Name </td>
+		<td class="text-center" style="width:10%"> Product </td>
+		<td class="text-center" style="width:10%"> Sale Date </td>
+		<td class="text-center" style="width:10%"> App Status</td>
+		<td class="text-center" style="width:15%"> Owner <?php echo $uid.''.$lv; ?></td>
+		<td class="text-center" style="width:20%"> Action </td>
+	</tr>
+</thead>
+<tbody>
+<tr>
+
+</tr>
+</tbody>
+<!--
+<tfoot>
+			<tr>
+<?php
+include("app/function/StartConnect.inc");
+if($lv > '1'){
+$strSQL = "SELECT * FROM app_mt WHERE RecordType = '1' and  AppStatus = 'Submit' ORDER BY app_run_no ASC ";
+}else if($lv == '1'){
+$strSQL = "SELECT * FROM app_mt WHERE RecordType = '1' and agent_id = '$uid' ORDER BY app_run_no ASC ";
+}
+$result = mysql_query($strSQL);
+while($objResult = mysql_fetch_array($result))
+{
+		$Owner = $objResult["agent_id"];
+		$strSQL2 = "SELECT * FROM t_agents WHERE agent_id = '$Owner' ";
+		$result2= mysql_query($strSQL2);
+		while($objResult2 = mysql_fetch_array($result2))
+		{
+			$tsr_name = $objResult2["first_name"].' '.$objResult2["last_name"] ;
+		}
+
+		$camp = $objResult["camp"];
+		if($camp == 'Smart HIP' ) {
+			$linkProduct = 'MTL_SmartHIP' ;
+		}else{
+			$linkProduct = 'MTL_PA' ;
+		}
+?>
+<td><?php echo $objResult["app_run_no"];?></td>
+<td><?php echo $objResult["X_referencepolicynumber"];?></td>
+<td><?php echo $objResult["Firstname"];?> <?php echo $objResult["Lastname"];?></td>
+<td><?php echo $objResult["camp"];?></td>
+<td><?php echo $objResult["Sale_Date"];?></td>
+<td><?php echo $objResult["AppStatus"];?></td>
+<td> <?php echo $tsr_name;?></td>
+<td>
+ 					<a class="btn btn-primary  btn-sm" href='app/<?php echo $linkProduct;?>/Application/appDetail.php?Id=<?php echo $objResult["X_referencepolicynumber"];?>' target='_blank'>Open App</a>
+                    <?php if($lv > '1'){ ?>
+                    <a class="btn btn-danger  btn-sm" href='app/<?php echo $linkProduct;?>/Application/genForm.php?Id=<?php echo $objResult["X_referencepolicynumber"];?>' target='_blank'>Gen App</a>
+                    <?php } ?>
+              </td>
+</tr>
+<?php } ?>
+</tfoot>
+-->
+</table>
+
+
+</div>
+<!--  end agent-main-pane -->
+
+<!-- start agent-detail-pane -->
+<div id="app-detail-pane" style="display:none">
+
+
+
+</div>
+
+<script type="text/javascript" src="js/app.js"></script>

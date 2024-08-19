@@ -1,0 +1,149 @@
+$(function () {
+    $.ajaxSetup({
+        url: "app_process.php"
+    });
+    $body = $("body");
+    $(document).on({
+        ajaxStart: function () { $body.addClass("loading"); },
+        ajaxStop: function () { $body.removeClass("loading"); }
+    });
+
+    $('#secure_pause').on('click', function() {
+        let voiceid = localStorage.getItem("voiceid");
+        let lastInteraction = localStorage.getItem("lastInteraction");
+        localStorage.setItem("securepause",true);
+        $(this).css("color", "red");
+        $.ajax({
+            'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'PAUSED', 'agentid': uid },
+            'dataType': 'html',
+            'type': 'POST',
+            'success': function (data) {
+                let response = eval('(' + data + ')');
+                if (response.result) {
+                    alert('Recording state ' + response.data.recordingState);
+                } else {
+                    alert('Recording state ' + response.data);
+                }
+            }
+        });
+    });
+    $('#unsecure_pause').on('click', function() {
+        let voiceid = localStorage.getItem("voiceid");
+        let lastInteraction = localStorage.getItem("lastInteraction");
+        $.ajax({
+            'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'ACTIVE', 'agentid': uid },
+            'dataType': 'html',
+            'type': 'POST',
+            'success': function (data) {
+                let response = eval('(' + data + ')');
+                if (response.result) {
+                    $('#secure_pause').css("color", "");
+                    localStorage.removeItem("securepause");
+                    alert('Recording state ' + response.data.recordingState);
+                } else {
+                    $('#secure_pause').css("color", "");
+                    localStorage.removeItem("securepause");
+                    alert('Recording state ' + response.data);
+                }
+            }
+        });
+    });
+    $('#payment_key').on('change', function() {
+        let voiceid = localStorage.getItem("voiceid");
+        let lastInteraction = localStorage.getItem("lastInteraction");
+        $.ajax({
+            'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'ACTIVE', 'agentid': uid },
+            'dataType': 'html',
+            'type': 'POST',
+            'success': function (data) {
+                let response = eval('(' + data + ')');
+                if (response.result) {
+                    $('#secure_pause').css("color", "");
+                    localStorage.removeItem("securepause");
+                    alert('Recording state ' + response.data.recordingState);
+                } else {
+                    $('#secure_pause').css("color", "");
+                    localStorage.removeItem("securepause");
+                    alert('Recording state ' + response.data);
+                }
+            }
+        });
+    });
+    $('#datepicker3').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('input[name="DOB_V"]').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('input[name="INSURED_DOB2_V"]').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('input[name="INSURED_DOB3_V"]').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('input[name="INSURED_DOB4_V"]').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('input[name="INSURED_DOB5_V"]').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('#datepicker4').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('#datepicker5').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('input[name="Approved_Date_V"]').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('input[name="Effective_Date_V"]').datepicker($.extend({}, $.datepicker.regional.th, {
+        yearRange: "c-80:c",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd/mm/yy'
+    }));
+
+    $('input[name="ACCOUNT_EXPIRE"]').datepicker($.extend({}, {
+        yearRange: "c-1:c+5",
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'mm/y'
+    }));
+});

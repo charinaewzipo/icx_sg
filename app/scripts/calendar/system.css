@@ -1,0 +1,410 @@
+/* $Id*/
+
+.zpCalendarSystem table {
+  border: 1px solid;
+  font-size: 11px;
+  cursor: default;
+  font-family: tahoma,verdana,sans-serif;
+}
+
+.zpCalendarSystem {
+  z-index: 100;
+  position: relative;
+  display: none;
+  border: 2px solid;
+  font-size: 11px;
+  cursor: default;
+  font-family: tahoma,verdana,sans-serif;
+}
+
+/* Header part -- contains navigation buttons and day names. */
+
+.zpCalendarSystem .button { /* "<<", "<", ">", ">>" buttons have this class */
+  text-align: center;
+  padding: 1px;
+  border: 1px solid;
+}
+
+.zpCalendarSystem .nav {
+  background: url("menuarrow.gif") no-repeat 100% 100%;
+}
+
+.zpCalendarSystem thead .title { /* This holds the current "month, year" */
+  font-weight: bold;
+  padding: 1px;
+  border: 1px solid;
+  text-align: center;
+}
+
+.zpCalendarSystem thead .headrow { /* Row <TR> containing navigation buttons */
+}
+
+.zpCalendarSystem thead .daynames { /* Row <TR> containing the day names */
+}
+
+.zpCalendarSystem thead .name { /* Cells <TD> containing the day names */
+  border-bottom: 1px solid;
+  padding: 2px;
+  text-align: center;
+}
+
+.zpCalendarSystem thead .weekend { /* How a weekend day name shows in header */
+}
+
+.zpCalendarSystem thead .hilite { /* How do the buttons in header appear when hover */
+  border: 2px solid;
+  padding: 0px;
+}
+
+.zpCalendarSystem thead .active { /* Active (pressed) buttons in header */
+  padding: 2px 0px 0px 2px;
+  border: 1px solid;
+}
+
+/* The body part -- contains all the days in month. */
+
+.zpCalendarSystem tbody .day { /* Cells <TD> containing month days dates */
+  width: 2em;
+  text-align: right;
+  padding: 2px 4px 2px 2px;
+}
+.zpCalendarSystem tbody .day.othermonth {
+  font-size: 80%;
+}
+.zpCalendarSystem tbody .day.othermonth.oweekend {
+}
+
+.zpCalendarSystem table .wn {
+  padding: 2px 3px 2px 2px;
+  border-right: 1px solid;
+}
+
+.zpCalendarSystem tbody .rowhilite td {
+}
+
+.zpCalendarSystem tbody .rowhilite td.wn {
+}
+
+.zpCalendarSystem tbody td.hilite { /* Hovered cells <TD> */
+  padding: 1px 3px 1px 1px;
+  border: 1px solid;
+}
+
+.zpCalendarSystem tbody td.active { /* Active (pressed) cells <TD> */
+  padding: 2px 2px 0px 2px;
+  border: 1px solid;
+}
+
+.zpCalendarSystem tbody td.selected { /* Cell showing selected date */
+  font-weight: bold;
+  border: 1px solid;
+  padding: 2px 2px 0px 0px;
+}
+
+.zpCalendarSystem tbody td.weekend { /* Cells showing weekend days */
+}
+
+.zpCalendarSystem tbody td.today { /* Cell showing today date */
+  font-weight: bold;
+}
+
+.zpCalendarSystem tbody .disabled {
+  color: #999;
+} /* let's suppose this is a right default for the "disabled" items */
+
+.zpCalendarSystem tbody .emptycell { /* Empty cells (the best is to hide them) */
+  visibility: hidden;
+}
+
+.zpCalendarSystem tbody .emptyrow { /* Empty row (some months need less than 6 rows) */
+  display: none;
+}
+
+/* The footer part -- status bar and "Close" button */
+
+.zpCalendarSystem tfoot .ttip { /* Tooltip (status bar) cell <TD> */
+  padding: 1px;
+  border: 1px solid;
+  text-align: center;
+}
+
+.zpCalendarSystem tfoot .ttip .error {
+  color: #c20;
+}
+
+.zpCalendarSystem tfoot tr.time td {
+  padding: 0;
+  border-top: 1px solid;
+}
+
+.zpCalendarSystem tfoot tr.time td.timetext {
+  text-align: center;
+}
+
+.zpCalendarSystem tfoot tr.time table td {
+  border: 0;
+  padding: 0;
+}
+
+.zpCalendarSystem tfoot tr.time td.hilite,
+.zpCalendarSystem tfoot tr.time td.active {
+  border: 0;
+  padding: 0;
+}
+
+.zpCalendarSystem tfoot tr.time td.hour,
+.zpCalendarSystem tfoot tr.time td.minute {
+  text-align: right; font-weight: bold;
+  border-right: 1px solid; padding: 0 1px 0 3px;
+}
+
+.zpCalendarSystem tfoot tr.time td.colon {
+  text-align: center;
+  font-weight: bold;
+  background: transparent;
+}
+
+.zpCalendarSystem tfoot tr.time td.ampm {
+  text-align: center;
+}
+
+/*
+.zpCalendarSystem tfoot tr.time td.parent-hour table { position: relative; left: .7em; z-index: 10; empty-cells: visible; }
+.zpCalendarSystem tfoot tr.time td.parent-minute table { position: relative; left: -.7em; z-index: 10; }
+*/
+
+
+.zpCalendarSystem tfoot .footrow { /* The <TR> in footer (only one right now) */
+}
+
+
+.zpCalendarSystem .calendar-time-scroller {
+  border-left: 1px solid;
+  border-right: 1px solid;
+}
+
+.zpCalendarSystem .calendar-time-scroller .up {
+  width: 11px;
+  background: transparent url("scroller-up.gif") no-repeat 50% 50%;
+  height: 0.5em;
+/*  font-size: 1px; */
+}
+
+.zpCalendarSystem .calendar-time-scroller .down {
+  width: 11px;
+  background: transparent url("scroller-down.gif") no-repeat 50% 50%;
+  height: 0.5em;
+/*  font-size: 1px; */
+}
+
+
+/* Combo boxes (menus that display months/years for direct selection) */
+
+.zpCalendarSystem .combo {
+  position: absolute;
+  display: none;
+  top: 0px;
+  left: 0px;
+  width: 4em;
+  cursor: default;
+  border: 1px solid;
+  font-size: 90%;
+  padding: 1px;
+}
+
+.zpCalendarSystem .combo .label,
+.zpCalendarSystem .combo .label-IEfix {
+  text-align: center;
+  padding: 1px;
+}
+
+.zpCalendarSystem .combo .label-IEfix {
+  width: 4em;
+}
+
+.zpCalendarSystem .combo .disabled {
+  color: #888;
+}
+
+.zpCalendarSystem .combo .active {
+  padding: 0px;
+  border: 1px solid;
+}
+
+.zpCalendarSystem .history {
+  width: 18em;
+}
+
+.zpCalendarSystem .history .label {
+  text-align: center;
+}
+
+.zpCalendarSystem .history .label-IEfix {
+  width: 18em;
+}
+
+.zpCalendarSystem .zpCalDayInfo {
+  background-color: yellow;
+  font-size: 80%;
+}
+
+.zpCalendarSystem .zpCalSpecialDay {
+  background-color: #cccccc;
+}
+
+.zpCalendarSystem {
+  border-color: #fff #000 #000 #fff;
+  background-color: #fff;
+  color: #000;
+}
+
+.zpCalendarSystem table {
+  border-color: #fff #000 #000 #fff;
+  background-color: #fff;
+  color: #000;
+}
+
+/* Header part -- contains navigation buttons and day names. */
+
+.zpCalendarSystem .button { /* "<<", "<", ">", ">>" buttons have this class */
+  border-color: #fff #a7a6aa #a7a6aa #fff;
+  background-color: #EBE9ED;
+}
+
+.zpCalendarSystem .nav {
+  background-color: #EBE9ED;
+}
+
+.zpCalendarSystem thead .title { /* This holds the current "month, year" */
+  border-color: #000;
+  background-color: #335EA8;
+  color: #fff;
+}
+
+.zpCalendarSystem thead .headrow { /* Row <TR> containing navigation buttons */
+}
+
+.zpCalendarSystem thead .daynames { /* Row <TR> containing the day names */
+}
+
+.zpCalendarSystem thead .name { /* Cells <TD> containing the day names */
+  border-color: #a7a6aa;
+  background-color: #EBE9ED;
+  color: #000;
+}
+
+.zpCalendarSystem thead .weekend { /* How a weekend day name shows in header */
+  color: #f00;
+}
+
+.zpCalendarSystem thead .hilite { /* How do the buttons in header appear when hover */
+  border-color: #fff #a7a6aa #a7a6aa #fff;
+}
+
+.zpCalendarSystem thead .active { /* Active (pressed) buttons in header */
+  border-color: #a7a6aa #fff #fff #a7a6aa;
+}
+
+/* The body part -- contains all the days in month. */
+
+.zpCalendarSystem tbody .day { /* Cells <TD> containing month days dates */
+  padding: 2px 4px 2px 2px;
+}
+.zpCalendarSystem tbody .day.othermonth {
+  color: #aaa;
+}
+.zpCalendarSystem tbody .day.othermonth.oweekend {
+  color: #faa;
+}
+
+.zpCalendarSystem table .wn {
+  border-color: #a7a6aa;
+  background-color: #EBE9ED;
+  color: #000;
+}
+
+.zpCalendarSystem tbody .rowhilite td {
+  background-color: #335EA8;
+  color: #fff;
+}
+
+.zpCalendarSystem tbody td.hilite { /* Hovered cells <TD> */
+  border-color: #fff #000 #000 #fff;
+}
+
+.zpCalendarSystem tbody td.active { /* Active (pressed) cells <TD> */
+  border-color: #a7a6aa #fff #fff #a7a6aa;
+}
+
+.zpCalendarSystem tbody td.selected { /* Cell showing selected date */
+  border-color: #a7a6aa #fff #fff #a7a6aa;
+  background-color: #EBE9ED;
+  color: #000;
+}
+
+.zpCalendarSystem tbody td.weekend { /* Cells showing weekend days */
+  color: #f00;
+}
+
+.zpCalendarSystem tbody td.today { /* Cell showing today date */
+  color: #00f;
+}
+
+.zpCalendarSystem tbody td.disabled { color: #A7A6AA; }
+
+.zpCalendarSystem tbody .emptycell { /* Empty cells (the best is to hide them) */
+}
+
+.zpCalendarSystem tbody .emptyrow { /* Empty row (some months need less than 6 rows) */
+}
+
+/* The footer part -- status bar and "Close" button */
+
+.zpCalendarSystem tfoot .footrow { /* The <TR> in footer (only one right now) */
+}
+
+.zpCalendarSystem tfoot .ttip { /* Tooltip (status bar) cell <TD> */
+  background-color: #EBE9ED;
+  border-color: #a7a6aa #fff #fff #a7a6aa;
+  color: #000;
+}
+
+.zpCalendarSystem tfoot .hilite { /* Hover style for buttons in footer */
+  border-color: #fff #000 #000 #fff;
+  background-color: #e4e0d8;
+}
+
+.zpCalendarSystem tfoot .active { /* Active (pressed) style for buttons in footer */
+  border-color: #000 #fff #fff #000;
+}
+
+/* Combo boxes (Menus that display months/years for direct selection) */
+
+.zpCalendarSystem .combo {
+  border-color: #fff #a7a6aa #a7a6aa #fff;
+  background-color: #fff;
+  color: #000;
+}
+
+.zpCalendarSystem .combo .active {
+  border-color: #000;
+}
+
+.zpCalendarSystem .combo .hilite {
+  background-color: #335EA8;
+  color: #fff;
+}
+
+.zpCalendarSystem .month-left-border { /* Divider line between two monthes */
+  border-left:1px solid #808080;
+}
+
+
+/* time */
+
+.zpCalendarSystem tfoot tr.time td { border-color: #a7a6aa; background-color: #EBE9ED; }
+.zpCalendarSystem tfoot tr.time td.hour,
+.zpCalendarSystem tfoot tr.time td.minute { border-color: #a7a6aa; }
+.zpCalendarSystem tfoot tr.time td.hilite { background-color: #335EA8; color: #fff; }
+.zpCalendarSystem tfoot tr.time td.active { background-color: #335EA8; color: #fff; }
+.zpCalendarSystem .calendar-time-scroller { border-color: #a7a6aa; }

@@ -1,0 +1,178 @@
+2024-06-30 13:59:19 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'k.apipun' AND agent_password = '82daaab7d1d06b4fefc44e1296d69454cd9642fb'
+2024-06-30 13:59:19 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-06-30 13:59:19 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 237 AND ip_addr != '192.168.113.2' 
+2024-06-30 13:59:19 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 237
+2024-06-30 13:59:19 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '237','192.168.113.2', '66810247e8dcd' , NOW() );
+2024-06-30 13:59:19 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '237','192.168.113.2', 'Login' , NOW() );
+2024-06-30 13:59:21 session : SELECT tokenid  FROM t_session  WHERE agent_id = 237
+2024-06-30 13:59:21 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-06-30 13:59:21 page: 0
+2024-06-30 13:59:21 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 237 )  ORDER BY n.create_date DESC 
+2024-06-30 13:59:31 session : SELECT tokenid  FROM t_session  WHERE agent_id = 237
+2024-06-30 13:59:32 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-06-30 17:27:34 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'k.apipun' AND agent_password = '82daaab7d1d06b4fefc44e1296d69454cd9642fb'
+2024-06-30 17:27:34 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-06-30 17:27:34 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 237 AND ip_addr != '192.168.113.2' 
+2024-06-30 17:27:34 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 237
+2024-06-30 17:27:34 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '237','192.168.113.2', '66813316c8ddc' , NOW() );
+2024-06-30 17:27:34 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '237','192.168.113.2', 'Login' , NOW() );
+2024-06-30 17:27:35 session : SELECT tokenid  FROM t_session  WHERE agent_id = 237
+2024-06-30 17:27:35 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-06-30 17:27:36 page: 0
+2024-06-30 17:27:36 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 237 )  ORDER BY n.create_date DESC 
+2024-06-30 17:27:45 session : SELECT tokenid  FROM t_session  WHERE agent_id = 237
+2024-06-30 17:27:45 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-06-30 17:27:54 [callList_process][upload] Start upload 
+2024-06-30 17:27:54 [callList_process][upload] remove temp : success 
+2024-06-30 17:27:54 [callList_process][upload] file ok to upload 
+2024-06-30 17:27:54 [callList_process][upload] check file type : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+2024-06-30 17:27:54 [callList_process][upload] file type is excel : application
+2024-06-30 17:27:54 [callList_process][upload] file upload success 
+2024-06-30 17:27:54 [callList_process][upload] upload file sql :  INSERT INTO t_import_list ( file_name , import_key , `status` , temp_table_name , file_size , file_type , file_path , create_user , create_date) VALUES ( 'Leads Test PVT Predic_10724.xlsx' ,'6681332a62e1b' , 0 ,'tmp_table6681332a62e1b' ,'11.71 KB' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ,'D:/html/profiles/attach/' ,237 , NOW() )  
+2024-06-30 17:27:54 [callList_process][upload] Convert excel key : [6681332a62e1b] to csv 
+2024-06-30 17:27:56 [callList_process][upload] Convert excel key : [6681332a62e1b] to csv success
+2024-06-30 17:27:59 [afterUpload][get key] : 6681332a62e1b
+2024-06-30 17:27:59 [afterUpload][init system field] sql :  SELECT field_name, field_alias_name, field_detail  FROM  ts_field_list  WHERE status = 1 
+2024-06-30 17:27:59 [afterUpload][check file path and extension ] sql :   SELECT file_path , file_name , file_type   FROM t_import_list  WHERE import_key = '6681332a62e1b'
+2024-06-30 17:27:59 [afterUpload][file exist] on path : D:/html/profiles/attach/Leads Test PVT Predic_10724.xlsx
+2024-06-30 17:27:59 [afterUpload][file type] is excel : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+2024-06-30 17:27:59 [callList_process][csvReader] get file path : D:\html/temp/6681332a62e1b.csv and delimiter |
+2024-06-30 17:27:59 [callList_process][csvReader] file exist
+2024-06-30 17:27:59 read line : ID_Num|TITLE|FIRSTNAME_T|LASTNAME_T|BIRTH_DATE|GENDER|Work|MOBILE_PHONE1|จังหวัด
+
+2024-06-30 17:27:59 data : ID_Num|TITLE|FIRSTNAME_T|LASTNAME_T|BIRTH_DATE|GENDER|Work|MOBILE_PHONE1|จังหวัด
+
+2024-06-30 17:27:59 size9
+2024-06-30 17:27:59 ID_Num
+2024-06-30 17:27:59 ID_Num
+2024-06-30 17:27:59 TITLE
+2024-06-30 17:27:59 FIRSTNAME_T
+2024-06-30 17:27:59 LASTNAME_T
+2024-06-30 17:27:59 BIRTH_DATE
+2024-06-30 17:27:59 GENDER
+2024-06-30 17:27:59 Work
+2024-06-30 17:27:59 MOBILE_PHONE1
+2024-06-30 17:27:59 จังหวัด
+
+2024-06-30 17:27:59 [afterUpload][update field_delimiter ] sql :  UPDATE t_import_list SET field_delimiter = '|'  WHERE import_key = '6681332a62e1b' 
+2024-06-30 17:28:33 [import_process][mapdbfield] drop table  : DROP TABLE IF EXISTS tmp_table6681332a62e1b
+2024-06-30 17:28:33 create table :CREATE TABLE tmp_table6681332a62e1b ( seq int(7) NOT NULL AUTO_INCREMENT,  id_num varchar(255),  title varchar(255),  first_name varchar(255),  last_name varchar(255),  birthdate varchar(255),  gender varchar(255),  tel1 varchar(255),  province varchar(255),  PRIMARY KEY (`seq`)  ) 
+2024-06-30 17:28:33 [callList_process][mappingfield] CREATE INDEX on temp_table sql : CREATE INDEX idx_6681332a62e1b ON tmp_table6681332a62e1b (first_name,last_name,tel1) 
+2024-06-30 17:28:33 ---- prepare load file ----
+2024-06-30 17:28:33 column option : (id_num,title,first_name,last_name,birthdate,gender,@dummy,tel1,province)
+2024-06-30 17:28:33 ignore header : checked 1
+2024-06-30 17:28:33 [callList_process][mappingfield] sql :  LOAD DATA LOCAL INFILE 'D:\html/temp/6681332a62e1b.csv'  INTO TABLE tmp_table6681332a62e1b  FIELDS TERMINATED BY '|'  IGNORE 1 LINES (id_num,title,first_name,last_name,birthdate,gender,@dummy,tel1,province) SET `seq` = NULL; 
+2024-06-30 17:28:33 [callList_process][mappingfield] ALTER table ADD column sql : ALTER TABLE tmp_table6681332a62e1b ADD  excel_dup tinyint(1) , ADD calllist_dup tinyint(1) , ADD badlist tinyint(1) 
+2024-06-30 17:28:33 [callList_process][mappingfield] CLEANSING DATA field [tel1] sql : UPDATE tmp_table6681332a62e1b SET  tel1= tel1
+2024-06-30 17:28:33 [callList_process][mappingfield] CHECKING PHONE badlist sql :  UPDATE tmp_table6681332a62e1b SET badlist = 1  WHERE ( length(tel1) not in (9,10) )
+2024-06-30 17:28:33 [callList_process][mappingfield] CHECKING PHONE badlist sql :  UPDATE tmp_table6681332a62e1b SET badlist = 1  WHERE ( length(tel1) not in (9,10) )
+2024-06-30 17:28:33 [callList_process][mappingfield] CHECKING excel duplicate sql :  UPDATE tmp_table6681332a62e1b a  , ( SELECT min(seq) as seq , first_name , last_name , tel1  FROM tmp_table6681332a62e1b  GROUP BY first_name , last_name , tel1) b SET a.excel_dup = 1  WHERE a.first_name = b.first_name  AND a.last_name = b.last_name  AND a.tel1 = b.tel1  AND a.SEQ <> b.SEQ 
+2024-06-30 17:28:33 [callList_process][mappingfield] CHECKING database duplicate sql : UPDATE tmp_table6681332a62e1b a , t_calllist b SET a.calllist_dup = 1  WHERE a.first_name = b.first_name  AND a.last_name = b.last_name  AND a.tel1 = b.tel1 
+2024-06-30 17:28:39 [callList_process][mappingfield] summary sql : SELECT COUNT(*) AS total , SUM(excel_dup) AS inlist , SUM(calllist_dup) AS indb , SUM(badlist) AS badlist   FROM (   			SELECT  case when badlist = 1 then 1 else 0 end as badlist   			, case when calllist_dup = 1 and badlist is null and excel_dup is null then 1 else 0 end as calllist_dup  			, case when excel_dup = 1 and badlist is null then 1 else 0 end  as excel_dup				FROM tmp_table6681332a62e1b			) a  
+2024-06-30 17:28:39 [callList_process][mappingfield] update list result sql :  UPDATE t_import_list SET  total_records = 50, bad_list = 0, inlist_dup = 0, indb_dup = 0  WHERE import_key =  '6681332a62e1b' 
+2024-06-30 17:28:39 [callList_process][mappingfield] DELETE mapping field before INSERT sql : DELETE FROM t_import_list_field WHERE import_id = 367
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'0' ,'ID_Num' ,'id_num' ,237 , NOW() )  
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'1' ,'TITLE' ,'title' ,237 , NOW() )  
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'2' ,'FIRSTNAME_T' ,'first_name' ,237 , NOW() )  
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'3' ,'LASTNAME_T' ,'last_name' ,237 , NOW() )  
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'4' ,'BIRTH_DATE' ,'birthdate' ,237 , NOW() )  
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'5' ,'GENDER' ,'gender' ,237 , NOW() )  
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'6' ,'Work' ,'0' ,237 , NOW() )  
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'7' ,'MOBILE_PHONE1' ,'tel1' ,237 , NOW() )  
+2024-06-30 17:28:39 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  367 ,'8' ,'จังหวัด' ,'province' ,237 , NOW() )  
+2024-06-30 17:28:51 command check fields : SHOW columns FROM t_calllist
+2024-06-30 17:28:51 [callList_process][importtodb] update t_import_list sql : UPDATE t_import_list SET   list_name = 'Leads Test PVT Predic_10724', list_detail = '202407', `status` =  1 ,  update_date =NOW(),update_user ='237' WHERE import_key = '6681332a62e1b' 
+2024-06-30 17:28:51 [callList_process][importtodb]  importtodb sql :  INSERT INTO t_calllist (id_num,title,first_name,last_name,birthdate,gender,tel1,province, `status` , import_id , create_date )  SELECT id_num,title,first_name,last_name,birthdate,gender,tel1,province , CASE WHEN excel_dup = 1 THEN 15 ELSE 1 END, 367 , NOW()  FROM tmp_table6681332a62e1b  ORDER BY seq 
+2024-06-30 17:28:51 [callList_process][importtodb]  importtodb total : 1
+2024-06-30 17:28:51 [callList_process][match_cmp] find campaign sql :  SELECT campaign_id , campaign_name  FROM t_campaign  WHERE `status` != 1 
+2024-06-30 17:28:51 [callList_process][match_cmp] find new list sql :  SELECT import_id, list_name , list_detail  FROM t_import_list  WHERE import_key = '6681332a62e1b' 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 3 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 15 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 16 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 17 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 18 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 19 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 20 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 21 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 22 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] find match : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 8 AND import_id = 367 
+2024-06-30 17:28:54 [callList_process][save_cmpmap] insert match : INSERT INTO t_campaign_list ( campaign_id , import_id , join_date , join_user  ) VALUES ( 8 ,  367 ,  NOW() , 237 ) 
+2024-06-30 17:28:56 session : SELECT tokenid  FROM t_session  WHERE agent_id = 237
+2024-06-30 17:28:56 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-06-30 17:29:06 [callList_process][upload] Start upload 
+2024-06-30 17:29:06 [callList_process][upload] remove temp : success 
+2024-06-30 17:29:06 [callList_process][upload] file ok to upload 
+2024-06-30 17:29:06 [callList_process][upload] check file type : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+2024-06-30 17:29:06 [callList_process][upload] file type is excel : application
+2024-06-30 17:29:06 [callList_process][upload] file upload success 
+2024-06-30 17:29:06 [callList_process][upload] upload file sql :  INSERT INTO t_import_list ( file_name , import_key , `status` , temp_table_name , file_size , file_type , file_path , create_user , create_date) VALUES ( 'Leads Test PVT Preveiw_10724.xlsx' ,'6681337216cb1' , 0 ,'tmp_table6681337216cb1' ,'11.71 KB' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ,'D:/html/profiles/attach/' ,237 , NOW() )  
+2024-06-30 17:29:06 [callList_process][upload] Convert excel key : [6681337216cb1] to csv 
+2024-06-30 17:29:06 [callList_process][upload] Convert excel key : [6681337216cb1] to csv success
+2024-06-30 17:29:08 [afterUpload][get key] : 6681337216cb1
+2024-06-30 17:29:09 [afterUpload][init system field] sql :  SELECT field_name, field_alias_name, field_detail  FROM  ts_field_list  WHERE status = 1 
+2024-06-30 17:29:09 [afterUpload][check file path and extension ] sql :   SELECT file_path , file_name , file_type   FROM t_import_list  WHERE import_key = '6681337216cb1'
+2024-06-30 17:29:09 [afterUpload][file exist] on path : D:/html/profiles/attach/Leads Test PVT Preveiw_10724.xlsx
+2024-06-30 17:29:09 [afterUpload][file type] is excel : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+2024-06-30 17:29:09 [callList_process][csvReader] get file path : D:\html/temp/6681337216cb1.csv and delimiter |
+2024-06-30 17:29:09 [callList_process][csvReader] file exist
+2024-06-30 17:29:09 read line : ID_Num|TITLE|FIRSTNAME_T|LASTNAME_T|BIRTH_DATE|GENDER|Work|MOBILE_PHONE1|จังหวัด
+
+2024-06-30 17:29:09 data : ID_Num|TITLE|FIRSTNAME_T|LASTNAME_T|BIRTH_DATE|GENDER|Work|MOBILE_PHONE1|จังหวัด
+
+2024-06-30 17:29:09 size9
+2024-06-30 17:29:09 ID_Num
+2024-06-30 17:29:09 ID_Num
+2024-06-30 17:29:09 TITLE
+2024-06-30 17:29:09 FIRSTNAME_T
+2024-06-30 17:29:09 LASTNAME_T
+2024-06-30 17:29:09 BIRTH_DATE
+2024-06-30 17:29:09 GENDER
+2024-06-30 17:29:09 Work
+2024-06-30 17:29:09 MOBILE_PHONE1
+2024-06-30 17:29:09 จังหวัด
+
+2024-06-30 17:29:09 [afterUpload][update field_delimiter ] sql :  UPDATE t_import_list SET field_delimiter = '|'  WHERE import_key = '6681337216cb1' 
+2024-06-30 17:29:48 [import_process][mapdbfield] drop table  : DROP TABLE IF EXISTS tmp_table6681337216cb1
+2024-06-30 17:29:48 create table :CREATE TABLE tmp_table6681337216cb1 ( seq int(7) NOT NULL AUTO_INCREMENT,  id_num varchar(255),  title varchar(255),  first_name varchar(255),  last_name varchar(255),  birthdate varchar(255),  gender varchar(255),  tel1 varchar(255),  province varchar(255),  PRIMARY KEY (`seq`)  ) 
+2024-06-30 17:29:48 [callList_process][mappingfield] CREATE INDEX on temp_table sql : CREATE INDEX idx_6681337216cb1 ON tmp_table6681337216cb1 (first_name,last_name,tel1) 
+2024-06-30 17:29:48 ---- prepare load file ----
+2024-06-30 17:29:48 column option : (id_num,title,first_name,last_name,birthdate,gender,@dummy,tel1,province)
+2024-06-30 17:29:48 ignore header : checked 1
+2024-06-30 17:29:48 [callList_process][mappingfield] sql :  LOAD DATA LOCAL INFILE 'D:\html/temp/6681337216cb1.csv'  INTO TABLE tmp_table6681337216cb1  FIELDS TERMINATED BY '|'  IGNORE 1 LINES (id_num,title,first_name,last_name,birthdate,gender,@dummy,tel1,province) SET `seq` = NULL; 
+2024-06-30 17:29:48 [callList_process][mappingfield] ALTER table ADD column sql : ALTER TABLE tmp_table6681337216cb1 ADD  excel_dup tinyint(1) , ADD calllist_dup tinyint(1) , ADD badlist tinyint(1) 
+2024-06-30 17:29:48 [callList_process][mappingfield] CLEANSING DATA field [tel1] sql : UPDATE tmp_table6681337216cb1 SET  tel1= tel1
+2024-06-30 17:29:48 [callList_process][mappingfield] CHECKING PHONE badlist sql :  UPDATE tmp_table6681337216cb1 SET badlist = 1  WHERE ( length(tel1) not in (9,10) )
+2024-06-30 17:29:48 [callList_process][mappingfield] CHECKING PHONE badlist sql :  UPDATE tmp_table6681337216cb1 SET badlist = 1  WHERE ( length(tel1) not in (9,10) )
+2024-06-30 17:29:48 [callList_process][mappingfield] CHECKING excel duplicate sql :  UPDATE tmp_table6681337216cb1 a  , ( SELECT min(seq) as seq , first_name , last_name , tel1  FROM tmp_table6681337216cb1  GROUP BY first_name , last_name , tel1) b SET a.excel_dup = 1  WHERE a.first_name = b.first_name  AND a.last_name = b.last_name  AND a.tel1 = b.tel1  AND a.SEQ <> b.SEQ 
+2024-06-30 17:29:48 [callList_process][mappingfield] CHECKING database duplicate sql : UPDATE tmp_table6681337216cb1 a , t_calllist b SET a.calllist_dup = 1  WHERE a.first_name = b.first_name  AND a.last_name = b.last_name  AND a.tel1 = b.tel1 
+2024-06-30 17:29:49 [callList_process][mappingfield] summary sql : SELECT COUNT(*) AS total , SUM(excel_dup) AS inlist , SUM(calllist_dup) AS indb , SUM(badlist) AS badlist   FROM (   			SELECT  case when badlist = 1 then 1 else 0 end as badlist   			, case when calllist_dup = 1 and badlist is null and excel_dup is null then 1 else 0 end as calllist_dup  			, case when excel_dup = 1 and badlist is null then 1 else 0 end  as excel_dup				FROM tmp_table6681337216cb1			) a  
+2024-06-30 17:29:49 [callList_process][mappingfield] update list result sql :  UPDATE t_import_list SET  total_records = 50, bad_list = 0, inlist_dup = 0, indb_dup = 0  WHERE import_key =  '6681337216cb1' 
+2024-06-30 17:29:49 [callList_process][mappingfield] DELETE mapping field before INSERT sql : DELETE FROM t_import_list_field WHERE import_id = 368
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'0' ,'ID_Num' ,'id_num' ,237 , NOW() )  
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'1' ,'TITLE' ,'title' ,237 , NOW() )  
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'2' ,'FIRSTNAME_T' ,'first_name' ,237 , NOW() )  
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'3' ,'LASTNAME_T' ,'last_name' ,237 , NOW() )  
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'4' ,'BIRTH_DATE' ,'birthdate' ,237 , NOW() )  
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'5' ,'GENDER' ,'gender' ,237 , NOW() )  
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'6' ,'Work' ,'0' ,237 , NOW() )  
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'7' ,'MOBILE_PHONE1' ,'tel1' ,237 , NOW() )  
+2024-06-30 17:29:49 [callList_process][mappingfield] insert mapping field sql : INSERT INTO t_import_list_field ( import_id , caption_index , caption_name , field_name , create_user , create_date ) VALUES (  368 ,'8' ,'จังหวัด' ,'province' ,237 , NOW() )  
+2024-06-30 17:30:01 command check fields : SHOW columns FROM t_calllist
+2024-06-30 17:30:01 [callList_process][importtodb] update t_import_list sql : UPDATE t_import_list SET   list_name = 'Leads Test PVT Preveiw_10724', list_detail = '202407', `status` =  1 ,  update_date =NOW(),update_user ='237' WHERE import_key = '6681337216cb1' 
+2024-06-30 17:30:01 [callList_process][importtodb]  importtodb sql :  INSERT INTO t_calllist (id_num,title,first_name,last_name,birthdate,gender,tel1,province, `status` , import_id , create_date )  SELECT id_num,title,first_name,last_name,birthdate,gender,tel1,province , CASE WHEN excel_dup = 1 THEN 15 ELSE 1 END, 368 , NOW()  FROM tmp_table6681337216cb1  ORDER BY seq 
+2024-06-30 17:30:01 [callList_process][importtodb]  importtodb total : 1
+2024-06-30 17:30:02 [callList_process][match_cmp] find campaign sql :  SELECT campaign_id , campaign_name  FROM t_campaign  WHERE `status` != 1 
+2024-06-30 17:30:02 [callList_process][match_cmp] find new list sql :  SELECT import_id, list_name , list_detail  FROM t_import_list  WHERE import_key = '6681337216cb1' 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 3 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 15 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 16 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 17 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 18 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 19 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 20 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 21 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find UNmatch : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 22 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] find match : SELECT campaign_id FROM t_campaign_list WHERE campaign_id = 8 AND import_id = 368 
+2024-06-30 17:30:04 [callList_process][save_cmpmap] insert match : INSERT INTO t_campaign_list ( campaign_id , import_id , join_date , join_user  ) VALUES ( 8 ,  368 ,  NOW() , 237 ) 
+2024-06-30 17:30:06 session : SELECT tokenid  FROM t_session  WHERE agent_id = 237
+2024-06-30 17:30:06 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5

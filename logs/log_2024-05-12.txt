@@ -1,0 +1,6 @@
+2024-05-12 10:26:30 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '213' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-12 10:26:30 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-12 10:26:30 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 213 AND ip_addr != '192.168.113.2' 
+2024-05-12 10:26:30 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 213
+2024-05-12 10:26:30 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '213','192.168.113.2', '664036e6e5a2d' , NOW() );
+2024-05-12 10:26:30 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '213','192.168.113.2', 'Login' , NOW() );

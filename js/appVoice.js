@@ -1,0 +1,482 @@
+(function ($) {
+  var url = "applicationVoice-pane_process.php";
+  var table = $("#app-table").DataTable({
+    pageLength: 50,
+    columnDefs: [
+      {
+        targets: "_all",
+        className: "text-center",
+      },
+    ],
+    columns: [
+      { title: "#", data: "id", width: "5%" },
+      //{ title: "Policy No.", data: "quono", width: "5%" },
+      { title: "agent Name", data: "cname", width: "25%" },
+      { title: "campaigname", data: "camp", width: "25%" },
+      { title: "sale_date", data: "saledt", width: "10%" },
+      { title: "QC Scored By", data: "qcstatus", width: "10%" },
+      { title: "QA status", data: "qastatus", width: "10%" },
+      {
+        data: null,
+        title: "Action",
+        wrap: true,
+        width: "10%",
+        orderable: false,
+        render: function (data) {
+          let linkProduct = "app/aig/Application/check_non_sale.php";
+          let linkQaForm = "app/aig/Application/check_non_sale_qa.php";
+          let buttonhtml =
+            "<a style='border-radius:4px; margin:0 10px; background-color:#2196f3' class='btn btn-primary btn-sm' href='" +
+            linkProduct +
+            "?id=" +
+            data.id +
+            "' target='_blank'>Open App</a>" +
+            " <a  style='border-radius:4px;' class='btn btn-danger  btn-sm'  href='" +
+            linkQaForm +
+            "?app_id=" +
+            data.id +
+            "&campaign_id=" +
+            data.camp_id +
+            "' target='_blank'>QA</a>";
+          return buttonhtml;
+        },
+      },
+    ],
+    order: [[0, "asc"]],
+  });
+  $(table.table().header()).find("tr").addClass("primary");
+  jQuery.app = {
+    init: function () {
+      var formtojson = JSON.stringify($("form").serializeObject());
+      $.ajax({
+        url: url,
+        data: { action: "init", data: formtojson },
+        dataType: "html",
+        type: "POST",
+        beforeSend: function () {},
+        success: function (data) {
+          var result = eval("(" + data + ")");
+          $("[name=exapp_cmp]").val(result.exapp.cmpid);
+          $("[name=exapp_url]").val(result.exapp.url);
+
+          if ($("[name=appcmp]").val() == "") {
+            alert("This application is not register");
+          }
+
+          //group location
+          /*
+				    				  var el =  $('#agent-table');
+									 var option = "<option value=''> &nbsp; </option>";
+									 for( i=0 ; i<result.group.length ; i++){
+									  option += "<option value='"+ result.group[i].id +"'>"+ result.group[i].value +"</option>";
+									 }
+									 $('[name=gid]').text('').append(option);
+									 */
+        },
+      }); //end ajax
+    },
+    load: function () {
+      var formtojson = JSON.stringify($("form").serializeObject());
+      var page = $("#loadmoreapp").attr("data-read");
+      $.ajax({
+        url: url,
+        data: { action: "query", data: formtojson, page: page },
+        dataType: "html",
+        type: "POST",
+        beforeSend: function () {
+          //set image loading for waiting request
+          //$('#loading').html('').append("<img src='image/ajax-loading.gif'/>");
+        },
+        success: function (data) {
+          //remove image loading
+          //$('#loading').html('').append("Project Management Sheet");
+
+          var result = eval("(" + data + ")");
+          //   <td class="text-center" style="width:5%"> # </td>
+          //   <td class="text-center" style="width:10%"> Quotation NO </td>
+          //   <td class="text-center" style="width:15%"> Customer Name </td>
+          //   <td class="text-center" style="width:10%"> Product </td>
+          //   <td class="text-center" style="width:10%"> Sale Date </td>
+          //   <td class="text-center" style="width:10%"> App Status</td>
+          //   <td class="text-center" style="width:15%"> Owner</td>
+          //   <td class="text-center" style="width:20%"> Action </td>
+          // table = $('#app-table').DataTable({data:result.data})
+          // .rows().invalidate('data')
+          // .draw(false);
+          table.rows.add(result.data).draw();
+          //     var $table = $('#app-table tbody');
+
+          //     if(page == 1){
+          // 		   $table.find('tr').remove();
+          // 	 }
+
+          //      var size =result.data.length;
+          //      var i =0;
+          //     //var seq = parseInt($('#page').text());
+          // 	 var seq = 0;
+          //      var txt = "";
+          // 	 for(i=0;i<size;i++){
+          // 	     seq++;
+
+          // 		 	linkProduct = 'app/aig/Application/appDetail.php' ;
+          // 			linkQaForm = 'app/aig/Application/check_qa.php' ;
+
+          // 			//        if(result.data[i].camp == 'GenExclusive' ) {
+          // 			// 	linkProduct = 'app/gen/Application/appDetail.php' ;
+          // 			// linkGenForm = 'app/gen/Application/genForm.php' ;
+          // 			// }else if (result.data[i].camp == 'GenExclusivePlus'){
+          // 			// 	linkProduct = 'app/gen/Application/appDetail_exp.php' ;
+          // 			// linkGenForm = 'app/gen/Application/genForm.php' ;
+          // 			// }else{
+          // 			// 			linkProduct = 'app/gen/Application/appDetail_Health.php' ;
+          // 			// linkGenForm = 'app/gen/Application/genForm_Health.php' ;
+          // 			// 		}
+
+          // 	     txt = txt+"<tr id='"+result.data[i].quono+"'><td class='text-center'>&nbsp;"+seq+"&nbsp;</td>"+
+          // 	    		  "<td class='text-center'>&nbsp;"+result.data[i].quono+"</td>"+
+          // 	    		   "<td>&nbsp;"+result.data[i].cname+"&nbsp;</td>"+
+          // 	    		   "<td >&nbsp;"+result.data[i].camp+"&nbsp;</td>"+
+          // 	    		   "<td class='text-center'>&nbsp;"+result.data[i].saledt+"&nbsp;</td>"+
+          // 	    		   "<td class='text-center'>&nbsp;"+result.data[i].appsts+"&nbsp;</td>"+
+          // 	    		   "<td >&nbsp;"+result.data[i].owner+"&nbsp;</td>"+
+          // 	    		   "<td class='text-center' >" +
+          // 	    		   " <a style='border-radius:4px; margin:0 10px; background-color:#2196f3' class='btn btn-primary  btn-sm' href='"+linkProduct+"?id="+result.data[i].id+"' target='_blank'>Open App</a>" +
+          // 	    		   " <a  style='border-radius:4px;' class='btn btn-danger  btn-sm'  href='"+linkQaForm +"?app_id="+result.data[i].quono+"&campaign_id="+result.data[i].camp_id+"' target='_blank'>QA</a>"+
+          // 	    		   "</td></tr>";
+
+          // 	   }
+          // 	$table.html(txt);
+          // 	page = parseInt(page) + 1;
+          // 	$('#loadmoreapp').attr('data-read', page );
+
+          //  if( i != 0){
+
+          // 		  //add event
+          // 		  $('.nav-quo-id').on('click',function(e){
+          // 	    	   e.preventDefault();
+
+          //            })
+
+          // 			var total = parseInt($('#page').text()) + i;
+          // 			$('#page').text('').text( total );
+          // 			$('#ofpage').text('').text( result.total );
+
+          // 			//don't show more list if  last page
+          //     		if( total == parseInt(result.total) ){
+          // 				$('#loadmoreapp').hide();
+          // 			}
+
+          // 	}else{
+
+          // 	         $('#app-table tfoot').hide();
+          // 		     $row = $("<tr><td colspan='8' class='text-center'>&nbsp; Application Not Found &nbsp;</td></tr>");
+          // 		     $row.appendTo($table);
+
+          // 	}//end if else
+          // table = $('#app-table').DataTable({
+          // 	"destroy": true,
+          // 	"pageLength": 50
+          // });
+        },
+      }); //end ajax
+    },
+    search: function () {
+      var formtojson = JSON.stringify($("form").serializeObject());
+      var page = $("#loadmoreapp").attr("data-read");
+      $.ajax({
+        url: url,
+        data: { action: "query", data: formtojson, page: page },
+        dataType: "html",
+        type: "POST",
+        beforeSend: function () {
+          //set image loading for waiting request
+          //$('#loading').html('').append("<img src='image/ajax-loading.gif'/>");
+        },
+        success: function (data) {
+          //remove image loading
+          //$('#loading').html('').append("Project Management Sheet");
+
+          var result = eval("(" + data + ")");
+          table.clear().draw();
+          table.rows.add(result.data); // Add new data
+          table.columns.adjust().draw();
+          //     var $table = $('#app-table tbody');
+
+          //     if(page == 1){
+          // 		   $table.find('tr').remove();
+          // 	 }
+
+          //      var size =result.data.length;
+          //      var i =0;
+          // 	// var seq = parseInt($('#page').text());
+          //      var seq = 0;
+          //      var txt = "";
+          // 	 for(i=0;i<size;i++){
+          // 	     seq ++;
+          // 		 linkProduct = 'app/aig/Application/appDetail.php' ;
+          // 		 linkQaForm = 'app/aig/Application/check_qa.php' ;
+          // 	//    if(result.data[i].camp == 'GenExclusive' ) {
+          // 	// 			linkProduct = 'app/gen/Application/appDetail.php' ;
+          // 	// 		linkGenForm = 'app/gen/Application/genForm.php' ;
+          // 	// 		}else if (result.data[i].camp == 'GenExclusivePlus'){
+          // 	// 			linkProduct = 'app/gen/Application/appDetail_exp.php' ;
+          // 	// 		linkGenForm = 'app/gen/Application/genForm.php' ;
+          // 	// 		}else{
+          // 	// 					linkProduct = 'app/gen/Application/appDetail_Health.php' ;
+          // 	// 		linkGenForm = 'app/gen/Application/genForm_Health.php' ;
+          // 	// 				}
+
+          // 	     txt = txt+"<tr id='"+result.data[i].quono+"'><td class='text-center'>&nbsp;"+seq+"&nbsp;</td>"+
+          // 	    		  "<td class='text-center'>&nbsp;"+result.data[i].quono+"</td>"+
+          // 	    		   "<td>&nbsp;"+result.data[i].cname+"&nbsp;</td>"+
+          // 	    		   "<td >&nbsp;"+result.data[i].camp+"&nbsp;</td>"+
+          // 	    		   "<td class='text-center'>&nbsp;"+result.data[i].saledt+"&nbsp;</td>"+
+          // 	    		   "<td class='text-center'>&nbsp;"+result.data[i].appsts+"&nbsp;</td>"+
+          // 	    		   "<td >&nbsp;"+result.data[i].owner+"&nbsp;</td>"+
+          // 	    		   "<td class='text-center' >" +
+          // 	    		   " <a style='border-radius:4px; margin:0 10px; background-color:#2196f3' class='btn btn-primary  btn-sm' href='"+linkProduct+"?id="+result.data[i].id+"' target='_blank'>Open App</a>" +
+          // 	    		   " <a  style='border-radius:4px;' class='btn btn-danger  btn-sm'  href='"+linkQaForm+"?app_id="+result.data[i].quono+"&campaign_id="+result.data[i].camp_id+"' target='_blank'>QA</a>"+
+          // 	    		   "</td></tr>";
+          // 	   }
+          // 	$table.html(txt);
+          // 	page = parseInt(page) + 1;
+          // 	$('#loadmoreapp').attr('data-read', page );
+
+          //  if( i != 0){
+
+          // 		  //add event
+          // 		  $('.nav-quo-id').on('click',function(e){
+          // 	    	   e.preventDefault();
+
+          //            })
+
+          // 			var total = parseInt($('#page').text()) + i;
+          // 			$('#page').text('').text( total );
+          // 			$('#ofpage').text('').text( result.total );
+
+          // 			//don't show more list if  last page
+          //     		if( total == parseInt(result.total) ){
+          // 				$('#loadmoreapp').hide();
+          // 			}
+
+          // 	}else{
+
+          // 	         $('#app-table tfoot').hide();
+          // 		     $row = $("<tr><td colspan='8' class='text-center'>&nbsp; Application Not Found &nbsp;</td></tr>");
+          // 		     $row.appendTo($table);
+
+          // 	}//end if else
+          // 	// table.rows().invalidate('data').draw(false);
+        },
+      }); //end ajax
+    },
+    detail: function (id) {
+      $.ajax({
+        url: url,
+        data: { action: "detail", id: id },
+        dataType: "html",
+        type: "POST",
+        beforeSend: function () {
+          //set image loading for waiting request
+          //$('#loading').html('').append("<img src='image/ajax-loading.gif'/>");
+        },
+        success: function (data) {
+          //remove image loading
+          //$('#loading').html('').append("Project Management Sheet");
+
+          var result = eval("(" + data + ")");
+
+          $("[name=aid]").val(result.data.aid);
+          $("[name=fname]").val(result.data.fname);
+          $("[name=lname]").val(result.data.lname);
+          $("[name=nname]").val(result.data.nickname);
+          $("[name=mobilephone]").val(result.data.mobilePhone);
+          $("[name=email]").val(result.data.email);
+          $("[name=gid]").val(result.data.gid);
+          $("[name=tid]").val(result.data.tid);
+          $("[name=loginid]").val(result.data.loginid);
+          $("[name=level]").val(result.data.level);
+          $("[name=accstatus]").val(result.data.accStatus);
+        }, //end success
+      }); //end ajax
+    },
+    create: function () {
+      $("[name=aid]").val("");
+      $("[name=fname]").val("");
+      $("[name=lname]").val("");
+      $("[name=nname]").val("");
+      $("[name=mobilephone]").val("");
+      $("[name=email]").val("");
+      $("[name=gid]").val("");
+      $("[name=tid]").val("");
+      $("[name=loginid]").val("");
+      $("[name=level]").val("");
+      $("[name=accstatus]").val("");
+
+      $("#agent-main-pane").hide();
+      $("#agent-detail-pane").show();
+    },
+    save: function () {
+      var formtojson = JSON.stringify($("form").serializeObject());
+      $.post(url, { action: "save", data: formtojson }, function (result) {
+        var response = eval("(" + result + ")");
+        if (response.result == "success") {
+          //  $.dept._new();
+          $.agent.load();
+          $("#stacknotify").stacknotify({
+            message: "Save success",
+            detail: "Save success",
+          });
+        }
+      });
+    },
+    remove: function () {
+      var formtojson = JSON.stringify($("form").serializeObject());
+      $.post(url, { action: "delete", data: formtojson }, function (result) {
+        var response = eval("(" + result + ")");
+        if (response.result == "success") {
+          $.agent.create();
+          $.agent.load();
+
+          $("#agent-main-pane").show();
+          $("#agent-detail-pane").hide();
+        }
+      });
+    },
+    cancel: function () {
+      $.agent.detail($("[name=aid]").val());
+    },
+    gridSet: function ($row) {
+      $row
+        .find("td")
+        .click(function (e) {
+          $("[name=aid]").val($row.attr("id"));
+        })
+        .hover(
+          function () {
+            $row.addClass("row-hover");
+          },
+          function () {
+            $row.removeClass("row-hover");
+          }
+        )
+        .click(function () {
+          $("[name=bookingid]").val($row.attr("id"));
+          $("#agent-table tr.selected-row").removeClass("selected-row");
+          $row.addClass("selected-row");
+        })
+        .dblclick(function (e) {
+          $.agent.detail($row.attr("id"));
+          $("#agent-main-pane").hide();
+          $("#agent-detail-pane").show();
+        });
+    },
+    takeaction: function (action, aid) {
+      var confirm = window.confirm(
+        "Are you sure  to " + action + " this user ?"
+      );
+      if (confirm) {
+        $.post(
+          url,
+          { action: action, aid: aid, uid: $("[name=uid]").val() },
+          function (result) {
+            var response = eval("(" + result + ")");
+            if (response.result == "success") {
+              $.agent.load();
+            }
+          }
+        );
+      }
+    },
+  }; //end jQuery
+})(jQuery); //end function
+
+$(function () {
+  $(".calendar_en").datepicker({
+    dateFormat: "yy-mm-dd",
+    // numberOfMonths: 2,
+    // minDate: new Date(),
+    //onSelect: function(dateText) {
+    /*
+						  $('.show_pickupDate').text('').text( dateText );
+						  $('#pickup-date1').val( $(this).val() );
+						  $('#pickup-date2').val( $(this).val() );
+						  */
+    //}
+  });
+
+  $.app.init();
+  $.app.load();
+
+  $("#loadmoreapp").click(function (e) {
+    e.preventDefault();
+    $.app.load();
+  });
+
+  $(".search-app").click(function (e) {
+    e.preventDefault();
+    //clear current page before load
+    $("#loadmoreapp").attr("data-read", "1");
+    $("#page").text("").text("0");
+    $.app.search();
+  });
+
+  $(".search-clear").click(function (e) {
+    e.preventDefault();
+    $("[name=search_cust]").val("");
+    $("[name=search_sts]").val("");
+    $("[name=search_cred]").val("");
+    $("[name=search_endd]").val("");
+    $.app.search();
+  });
+
+  $(".new-app").click(function (e) {
+    e.preventDefault();
+    window.open(
+      $("[name=exapp_url]").val() +
+        "?campaignid=" +
+        $("[name=exapp_cmp]").val() +
+        "&agentid=" +
+        $("[name=uid]").val()
+    );
+
+    //alert("call new app : call external url : http://192.168.0.100?campaignid , agentid , calllist ");
+  });
+
+  //add event click to  tr
+  $("#app-table tbody ").on("click", "tr", function () {
+    $("#app-table tr.selected-row").removeClass("selected-row");
+    $(this).addClass("selected-row");
+  });
+
+  //add event dblclick to  tr
+  $("#app-table tbody").on("dblclick", "tr", function () {
+    $(this).attr("id");
+  });
+  /*
+	  $('#agent-back-main').click( function(e){
+			$('#agent-main-pane').show();
+			$('#agent-detail-pane').hide();
+	  })
+
+	  $('.cancel_user').click( function(e){
+		  		e.preventDefault();
+				$.agent.cancel();
+	   });
+	  $('.new_agent').click( function(e){
+		  		e.preventDefault();
+				$.agent.create();
+	   });
+	  $('.delete_agent').click( function(e){
+		  	 e.preventDefault();
+			  var confirm = window.confirm('Are you sure to delete');
+			  if( confirm ){
+					$.agent.remove();
+			  }
+	   });
+	  $('.save_user').click( function(e){
+		  		e.preventDefault();
+				$.agent.save();
+	   });
+	  */
+});

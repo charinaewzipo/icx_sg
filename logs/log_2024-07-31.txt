@@ -1,0 +1,9 @@
+2024-07-31 15:00:18 [application][genesys-securepause] state:PAUSED agentid:238 lastinteraction: voiceid:
+2024-07-31 15:00:21 [application][genesys-securepause] state:PAUSED agentid:238 lastinteraction: voiceid:
+2024-07-31 15:39:47 [application][genesys-securepause] state:PAUSED agentid:238 lastinteraction: voiceid:
+2024-07-31 16:25:45 [call-pane_process-Wrapup][init] sql : SELECT wrapup_code , wrapup_dtl  FROM t_wrapup_code  WHERE status = 1  and parent_code = 0  and campaign_id like '%,38,%'  ORDER BY seq_no 
+2024-07-31 16:25:45 SELECT  first_name, last_name, tel1, id_num, status,conCallistid FROM t_calllist WHERE calllist_id =  971533 
+2024-07-31 16:25:45  SELECT a.last_wrapup_dt ,  r.reminder_dt   FROM t_calllist_agent a LEFT OUTER JOIN t_reminder r ON a.reminder_id = r.reminder_id  WHERE a.campaign_id = 38   AND a.agent_id =  238 AND a.calllist_id = 971533
+2024-07-31 16:25:45 [call-pane_process][loadpopup_content] cal history sql :  SELECT t.create_date , t.wrapup_id , t.wrapup_note  FROM t_call_trans t  WHERE t.agent_id = 238  AND t.campaign_id = 38  AND t.calllist_id = 971533 ORDER BY t.create_date DESC 
+2024-07-31 16:25:45 [call-pane_process][loadexternal_app] sql :  SELECT ex_app_name , ex_app_url , ex_app_icon  FROM t_external_app_register  WHERE campaign_id =  38   AND is_active = 1 
+2024-07-31 16:25:48 select id,AppStatus,campaign_id from t_aig_app where campaign_id = '38' and  calllist_id = '971533' and import_id = '245' limit 1 

@@ -1,0 +1,405 @@
+<?php
+
+
+ini_set("display_errors",0);
+
+date_default_timezone_set("Asia/Bangkok");
+
+require_once("../../function/currentDateTime.inc");
+require_once("../../function/StartConnect.inc");
+
+function DateDiff($strDate1,$strDate2)
+{
+    return (strtotime($strDate2) - strtotime($strDate1))/  ( 60 * 60 * 24 );  // 1 day = 60*60*24
+}
+
+function convTime($time){
+    $thistime = $time;
+    $hour = floor($thistime/3600);
+    $T_minute = $thistime % 3600;
+
+    $minute = floor($T_minute / 60);
+    $second = $T_minute % 60;
+
+    $talktime = "$hour:$minute:$second";
+
+    return $talktime;
+}
+
+function divZero($faf,$div){
+    if($div==0 || $div=="0"){
+        return 0;
+    }
+    return ($faf/$div);
+}
+
+$tmp = json_decode( $_POST['data'] , true); 
+$root = "temp/";
+$start = $tmp["startdate"];
+$end = $tmp["enddate"];
+$campaign_id = $tmp["campaign_id"];
+$group_id = $tmp["group_id"];
+$team_id = $tmp["team_id"];
+
+//$start = '01/07/2019';
+//$end = '15/07/2019';
+
+$start_dd = substr($start,0,2);    // 16/03/2016
+$start_mm = substr($start,3,2);
+$start_yy = substr($start,6,4);
+$startdate = $start_yy.$start_mm.$start_dd;
+$startdate2 = $start_yy.'-'.$start_mm.'-'.$start_dd;
+
+$end_dd = substr($end,0,2);
+$end_mm = substr($end,3,2);
+$end_yy = substr($end,6,4) ;
+$enddate =  $end_yy.$end_mm.$end_dd;
+$enddate2 =  $end_yy.'-'.$end_mm.'-'.$end_dd;
+
+//$startdate2 = '2019-07-01';
+//$enddate2 =  '2019-07-16';
+
+$currentdatetime = date("Y").'-'.date("m").'-'.date("d").' '.date("H:i:s");
+
+$report_date = $startdate2.' - '.$enddate2 ;
+
+$campaign_name = "";
+$group_name = "";
+$team_name = "";
+
+if($campaign_id){
+    $SQL_campname = "select campaign_name from t_campaign where campaign_id = '$campaign_id' " ;
+    $result = mysql_query($SQL_campname,$Conn) or die ("ไม่สามารถเรียกดูข้อมูลได้");
+    while($row = mysql_fetch_array($result))
+        {
+            $campaign_name = $row["campaign_name"];
+        }
+}
+if($group_id){
+    $SQL_groupname = "select group_name from t_group where group_id = '$group_id' " ;
+    $result = mysql_query($SQL_groupname,$Conn) or die ("ไม่สามารถเรียกดูข้อมูลได้");
+    while($row = mysql_fetch_array($result))
+        {
+            $group_name = $row["group_name"];
+        }    
+}
+if($team_id){
+    $SQL_teamname = "select team_name from t_team where team_id = '$team_id' " ;
+    $result = mysql_query($SQL_teamname,$Conn) or die ("ไม่สามารถเรียกดูข้อมูลได้");
+    while($row = mysql_fetch_array($result))
+        {
+            $team_name = $row["team_name"];
+        }
+}
+
+
+/**
+ * PHPExcel
+ *
+ * Copyright (C) 2006 - 2014 PHPExcel
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * @category   PHPExcel
+ * @package    PHPExcel
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
+ * @version    1.8.0, 2014-03-02
+ */
+
+/** Error reporting */
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+
+define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
+
+
+/** PHPExcel_IOFactory */
+require_once dirname(__FILE__) . '/../../PHPExcel/Classes/PHPExcel/IOFactory.php';
+
+
+
+//echo date('H:i:s') , " Load from Excel5 template" , EOL;
+$objReader = PHPExcel_IOFactory::createReader('Excel5');
+$objPHPExcel = $objReader->load("templates/Agent_Performance.xls");
+
+$dif_date = (DateDiff($startdate2,$enddate2))+1;
+
+$objPHPExcel->getActiveSheet()->setCellValue('C3', $campaign_name);
+$objPHPExcel->getActiveSheet()->setCellValue('C4', $group_name);
+$objPHPExcel->getActiveSheet()->setCellValue('C5', $team_name);
+$objPHPExcel->getActiveSheet()->setCellValue('C6', $currentdatetime);
+$objPHPExcel->getActiveSheet()->setCellValue('C7', $report_date);
+
+
+
+
+$baseRow = 11;
+$row = 0;
+$r = 0;
+$i = 0 ;
+$strNewDate = $startdate2 ;
+$endNewDate = $enddate2 ;
+
+$sum_uesd_accu = 0;
+$sum_contact_call = 0;
+
+$workday = $dif_date ;
+
+$CallAttempt = 0;
+
+$sql_condition = ($group_id)?" and group_id = '$group_id'":"";
+$sql_condition .= ($team_id)?" and team_id = '$team_id'":"";
+
+
+$SQL = "
+SELECT tc.agent_id,CONCAT(ta.first_name,' ',ta.last_name) agentname, 
+
+COUNT(DISTINCT(case 
+when number_of_call = 1 then calllist_id
+ELSE NULL
+END)) new_list,
+
+COUNT(DISTINCT (case 
+when number_of_call > 1 then calllist_id
+ELSE NULL
+END)) old_list,
+
+COUNT(DISTINCT (case 
+when last_wrapup_option_id = 6 then calllist_id
+ELSE NULL
+END)) list_success,
+
+COUNT(DISTINCT (case 
+when last_wrapup_option_id = 7 then calllist_id
+ELSE NULL
+END)) list_unsuccess,
+
+COUNT(DISTINCT (case 
+when last_wrapup_option_id in (2,9) then calllist_id
+ELSE NULL
+END)) list_followup,
+
+COUNT(DISTINCT (case 
+when last_wrapup_option_id = 1 then calllist_id
+ELSE NULL
+END)) list_callback,
+
+COUNT(DISTINCT (case 
+when last_wrapup_option_id = 8 then calllist_id
+ELSE NULL
+END)) list_nocontact,
+
+COUNT(DISTINCT (case 
+when last_wrapup_option_id = 4 then calllist_id
+ELSE NULL
+END)) list_badlist,
+
+COUNT(DISTINCT (case 
+when last_wrapup_option_id = 3 then calllist_id
+ELSE NULL
+END)) list_donotcall,
+
+COUNT(DISTINCT (case 
+when last_wrapup_option_id = 5 then calllist_id
+ELSE NULL
+END)) list_overcall,
+
+COUNT(DISTINCT (case 
+when number_of_call = 0 then calllist_id
+ELSE NULL
+END)) list_new
+
+from t_calllist_agent tc left join t_agents ta on tc.agent_id=ta.agent_id where (last_wrapup_dt BETWEEN '$startdate2 00:00:00' and '$enddate2 23:59:59') and campaign_id = '$campaign_id'$sql_condition  GROUP BY tc.agent_id
+
+
+" ;
+$result = mysql_query($SQL,$Conn) or die ("ไม่สามารถเรียกดูข้อมูลได้");
+
+$sql_app = " SELECT agent_id, COUNT(DISTINCT(CASE WHEN AppStatus NOT IN( 'Follow Doc') THEN id ELSE NULL END)) sale_front,
+COUNT(DISTINCT(CASE WHEN AppStatus IN( 'QC_Approved') THEN id ELSE NULL END)) sale_back,
+SUM(CASE WHEN AppStatus NOT IN( 'Follow Doc') AND PAYMENTFREQUENCY IN( 'รายปี') THEN INSTALMENT_PREMIUM ELSE 0 END) premium_year_front,
+SUM(CASE WHEN AppStatus NOT IN( 'Follow Doc') AND PAYMENTFREQUENCY IN( 'รายเดือน') THEN INSTALMENT_PREMIUM ELSE 0 END) premium_month_front,
+SUM(CASE WHEN AppStatus IN( 'QC_Approved') AND PAYMENTFREQUENCY IN( 'รายปี') THEN INSTALMENT_PREMIUM ELSE 0 END) premium_year_back,
+SUM(CASE WHEN AppStatus IN( 'QC_Approved') AND PAYMENTFREQUENCY IN( 'รายเดือน') THEN INSTALMENT_PREMIUM ELSE 0 END) premium_month_back
+from t_aig_app where (create_date BETWEEN '$startdate2 00:00' and '$enddate2 23:59') and campaign_id = '$campaign_id' group by agent_id";
+
+$result_app =  mysql_query($sql_app,  $Conn);
+
+
+$sale_value =array();
+while($row = mysql_fetch_array($result_app))
+{
+    $sale_value[] = $row;
+}
+$sale_value = array_column($sale_value,null,'agent_id');
+
+
+$sql_call = " SELECT agent_id,COUNT(DISTINCT calllist_id) as call_attemp from t_call_trans where (create_date BETWEEN '$startdate2 00:00:00' and '$enddate2 23:59:59') and campaign_id = '$campaign_id' group by agent_id";
+
+$result_call =  mysql_query($sql_call,  $Conn);
+
+
+$call_value =array();
+while($row = mysql_fetch_array($result_call))
+{
+    $call_value[] = $row;
+}
+$call_value = array_column($call_value,null,'agent_id');
+
+
+while($row = mysql_fetch_array($result))
+	{	
+    $agent_id = trim($row["agent_id"]);
+	$agentname = trim($row["agentname"]);
+    $new_list = $row["new_list"];
+    $old_list = $row["old_list"];
+    $list_success = $row["list_success"];
+    $list_unsuccess = $row["list_unsuccess"];
+    $list_followup = $row["list_followup"];
+    $list_callback = $row["list_callback"];
+    $list_nocontact = $row["list_nocontact"];
+    $list_badlist = $row["list_badlist"];
+    $list_donotcall = $row["list_donotcall"];
+    $list_overcall = $row["list_overcall"];
+    $list_new = $row["list_new"];
+
+
+    // Total Used
+    $total_used = $new_list + $old_list;
+
+    // Total List
+    $total_list = $list_new + $total_used;
+
+    // Call Attempt
+    $TotalLeadAttempted = (isset($call_value[$agent_id]["call_attemp"]))?$call_value[$agent_id]["call_attemp"]:0;
+
+    // Contactable
+    $Contactable = $list_success + $list_unsuccess + $list_followup + $list_callback;
+    $Contactable_percentage = ($Contactable / $total_used) * 100  ;
+    
+    // nocontact
+    $nocontact = $list_nocontact + $list_overcall + $list_donotcall ;
+
+   
+    // sale_app
+    $sale_app_front = (isset($sale_value[$agent_id]["sale_front"]))?$sale_value[$agent_id]["sale_front"]:0;
+    $sale_app_back = (isset($sale_value[$agent_id]["sale_back"]))?$sale_value[$agent_id]["sale_back"]:0;
+
+    // sale_premium_y
+    $sale_premium_front_y = (isset($sale_value[$agent_id]["premium_year_front"]))?$sale_value[$agent_id]["premium_year_front"]:0;
+    $sale_premium_back_y = (isset($sale_value[$agent_id]["premium_year_back"]))?$sale_value[$agent_id]["premium_year_back"]:0;
+
+    //  sale_premium_M
+    $sale_premium_front_m = (isset($sale_value[$agent_id]["premium_month_front"]))?$sale_value[$agent_id]["premium_month_front"]:0;
+    $sale_premium_back_m = (isset($sale_value[$agent_id]["premium_month_back"]))?$sale_value[$agent_id]["premium_month_back"]:0;
+
+    // list_success percentage
+    $list_success_percentage = divZero($list_success,$total_used) ;
+
+    // list_unsuccess percentage
+    $list_unsuccess_percentage = divZero($list_unsuccess , $total_used)  ;
+
+    //  list_followup percentage
+    $list_followup_percentage = divZero($list_followup , $total_used)  ;
+
+    //  list_callback percentage
+    $list_callback_percentage = divZero($list_callback , $total_used)  ;
+
+    //  list_callback percentage
+    $list_nocontact_percentage = divZero($nocontact , $total_used)  ;
+
+    //  list_badlist percentage
+    $list_badlist_percentage = divZero($list_badlist , $total_used)  ;
+
+     //  conversion_a
+     $conversion_a = divZero($sale_app_back , $total_used) ;
+
+     //  conversion_b
+     $conversion_b = divZero($sale_app_back , $Contactable) ;
+
+	
+	$row = $baseRow + 1  ;
+	$row2 = $row - 1 ;
+	$r = $r+1;	
+	$objPHPExcel->getActiveSheet()->insertNewRowBefore($row,1);
+
+    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row2, $agentname)
+                                   ->setCellValue('C'.$row2, $total_list)
+                                   ->setCellValue('D'.$row2, $list_new)
+                                   ->setCellValue('E'.$row2, $new_list)
+                                   ->setCellValue('F'.$row2, $old_list)
+                                   ->setCellValue('G'.$row2, $total_used)
+                                   ->setCellValue('H'.$row2, $TotalLeadAttempted)
+                                   ->setCellValue('K'.$row2, $Contactable)
+                                   ->setCellValue('L'.$row2, $Contactable_percentage)
+                                   ->setCellValue('M'.$row2, $conversion_a)
+                                   ->setCellValue('N'.$row2, $conversion_b)
+                                   ->setCellValue('O'.$row2, $sale_app_front)
+                                   ->setCellValue('P'.$row2, $sale_premium_front_y)
+                                   ->setCellValue('Q'.$row2, $sale_premium_front_m)
+                                   ->setCellValue('R'.$row2, $sale_app_back)
+                                   ->setCellValue('S'.$row2, $sale_premium_back_y)
+                                   ->setCellValue('T'.$row2, $sale_premium_back_m)
+                                   ->setCellValue('U'.$row2, $list_success)
+                                   ->setCellValue('V'.$row2, $list_success_percentage)
+                                   ->setCellValue('W'.$row2, $list_unsuccess)
+                                   ->setCellValue('X'.$row2, $list_unsuccess_percentage)
+                                   ->setCellValue('Y'.$row2, $list_followup)
+                                   ->setCellValue('Z'.$row2, $list_followup_percentage)
+                                   ->setCellValue('AA'.$row2, $list_callback)
+                                   ->setCellValue('AB'.$row2, $list_callback_percentage)
+                                   ->setCellValue('AC'.$row2, $nocontact)
+                                   ->setCellValue('AD'.$row2, $list_nocontact_percentage)
+                                   ->setCellValue('AE'.$row2, $list_badlist)
+                                   ->setCellValue('AF'.$row2, $list_badlist_percentage)
+                                  
+                                  
+					   
+								  ;
+
+
+								 
+	$baseRow = $baseRow + 1 ;
+	$sum_uesd_accu = 0;
+	$sum_contact_call = 0;
+	$i++;
+	
+									 
+}
+
+
+
+//echo date('H:i:s') , " Write to Excel5 format" , EOL;
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+$droot = "temp/";
+$fname = "Agent_Performance_".$currentdate.".xls";
+$objWriter->save($droot.$fname);
+//$objWriter->save(str_replace('.php', '.xls', __FILE__));
+
+//echo date('H:i:s') , " File written to " , str_replace('.php', '.xls', pathinfo(__FILE__, PATHINFO_BASENAME)) , EOL;
+
+
+// Echo memory peak usage
+//echo date('H:i:s') , " Peak memory usage: " , (memory_get_peak_usage(true) / 1024 / 1024) , " MB" , EOL;
+
+// Echo done
+//echo date('H:i:s') , " Done writing file" , EOL;
+//echo 'File has been created in ' , getcwd() , EOL;
+
+$result = array("result"=>"success","fname"=>$fname);
+echo json_encode( $result ); 
+?>

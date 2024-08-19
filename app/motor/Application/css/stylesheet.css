@@ -1,0 +1,119 @@
+@charset "utf-8";
+/* CSS for Application page  */
+
+* {
+padding : 0;
+margin : 0;
+}
+
+body {
+	font-family : Tahoma;
+	font-size : 8pt;
+	color : #333333;
+	background-color: #F8F8F8;
+	background-image: url(../images/bg.gif);
+	background-repeat: repeat-x;
+}
+h1 {
+	font-size: 14px;
+	font-weight: bold;
+	font-family: Tahoma;
+}
+h2 {
+	font-size: 14px;
+	font-weight: bold;
+	border-bottom: 2px solid #ccc;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	padding-bottom: 3px;
+	color: #d31145;
+}
+
+
+#content {
+	padding : 0;
+	margin : 0px auto;
+	width : 900px;
+	background-color: #FBFDF8;
+	height: auto;
+	border: 1px solid #E4E1D0;
+	font-family: Tahoma;
+	font-size: 14px;
+}
+
+
+#header {
+	height: 90px;
+	background-color: #28348B;
+	width: 100%;
+	background-image: url(../images/header_motor.png);
+	background-repeat:no-repeat;
+}
+#logo {
+	background-image: url(../images/logo.jpg);
+	background-repeat: no-repeat;
+	height: 59px;
+	width: 171px;
+	margin-left: 20px;
+}
+#top-detail {
+	color: #333333;
+	width: 100%;
+	background-image: url(../images/pagetop_gradient.gif);
+	background-repeat: repeat-x;
+	height: 43px;
+	padding-top: 3px;
+}
+#top-detail #user-detail {
+	width: 540px;
+	float: right;
+	padding-right: 10px;
+}
+#top-detail #app-detail {
+	width: 340px;
+	float: left;
+	padding-left: 10px;
+}
+#form-content {
+	width: 860px;
+	border: 1px solid #CCCCCC;
+	margin-left: 10px;
+	padding: 10px;
+	background-color: #E5EECC;
+	background-image: url(../images/bgfadegreen.gif);
+	background-repeat: repeat-x;
+}
+#form-content #head-linebuttom {
+}
+
+#table-form {
+}
+#table-form img {
+	position: absolute;
+	text-decoration: none;
+	border: 0;
+}
+
+#table-form th {
+	width: 50px;
+}
+
+#form-content legend {
+	font-size: 14px;
+	font-weight: bold;
+	color: #d31145;
+}
+table tr{
+	height: 25px;
+}
+
+#question{
+}
+
+#answer{
+	margin: 5px 0 5px 0;
+	padding: 10px 20px 10px 20px;
+}
+input[disabled='disabled']{
+	background-color:#CCC;
+}

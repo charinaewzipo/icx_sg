@@ -1,0 +1,147 @@
+2024-05-04 15:15:10 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-04 15:15:10 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-04 15:15:10 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.2' 
+2024-05-04 15:15:10 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-04 15:15:10 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.2', '6635ee8e8ba70' , NOW() );
+2024-05-04 15:15:10 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.2', 'Login' , NOW() );
+2024-05-04 15:16:06 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-04 15:16:06 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-04 15:16:06 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.2' 
+2024-05-04 15:16:06 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-04 15:16:06 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.2', '6635eec65d79a' , NOW() );
+2024-05-04 15:16:06 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.2', 'Login' , NOW() );
+2024-05-04 15:16:06 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-04 15:16:06 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:16:06 page: 0
+2024-05-04 15:16:06 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-04 15:16:08 [reminder_process][query] sql :  SELECT reminder_id , reminder_dt , r.reminder_type_id , t.reminder_desc,  t.reminder_icon, subject , detail , r.status    FROM t_reminder r LEFT OUTER JOIN tl_reminder_type t   ON r.reminder_type_id = t.reminder_type_id  WHERE r.create_user = 234  ORDER BY r.reminder_dt 
+2024-05-04 15:16:08 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:16:08 [reminder_process][remineMe] sql : SELECT r.reminder_id , r.reminder_dt , r.subject , r.detail , rt.reminder_desc  FROM t_reminder r LEFT OUTER JOIN tl_reminder_type rt ON r.reminder_type_id = rt.reminder_type_id  WHERE r.create_user = 234  AND r.status = 1  AND r.reminder_dt >= NOW()  ORDER BY r.reminder_dt  LIMIT 0 , 1 
+2024-05-04 15:16:08 reminder is empty
+2024-05-04 15:16:08 check reminder :  SELECT COUNT(*) AS total_miss , MAX(reminder_dt) AS last_remind  FROM t_reminder WHERE reminder_dt < NOW()  AND status = 1  AND create_user =  234 
+2024-05-04 15:16:08 empty
+2024-05-04 15:16:09 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:16:10 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 15:16:16 [callList_process][upload] Start upload 
+2024-05-04 15:16:16 [callList_process][upload] remove temp : success 
+2024-05-04 15:16:16 [callList_process][upload] file ok to upload 
+2024-05-04 15:16:16 [callList_process][upload] check file type : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+2024-05-04 15:16:16 [callList_process][upload] file type is excel : application
+2024-05-04 15:16:16 [callList_process][upload] file upload success 
+2024-05-04 15:16:16 [callList_process][upload] upload file sql :  INSERT INTO t_import_list ( file_name , import_key , `status` , temp_table_name , file_size , file_type , file_path , create_user , create_date) VALUES ( 'AIG Non sponsor_HotLead_202401_02.xlsx' ,'6635eed074b29' , 0 ,'tmp_table6635eed074b29' ,'9.13 KB' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ,'D:/html/profiles/attach/' ,234 , NOW() )  
+2024-05-04 15:16:16 [callList_process][upload] Convert excel key : [6635eed074b29] to csv 
+2024-05-04 15:26:47 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:26:47 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 15:26:56 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-04 15:26:56 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-04 15:26:56 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.2' 
+2024-05-04 15:26:56 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-04 15:26:56 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.2', '6635f1509b38b' , NOW() );
+2024-05-04 15:26:56 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.2', 'Login' , NOW() );
+2024-05-04 15:26:56 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:26:56 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-04 15:26:57 page: 0
+2024-05-04 15:26:57 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-04 15:27:00 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:27:00 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 15:27:06 [callList_process][upload] Start upload 
+2024-05-04 15:28:10 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-04 15:28:10 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-04 15:28:10 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.2' 
+2024-05-04 15:28:10 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-04 15:28:10 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.2', '6635f19a63719' , NOW() );
+2024-05-04 15:28:10 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.2', 'Login' , NOW() );
+2024-05-04 15:28:10 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:28:10 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-04 15:28:10 page: 0
+2024-05-04 15:28:10 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-04 15:28:12 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:28:12 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 15:28:19 [callList_process][upload] Start upload 
+2024-05-04 15:28:19 [callList_process][upload] remove temp : success 
+2024-05-04 15:28:19 [callList_process][upload] file ok to upload 
+2024-05-04 15:28:19 [callList_process][upload] check file type : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+2024-05-04 15:28:19 [callList_process][upload] file type is excel : application
+2024-05-04 15:28:19 [callList_process][upload] file upload success 
+2024-05-04 15:28:19 [callList_process][upload] upload file sql :  INSERT INTO t_import_list ( file_name , import_key , `status` , temp_table_name , file_size , file_type , file_path , create_user , create_date) VALUES ( 'AIG Non sponsor_HotLead_202401_02.xlsx' ,'6635f1a397cf7' , 0 ,'tmp_table6635f1a397cf7' ,'9.13 KB' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ,'D:/html/profiles/attach/' ,234 , NOW() )  
+2024-05-04 15:28:19 [callList_process][upload] Convert excel key : [6635f1a397cf7] to csv 
+2024-05-04 15:45:48 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-04 15:45:48 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-04 15:45:48 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.2' 
+2024-05-04 15:45:51 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-04 15:45:51 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-04 15:45:51 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.2', '6635f5bfa4e76' , NOW() );
+2024-05-04 15:45:51 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.2', 'Login' , NOW() );
+2024-05-04 15:45:52 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-04 15:45:52 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:45:52 page: 0
+2024-05-04 15:45:52 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-04 15:45:53 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:45:54 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 15:46:02 [callList_process][upload] Start upload 
+2024-05-04 15:46:02 [callList_process][removeTemp] find import key sql :  SELECT import_id , import_key FROM t_import_list  WHERE list_name IS NULL
+2024-05-04 15:46:02 [callList_process][removeTemp] delete row sql : DELETE FROM t_import_list WHERE import_key = '6634aecf125e3'
+2024-05-04 15:46:02 [callList_process][removeTemp] drop table sql : DROP TABLE tmp_table6634aecf125e3
+2024-05-04 15:55:21 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-04 15:55:21 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-04 15:55:21 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.2' 
+2024-05-04 15:55:21 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-04 15:55:21 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.2', '6635f7f9bc9e8' , NOW() );
+2024-05-04 15:55:21 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.2', 'Login' , NOW() );
+2024-05-04 15:55:22 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-04 15:55:22 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:55:22 page: 0
+2024-05-04 15:55:22 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-04 15:55:24 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:55:24 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 15:55:30 [callList_process][upload] Start upload 
+2024-05-04 15:55:30 [callList_process][removeTemp] find import key sql :  SELECT import_id , import_key FROM t_import_list  WHERE list_name IS NULL
+2024-05-04 15:55:30 [callList_process][removeTemp] delete row sql : DELETE FROM t_import_list WHERE import_key = '6634aedd178a6'
+2024-05-04 15:55:30 [callList_process][removeTemp] drop table sql : DROP TABLE tmp_table6634aedd178a6
+2024-05-04 15:59:21 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 15:59:21 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 15:59:31 [callList_process][upload] Start upload 
+2024-05-04 15:59:31 [callList_process][removeTemp] find import key sql :  SELECT import_id , import_key FROM t_import_list  WHERE list_name IS NULL
+2024-05-04 15:59:31 [callList_process][removeTemp] delete row sql : DELETE FROM t_import_list WHERE import_key = 6634aef355483
+2024-05-04 16:00:34 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:00:34 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 16:00:45 [callList_process][upload] Start upload 
+2024-05-04 16:00:45 [callList_process][removeTemp] find import key sql :  SELECT import_id , import_key FROM t_import_list  WHERE list_name IS NULL
+2024-05-04 16:00:45 [callList_process][removeTemp] delete row sql : DELETE FROM t_import_list WHERE import_key = '6634aef355483'
+2024-05-04 16:00:45 [callList_process][removeTemp] drop table sql : DROP TABLE tmp_table6634aef355483
+2024-05-04 16:03:02 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:03:02 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 16:03:10 [callList_process][upload] Start upload 
+2024-05-04 16:03:10 [callList_process][removeTemp] find import key sql :  SELECT import_id , import_key FROM t_import_list  WHERE list_name IS NULL
+2024-05-04 16:03:10 [callList_process][removeTemp] delete row sql : DELETE FROM t_import_list WHERE import_key = '6634b2bbed75e'
+2024-05-04 16:03:10 [callList_process][removeTemp] drop table sql : DROP TABLE tmp_table6634b2bbed75e
+2024-05-04 16:05:14 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:05:15 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 16:05:21 [callList_process][upload] Start upload 
+2024-05-04 16:05:21 [callList_process][removeTemp] find import key sql :  SELECT import_id , import_key FROM t_import_list  WHERE list_name IS NULL
+2024-05-04 16:05:21 [callList_process][removeTemp] delete row sql : DELETE FROM t_import_list WHERE import_key = '6634b564dbabd'
+2024-05-04 16:07:16 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:07:16 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 16:07:21 [callList_process][upload] Start upload 
+2024-05-04 16:07:21 [callList_process][removeTemp] find import key sql :  SELECT import_id , import_key FROM t_import_list  WHERE list_name IS NULL
+2024-05-04 16:07:21 [callList_process][removeTemp] delete row sql : DELETE FROM t_import_list WHERE import_key = '6634b58976c4d'
+2024-05-04 16:07:21 [callList_process][removeTemp] drop table sql : DROP TABLE tmp_table6634b58976c4d
+2024-05-04 16:13:14 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:13:14 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 16:13:22 [callList_process][upload] Start upload 
+2024-05-04 16:13:22 [callList_process][upload] remove temp : success 
+2024-05-04 16:13:22 [callList_process][upload] file ok to upload 
+2024-05-04 16:13:22 [callList_process][upload] check file type : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+2024-05-04 16:13:22 [callList_process][upload] file type is excel : application
+2024-05-04 16:13:22 [callList_process][upload] file upload success 
+2024-05-04 16:13:22 [callList_process][upload] upload file sql :  INSERT INTO t_import_list ( file_name , import_key , `status` , temp_table_name , file_size , file_type , file_path , create_user , create_date) VALUES ( 'AIG Non sponsor_HotLead_202401_02.xlsx' ,'6635fc326b437' , 0 ,'tmp_table6635fc326b437' ,'9.13 KB' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ,'D:/html/profiles/attach/' ,234 , NOW() )  
+2024-05-04 16:13:22 [callList_process][upload] Convert excel key : [6635fc326b437] to csv 
+2024-05-04 16:17:30 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:17:30 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5
+2024-05-04 16:19:06 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:29:52 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:30:24 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:30:26 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:30:32 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:31:02 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-04 16:31:02 [callList_process][query] query sql :   SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records    FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id  WHERE i.list_name IS NOT NULL AND i.status != 0 ORDER BY create_date DESC  LIMIT 0 , 5

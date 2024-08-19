@@ -1,0 +1,270 @@
+﻿ <?php
+         include "wlog.php";
+         $trunk_prefix = "9";
+        
+        $server_manager[0]= "192.168.30.22"; //#IPServer manager
+        $server_manager[1] = "admin"; //#username manager
+       // $server_manager[2] = "amp111"; //#password manager
+        $server_manager[2] = "tct1!qaz"; //#password manager
+        $server_manager[3] = "5038"; //#port manager
+        $manager_originate[0] = $_POST["src"]; //#extension_source
+        $manager_originate[1] = $trunk_prefix.$_POST["dst"]; //#extension_destination
+        $uid = $_POST["uid"];
+
+        if(isset($_POST["action"])){
+	           $action = $_POST["action"];
+	           switch( $action ){
+	           		//case "ping" : extstate(); break;
+	                case "makecall" : extstate( $_POST["src"] ); break; //makecall(); break;
+	                case "hangup" : hangupcall(); break;
+	           }
+        }
+        
+
+        function extstate( $extension ){
+        
+        	 
+        	 global $server_manager , $manager_originate;
+	         $socket = fsockopen("$server_manager[0]","$server_manager[3]", $errno, $errstr, 10);
+	         
+		    fputs($socket, "Action: Login\r\n");
+            fputs($socket, "UserName: $server_manager[1]\r\n");
+            fputs($socket, "Secret: $server_manager[2]\r\n\r\n");
+			
+            fputs($socket, "Action: ExtensionState\r\n");
+			fputs($socket, "Context: from-internal\r\n");
+			fputs($socket, "Exten: $extension\r\n\r\n"); 
+			fputs($socket, "Action: Logoff\r\n\r\n");
+			 
+			//extension state
+            /*
+         	-1 = extension not found
+         	0 = idle
+         	1 = In use
+         	2 = busy
+         	4 = unavailable
+         	8 = ringing
+         	16 = onhold    
+    	  */
+			
+            while (!feof($socket)) {
+                $wrets = fgets($socket, 100);
+                       if(strstr($wrets,"Status: ")){
+                             $sts  = substr($wrets,8);
+                       }
+            }
+            fclose($socket);
+   	
+            wlog("[sysami] uid [".$_POST["uid"]."] extension state: src : [".$extension."] result : [".intVal($sts)."]");
+            if( $sts == 0 ){
+            		$stsdtl = "ok";
+            		makecall();
+            }else{
+            	$stsdtl = "";	
+            	wlog($sts); 
+            	switch($sts){
+            		case  -1 : $stsdtl = "Extension not found"; break;
+            		case 0 : $stsdtl = "idle"; break;
+            		case 1 : $stsdtl = "In use"; break;
+		         	case 2 : $stsdtl = "busy"; break;
+		         	case 4 : $stsdtl = "unavailable"; break;
+		         	case 8 : $stsdtl = "ringing"; break;
+		         	case 16 : $stsdtl = "onhold"; break;
+            	}
+            	$res = array("status"=>"x","statusdtl"=>$stsdtl);
+          		 echo json_encode($res);
+            }
+     
+        }  
+
+        function makecall(){
+            global $server_manager , $manager_originate;
+            
+            wlog("[sysami] uid [".$_POST["uid"]."] get action: makecall src :[".$manager_originate[0]."] dst :[".$manager_originate[1]."] ");
+            $data = Originate($server_manager,$manager_originate);
+            
+            $t = explode("|",trim($data));
+            $res = array("channel"=>$t[0],"uniqueid"=>$t[1]);
+            
+            //$res = array("test"=>$data);
+           // $res = array("channel"=>"servermanager".$server_manager[0]);
+            echo json_encode($res);
+
+        }
+
+        function hangupcall(){
+     
+           
+            wlog("[sysami] uid [".$_POST["uid"]."] get action: hangup src :[".$_POST["channel"] ."]");
+           global $server_manager;
+           $data = Hangup($server_manager , $_POST["channel"] );
+           $res = array("data"=>trim($data));
+           echo json_encode($res);
+        }
+        
+		
+		function SetCDRUserField( $server_manager, $channel, $value ){
+		   
+		    $socket = fsockopen("$server_manager[0]","$server_manager[3]", $errno, $errstr, 10);
+		    fputs($socket, "Action: Login\r\n");
+            fputs($socket, "UserName: $server_manager[1]\r\n");
+            fputs($socket, "Secret: $server_manager[2]\r\n\r\n");
+			 
+	         /*
+            fputs($socket, "Action: GetVar\r\n");			
+			fputs($socket, "Channel: $channel\r\n"); 
+			fputs($socket, "Variable: userid\r\n");	
+		      */ 
+	  
+	 
+            fputs($socket, "Action: Setvar\r\n");			
+			fputs($socket, "Channel: $channel\r\n");    
+			fputs($socket, "Variable: CeeStackUID\r\n"); 			
+            fputs($socket, "Value: $value \r\n\r\n");  	
+			fputs($socket, "Action: Logoff\r\n\r\n");
+			 
+            while (!feof($socket)) {
+                $wrets = fgets($socket, 100);
+				//echo $wrets."<br/>";
+				/*
+                if (strstr($wrets,"Status: " )) {
+                    $response = substr($wrets,10);
+                    break;
+                }
+				*/
+            }
+		   
+           // echo "Callerid: " . $callerid .'<br>';
+            fclose($socket);
+          //  return $response;
+		
+		}
+                
+	    function Originate($server_manager,$manager_originate)
+        {
+            $callerid = SIPshowpeer($server_manager,$manager_originate[0]);
+           // echo "Active SIPshowpeer = ".$callerid.'<br>';
+            $socket = fsockopen("$server_manager[0]","$server_manager[3]", $errno, $errstr, 10);
+                       // if(!$socket){
+                         // echo "error can't connect to server";
+                       // }
+            fputs($socket, "Action: Login\r\n");
+            fputs($socket, "UserName: $server_manager[1]\r\n");
+            fputs($socket, "Secret: $server_manager[2]\r\n\r\n");
+            fputs($socket, "Action: Originate\r\n");
+            fputs($socket, "Channel: SIP/$manager_originate[0]\r\n");
+            fputs($socket, "Context: from-internal\r\n");
+            fputs($socket, "Exten: $manager_originate[1]\r\n");
+            fputs($socket, "Priority: 1\r\n");
+            fputs($socket, "CallerID: $callerid\r\n\r\n");
+                        //fputs($socket, "Variable: testabc=1234\r\n\r\n");
+            while (!feof($socket)) {
+                $wrets = fgets($socket, 100);
+                      //  wlog("originate: ".$wrets);
+                                //echo $wrets."<br/>";  
+                                if(strstr($wrets,"Channel: ")){
+
+                                   // echo "channel : |".$wrets.'|<br>';
+                                        $channel  = substr($wrets,9,17);
+                                        //$channel = $wrets;
+                                }
+
+
+				                if (strstr($wrets,"Uniqueid: " )) {
+				
+				                    $uniqueid = substr($wrets,10);
+				                   // echo "strlen Wrets: |" . strlen($wrets) .'<br>';
+				                   // echo "Wrets: |" . $wrets .'<br>';
+				                   // echo "Uniqueid: |" . $uniqueid .'<br>';
+									  break;
+				                }
+            }
+            fputs($socket, "Action: Logoff\r\n\r\n");
+            //wlog("sys_ami".$channel."|".$uniqueid);
+           // echo "Channel SIP Extension = " . $channel .'<br>';          
+            fclose($socket);
+            return $channel."|".$uniqueid;
+        }
+
+		 
+        function SIPshowpeer($server_manager,$peer)
+        {
+            $socket = fsockopen("$server_manager[0]","$server_manager[3]", $errno, $errstr, 10);
+            fputs($socket, "Action: Login\r\n");
+            fputs($socket, "UserName: $server_manager[1]\r\n");
+            fputs($socket, "Secret: $server_manager[2]\r\n\r\n");
+            fputs($socket, "Action: SIPShowPeer\r\n");
+            fputs($socket, "Peer: $peer\r\n\r\n");
+            fputs($socket, "Action: Logoff\r\n\r\n");
+
+            while (!feof($socket)) {
+                $wrets = fgets($socket, 100);
+                if (strstr($wrets,"Callerid: " )) {
+                    $callerid = substr($wrets,10);
+                    break;
+                }
+            }
+           // echo "Callerid: " . $callerid .'<br>';
+            fclose($socket);
+            return $callerid;
+        }
+		
+		
+		function ExtensionState($server_manager,$extension)
+		{
+		   $socket = fsockopen("$server_manager[0]","$server_manager[3]", $errno, $errstr, 10);
+		    fputs($socket, "Action: Login\r\n");
+            fputs($socket, "UserName: $server_manager[1]\r\n");
+            fputs($socket, "Secret: $server_manager[2]\r\n\r\n");
+			
+            fputs($socket, "Action: ExtensionState\r\n");
+			fputs($socket, "Context: from-internal\r\n");
+			fputs($socket, "Exten: $extension\r\n\r\n"); 
+			fputs($socket, "Action: Logoff\r\n\r\n");
+			 
+            while (!feof($socket)) {
+                $wrets = fgets($socket, 100);
+				echo $wrets."<br/>";
+				/*
+                if (strstr($wrets,"Status: " )) {
+                    $response = substr($wrets,10);
+                    break;
+                }
+				*/
+            }
+		  
+           // echo "Callerid: " . $callerid .'<br>';
+            fclose($socket);
+            return $response;
+		
+		
+		}
+		
+	    function Hangup($server_manager,$channel)
+        {
+            $socket = fsockopen("$server_manager[0]","$server_manager[3]", $errno, $errstr, 10);
+            fputs($socket, "Action: Login\r\n");
+            fputs($socket, "UserName: $server_manager[1]\r\n");
+            fputs($socket, "Secret: $server_manager[2]\r\n\r\n");
+
+            fputs($socket, "Action: Hangup\r\n");
+            fputs($socket, "Channel: $channel\r\n\r\n");
+            fputs($socket, "Action: Logoff\r\n\r\n");
+
+            while (!feof($socket)) {
+                $wrets = fgets($socket, 100);
+                wlog("ast: ".$wrets);
+                if (strstr($wrets,"Response: " )) {
+                    $response = substr($wrets,10);
+                    break;
+                }
+            }
+           // echo "Callerid: " . $callerid .'<br>';
+            fclose($socket);
+            return $response;
+            
+         }
+		
+
+?>
+	 

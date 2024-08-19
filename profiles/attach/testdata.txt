@@ -1,0 +1,2 @@
+cust_id,frist,last,phone1
+0001,AAAAA,ดดดดดด,0999199191

@@ -1,0 +1,2932 @@
+<?php  session_start(); ?>
+<?php include "dbconn.php" ?>
+<?php include "util.php"  ?>
+<?php include "wlog.php"  ?> 
+<?php
+
+   	if(isset($_POST['action'])){ 
+         switch( $_POST['action']){
+         	case "init" : init(); 	 break;
+         	case "list" : getList(); break;
+         	
+         	//case "workinagent" : workingagent(); break; //display agent on hands list
+         	case "workinglist" : workinglist(); break; //display list on campaign
+         	case "findMaxAva" : findMaxAva(); break; // find new list max available for distribute
+         	
+         	case "searchteam" : searchteam(); break;
+         	
+         	case "search" :  search(); break;
+         	case "preview" : preview(); break;
+         	case "save" : save(); break;
+         	
+         	case "revokelist" : revoke_list(); break;
+         	case "revokesearch" : revoke_search(); break;
+         	case "revokeprocess" : revoke_process(); break;
+         	
+         	case "transfersearch" : transfer_search(); break;
+         	case "transferprocess" : transferprocess(); break;
+         	
+         	case "searchteam" : search_team(); break;
+         	case "workingagent" : workingagentx(); break; 
+         	case "workinglead" : workinglead(); break; //search agent by selecting lead
+         	
+         	case "selectagent_fromlead": getlead(); break;
+         	case "getnewlist" : getnewlist(); break;
+         	case "selectteam" : selectteam(); break;
+         	
+         
+         	
+         	
+         	// transfer from lead source
+         	case "lead_transferprocess" : lead_transferprocess(); break;
+   			case "agent_transferprocess" : agent_transferprocess(); break;
+         	//not use
+         	/*
+         	case "process" : process(); break; //process เหี้ยไรวะ 
+         	
+         	//ok
+         	case "listtocampaign" : listtocampaign(); break; 
+         	//ok
+         	case "savemovelist" : savemovelist(); break;
+         	
+         	
+        
+         	
+     
+         	case "moreDetail" : moreDetail(); break;
+         	   	
+         	case "preview" : preview(); break;
+         	case "savepreview" : savepreview(); break;
+         	
+         	//not used
+	        case "query"  : query(); break;
+			case "detail"  : detail(); break;
+			case "save"    : save(); break;
+			case "delete"  : delete(); break;
+			case "check" : check(); break;
+			*/
+			
+ 
+		 }
+	}  
+	
+	function searchteam(){
+	
+			$dbconn = new dbconn;  
+			$res = $dbconn->createConn();
+		 	if($res==404){
+					    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+					    echo json_encode($res);		
+					    exit();
+		     }
+		     
+		    //query team
+			$sql = " SELECT team_id , team_name ".
+						" FROM t_team WHERE group_id = ".dbNumberformat($_POST['groupid'])."  ".
+						" ORDER BY team_name ";
+			
+			wlog("select team ".$sql);
+			
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp1[$count] = array(
+			  				    "id"  => nullToEmpty($rs['team_id']),
+								"value"  => nullToEmpty($rs['team_name'])
+						);   
+				$count++;  
+			}
+		  
+			
+		    if($count==0){
+				$tmp1 = array("result"=>"empty");
+			} 
+			 	$data = array("team"=>$tmp1);
+			
+				$dbconn->dbClose();
+				echo json_encode( $data ); 
+	}
+	
+	function workinglead(){
+		
+			$dbconn = new dbconn;  
+			$res = $dbconn->createConn();
+		 	if($res==404){
+					    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+					    echo json_encode($res);		
+					    exit();
+		     }
+			$sql = " SELECT import_id , list_name". 
+						" FROM t_import_list WHERE import_id IN ".
+							" ( SELECT DISTINCT import_id FROM t_calllist_agent WHERE agent_id IN ".
+							" ( SELECT agent_id FROM t_agents WHERE team_id = ".dbNumberformat($_POST['teamid'])." ) ".
+							" AND import_id IS NOT NULL ) ";
+			
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				  	$tmp1[$count] = array(
+						        "impid"  => nullToEmpty($rs['import_id']),
+			  					"impname"  => nullToEmpty($rs['list_name']),
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp1 = array("result"=>"empty");
+			} 
+			 
+	
+	 	$data = array("list"=>$tmp1);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+	}
+	
+	function getlead(){
+		
+			$dbconn = new dbconn;  
+			$res = $dbconn->createConn();
+		 	if($res==404){
+					    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+					    echo json_encode($res);		
+					    exit();
+		     }
+			$sql = "SELECT import_id , list_name". 
+						"FROM t_import_list WHERE import_id IN ( SELECT DISTINCT import_id FROM t_calllist_agent WHERE agent_id IN ( SELECT agent_id FROM t_agents WHERE team_id = 3 )".
+						"AND import_id IS NOT NULL";
+			
+			
+	    $tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	 	//calllist on agent hands seperate by level of agent 
+			   $sql =" SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name ".
+			  		"  , ag.img_path ,  ag.extension, t.team_name ". 
+	     			" , count( a.calllist_id ) as total_call".
+			   		" , sum( a.new_cnt ) as new_cnt".
+					" , sum( a.callback_cnt ) as success_cnt".
+	     			" , sum( a.callback_cnt ) as callback_cnt".
+	     			" , sum( a.follow_cnt ) as follow_cnt".
+	     			" , sum( a.dnc_cnt ) as dnc_cnt".
+	     			" , sum( a.bad_cnt ) as bad_cnt".
+			   		" , sum( a.nocont_cnt) as nocont_cnt".
+					" FROM  ( ".
+					" select campaign_id ,agent_id ,calllist_id ".
+			   		" ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt ". 
+					" ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt ". 
+					" ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt ".
+	     			" ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt ".
+					" ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt ".
+	     			" ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt ".
+			   		" ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt ".
+					" FROM t_calllist_agent  ) AS a  ".
+					" LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id  ".
+					" RIGHT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id  ".
+					" LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id  ".
+					" LEFT OUTER JOIN t_group g ON t.group_id = g.group_id  ".
+			 		" WHERE ag.team_id  = ".dbNumberFormat($_POST['teamid'])." ". 
+					" GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name ".
+				    " ,ag.img_path ,  ag.extension, t.team_name ";
+			 
+			wlog( $sql );
+			     
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$total = nullToZero($rs['new_cnt']) +  nullToZero($rs['nocont_cnt']) +   nullToZero($rs['follow_cnt']) + nullToZero($rs['callback_cnt']);
+			  	$tmp1[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+			  					"cmpn"  => nullToEmpty($rs['campaign_name']),
+								"aid"  => nullToEmpty($rs['agent_id']),
+			  					"aname"  => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+							 	"tcall"  => nullToZero($total),
+			  		  			"tnew"  => nullToZero($rs['new_cnt']),
+			  	     			"tsuccess"  => nullToZero($rs['success_cnt']),
+								"tcallback"  => nullToZero($rs['callback_cnt']),
+			  					"tfollow"  => nullToZero($rs['follow_cnt']),			  	
+							    "tdnc"  => nullToZero($rs['dnc_cnt']),
+			  	    			"tbad"  => nullToZero($rs['bad_cnt']),
+			  					"tnoc"  => nullToZero($rs['nocont_cnt']),
+			  					"isonline"=>nullToEmpty(isonline( $rs['agent_id'] ))
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp1 = array("result"=>"empty");
+			} 
+			 
+	
+	 	$data = array("callsts"=>$tmp1);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+			
+			
+	}
+	
+	 function isonline( $aid ){
+	
+				$dbconn = new dbconn;  
+				$res = $dbconn->createConn();
+			 	if($res==404){
+						    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+						    echo json_encode($res);		
+						    exit();
+			     }
+			     
+			 	$sql = " SELECT agent_id FROM t_session ".
+							" WHERE agent_id = ".dbNumberFormat($aid);	 	
+			 	
+			 	$online = "offline";
+		 	    $result = $dbconn->executeQuery($sql);
+				if($rs=mysql_fetch_array($result)){   
+					$online = "online";
+				}
+			 	return $online;
+	 	
+	 }
+	
+	function lead_transferprocess(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	     
+	     
+		         //find limit of callist record
+		    	$limit =  intval($tmp['transfer_amount']) * intval($_POST['totalagent']);
+	     
+				 $sql =  " SELECT calllist_id FROM t_calllist ".
+							  " WHERE import_id = ".dbNumberFormat($tmp['leadsource_list'])." ".
+						 	  " AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".dbNumberFormat( $tmp['leadsource_campaign'])." ) ".
+    						  " ORDER BY RAND()  LIMIT ".$limit;
+				 
+				 
+				 wlog("sql find calllist for transfer ".$sql);
+				 
+				 //get agent destination 
+				 $data = json_decode( $_POST['desc'] , true); 
+			     $size = count( $data['data']);
+			      
+		    	$result = $dbconn->executeQuery($sql);
+		    	$count = 0;
+		    	
+		    	$uniqid = uniqid();
+
+				while($rs=mysql_fetch_array($result)){   
+					
+				//log transfer
+				 $sql = " INSERT INTO t_calllist_transfer_history ( unique_id , calllist_id , transfer_from_id , transfer_to_id , transfer_by_id , transfer_date , ".
+							" transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , ".
+							" transfer_cmpid , transfer_import_id ) VALUES (  ".
+				 			" ".dbformat($uniqid).",".
+				 			" ".dbNumberFormat($rs['calllist_id']).",".
+							"  null ,".
+				 			" ".dbNumberFormat($data['data'][$count]['aid']).",". //transfer_to_id
+				 			" ".dbNumberFormat($tmp['uid']).",". //transfer_by_id
+				 			" NOW() , ".
+				 			"  1 , ". //transfer type
+				 			" 'transfer' , ". // transfer type_dtl
+				 			" 1 , ". // transfer on status
+				 			" 'newlist', ". //transfer on status dtl
+				 			" ".dbNumberFormat( $tmp['leadsource_campaign']).", ". //transfer campaign id
+				 			" ".dbNumberFormat($tmp['leadsource_list'])." ) ";		 //transfer  import id 
+
+				 	 		//wlog( "[distribute_process][save] LOG TRANSFER sql : ".$sql  );
+						   $dbconn->executeUpdate($sql);
+				
+						 	$sql = "INSERT INTO t_calllist_agent ( campaign_id , import_id , agent_id , calllist_id ,  status , assign_dt , assign_id  ) VALUES ( ".
+							 				  				" ".dbNumberFormat($tmp['leadsource_campaign']).", ".
+     	         		 									" ".dbNumberFormat($tmp['leadsource_list']).", ".
+			 												" ".dbNumberFormat($data['data'][$count]['aid']).", ".
+			 												" ".dbNumberFormat($rs['calllist_id']).", ".
+			 												" 1 ,  NOW() , ".
+			 												" ".dbNumberFormat($tmp['uid'])." ) ";
+						 	
+							 //wlog( "[distribute_process][save] insert sql : ".$sql  );
+							 $dbconn->executeUpdate($sql);
+							 $count++;
+							 if( $count >= $size ){
+							 	$count = 0;
+							 }
+					}
+					
+					//insert transection log to sumary table
+					$sql = " INSERT INTO t_calllist_transfer   (transfer_from_id , transfer_to_id , transfer_total ,transfer_date ".
+								" ,transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , transfer_cmpid ,transfer_import_id ) ".
+								" SELECT transfer_from_id , transfer_to_id , COUNT(calllist_id) AS transfer_total  ".
+								" ,max( transfer_date ) as transfer_date ".
+								" ,transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , transfer_cmpid ,transfer_import_id ".
+								" FROM t_calllist_transfer_history ".
+								" WHERE unique_id = ".dbformat($uniqid)." ".
+								" GROUP BY  transfer_from_id , transfer_to_id ,transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , transfer_cmpid ,transfer_import_id ".
+								" ORDER BY transfer_to_id,transfer_import_id ";
+					
+					wlog("[lead_transferprocess] summary log : ".$sql);
+					$dbconn->executeUpdate($sql);
+					
+			$res = array("result"=>"success");
+			$dbconn->dbClose();
+			echo json_encode($res);   
+		
+	}
+	
+	function agent_transferprocess(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	     
+	     //if source type => db
+	     //if source type => agent
+	    // $tmp['transfer_sourcetype'];
+	     
+   
+	   //  wlog("AGENT transfer process");
+	     //do agent
+	     //find from agent
+	     $source = json_decode( $_POST['source'] , true); 
+	     $size = count( $source['data']);
+	     
+	     // wlog("transfer process : ".$source['data']);
+	     $sourceagent = array();
+	     for( $i=0; $i<$size; $i++){
+	     		array_push( $sourceagent ,  $source['data'][$i]['aid']  );
+	     	    wlog(   $source['data'][$i]['aid']  );
+	     }
+	     
+	 
+		//wlog("transfer status : ".$tmp['transfer_liststatus'] ); //hidden value on top of table header
+		$sts_dtl = "";
+		  if( isset($tmp['transfer_liststatus'])){
+		     	   switch( $tmp['transfer_liststatus'] ){
+		     	   				//newlist
+		     	   		case "2" : $opt = " AND last_wrapup_id is null ";
+		     	   						$sts_dtl = "newlist"; 
+		     	   									break;
+		     	   				//nocontact
+		     	   		case "3" : $opt = " AND `status` = 1 ".
+	  												" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 2 )";
+		     	   						$sts_dtl = "nocontact"; 
+		     	   									break;
+		     	   					//callback
+		     	   		case "4" : $opt = " AND `status` = 1 ".
+	  												" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 3 ) ";
+		     	   						$sts_dtl = "callback"; 
+		     	   									break;
+		     	   									
+		     	   				//followup
+		     	   		case "5" : $opt = " AND `status` = 1 ".
+												     " AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 4 ) ";
+										$sts_dtl = "followup"; 
+		     	   									  break;
+		     	   }
+		     }
+		     
+	
+			   		$sql= $sql.") AS a  ".
+		     
+		    //find limit of callist record
+	    	$limit =  intval($tmp['transfer_amount']) * intval($_POST['totalagent']);
+		     
+		     $sql = " SELECT calllist_id FROM t_calllist_agent  ".
+		     			" WHERE agent_id IN (".implode(",", $sourceagent).") ";
+		     
+		     if( $tmp['leadsource_list'] != "" && $tmp['leadsource_list'] != "all" ){
+		     			$sql =$sql." AND import_id = ".dbnUmberFormat( $tmp['leadsource_list'])." ";
+		     }
+		     
+		     			$sql = $sql."".$opt.
+		     			" ORDER BY RAND()  LIMIT ".$limit;
+						//wlog('CROSS CHECK sql :'.$sql);
+				
+	         $data = json_decode( $_POST['desc'] , true); 
+		     $size = count( $data['data']);
+		      
+		    $uniqid = uniqid();
+	    	$result = $dbconn->executeQuery($sql);
+	    	$count = 0;
+
+			while($rs=mysql_fetch_array($result)){   
+							
+						//log transfer
+					 $sql = " INSERT INTO t_calllist_transfer_history ( unique_id , calllist_id , transfer_from_id , transfer_to_id , transfer_by_id , transfer_date , ".
+								" transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , ".
+								" transfer_cmpid , transfer_import_id ) SELECT  ".
+					 			" ".dbformat($uniqid).",".
+					 			" ".dbNumberFormat($rs['calllist_id']).",".
+								"  agent_id ,".
+					 			" ".dbNumberFormat($data['data'][$count]['aid']).",". //transfer_to_id
+					 			" ".dbNumberFormat($tmp['uid']).",". //transfer_by_id
+					 			" NOW() , ".
+					 			"  1 , ". //transfer type
+					 			" 'transfer' , ". // transfer type_dtl
+					 			" ".dbNumberFormat($tmp['transfer_liststatus'])." , ". // transfer on status
+					 			" ".dbformat($sts_dtl)." , ". //transfer on status dtl
+					 			" campaign_id , ". //transfer campaign id
+					 			" import_id ".		 //transfer  import id
+					 			" FROM t_calllist_agent ".
+					 			" WHERE  calllist_id = ".dbNumberFormat( $rs['calllist_id'] );
+					 	 		//wlog( "[distribute_process][save] LOG TRANSFER sql : ".$sql  );
+							   $dbconn->executeUpdate($sql);
+							
+								$sql = " UPDATE t_calllist_agent ".
+			    	  	    				" SET assign_from_id = agent_id ". 
+											" , agent_id = ".dbNumberFormat($data['data'][$count]['aid'])." ".
+											" , assign_id = ".dbNumberFormat($tmp['uid'])." ".
+											" , assign_dt = NOW() ".
+			    	  	    				" WHERE calllist_id = ".dbNumberFormat($rs['calllist_id']);
+								 //wlog( "[distribute_process][save] update sql : ".$sql  );   
+								$dbconn->executeUpdate($sql);
+								 $count++;
+								 if( $count >= $size ){
+								 	$count = 0;
+								 }
+						}//end while
+						
+					
+					//insert transection log to sumary table
+					$sql = " INSERT INTO t_calllist_transfer   (transfer_from_id , transfer_to_id , transfer_total ,transfer_date ".
+								" ,transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , transfer_cmpid ,transfer_import_id ) ".
+								" SELECT transfer_from_id , transfer_to_id , COUNT(calllist_id) AS transfer_total  ".
+								" ,max( transfer_date ) as transfer_date ".
+								" ,transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , transfer_cmpid ,transfer_import_id ".
+								" FROM t_calllist_transfer_history ".
+								" WHERE unique_id = ".dbformat($uniqid)." ".
+								" GROUP BY  transfer_from_id , transfer_to_id ,transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , transfer_cmpid ,transfer_import_id ".
+								" ORDER BY transfer_to_id,transfer_import_id ";
+					
+					wlog("[dsitribute_process] log transfer sql : ".$sql);
+					$dbconn->executeUpdate($sql);
+			
+		
+	    $res = array("result"=>"success");
+	    $dbconn->dbClose();
+		echo json_encode($res);   
+		
+	}
+	
+	
+	
+	function selectteam(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	     
+	     //no campaign condition need ( show all on hands )
+		$sql =" SELECT ag.agent_id , ag.first_name , ag.last_name ".
+			  		"  , ag.img_path ,  ag.extension, t.team_name ". 
+	     			" , count( a.calllist_id ) as total_call".
+			   		" , sum( a.new_cnt ) as new_cnt".
+					" , sum( a.callback_cnt ) as success_cnt".
+	     			" , sum( a.callback_cnt ) as callback_cnt".
+	     			" , sum( a.follow_cnt ) as follow_cnt".
+	     			" , sum( a.dnc_cnt ) as dnc_cnt".
+	     			" , sum( a.bad_cnt ) as bad_cnt".
+			   		" , sum( a.nocont_cnt) as nocont_cnt".
+					" FROM  ( ".
+					" select campaign_id ,agent_id ,calllist_id ".
+			   		" ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt ". 
+					" ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt ". 
+					" ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt ".
+	     			" ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt ".
+					" ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt ".
+	     			" ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt ".
+			   		" ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt ".
+					" FROM t_calllist_agent  ) AS a  ".
+					" RIGHT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id  ".
+					" LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id  ".
+					" LEFT OUTER JOIN t_group g ON t.group_id = g.group_id  ".
+					" WHERE ag.team_id = ".dbNumberFormat($_POST['teamid'])." ".				
+					" GROUP BY  ag.agent_id , ag.first_name , ag.last_name ".
+				    " ,ag.img_path ,  ag.extension, t.team_name ";
+
+			 wlog("[distribute_process][selectteam] ".$sql);
+
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+		
+				$total = nullToZero($rs['new_cnt']) +  nullToZero($rs['nocont_cnt']) +   nullToZero($rs['follow_cnt']) + nullToZero($rs['callback_cnt']);
+			  	$tmp1[$count] = array(
+								"aid"  => nullToEmpty($rs['agent_id']),
+			  					"aname"  => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+							 	"tcall"  => nullToZero($total),
+			  		  			"tnew"  => nullToZero($rs['new_cnt']),
+			  	     			"tsuccess"  => nullToZero($rs['success_cnt']),
+								"tcallback"  => nullToZero($rs['callback_cnt']),
+			  					"tfollow"  => nullToZero($rs['follow_cnt']),			  	
+							    "tdnc"  => nullToZero($rs['dnc_cnt']),
+			  	    			"tbad"  => nullToZero($rs['bad_cnt']),
+			  					"tnoc"  => nullToZero($rs['nocont_cnt']),
+			  					"isonline"=>nullToEmpty(isonline( $rs['agent_id'] ))
+						);   
+				$count++;  
+			}
+		    if($count==0){
+			$tmp1 = array("result"=>"empty");
+			} 
+			 
+			
+			$data = array("callsts"=>$tmp1);
+			
+			$dbconn->dbClose();
+			echo json_encode( $data ); 
+		
+	}
+
+	function getnewlist(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	     
+    	   $sql =  " SELECT COUNT(*) AS total FROM t_calllist ".
+						" WHERE import_id = ".dbNumberFormat($tmp['leadsource_list'])." ".
+						" AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".dbNumberFormat( $tmp['leadsource_campaign'])." ) ";
+    	   	
+    	   	$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp1= array(
+						        "dbtotal"  => nullToEmpty($rs['total']),
+			  	);
+			  	$count++;
+			}
+			
+		 	$data = array("indb"=>$tmp1);
+				
+			$dbconn->dbClose();
+			echo json_encode( $data ); 
+								
+		
+	}
+
+	function 	workingagentx(){
+	
+	 //get level of agent from session
+	 	
+	    $tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	     $teamid = "";
+	     if( isset($_POST['teamid'])){
+	     		$teamid = $_POST['teamid'];
+	     }else{
+	     		$teamid = $tmp['agentssource_fromteam'];
+	     }
+	     
+	 	//calllist on agent hands seperate by level of agent 
+			   $sql =" SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name ".
+			  		"  , ag.img_path ,  ag.extension, t.team_name ". 
+	     			" , count( a.calllist_id ) as total_call".
+			   		" , sum( a.new_cnt ) as new_cnt".
+					" , sum( a.callback_cnt ) as success_cnt".
+	     			" , sum( a.callback_cnt ) as callback_cnt".
+	     			" , sum( a.follow_cnt ) as follow_cnt".
+	     			" , sum( a.dnc_cnt ) as dnc_cnt".
+	     			" , sum( a.bad_cnt ) as bad_cnt".
+			   		" , sum( a.nocont_cnt) as nocont_cnt".
+					" FROM  ( ".
+					" select campaign_id ,agent_id ,calllist_id ".
+			   		" ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt ". 
+					" ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt ". 
+					" ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt ".
+	     			" ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt ".
+					" ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt ".
+	     			" ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt ".
+			   		" ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt ".
+					" FROM t_calllist_agent  ";
+			   
+			   if( $tmp['leadsource_list'] != "all"  ){
+			   		$sql =$sql." WHERE import_id = ".dbNumberFormat( $tmp['leadsource_list'])." ";
+			   }
+	
+			   		$sql= $sql.") AS a  ".
+					" LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id  ".
+					" RIGHT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id  ".
+					" LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id  ".
+					" LEFT OUTER JOIN t_group g ON t.group_id = g.group_id  ".
+			 		" WHERE ag.team_id  = ".dbNumberFormat( $teamid )." ".
+					" GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name ".
+				    " ,ag.img_path ,  ag.extension, t.team_name ".
+			   		" ORDER BY  ag.first_name , ag.last_name ";
+			 
+			wlog( $sql );
+			     
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$total = nullToZero($rs['new_cnt']) +  nullToZero($rs['nocont_cnt']) +   nullToZero($rs['follow_cnt']) + nullToZero($rs['callback_cnt']);
+			  	$tmp1[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+			  					"cmpn"  => nullToEmpty($rs['campaign_name']),
+								"aid"  => nullToEmpty($rs['agent_id']),
+			  					"aname"  => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+							 	"tcall"  => nullToZero($total),
+			  		  			"tnew"  => nullToZero($rs['new_cnt']),
+			  	     			"tsuccess"  => nullToZero($rs['success_cnt']),
+								"tcallback"  => nullToZero($rs['callback_cnt']),
+			  					"tfollow"  => nullToZero($rs['follow_cnt']),			  	
+							    "tdnc"  => nullToZero($rs['dnc_cnt']),
+			  	    			"tbad"  => nullToZero($rs['bad_cnt']),
+			  					"tnoc"  => nullToZero($rs['nocont_cnt']),
+			  					"isonline"=>nullToEmpty(isonline( $rs['agent_id'] ))
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp1 = array("result"=>"empty");
+			} 
+			 
+	
+	 	$data = array("callsts"=>$tmp1);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+	 }
+	
+	function search_team(){
+		
+			$tmp = json_decode( $_POST['data'] , true); 
+			$dbconn = new dbconn;  
+			$res = $dbconn->createConn();
+		 	if($res==404){
+					    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+					    echo json_encode($res);		
+					    exit();
+		     } 
+		     
+			//query agent
+				$sql = " SELECT agent_id , first_name , last_name ".
+							" FROM t_agents ".
+							" WHERE is_active = 1 ".
+							" AND team_id = ".$tmp['search_team'].
+							" ORDER BY agent_id ";
+				
+				$count = 0;    
+			    $result = $dbconn->executeQuery($sql);
+				while($rs=mysql_fetch_array($result)){
+				  	$tmp1[$count] = array(
+				  				    "id"  => nullToEmpty($rs['agent_id']),
+									"value"  => nullToEmpty($rs['first_name']." ".$rs['last_name'])
+							);   
+					$count++;  
+				}
+			    if($count==0){
+					$tmp1 = array("result"=>"empty");
+				} 
+				
+		 	$data = array("agent"=>$tmp1);
+			
+			$dbconn->dbClose();
+			echo json_encode( $data ); 
+		
+	}
+	
+	function transferprocess(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	     
+	     //if source type => db
+	     //if source type => agent
+	    // $tmp['transfer_sourcetype'];
+	     
+   
+	     wlog("transfer process");
+	     //do agent
+	     //find agent and status
+	     $source = json_decode( $_POST['source'] , true); 
+	     $size = count( $source['data']);
+	     
+	      wlog("transfer process : ".$source['data']);
+	     $sourceagent = array();
+	     for( $i=0; $i<$size; $i++){
+	     		array_push( $sourceagent ,  $source['data'][$i]['aid']  );
+	     	    wlog(   $source['data'][$i]['aid']  );
+	     }
+	     
+	 
+		wlog("transfer status : ".$tmp['transfer_liststatus'] );
+		  if( isset($tmp['transfer_liststatus'])){
+		     	   switch( $tmp['transfer_liststatus'] ){
+		     	   				//newlist
+		     	   		case "2" : $opt = " AND last_wrapup_id is null "; 
+		     	   									break;
+		     	   				//nocontact
+		     	   		case "3" : $opt = " AND `status` = 1 ".
+	  												" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 2 )";
+		     	   									break;
+		     	   					//callback
+		     	   		case "4" : $opt = " AND `status` = 1 ".
+	  												" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 3 ) ";
+		     	   									break;
+		     	   				//followup
+		     	   		case "5" : $opt = " AND `status` = 1 ".
+												     " AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 4 ) ";
+		  											 break;
+		     	   }
+		     }
+		     
+		     
+		    //find limit of callist record
+	    	$limit =  intval($tmp['transfer_amount']) * intval($_POST['totalagent']);
+		     
+		     $sql = "SELECT calllist_id FROM t_calllist_agent  WHERE agent_id IN (".implode(",", $sourceagent).") ".$opt.
+		     			" ORDER BY RAND()  LIMIT ".$limit;
+						wlog('CROSS CHECK sql :'.$sql);
+	    
+	
+	         $data = json_decode( $_POST['desc'] , true); 
+		     $size = count( $data['data']);
+		      
+		    $uniqid = uniqid();
+	    	$result = $dbconn->executeQuery($sql);
+	    	$count = 0;
+
+						while($rs=mysql_fetch_array($result)){   
+							
+							/*
+							 * INSERT INTO t_calllist_transfer ( unique_id , calllist_id , transfer_from_id , transfer_to_id , transfer_by_id , transfer_date ...) 
+SELECT '001','REARE', AGENT_ID 
+FROM T_CALLLIST_AGENT
+WHERE CAMPAIAGN_ID = ;; 
+AND CALLLIST_ID = ;; 
+							 */
+							
+									 /*
+								 $sql = " INSERT INTO t_calllist_transfer ( unique_id , calllist_id , transfer_from_id , transfer_to_id , transfer_by_id , transfer_date , ".
+											" transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , ".
+											" transfer_cmpid , transfer_import_id ) SELECT  ".
+								 			" ".dbformat($uniqid).",".
+								 			" ".dbNumberFormat($rs['calllist_id'].",".
+								 			" ". //transfer_from_id 
+								 			" ".dbNumberFormat($data['data'][$count]['aid']).",". //transfer_to_id
+								 			" ".dbNumberFormat($tmp['uid']).",". //transfer_by_id
+								 			" NOW() , ".
+								 			" ". //transfer type
+								 			" ". // transfer type_dtl
+								 			" ". // transfer on status
+								 			" ". //transfer on status dtl
+								 			" ". //transfer campaign id
+								 			"  ". //transfer  import id 
+								 			")";
+								 */
+							
+							
+								$sql = " UPDATE t_calllist_agent ".
+			    	  	    				" SET assign_from_id = agent_id ". 
+											" , agent_id = ".dbNumberFormat($data['data'][$count]['aid'])." ".
+											" , assign_id = ".dbNumberFormat($tmp['uid'])." ".
+											" , assign_dt = NOW() ".
+			    	  	    				" WHERE calllist_id = ".dbNumberFormat($rs['calllist_id']);
+								 wlog( "[distribute_process][save] update sql : ".$sql  );   
+								 $effect = $dbconn->executeUpdate($sql);
+								 
+								 //insert log transfer
+								 /*
+								 $sql = " INSERT INTO t_calllist_transfer ( unique_id , calllist_id , transfer_from_id , transfer_to_id , transfer_by_id , transfer_date , ".
+											" transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , ".
+											" transfer_cmpid , transfer_import_id ) VALUES ( ".
+								 			" ".dbformat($uniqid).",".
+								 			" ".dbNumberFormat($rs['calllist_id'].",".
+								 			" ". //transfer_from_id
+								 			" ".dbNumberFormat($data['data'][$count]['aid']).",". //transfer_to_id
+								 			" ".dbNumberFormat($tmp['uid']).",". //transfer_by_id
+								 			" NOW() , ".
+								 			" ". //transfer type
+								 			" ". // transfer type_dtl
+								 			" ". // transfer on status
+								 			" ". //transfer on status dtl
+								 			" ". //transfer campaign id
+								 			"  ". //transfer  import id 
+								 			")";
+								 */
+								 
+								 $count++;
+								 if( $count >= $size ){
+								 	$count = 0;
+								 }
+						}
+			
+
+	    $res = array("result"=>"success");
+		echo json_encode($res);   
+		
+	}
+	
+	function transferprocess_original(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	     
+	     //from ( only one )
+	     //check source
+	     //if source type from db => insert
+	     //if source type from agent = > update
+	     
+	         $source = json_decode( $_POST['soruce'] , true); 
+		     $size = count( $source['data'] );
+		     $sourceagent = "";
+		     for( $i=0; $i<$size; $i++){
+		     	array_push( $sourceagent ,  $source['data'][$count]['aid']  );
+		     }
+		  
+	  if( isset($tmp['transfer_liststatus'])){
+	     	   switch( $tmp['transfer_liststatus'] ){
+	     	   		case "newlist" : $opt = " AND last_wrapup_id is null "; 
+	     	   									break;
+	     	   		case "nocontact" : $opt = " AND 	`status` = 1 ".
+  																" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 2 )";
+	     	   									break;
+	     	   		case "callback" : $opt = " AND `status` = 1 ".
+  																" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 3 ) ";
+	     	   									break;
+	     	   		case "followup" : $opt = 	" AND `status` = 1 ".
+											     	   			" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 4 ) ";
+	  											break;
+	     	   }
+	     }
+	     
+	     //find limit of callist record
+	    $limit =  intval($tmp['transfer_amount']) * intval($_POST['totalagent']);
+
+	     
+	  if(isset($_POST['transfersorce'])){
+	    	switch( $_POST['transfersorce'] ){
+		    	case "db" 	   :  	 $sql =  " SELECT calllist_id FROM t_calllist ".
+														  " WHERE import_id = ".dbNumberFormat($tmp['search_list'])." ".
+														  " AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ) ".
+		    											  " limit ".$limit;
+		    							
+		    							break;
+		    	case "agent" : $sql = "SELECT calllist_id FROM t_calllist_agent".
+						    						" WHERE campaign_id = ".dbNumberFormat($tmp['search_campaign'])." ".
+													" AND import_id =  ".dbNumberFormat($tmp['search_list'])." ".
+				     								" AND agent_id = ".implode(",", $sourceagent)." ".
+													$opt.
+													" limit ".$limit;
+						    	
+		    							break;
+	    	}
+	    	
+	    }
+	    
+	        wlog("sql : [distribute_process][transferprocess] :". $sql);
+	        
+	        
+	         $data = json_decode( $_POST['desc'] , true); 
+		     $size = count( $data['data']);
+		      
+	    	$result = $dbconn->executeQuery($sql);
+	    	$count = 0;
+	    	
+	    	if( $_POST['transfersorce'] == "agent"){
+						while($rs=mysql_fetch_array($result)){   
+							
+						//	wlog("calllist id ".$rs['calllist_id']." ");
+							
+								$sql = " UPDATE t_calllist_agent ".
+			    	  	    				" SET assign_from_id = agent_id ". 
+											" , agent_id = ".dbNumberFormat($data['data'][$count]['aid'])." ".
+											" , assign_id = ".dbNumberFormat($tmp['uid'])." ".
+											" , assign_dt = NOW() ".
+			    	  	    				" WHERE calllist_id = ".dbNumberFormat($rs['calllist_id']);
+								 wlog( "[distribute_process][save] update sql : ".$sql  );
+								 $effect = $dbconn->executeUpdate($sql);
+								 $count++;
+								 if( $count >= $size ){
+								 	$count = 0;
+								 }
+						}
+	    	}else  if( $_POST['transfersorce'] == "db"){
+	    	
+	    	
+							while($rs=mysql_fetch_array($result)){   
+									
+								//	wlog("calllist id ".$rs['calllist_id']." ");
+									
+									 	$sql = "INSERT INTO t_calllist_agent ( campaign_id , import_id , agent_id , calllist_id ,  status ,assign_dt , assign_id  ) VALUES ( ".
+													 				  				" ".dbNumberFormat($tmp['search_campaign']).", ".
+						     	         		 									" ".dbNumberFormat($tmp['search_list']).", ".
+									 												" ".dbNumberFormat($data['data'][$count]['aid']).", ".
+									 												" ".dbNumberFormat($rs['calllist_id']).", ".
+									 												" 1 ,  NOW() , ".
+									 												" ".dbNumberFormat($tmp['uid'])." ) ";
+									 	
+										 wlog( "[distribute_process][save] insert sql : ".$sql  );
+										 $effect = $dbconn->executeUpdate($sql);
+										 $count++;
+										 if( $count >= $size ){
+										 	$count = 0;
+										 }
+								}
+		
+	
+	    	}
+	            
+	        /*
+	  	     $data = json_decode( $_POST['transfer'] , true); 
+		      $size = count( $data['data']);
+		     	 
+		     	 //revoke newlist by delete calllist agent record
+		     	 if( $tmp['revoke_liststatus'] == "1" ){
+					     for( $i=0; $i<$size; $i++){
+							     $sql = "DELETE FROM  t_calllist_agent ".
+											" WHERE campaign_id = ".dbNumberFormat($tmp['revoke_campaign'])." ".
+											" AND agent_id =  ".dbNumberFormat( $data['data'][$i]['aid'] ).
+											$opt.
+											" AND import_id =  ".dbNumberFormat($tmp['revoke_list'])." ".
+											" limit ".dbNumberFormat( $data['data'][$i]['rlist'] );
+							     
+							     wlog("[distribute_process][revoke_process] REVOKE sql : ".$sql);
+							    $dbconn->executeUpdate($sql);
+					     }
+	    */
+	
+	    
+	    $res = array("result"=>"success");
+		echo json_encode($res);   
+		
+		
+	     //find calllist id from source
+	     
+
+		
+	}
+	
+	function transfer_search(){
+		
+		 $tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	     
+	     // find on agent hands
+	    if( isset($tmp['transfer_liststatus'])){
+	     	   switch( $tmp['transfer_liststatus'] ){
+	     	   		case "newlist" : $opt = " AND last_wrapup_id is null "; 
+	     	   									break;
+	     	   		case "nocontact" : $opt = " AND 	a.status = 1 ".
+  																" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 2 )";
+	     	   									break;
+	     	   		case "callback" : $opt = " AND a.status = 1 ".
+  																" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 3 ) ";
+	     	   									break;
+	     	   		case "followup" : $opt = 	" AND a.status = 1 ".
+											     	   			" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 4 ) ";
+	  											break;
+	     	   }
+	     }
+	     
+	     
+	    //COUNT INDB
+	    
+	     if( $tmp['transfer_liststatus'] == "newlist" ){
+	     	 //in db new list
+	    		 $sql_indb =  " SELECT COUNT(*) AS total FROM t_calllist ".
+										" WHERE import_id = ".dbNumberFormat($tmp['search_list'])." ".
+										" AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ) "; 
+	     	
+	     }else{
+	     	
+	     		   $sql_indb = " SELECT COUNT(*) AS total FROM t_calllist_agent a ".
+	     		   						" WHERE agent_id IS NULL  ".
+	     		 						" AND campaign_id = ".dbNumberFormat($tmp['search_campaign'])." ".
+										" AND import_id =  ".dbNumberFormat($tmp['search_list'])." ".
+										$opt;
+	     	
+	     }
+	     
+	     wlog(" indb : ".$sql_indb );
+	    	 //query indb list
+	     	$count = 0;    
+		    $result = $dbconn->executeQuery($sql_indb);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp1= array(
+						        "dbtotal"  => nullToEmpty($rs['total']),
+			  	);
+			  	$count++;
+			}
+			
+	     	 if($count==0){
+				$tmp1 = array("result"=>"empty");
+			} 
+
+	     //COUNT ONHANDS each agent
+	  
+     	$sql_onhands = " SELECT COUNT(DISTINCT a.calllist_id ) AS total  , ag.first_name , ag.last_name , a.agent_id ".
+     								" FROM t_calllist_agent a LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id ".
+									" WHERE campaign_id = ".dbNumberFormat($tmp['search_campaign'])." ".
+									" AND import_id =  ".dbNumberFormat($tmp['search_list'])." ".
+     								" AND a.agent_id IS NOT NULL ".
+     								" AND ag.is_active = 1 ".
+									$opt.
+									" GROUP BY ag.first_name , ag.last_name , a.agent_id ";
+									
+									 wlog(" onhands : ".$sql_onhands );
+									   
+	 	 //query onhands list
+	     	$count = 0;    
+		    $result = $dbconn->executeQuery($sql_onhands);
+			while($rs=mysql_fetch_array($result)){   
+			  	$tmp2[$count] = array(
+					"total"  => nullToEmpty($rs['total']),
+			  	    "agent"  => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+			  	    "agentid"  => nullToEmpty($rs['agent_id']),
+			  	);
+			  	$count++;
+			}
+			
+			 if($count==0){
+				$tmp2 = array("result"=>"empty");
+			} 
+		
+	 	$data = array("indb"=>$tmp1,"onhands"=>$tmp2);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+								
+     
+		
+	}
+	
+	function revoke_list(){
+		
+		 $tmp = json_decode( $_POST['data'] , true); 
+		
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	    
+	     
+	    //find agent  join campaign and use in this list
+	     /*
+	    $sql = " SELECT ac.agent_id , a.first_name , a.last_name ".
+	    			" FROM t_calllist_agent ac ".
+	    			" LEFT OUTER JOIN t_agents a ON c.agent_id = a.agent_id ".
+	    			" LEFT OUTER JOIN t_calllist c ON aa.calllist_id = c.calllist_id ".
+	    			" WHERE ac.campaign_id =  ".dbNumberFormat($tmp['revoke_campaign'])." ".
+	    			" AND c.impid = ".dbNumberFormat($tmp['impid']);
+	    			
+	     wlog( $sql );
+	*/
+	     
+	     	//list for campaign
+			$sql = " SELECT  l.campaign_id , l.import_id , c.campaign_name , i.list_name , i.list_detail   ".
+						" FROM t_campaign_list l ".
+						" LEFT OUTER JOIN t_campaign c ON c.campaign_id = l.campaign_id ".
+						" LEFT OUTER JOIN t_import_list i ON i.import_id = l.import_id ".
+						" WHERE l.campaign_id = ".dbNumberFormat($_POST['cmpid']);
+					
+			 wlog("[distribute_process][init] ".$sql);
+
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+			 
+			  	$tmp[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+								"impid"  => nullToEmpty($rs['import_id']),
+			  					"cmpname"  => nullToEmpty($rs['campaign_name']),
+			  					"lname"  => nullToEmpty($rs['list_name']),
+			  					"ldtl"  => nullToEmpty($rs['list_detail']),
+			  					"total" => countTotalList( $rs['import_id'] ),
+			  					"used" => countUsedList($rs['campaign_id'] , $rs['import_id'] )
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp = array("result"=>"empty");
+			} 
+		
+	 	$data = array("cmplist"=>$tmp);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+		
+	}
+	
+	function revoke_search(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	    
+	     if( isset($tmp['revoke_liststatus'])){
+	     	   switch( $tmp['revoke_liststatus'] ){
+	     	   		case "newlist" : $opt = " AND last_wrapup_id is null "; 
+	     	   									break;
+	     	   		case "nocontact" : $opt = " AND 	a.status = 1 ".
+  																" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 2 )";
+	     	   									break;
+	     	   		case "callback" : $opt = " AND a.status = 1 ".
+  																" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 3 ) ";
+	     	   									break;
+	     	   		case "followup" : $opt = 	" AND a.status = 1 ".
+											     	   			" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 4 ) ";
+	  											break;
+	     	   }
+	     }
+	     
+	     
+	     
+	    //find agent  join campaign and use in this list
+	    /*
+	  $sql = " SELECT COUNT(*) as total , a.agent_id , ag.first_name , ag.last_name ".
+	    			" FROM t_calllist_agent a ".
+	  				" LEFT OUTER JOIN t_calllist c ON a.calllist_id = c.calllist_id ".
+	    			" INNER JOIN t_agents ag ON a.agent_id = ag.agent_id ".
+	    			" WHERE  c.import_id = ".dbNumberFormat($_POST['impid']).
+	    			" AND a.campaign_id =  ".dbNumberFormat($tmp['revoke_campaign'])." ".
+	  			//	" AND a.last_wrapup_option_id IS NULL ".
+	  				$opt.
+	  				" GROUP BY  a.agent_id , ag.first_name , ag.last_name ";
+			 wlog("[distribute_process][revoke_search] ".$sql);
+			*/ 
+			 
+			 
+			 //fix
+			
+			$sql = " SELECT COUNT(DISTINCT a.calllist_id ) as total , a.agent_id , ag.first_name , ag.last_name ".  
+						" FROM t_calllist_agent a ".   
+						" INNER JOIN t_agents ag ON a.agent_id = ag.agent_id ". 
+						" WHERE  a.campaign_id =  ".dbNumberFormat($tmp['revoke_campaign'])." ".
+						" AND a.import_id = ".dbNumberFormat($_POST['impid']).
+						$opt.
+						" GROUP BY  a.agent_id , ag.first_name , ag.last_name ";
+			 
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp1[$count] = array(
+						        "aid"  => nullToEmpty($rs['agent_id']),
+			  	    			"total"  => nullToEmpty($rs['total']),
+			  					"agent" => nullToEmpty($rs['first_name']." ". $rs['last_name'] )
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp1 = array("result"=>"empty");
+			} 
+		
+	 	$data = array("agent"=>$tmp1);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+		
+	}
+	
+	function revoke_process(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+	
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     $opt = "";
+	     wlog("revoke status : ".$tmp['revoke_liststatus']);
+	     
+	     //status
+	     $revokests = "";
+	     if( isset($tmp['revoke_liststatus'])){
+	        	switch( $tmp['revoke_liststatus'] ){
+		     	   		case "newlist" : $opt = " AND last_wrapup_id is null "; 
+		     	   								   $revokests = 1;
+		     	   									break;
+		     	   		case "nocontact" : $opt = " AND 	status = 1 ".
+	  																" AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 2 ) ";
+		     	   			   						$revokests = 2;
+		     	   									break;
+		     	   		case "callback" : $opt = " AND status = 1 ".
+	  															  " AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 3 ) ";
+		     	   			   						$revokests = 3;
+		     	   									break;
+		     	   		case "followup" : $opt = " AND status = 1 ".
+												     	   		  " AND last_wrapup_option_id IN ( SELECT option_id FROM ts_call_tab_wrapup WHERE tab_id = 4 ) ";
+		     	   			   						$revokests = 4;
+		  											break;
+	     	   }
+	     }
+	  
+	     
+	      
+	     if( isset($_POST['revoke']) ){
+	     	     $data = json_decode( $_POST['revoke'] , true); 
+		     	 $size = count( $data['data']);
+		     	 
+		     	 //revoke newlist by delete calllist agent record
+		     	 if( $tmp['revoke_liststatus'] == "1" ){
+					     for( $i=0; $i<$size; $i++){
+							     $sql = "DELETE FROM  t_calllist_agent ".
+											" WHERE campaign_id = ".dbNumberFormat($tmp['revoke_campaign'])." ".
+											" AND agent_id =  ".dbNumberFormat( $data['data'][$i]['aid'] ).
+											$opt.
+											" AND import_id =  ".dbNumberFormat($tmp['revoke_list'])." ".
+											" limit ".dbNumberFormat( $data['data'][$i]['rlist'] );
+							     
+							     wlog("[distribute_process][revoke_process] REVOKE sql : ".$sql);
+							    $dbconn->executeUpdate($sql);
+					     }
+		     	 }else{
+		     	      for( $i=0; $i<$size; $i++){
+							     $sql = "UPDATE  t_calllist_agent SET agent_id = null ".
+											" WHERE campaign_id = ".dbNumberFormat($tmp['revoke_campaign'])." ".
+											" AND agent_id =  ".dbNumberFormat( $data['data'][$i]['aid'] ).
+											$opt.
+											" AND import_id =  ".dbNumberFormat($tmp['revoke_list'])." ".
+											" limit ".dbNumberFormat( $data['data'][$i]['rlist'] );
+							     
+							     wlog("[distribute_process][revoke_process] REVOKE sql : ".$sql);
+							    $dbconn->executeUpdate($sql);
+					     }
+		     	 	
+		     	 }
+		     	 
+		     	 
+			 //insert to calllist transfer history
+	         //$size = count($track);
+	 			    for($i=0;$i <$size; $i++){
+	 			    	   $sql = " INSERT INTO t_calllist_transfer ( transfer_from_id , transfer_to_id , transfer_total , ".
+								" transfer_date , transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl , transfer_cmpid , transfer_import_id ) ".
+								" VALUES ( ".
+ 			    									" ".dbNumberFormat($tmp['uid']).", ". 
+	 			    								" ".dbNumberFormat($data['data'][$i]['aid'])." , ".
+	 			    								" ".dbNumberFormat($data['data'][$i]['rlist'])." , ".
+	 			     								" NOW() ,". 
+	 			    								" 0 , ". 
+	 			    								" 'revoke', ".
+	 			    	   							" ".$revokests." , ".
+	 			    	   							"  ".dbformat($tmp['revoke_liststatus']).", ".
+	 			    								" ".dbNumberFormat($tmp['revoke_campaign']).", ".
+     	         		 							" ".dbNumberFormat($tmp['revoke_list'])." ".
+	 			    			" ) ";
+	 			    	   wlog( "[distribute_process][revoke_process] log revoke  sql : ".$sql  );
+	 			    	   $effect = $dbconn->executeUpdate($sql);
+	 			    }
+			     
+			     
+			     
+			     
+	     }
+		$dbconn->dbClose();
+		
+		$res = array("result"=>"success");
+		echo json_encode($res);   
+			
+	}
+	
+	
+	function init_manager(){
+		
+	
+		wlog("distribute check level : ".$lvl); 
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+			//select campaign
+	     	$sql = " SELECT campaign_id , campaign_name  ".
+						" FROM t_campaign ".
+	     				" ORDER BY campaign_id ";
+		    $count = 0; 
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$tmp1[$count] = array(
+				  				"id"  => nullToEmpty($rs['campaign_id']),
+								"value"  => nullToEmpty($rs['campaign_name']),
+						);   
+				$count++;
+			}
+				
+			if($count==0){
+					$tmp1 = array("result"=>"empty");
+			} 
+			
+		
+					
+			 wlog("[distribute_process][init] ".$sql);
+
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+			 
+			  	$tmp[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+								"impid"  => nullToEmpty($rs['import_id']),
+			  					"cmpname"  => nullToEmpty($rs['campaign_name']),
+			  					"lname"  => nullToEmpty($rs['list_name']),
+			  					"ldtl"  => nullToEmpty($rs['list_detail']),
+			  					"total" => countTotalList( $rs['import_id'] ),
+			  					"used" => countUsedList($rs['campaign_id'] , $rs['import_id'] )
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp = array("result"=>"empty");
+			} 
+			
+	 	$data = array("cmplist"=>$tmp);
+	 	
+
+		  
+			 $count = 0; 
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$tmp1[$count] = array(
+				  				"id"  => nullToEmpty($rs['import_id']),
+								"value"  => nullToEmpty($rs['list_name']),
+						);   
+				$count++;
+			}
+				
+			if($count==0){
+					$tmp1 = array("result"=>"empty");
+			} 
+		  
+		  //select  group
+		  $sql = " SELECT group_id , group_name".
+						" FROM t_group ".
+						" ORDER By group_id ";
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp2[$count] = array(
+			  				    "id"  => nullToEmpty($rs['group_id']),
+								"value"  => nullToEmpty($rs['group_name'])
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp2 = array("result"=>"empty");
+			} 
+			
+		  //select  team
+		  	$sql = " SELECT team_id , team_name ".
+						" FROM t_team ".
+						" ORDER BY team_id ";
+			
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp3[$count] = array(
+			  				    "id"  => nullToEmpty($rs['team_id']),
+								"value"  => nullToEmpty($rs['team_name'])
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp3 = array("result"=>"empty");
+			} 
+		
+		$data = array("cmp"=>$tmp1,"group"=>$tmp2,"team"=>$tmp3 ,"agent"=>$tmp4,"wopt"=>$tmp5,"cmplist"=>$tmp6, "hands"=>$tmp7);
+		
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+	}
+	
+	function init_supervisor(){
+		
+	 //get level of agent from session
+	 	
+	    $tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	     $teamid = "";
+	     if( isset($_POST['teamid'])){
+	     		$teamid = $_POST['teamid'];
+	     }else{
+	     		$teamid = $tmp['agentssource_fromteam'];
+	     }
+	     
+	 	//calllist on agent hands seperate by level of agent 
+			   $sql =" SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name ".
+			  		"  , ag.img_path ,  ag.extension, t.team_name ". 
+	     			" , count( a.calllist_id ) as total_call".
+			   		" , sum( a.new_cnt ) as new_cnt".
+					" , sum( a.callback_cnt ) as success_cnt".
+	     			" , sum( a.callback_cnt ) as callback_cnt".
+	     			" , sum( a.follow_cnt ) as follow_cnt".
+	     			" , sum( a.dnc_cnt ) as dnc_cnt".
+	     			" , sum( a.bad_cnt ) as bad_cnt".
+			   		" , sum( a.nocont_cnt) as nocont_cnt".
+					" FROM  ( ".
+					" select campaign_id ,agent_id ,calllist_id ".
+			   		" ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt ". 
+					" ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt ". 
+					" ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt ".
+	     			" ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt ".
+					" ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt ".
+	     			" ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt ".
+			   		" ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt ".
+					" FROM t_calllist_agent  ";
+		if( isset($_POST['leadid'])){
+				if( $_POST['leadid'] != ""){
+		 			$sql =$sql." WHERE import_id = ".dbnUmberFormat( $_POST['leadid'])." ";
+				}
+		}
+			   		$sql= $sql.") AS a  ".
+					" LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id  ".
+					" RIGHT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id  ".
+					" LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id  ".
+					" LEFT OUTER JOIN t_group g ON t.group_id = g.group_id  ".
+			 		" WHERE ag.team_id  = ".dbNumberFormat( $teamid )." ".
+					" GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name ".
+				    " ,ag.img_path ,  ag.extension, t.team_name ";
+			 
+			wlog( $sql );
+			     
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$total = nullToZero($rs['new_cnt']) +  nullToZero($rs['nocont_cnt']) +   nullToZero($rs['follow_cnt']) + nullToZero($rs['callback_cnt']);
+			  	$tmp1[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+			  					"cmpn"  => nullToEmpty($rs['campaign_name']),
+								"aid"  => nullToEmpty($rs['agent_id']),
+			  					"aname"  => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+							 	"tcall"  => nullToZero($total),
+			  		  			"tnew"  => nullToZero($rs['new_cnt']),
+			  	     			"tsuccess"  => nullToZero($rs['success_cnt']),
+								"tcallback"  => nullToZero($rs['callback_cnt']),
+			  					"tfollow"  => nullToZero($rs['follow_cnt']),			  	
+							    "tdnc"  => nullToZero($rs['dnc_cnt']),
+			  	    			"tbad"  => nullToZero($rs['bad_cnt']),
+			  					"tnoc"  => nullToZero($rs['nocont_cnt']),
+			  					"isonline"=>nullToEmpty(isonline( $rs['agent_id'] ))
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp1 = array("result"=>"empty");
+			} 
+			 
+	
+	 	$data = array("callsts"=>$tmp1);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+	}
+	
+	function init(){
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	     //select  user teamid ( hidden value )
+	    $sql = "SELECT team_id FROM t_agents WHERE agent_id = ".dbNUmberFormat($tmp['uid']);
+		$tmp0 = "";
+	    $result = $dbconn->executeQuery($sql);
+		if($rs=mysql_fetch_array($result)){   
+			$tmp0  = nullToEmpty($rs['team_id']);
+			$count++;
+		}
+	
+		
+	     //campaign
+     	$sql = " SELECT campaign_id , campaign_name  ".
+					" FROM t_campaign ".
+     				" ORDER BY campaign_id ";
+				
+     	 wlog( $sql );
+	     	 
+	    $count = 0; 
+	    $result = $dbconn->executeQuery($sql);
+		while($rs=mysql_fetch_array($result)){   
+			$tmp1[$count] = array(
+			  				"id"  => nullToEmpty($rs['campaign_id']),
+							"value"  => nullToEmpty($rs['campaign_name']),
+					);   
+			$count++;
+		}
+			
+		if($count==0){
+				$tmp1 = array("result"=>"empty");
+		} 
+		
+			//query group
+			$sql = " SELECT group_id , group_name".
+						" FROM t_group ".
+						" ORDER By group_id ";
+			
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp2[$count] = array(
+			  				    "id"  => nullToEmpty($rs['group_id']),
+								"value"  => nullToEmpty($rs['group_name'])
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp2 = array("result"=>"empty");
+			} 
+			
+			//query team
+			$sql = " SELECT team_id , team_name ".
+						" FROM t_team ".
+						" ORDER BY team_id ";
+			
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp3[$count] = array(
+			  				    "id"  => nullToEmpty($rs['team_id']),
+								"value"  => nullToEmpty($rs['team_name'])
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp3 = array("result"=>"empty");
+			} 
+			
+			//query agent
+			$sql = " SELECT agent_id , first_name , last_name ".
+						" FROM t_agents ".
+						" WHERE is_active = 1 ".
+						" ORDER BY agent_id ";
+			
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp4[$count] = array(
+			  				    "id"  => nullToEmpty($rs['agent_id']),
+								"value"  => nullToEmpty($rs['first_name']." ".$rs['last_name'])
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp4 = array("result"=>"empty");
+			} 
+			
+		//wrapup option status
+			$sql = " SELECT option_id , option_detail ".
+						" FROM ts_wrapup_option ".
+						" ORDER BY option_Id ";
+			
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){
+			  	$tmp5[$count] = array(
+			  				    "id"  => nullToEmpty($rs['option_id']),
+								"value"  => nullToEmpty($rs['option_detail'])
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp5 = array("result"=>"empty");
+			} 
+			
+			//list for campaign
+			$sql = " SELECT  l.campaign_id , l.import_id , c.campaign_name , i.list_name , i.list_detail ".
+						" FROM t_campaign_list l ".
+						" LEFT OUTER JOIN t_campaign c ON c.campaign_id = l.campaign_id ".
+						" LEFT OUTER JOIN t_import_list i ON i.import_id = l.import_id ";
+					
+			 wlog("[distribute_process][init] ".$sql);
+
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$progress = ((($rs['total_call'] - $rs['new_cnt'] ) * 100 ) / $rs['total_call'] );
+			  	$tmp6[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+								"impid"  => nullToEmpty($rs['import_id']),
+			  					"cmpname"  => nullToEmpty($rs['campaign_name']),
+			  					"lname"  => nullToEmpty($rs['list_name']),
+			  					"ldtl"  => nullToEmpty($rs['list_detail']),
+			  					"total" => countTotalList( $rs['import_id'] ),
+			  					"used" => countUsedList($rs['campaign_id'] , $rs['import_id'] )
+			  	
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp6 = array("result"=>"empty");
+			} 
+			
+			//calllist on agent hands
+			   $sql =" SELECT campaign_id , ag.agent_id , ag.first_name , ag.last_name , ag.img_path ,  ag.extension, t.team_name , group_name , ". 
+	     			" count( calllist_id ) as total_call".
+			   		" , sum( new_cnt ) as new_cnt".
+					" , sum( callback_cnt ) as success_cnt".
+	     			" , sum( callback_cnt ) as callback_cnt".
+	     			" , sum( follow_cnt ) as follow_cnt".
+	     			" , sum( dnc_cnt ) as dnc_cnt".
+	     			" , sum( bad_cnt ) as bad_cnt".
+					" FROM  ( ".
+					" select campaign_id ,agent_id ,calllist_id ".
+			   		" ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt ". 
+					" ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt ". 
+					" ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt ".
+	     			" ,case when last_wrapup_option_id = 2 then 1 else 0 end as follow_cnt ".
+					" ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt ".
+	     			" ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt ".
+					" FROM t_calllist_agent ".
+					" ) AS a ".
+	      			" LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id ". 
+	     			" LEFT OUTER JOIN t_group g ON ag.group_id = g.group_id ".
+	     			" LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id ".
+					//-- where camoaign_id = 1 
+					// check level permission can see in difference way
+					" GROUP BY campaign_id ,agent_id ";
+
+			 wlog("[distribute_process][init] ".$sql);
+
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$progress = ((($rs['total_call'] - $rs['new_cnt'] ) * 100 ) / $rs['total_call'] );
+			  	$tmp7[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+								"aid"  => nullToEmpty($rs['agent_id']),
+			  					"aname"  => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+			  					"aimg"  => nullToEmpty($rs['img_path']),
+			  					"aext"  => nullToEmpty($rs['extension']),
+			  					"ateam"  => nullToEmpty($rs['team_name']),
+			  					"agroup"  => nullToEmpty($rs['group_name']),
+			  					"aext"  => nullToEmpty($rs['extension']),			  	
+							    "tcall"  => nullToEmpty($rs['total_call']),
+			  		  			"tnew"  => nullToEmpty($rs['new_cnt']),
+			  	     			"tsuccess"  => nullToEmpty($rs['success_cnt']),
+								"tcallback"  => nullToEmpty($rs['callback_cnt']),
+			  					"tfollow"  => nullToEmpty($rs['follow_cnt']),			  	
+							    "tdnc"  => nullToEmpty($rs['dnc_cnt']),
+			  	    			"tbad"  => nullToEmpty($rs['bad_cnt']),
+			  					"pgress"  => nullToZero( ceil($progress)),
+			  	
+						);   
+				$count++;  
+			}
+		    if($count==0){
+			$tmp7 = array("result"=>"empty");
+			} 
+		
+		$data = array( "teamid"=>$tmp0, "cmp"=>$tmp1,"group"=>$tmp2,"team"=>$tmp3,"agent"=>$tmp4,"wopt"=>$tmp5,"cmplist"=>$tmp6, "hands"=>$tmp7);
+		
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+	}
+	//helper function from init
+	function countTotalList( $impid ){
+		$dbconn = new dbconn;  
+        $dbconn->createConn();
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+		
+	     	$sql = " SELECT total_records - bad_list - inlist_dup - indb_dup AS  total_records ".
+	     				" FROM t_import_list where import_id = ".dbNumberFormat($impid)."  ";
+	     	
+		  $result = $dbconn->executeQuery($sql);
+		  $total = 0;
+			if($rs=mysql_fetch_array($result)){   
+					$total = $rs['total_records'];
+			}
+			return $total;
+
+	}
+	//helper function from init
+	function countUsedList( $cmpid , $impid  ){
+		$dbconn = new dbconn;  
+        $dbconn->createConn();
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+		
+	     	$sql = " SELECT COUNT(a.calllist_id) AS total_records ".
+	     				" FROM t_calllist_agent a INNER JOIN t_calllist c ON a.calllist_id = c.calllist_id ".
+						" WHERE a.campaign_id = ".dbNumberFormat($cmpid)."  ".
+						" AND c.import_id = ".dbNumberFormat($impid)."  ";
+	     	
+	     	wlog( "[distribute_process][countUsedList] sql : ".$sql);
+	     	
+		  $result = $dbconn->executeQuery($sql);
+		  $total = 0;
+			if($rs=mysql_fetch_array($result)){   
+					$total = $rs['total_records'];
+			}
+			
+			return $total;
+		
+		
+	}
+	
+	
+	function getList(){
+		
+	  	$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	 
+	     	//check level
+	     	
+			$lvl = $_SESSION["pfile"]["lv"];
+			
+			wlog(" lv : ".$lvl);
+			
+		 	if( $lvl == 2 ){
+	 		
+	 		//select lead name ( supervisor )
+	  		$sql = " SELECT DISTINCT im.import_id , im.list_name ".
+						" from t_import_list im , t_calllist_agent ca ".
+						" , ( select sup.agent_id as sup_id , sup.team_id , ag.agent_id ". 
+						" from t_agents sup left outer join  t_agents ag ".
+						" on ( sup.agent_id = ".dbNumberFormat($tmp['uid'])." and sup.team_id = ag.team_id ) ".   
+						" where ag.agent_id is not null  ) as sup ".
+						" where im.import_id = ca.import_id ".
+						" and ca.agent_id = sup.agent_id ".
+	  					" and ca.campaign_id = ".dbNumberFormat($_POST['id'])." ";
+	  		
+	  		
+	 	}else{
+	 		//select lead name
+	 		  	$sql = " SELECT c.import_id , i.list_name ".
+							" FROM t_campaign_list c LEFT OUTER JOIN t_import_list i  ".
+							" ON c.import_id = i.import_id  ".
+							" WHERE campaign_id = ".dbNumberFormat($_POST['id'])." ";
+	 	}
+	 	 	
+	 	
+	 	wlog("sql ".$sql);
+		  $count = 0; 
+		  $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$tmp1[$count] = array(
+				  				"id"  => nullToEmpty($rs['import_id']),
+								"value"  => nullToEmpty($rs['list_name']),
+						);   
+				$count++;
+			}
+			
+		if($count==0){
+				$tmp1 = array("result"=>"empty");
+		} 
+
+		$data = array("list"=>$tmp1);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+	}
+	
+	function findMaxAva(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+        $dbconn->createConn();
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     		   $sql =" SELECT COUNT(calllist_id) AS total  ".
+							 " FROM t_calllist WHERE import_id  = ".$tmp['search_list']."   ".
+ 							" AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".$tmp['search_campaign']." ";
+	     		   
+	     		   if( $tmp['search_agent'] != ""){
+	     		   			$sql = $sql." AND agent_id = ".dbNumberFormat( $tmp['search_agent'] )." ";
+	     		   }
+					
+	     		   $sql = $sql. "  ) ";
+	     		   
+	     		  wlog("[distribute_process][findMaxAva] sql : ".$sql);
+	     		   
+	     		$total = 0;    
+		    	$result = $dbconn->executeQuery($sql);
+				if($rs=mysql_fetch_array($result)){   
+						$total = nullToZero($rs['total']);
+				}
+			
+				$data = array( "total"=> $total);
+				$dbconn->dbClose();
+				echo json_encode( $data ); 
+		
+		
+	}
+	
+	function workinglist(){
+		$dbconn = new dbconn;  
+        $dbconn->createConn();
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     } 
+	     
+	     	//list for campaign
+			$sql = " SELECT  l.campaign_id , l.import_id , c.campaign_name , i.list_name , i.list_detail   ".
+						" FROM t_campaign_list l ".
+						" LEFT OUTER JOIN t_campaign c ON c.campaign_id = l.campaign_id ".
+						" LEFT OUTER JOIN t_import_list i ON i.import_id = l.import_id ".
+						" WHERE l.campaign_id = ".dbNumberFormat($_POST['cmpid']);
+					
+			 wlog("[distribute_process][init] ".$sql);
+
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+			 
+			  	$tmp[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+								"impid"  => nullToEmpty($rs['import_id']),
+			  					"cmpname"  => nullToEmpty($rs['campaign_name']),
+			  					"lname"  => nullToEmpty($rs['list_name']),
+			  					"ldtl"  => nullToEmpty($rs['list_detail']),
+			  					"total" => countTotalList( $rs['import_id'] ),
+			  					"used" => countUsedList($rs['campaign_id'] , $rs['import_id'] )
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp = array("result"=>"empty");
+			} 
+			
+	 	$data = array("cmplist"=>$tmp);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+		
+	}
+	
+	 function workingagent(){
+	 	
+	   // $tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+        $dbconn->createConn();
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	 		//calllist on agent hands
+	$sql =" SELECT campaign_id , ag.agent_id , ag.first_name , ag.last_name , ag.img_path ,  ag.extension, t.team_name , group_name , ". 
+	     			" count( a.calllist_id ) as total_call".
+			   		" , sum( a.new_cnt ) as new_cnt".
+					" , sum( a.callback_cnt ) as success_cnt".
+	     			" , sum( a.callback_cnt ) as callback_cnt".
+	     			" , sum( a.follow_cnt ) as follow_cnt".
+	     			" , sum( a.dnc_cnt ) as dnc_cnt".
+	     			" , sum( a.bad_cnt ) as bad_cnt".
+					" FROM  ( ".
+					" select campaign_id ,agent_id ,calllist_id ".
+			   		" ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt ". 
+					" ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt ". 
+					" ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt ".
+	     			" ,case when last_wrapup_option_id = 2 then 1 else 0 end as follow_cnt ".
+					" ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt ".
+	     			" ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt ".
+					" FROM t_calllist_agent ".
+					" ) AS a ".
+			        " INNER JOIN t_calllist tc ON  tc.import_id =  ".dbNumberFormat($_POST['impid'])."  and a.calllist_id = tc.calllist_id ". 
+	      			" LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id ". 
+	     			" LEFT OUTER JOIN t_group g ON ag.group_id = g.group_id ".
+	     			" LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id ".
+				//	" WHERE campaign_id = ".dbNumberFormat( $_POST['cmpid'] )." ". 
+			   // and import_id = xx 
+					// check level permission can see in difference way
+				//	" AND a.calllist_id IN ( SELECT calllist_id from t_calllist where import_id = 1 )  "
+					" GROUP BY campaign_id ,agent_id ";
+			      	
+
+			 wlog("[distribute_process][workinglist !!!!!] ".$sql);
+
+			$count = 0;    
+		    $result = $dbconn->executeQuery($sql);
+			while($rs=mysql_fetch_array($result)){   
+				$progress = ((($rs['total_call'] - $rs['new_cnt'] ) * 100 ) / $rs['total_call'] );
+			  	$tmp[$count] = array(
+						        "cmpid"  => nullToEmpty($rs['campaign_id']),
+								"aid"  => nullToEmpty($rs['agent_id']),
+			  					"aname"  => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+			  					"aimg"  => nullToEmpty($rs['img_path']),
+			  					"aext"  => nullToEmpty($rs['extension']),
+			  					"ateam"  => nullToEmpty($rs['team_name']),
+			  					"agroup"  => nullToEmpty($rs['group_name']),
+			  					"aext"  => nullToEmpty($rs['extension']),			  	
+							    "tcall"  => nullToEmpty($rs['total_call']),
+			  		  			"tnew"  => nullToEmpty($rs['new_cnt']),
+			  	     			"tsuccess"  => nullToEmpty($rs['success_cnt']),
+								"tcallback"  => nullToEmpty($rs['callback_cnt']),
+			  					"tfollow"  => nullToEmpty($rs['follow_cnt']),			  	
+							    "tdnc"  => nullToEmpty($rs['dnc_cnt']),
+			  	    			"tbad"  => nullToEmpty($rs['bad_cnt']),
+			  					"pgress"  => nullToZero( ceil($progress)),
+			  	
+						);   
+				$count++;  
+			}
+		    if($count==0){
+				$tmp = array("result"=>"empty");
+			} 
+			 
+			
+	 	$data = array("hands"=>$tmp);
+			
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+	 }
+	
+	function search(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	     wlog("search list type : ".$tmp['search_list_type']);
+	      $sql = "";
+	     //search available list
+	     if( $tmp['search_list_type'] == 1){
+	     	
+	     	    wlog("search list type : 1 start ");
+	     	    
+	     		$sql = " SELECT COUNT(*) AS total FROM t_calllist ".
+							" WHERE import_id = ".dbNumberFormat($tmp['search_list'])." ".
+							" AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ) ";
+	     		
+	          $count = 0; 
+	          wlog( $sql );
+			  $result = $dbconn->executeQuery($sql);
+				if($rs=mysql_fetch_array($result)){   
+						wlog( "total list : ". $rs['total'] ." < ".$tmp['maxlist1']);
+						//change condition manual max list use for distribute
+				     	if( $tmp['maxlist1']  <=  $rs['total']  ){
+								$total_list = $tmp['maxlist1'];
+						}else{
+								$total_list = $rs['total'];
+						}
+			
+					$data[$count] = array(
+					  				"total"  => nullToEmpty($total_list)
+									//"value"  => nullToEmpty($rs['list_name']),
+							);   
+					$count++;
+				}
+				
+	
+	     		
+	     		
+	     }
+	     //search managed list
+	     else if( $tmp['search_list_type'] == 2){
+	     	wlog("do list type : 2");
+	     	
+	     	
+	     	//condition status
+	     	if( is_array( $tmp['wstatus'] ) ){
+	     		  	$wrapup_status =  implode(',',$tmp['wstatus']);
+	     	}else{
+	     		  	$wrapup_status = $tmp['wstatus'];
+	     	}
+	   
+	    
+	     	
+	     	//check is length condition
+	     		    $size = count($tmp['wstatus']);
+	     		 	wlog("get wrapup size : ".$size);
+	     		 
+	     		 	 $opt = "";
+	     	     if( $tmp['search_group'] != "" || $tmp['search_team'] != "" ){
+	     		 		$opt = $opt.",g.group_name ,t.team_name";
+	     		 	}
+	     		 	/*
+	     		 	if($tmp['search_team'] != ""){
+	     		 		$opt = $opt.",t.team_name";
+	     		 	}
+	     		 	*/
+	     		 	//change request
+	     		 	$sql = " SELECT a.first_name , a.last_name , a.img_path ".$opt." ,COUNT(*) AS total ".
+	     		 				" FROM t_calllist c inner join t_calllist_agent ca  ON ( c.calllist_id = ca.calllist_id )  ".
+	     		 				" LEFT OUTER JOIN t_agents a on ( ca.agent_id = a.agent_id ) ";
+	     		 	
+	     		 	if( $tmp['search_group'] != "" || $tmp['search_team'] != "" ){
+	     		 				$sql = $sql." LEFT OUTER JOIN t_team t on ( a.team_id = t.team_id ) ";
+	     		 				$sql = $sql." LEFT OUTER JOIN t_group g on ( t.group_id = g.group_id ) ";
+	     		 		 
+	     		 	}
+	     		 
+	     		 	/*
+	     		 	if( $tmp['search_agent'] != "" ){
+	     		 				$sql = $sql." LEFT OUTER JOIN t_agents a on ( ca.agent_id = a.agent_id )";
+	     		 	}
+	     		 */
+	     		 	$sql = $sql." WHERE c.import_id = ".dbNumberFormat($tmp['search_list'])." ".
+										" AND ca.campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ";
+	     		 	
+	     		 	if( $size != 0){
+	     		 		$sql = $sql." AND  ifnull(ca.last_wrapup_option_id ,0) IN ( ".$wrapup_status." ) ";
+	     		 	}
+	     		 	$groupby_opt = "";
+	     			if( $tmp['search_group'] != "" ){
+	     		 		$sql = $sql." AND a.group_id = ".dbNumberFormat($tmp['search_group']);
+	     		 	}
+	     		 	if(  $tmp['search_team'] != ""){
+	     		 			$sql = $sql." AND a.team_id = ".dbNumberFormat($tmp['search_team']);  
+	     		 	}
+	     		 	
+	     		 	if( $tmp['search_group'] != "" ||  $tmp['search_team'] != "" ){
+	     		 		$groupby_opt = $groupby_opt.", g.group_name ";
+	     		 		$groupby_opt = $groupby_opt.", t.team_name ";
+	     		 	}
+	     	
+	     		 	if( $tmp['search_agent'] != "" ){
+	     		 		$sql = $sql." AND ca.agent_id = ".dbNumberFormat($tmp['search_agent']); 
+	     		 	}
+	     		 	
+	     			$sql = $sql." GROUP BY  a.first_name , a.last_name , a.img_path  ".$groupby_opt;
+	     		 	
+	     			 wlog( "test sql : ".$sql );
+	     			 
+	     				 	 $count = 0; 
+     		 				  wlog("[distribute_process][search] sql : ".$sql);
+							  $result = $dbconn->executeQuery($sql);
+								while($rs=mysql_fetch_array($result)){   
+									$data[$count] = array(
+													"name" => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+													"img" => nullToEmpty($rs['img_path']),
+													"group" => nullToEmpty($rs['group_name']),
+													"team" => nullToEmpty($rs['team_name']),
+									  				"total"  => nullToEmpty($rs['total'])
+											);   
+									$count++;
+								}
+	     		 	
+	     		 	/*
+	     		    if( $size == 0){
+	     		    	
+		          	    $sql = " SELECT COUNT(*) AS total ".  
+									" FROM t_calllist c inner join t_calllist_agent ca ON ( c.calllist_id = ca.calllist_id ) ". 
+		          	    
+		          	    			" LEFT OUTER JOIN t_agents a on ( ca.agent_id = a.agent_id ) ".
+		          	    
+									" LEFT OUTER JOIN t_team t on ( a.team_id = t.team_id ) ".
+		          	    
+									" LEFT OUTER JOIN t_group g on ( t.group_id = g.group_id ) ".		          	    
+		          	    
+									" WHERE c.import_id = ".dbNumberFormat($tmp['search_list'])." ".
+									" AND ca.campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ".
+		          	    
+		          	    			" AND a.group_id = 2 ".
+									" AND a.team_id = 1 ".
+									" AND ca.agent_id =1 ";
+		          	    		
+					     		      $count = 0; 
+					     		      wlog("[distribute_process][search] search with NO wrapup condition sql : ".$sql);
+									  $result = $dbconn->executeQuery($sql);
+										if($rs=mysql_fetch_array($result)){   
+											$data[$count] = array(
+											  				"total"  => nullToEmpty($rs['total'])
+													);   
+											$count++;
+										}
+				
+	     		    }else{
+	     		    	//loop sub condition;
+	     		    	
+	     		    	$sql = " SELECT a.first_name , a.last_name , a.img_path , g.group_name,t.team_name, COUNT(*) AS total ".
+									" FROM t_calllist c inner join t_calllist_agent ca  ON ( c.calllist_id = ca.calllist_id )  ".
+									" LEFT OUTER JOIN t_agents a on ( ca.agent_id = a.agent_id ) ".
+									" LEFT OUTER JOIN t_team t on ( a.team_id = t.team_id ) ".
+									" LEFT OUTER JOIN t_group g on ( t.group_id = g.group_id ) ". 
+									" WHERE c.import_id = 1  ".
+									" AND ca.campaign_id = 1 ". 
+									" AND  ifnull(ca.last_wrapup_option_id ,0) IN (  ".implode(',',$tmp['wstatus'])." ) ".   
+									" AND a.group_id = 2 ".
+									" AND a.team_id = 1 ".
+									" AND ca.agent_id =1 ". 
+									" GROUP BY a.first_name , a.last_name , a.img_path , g.group_name ,t.team_name ";
+		     		    	 
+		     		 				  $count = 0; 
+		     		 				  wlog("[distribute_process][search] search with wrapup condition sql : ".$sql);
+									  $result = $dbconn->executeQuery($sql);
+										while($rs=mysql_fetch_array($result)){   
+											$data[$count] = array(
+															"name" => nullToEmpty($rs['first_name']." ".$rs['last_name']),
+															"img" => nullToEmpty($rs['img_path']),
+															"group" => nullToEmpty($rs['group_name']),
+															"team" => nullToEmpty($rs['team_name']),
+											  				"total"  => nullToEmpty($rs['total'])
+													);   
+											$count++;
+										}
+										
+	     		    }
+	     		    
+	     		    */
+	     		    
+	      }
+	      
+	  
+		if($count==0){
+				$data = array("result"=>"empty");
+		}
+	 
+		//$data = array("cmp"=>$tmp1,"group"=>$tmp2,"team"=>$tmp3,"agent"=>$tmp4,"wopt"=>$tmp5);
+		
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+	     
+		
+	}
+	
+	
+	function preview(){
+		
+		
+		wlog("[distribute_process][preview] --- start preview --- ");
+		
+		$list = 0;
+		//get sorce form search();
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	     wlog("search list type : ".$tmp['search_list_type']);
+	      $sql = "";
+	     //search available list
+	     if( $tmp['search_list_type'] == 1){
+	     	
+	     	    wlog("search list type : 1 start ");
+	     	    
+	     	$csql = " SELECT COUNT(calllist_id) AS total  ";	     		 	
+	    	$xsql = " SELECT calllist_id ";  //not use now ( remember for sql distribute )
+	     		 	
+	     				// " SELECT COUNT(*) AS total  ".
+				$sql = " FROM t_calllist WHERE import_id = ".dbNumberFormat($tmp['search_list'])." ".
+							" AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ) ";
+	     		
+	          $count = 0; 
+	          
+	          $csql = $csql.$sql;
+	          $xsql = $xsql.$sql;
+	          
+	          wlog( $csql );
+			  $result = $dbconn->executeQuery($csql);
+				if($rs=mysql_fetch_array($result)){   
+					
+				 	if( $tmp['maxlist1']  <=  $rs['total']  ){
+							$total_list = $tmp['maxlist1'];
+					}else{
+							$total_list = $rs['total'];
+					}
+			
+					$data[$count] = array(
+					  				"total"  => nullToEmpty($total_list)
+									//"value"  => nullToEmpty($rs['list_name']),
+							);   
+					$count++;
+					
+					/*
+					$data[$count] = array(
+					  				"total"  => nullToEmpty($rs['total'])
+									//"value"  => nullToEmpty($rs['list_name']),
+							);   
+					$total_list = $rs['total'];
+					$count++;
+					*/
+				}
+	     		
+	     		
+	     }
+	     //search managed list
+	   else if( $tmp['search_list_type'] == 2){
+	     	wlog("do list type : 2");
+	     	
+	     	
+	     	//condition status
+	     	if( is_array( $tmp['wstatus'] ) ){
+	     		  	$wrapup_status =  implode(',',$tmp['wstatus']);
+	     	}else{
+	     		  	$wrapup_status = $tmp['wstatus'];
+	     	}
+	   
+	    
+	     	
+	     	//check is length condition
+	     		    $size = count($tmp['wstatus']);
+	     		 	wlog("get wrapup size : ".$size);
+	     		 
+	     	
+	     		 	//change request
+	     		 	$csql = " SELECT COUNT(c.calllist_id) AS total ";	     		 	
+	     		 	$xsql = " SELECT c.calllist_id ";  //not use now ( remember for sql distribute )
+	     		 	
+	     	$sql = $sql." FROM t_calllist c inner join t_calllist_agent ca  ON ( c.calllist_id = ca.calllist_id )  ".
+	     		 				" LEFT OUTER JOIN t_agents a on ( ca.agent_id = a.agent_id ) ";
+	     		 	
+	     		 	if( $tmp['search_group'] != "" || $tmp['search_team'] != "" ){
+	     		 				$sql = $sql." LEFT OUTER JOIN t_team t on ( a.team_id = t.team_id ) ";
+	     		 				$sql = $sql." LEFT OUTER JOIN t_group g on ( t.group_id = g.group_id ) ";
+	     		 	}
+	     		 	$sql = $sql." WHERE c.import_id = ".dbNumberFormat($tmp['search_list'])." ".
+										" AND ca.campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ";
+	     		 	
+	     		 	if( $size != 0){
+	     		 		$sql = $sql." AND  ifnull(ca.last_wrapup_option_id ,0) IN ( ".$wrapup_status." ) ";
+	     		 	}
+	     		 	$groupby_opt = "";
+	     			if( $tmp['search_group'] != "" ){
+	     		 		$sql = $sql." AND a.group_id = ".dbNumberFormat($tmp['search_group']);
+	     		 	}
+	     		 	if(  $tmp['search_team'] != ""){
+	     		 			$sql = $sql." AND a.team_id = ".dbNumberFormat($tmp['search_team']);  
+	     		 	}
+	     		 	
+	     		 	if( $tmp['search_agent'] != "" ){
+	     		 		$sql = $sql." AND ca.agent_id = ".dbNumberFormat($tmp['search_agent']); 
+	     		 	}
+	     		 	
+				$csql = $csql.$sql;
+	     		$xsql = $xsql.$sql; 
+	     			 wlog( "test sql : ".$csql);
+	     			 
+	     				 	 $count = 0; 
+	     				 	 $total_list = 0;
+     		 				  wlog("[distribute_process][search] sql : ".$csql);
+							  $result = $dbconn->executeQuery($csql);
+								while($rs=mysql_fetch_array($result)){   
+									$total_list =  $rs['total'];
+								}
+	     		
+	      }
+	    
+	      //algorithm weight list
+	      
+			//check transfer to 
+			$sql = " SELECT agent_id,first_name , last_name , img_path  FROM t_agents WHERE agent_id IS NOT NULL  ";
+			if( $tmp['to_group'] != "" ){
+				$sql = $sql."AND group_id = ".dbNumberFormat( $tmp['to_group'] )." ";
+			}
+			if( $tmp['to_team'] != ""){
+				$sql = $sql."AND team_id = ".dbNumberFormat( $tmp['to_team'] )." ";
+			}
+			if( $tmp['to_agent'] != "" ){
+				$sql = $sql."AND agent_id = ".dbNumberFormat( $tmp['to_agent'] )." ";
+			}
+			wlog( "weight list to :".$sql );
+			$agent = array();
+			$count = 0;
+			$result = $dbconn->executeQuery($sql);
+			
+			$test_agent = array();
+			while($rs=mysql_fetch_array($result)){   
+				//wlog("result agent ".$rs['agent_id']);
+				array_push($agent, $rs['agent_id']);  //not work for key value array;
+				
+				
+				$test_agent[$rs['agent_id']] =0;
+				
+				$data[$count] = array(
+				//	$rs['agent_id'] => 0,
+					"aid" => nullToEmpty( $rs['agent_id']),
+ 					"aname"	=> nullToEmpty( $rs['first_name']." ".$rs['last_name'] ),
+					"aimg" => nullToEmpty( $rs['img_path'] ),
+					"total" => 0,
+				); 
+				$count++;				
+			}
+			
+			wlog( "total list :".$total_list);
+			//change condition
+			 
+			
+			 
+			 
+			 $list = intval($total_list);
+			 $total_agent = count($agent);	
+			 $list_per_agent = floor($list / $total_agent);
+			 $list_flag = ($list%$total_agent);
+			 
+			 
+			 wlog( "total agent :".$total_agent);
+			 wlog( "list_per agent : ".$list_per_agent);
+			 wlog( "list flag : ".$list_flag);
+			 
+			 //step1 check is flag
+ 			if($list_flag!=0){
+ 						$winner = array();
+				 		$tmp_agent = $agent;
+				 		
+				 		for($i=0;$i<$list_flag;$i++){
+				 			 $win = array_rand($tmp_agent);
+				 			 array_push($winner,$win);
+				 			 unset($tmp_agent[$win]);
+				 		}
+				 		//display get winner
+				 	
+				 		/*
+				 		
+				 		*/
+ 			}
+ 			
+ 			
+ 			//algorithm for manage list
+ 			//the best algorithm that i ever had
+					$interval = 0;
+ 					$index=0;
+ 					
+ 			//add requirement
+ 					//for store value for save button
+ 					$save = array();
+ 					$count = 0;
+ 						    	
+				// change requirement
+ 				if( $tmp['search_list_type'] == 1){
+							$sql = " SELECT calllist_id FROM t_calllist WHERE import_id = ".dbNumberFormat($tmp['search_list'])." ".
+										" AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ) ".
+										 " LIMIT 0,".$tmp['maxlist1'];
+							$result = $dbconn->executeQuery($sql);
+				}else{
+							$result = $dbconn->executeQuery($xsql);
+					
+				}
+				wlog("[distribute_process][preview] distribute sql : ".$sql);
+				//	$sql = "SELECT calllist_id FROM t_calllist WHERE import_id = ".dbNumberFormat($tmp['search_list']);
+			 		//$result = $dbconn->executeQuery($xsql);
+			 		
+		
+	 			//sql for distribute 
+	 				//check by type
+	 					//start search list type = 1
+		 			    if( $tmp['search_list_type'] == 1){
+		 			    	
+		 			
+		 			    	//start while
+		 		
+										while($rs=mysql_fetch_array($result)){
+											    	wlog("calllist id : [".$index."]".$rs['calllist_id']);
+												if( $interval != $list_per_agent){
+													
+													 	$sql = " !! INSERT INTO t_calllist_agent ( campaign_id , agent_id , calllist_id ,status ,assign_dt ) VALUES ( ".
+									 				  				" ".dbNumberFormat($tmp['search_campaign']).", ".
+									 				  				"  ".dbNumberFormat($agent[$index])." , ".
+											 				  		" ".dbNumberFormat($rs['calllist_id']).", ".
+											 				  		" 1,  NOW() )";
+													 	
+														wlog("agent: ".$agent[$index]." get call list id : [".$rs['calllist_id']."] : ".$sql);
+														++$test_agent[$agent[$index]];
+														
+														//store value for next save
+														$save[$count] = array( "a"=>$agent[$index], "c" => $rs['calllist_id'] );
+														
+												}else{
+													
+													if( $agent[$winner[$index]] != "" ){
+														$sql = "++ INSERT INTO t_calllist_agent ( campaign_id , agent_id , calllist_id ,status ,assign_dt ) VALUES ( ".
+									 				  				" ".dbNumberFormat($tmp['search_campaign']).", ".
+									 				  				"  ".dbNumberFormat($agent[$winner[$index]])." , ".
+											 				  		" ".dbNumberFormat($rs['calllist_id']).", ".
+											 				  		" 1,  NOW() )";
+														
+														wlog("agent [winner] : ".$agent[$winner[$index]]." get call list id : [".$rs['calllist_id']."] : ".$sql);
+														++$test_agent[$agent[$winner[$index]]];
+														
+														//store value for next save
+														$save[$count] = array( "a"=>$agent[$winner[$index]], "c" => $rs['calllist_id'] );
+														
+													}
+														
+												}
+									
+											$count++;
+											$index++;
+										   if( $index >= $total_agent ){
+												$index = 0;
+												$interval++;
+											}
+											
+											
+											
+										}   
+										//end while
+		 			    }
+		 			    //end search list type = 1
+		 			    
+		 			    //start search list type = 2
+	 			        else if( $tmp['search_list_type'] == 2){
+	 			     
+	 			        		 		//start while
+										while($rs=mysql_fetch_array($result)){
+												if( $interval != $list_per_agent){
+													
+													   $sql = " UPDATE t_calllist_agent SET agent_id = ".dbNumberFormat($agent[$index])." WHERE calllist_id = ".dbNumberFormat($rs['calllist_id']);
+														wlog("agent: ".$agent[$index]." get call list id : [".$rs['calllist_id']."] : ".$sql);
+														++$test_agent[$agent[$index]];
+														
+														//store value for next save
+														$save[$count] = array( "a"=>$agent[$index], "c" => $rs['calllist_id'] );
+														
+												}else{
+													
+													 $sql = " UPDATE t_calllist_agent SET agent_id = ".dbNumberFormat($agent[$winner[$index]])." WHERE calllist_id = ".dbNumberFormat($rs['calllist_id']);
+														
+														wlog("agent [winner] : ".$agent[$winner[$index]]." get call list id : [".$rs['calllist_id']."] : ".$sql);
+														++$test_agent[$agent[$winner[$index]]];
+														
+														//store value for next save
+														$save[$count] = array( "a"=>$agent[$winner[$index]], "c" => $rs['calllist_id'] );
+												}
+												
+											$count++;
+											$index++;
+										   if( $index >= $total_agent ){
+												$index = 0;
+												$interval++;
+											}
+										}   
+										//end while
+	 			        	
+	 			        	
+	 			        }
+ 			        //end search list type = 2
+			 		
+					
+					
+					//show result
+					 	foreach ($test_agent as $k => $v) {
+					 		wlog("agentid[".$k."] total ".$v);
+					 	}
+					 	
+					 	//map data
+					 	for( $i=0; $i< count($data); $i++){
+					 		
+					 			$agentid = $data[$i]['aid'];
+					 			$value = $test_agent[$agentid];
+					 			$data[$i]['total'] = $value;
+					 			
+					 	
+					 	}
+				
+		$data = array(  "pv"=>$data, "s" => $save );
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+	}
+	
+	//save from  preview after store data for save
+	function save(){
+		
+		$tmp = json_decode( $_POST['data'] , true); 
+		$store = json_decode( $_POST['store'] , true); 
+		$track = json_decode( $_POST['track'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	     if( $tmp['search_list_type'] == 1){
+	     	   wlog( "[distribute_process][save] ------ type 1 ( new list ) ------ " );
+		 			  $size = count( $store ) -1;
+	     	         for($i=0; $i <= $size; $i++ ){
+	     	         		 	$sql = "INSERT INTO t_calllist_agent ( campaign_id , import_id , agent_id , calllist_id ,  status ,assign_dt ) VALUES ( ".
+								 				  				" ".dbNumberFormat($tmp['search_campaign']).", ".
+	     	         		 									" ".dbNumberFormat($tmp['search_list']).", ".
+								 				  				"  ".dbNumberFormat($store[$i]['a'])." , ".
+	     	         		 									" ".dbNumberFormat($store[$i]['c']).", ".
+										 				  		" 1 ,  NOW() )";
+	     		  		   wlog( "[distribute_process][save] insert sql : ".$sql  );
+	     		  		  $effect = $dbconn->executeUpdate($sql);
+	 			    }
+	 			    
+	 			    //log
+	 			    $size = count($track);
+	 			    for($i=0;$i <$size; $i++){
+	 			    	   $sql = " INSERT INTO t_calllist_transfer ( transfer_from_id , transfer_to_id , transfer_total , ".
+								" transfer_date , transfer_type , transfer_type_dtl , transfer_on_status , transfer_on_status_dtl ,  transfer_cmpid , transfer_import_id ) ".
+								" VALUES ( ".
+	 			    										" ".dbNumberFormat($tmp['uid']).", ". 
+	 			    										"  ".dbNumberFormat($track[$i]['aid'])." , ".
+	 			    										"  ".dbNumberFormat($track[$i]['total'])." , ".
+	 			     										" NOW() ,". 
+	 			    										" 1, ". 
+	 			    										" 'transfer', ".
+	 			    	  									" 1, ". 
+	 			    										" 'newlist', ".
+	 			    										" ".dbNumberFormat($tmp['search_campaign']).", ".
+     	         		 									" ".dbNumberFormat($tmp['search_list'])." ".
+	 			    			" ) ";
+	 			    	   wlog( "[distribute_process][save] log transfer  sql : ".$sql  );
+	 			    	   $effect = $dbconn->executeUpdate($sql);
+	 			    }
+	     		  		   
+	     }//end if type
+	    else if( $tmp['search_list_type'] == 2){
+	    	  	   wlog( "[distribute_process][save] ------ type 2 ( old list ) ------ " );
+	    	  	   	$size = count( $store ) -1;
+	     	         for($i=0; $i <= $size; $i++ ){
+	    	  	    		$sql = " UPDATE t_calllist_agent ".
+	    	  	    					" SET agent_id = ".dbNumberFormat($store[$i]['a'])." ".
+	    	  	    					" WHERE calllist_id = ".dbNumberFormat($store[$i]['c']);
+						 	wlog( "[distribute_process][save] update sql : ".$sql  );
+	     		  		  	$effect = $dbconn->executeUpdate($sql);
+	     	         }
+	    	  	   
+	    }
+	    $result = array("result"=>"success" , "effect"=>$effect);
+		$dbconn->dbClose();
+		echo json_encode( $result ); 
+	     
+		
+	}
+	
+	//like preview but get winner from preview
+	function save_old(){
+			$list = 0;
+		//get sorce form search();
+		$tmp = json_decode( $_POST['data'] , true); 
+		$dbconn = new dbconn;  
+		$res = $dbconn->createConn();
+	 	if($res==404){
+				    $res = array("result"=>"dberror","message"=>"Can't connect to database");
+				    echo json_encode($res);		
+				    exit();
+	     }
+	     
+	     wlog("search list type : ".$tmp['search_list_type']);
+	      $sql = "";
+	     //search available list
+	     if( $tmp['search_list_type'] == 1){
+	     	
+	     	    wlog("search list type : 1 start ");
+	     	    
+	     	$csql = " SELECT COUNT(calllist_id) AS total ";	     		 	
+	    	$xsql = " SELECT calllist_id ";  //not use now ( remember for sql distribute )
+	     		 	
+	     				// " SELECT COUNT(*) AS total  ".
+				$sql = " FROM t_calllist WHERE import_id = ".dbNumberFormat($tmp['search_list'])." ".
+							" AND calllist_id NOT IN (  SELECT calllist_id  FROM t_calllist_agent  WHERE campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ) ";
+	     		
+	          $count = 0; 
+	          
+	          $csql = $csql.$sql;
+	          $xsql = $xsql.$sql;
+	          
+	          wlog( $csql );
+			  $result = $dbconn->executeQuery($csql);
+				if($rs=mysql_fetch_array($result)){   
+					$data[$count] = array(
+					  				"total"  => nullToEmpty($rs['total'])
+									//"value"  => nullToEmpty($rs['list_name']),
+							);   
+					$total_list = $rs['total'];
+					$count++;
+				}
+	     		
+	     		
+	     }
+	     //search managed list
+	   else if( $tmp['search_list_type'] == 2){
+	     	wlog("do list type : 2");
+	     	
+	     	
+	     	//condition status
+	     	if( is_array( $tmp['wstatus'] ) ){
+	     		  	$wrapup_status =  implode(',',$tmp['wstatus']);
+	     	}else{
+	     		  	$wrapup_status = $tmp['wstatus'];
+	     	}
+	   
+	    
+	     	
+	     	//check is length condition
+	     		    $size = count($tmp['wstatus']);
+	     		 	wlog("get wrapup size : ".$size);
+	     		 
+	     	
+	     		 	//change request
+	     		 	$csql = " SELECT COUNT(c.calllist_id) AS total ";	     		 	
+	     		 	$xsql = " SELECT c.calllist_id ";  //not use now ( remember for sql distribute )
+	     		 	
+	     	$sql = $sql." FROM t_calllist c inner join t_calllist_agent ca  ON ( c.calllist_id = ca.calllist_id )  ".
+	     		 				" LEFT OUTER JOIN t_agents a on ( ca.agent_id = a.agent_id ) ";
+	     		 	
+	     		 	if( $tmp['search_group'] != "" || $tmp['search_team'] != "" ){
+	     		 				$sql = $sql." LEFT OUTER JOIN t_team t on ( a.team_id = t.team_id ) ";
+	     		 				$sql = $sql." LEFT OUTER JOIN t_group g on ( t.group_id = g.group_id ) ";
+	     		 	}
+	     		 	$sql = $sql." WHERE c.import_id = ".dbNumberFormat($tmp['search_list'])." ".
+										" AND ca.campaign_id = ".dbNumberFormat( $tmp['search_campaign'])." ";
+	     		 	
+	     		 	if( $size != 0){
+	     		 		$sql = $sql." AND  ifnull(ca.last_wrapup_option_id ,0) IN ( ".$wrapup_status." ) ";
+	     		 	}
+	     		 	$groupby_opt = "";
+	     			if( $tmp['search_group'] != "" ){
+	     		 		$sql = $sql." AND a.group_id = ".dbNumberFormat($tmp['search_group']);
+	     		 	}
+	     		 	if(  $tmp['search_team'] != ""){
+	     		 			$sql = $sql." AND a.team_id = ".dbNumberFormat($tmp['search_team']);  
+	     		 	}
+	     		 	
+	     		 	if( $tmp['search_agent'] != "" ){
+	     		 		$sql = $sql." AND ca.agent_id = ".dbNumberFormat($tmp['search_agent']); 
+	     		 	}
+	     		 	
+				$csql = $csql.$sql;
+	     		$xsql = $xsql.$sql; 
+	     			 wlog( "test sql : ".$csql);
+	     			 
+	     				 	 $count = 0; 
+	     				 	 $total_list = 0;
+     		 				  wlog("[distribute_process][search] sql : ".$csql);
+							  $result = $dbconn->executeQuery($csql);
+								while($rs=mysql_fetch_array($result)){   
+									$total_list =  $rs['total'];
+								}
+	     		
+	      }
+	    
+	      //algorithm weight list
+	      
+			//check transfer to 
+			$sql = " SELECT agent_id,first_name , last_name , img_path  FROM t_agents WHERE agent_id IS NOT NULL  ";
+			if( $tmp['to_group'] != "" ){
+				$sql = $sql."AND group_id = ".dbNumberFormat( $tmp['to_group'] )." ";
+			}
+			if( $tmp['to_team'] != ""){
+				$sql = $sql."AND team_id = ".dbNumberFormat( $tmp['to_team'] )." ";
+			}
+			if( $tmp['to_agent'] != "" ){
+				$sql = $sql."AND agent_id = ".dbNumberFormat( $tmp['to_agent'] )." ";
+			}
+			wlog( "weight list to :".$sql );
+			$agent = array();
+			$count = 0;
+			$result = $dbconn->executeQuery($sql);
+			
+			$test_agent = array();
+			while($rs=mysql_fetch_array($result)){   
+				//wlog("result agent ".$rs['agent_id']);
+				array_push($agent, $rs['agent_id']);  //not work for key value array;
+				
+				
+				$test_agent[$rs['agent_id']] =0;
+				
+				$data[$count] = array(
+				//	$rs['agent_id'] => 0,
+					"aid" => nullToEmpty( $rs['agent_id']),
+ 					"aname"	=> nullToEmpty( $rs['first_name']." ".$rs['last_name'] ),
+					"aimg" => nullToEmpty( $rs['img_path'] ),
+					"total" => 0,
+				); 
+				$count++;				
+			}
+			
+			wlog( "total list :".$total_list);
+			 $list = intval($total_list);
+			 $total_agent = count($agent);	
+			 $list_per_agent = floor($list / $total_agent);
+			 $list_flag = ($list%$total_agent);
+			 
+			 
+			 wlog( "total agent :".$total_agent);
+			 wlog( "list_per agent : ".$list_per_agent);
+			 wlog( "list flag : ".$list_flag);
+			 
+			 
+	
+			 
+			 //step1 check is flag
+ 			if($list_flag!=0){
+ 						$winner = array();
+				 		$tmp_agent = $agent;
+				 		
+				 		for($i=0;$i<$list_flag;$i++){
+				 			 $win = array_rand($tmp_agent);
+				 			 array_push($winner,$win);
+				 			 unset($tmp_agent[$win]);
+				 		}
+				 		//display get winner
+				 	
+				 		/*
+				 		
+				 		*/
+ 			}
+ 			
+ 			
+ 			//algorithm for manage list
+ 			//the best algorithm that i ever had
+					$interval = 0;
+ 					$index=0;
+					$sql = "SELECT calllist_id FROM t_calllist WHERE import_id = ".dbNumberFormat($tmp['search_list']);
+			 		$result = $dbconn->executeQuery($xsql);
+			 		
+		
+	 			//sql for distribute 
+	 				//check by type
+	 					//start search list type = 1
+		 			    if( $tmp['search_list_type'] == 1){
+		 			    	
+		 			    	//start while
+										while($rs=mysql_fetch_array($result)){
+												if( $interval != $list_per_agent){
+													
+													 	$sql = "INSERT INTO t_calllist_agent ( campaign_id , agent_id , calllist_id ,status ,assign_dt ) VALUES ( ".
+									 				  				" ".dbNumberFormat($tmp['search_campaign']).", ".
+									 				  				"  ".dbNumberFormat($agent[$index])." , ".
+											 				  		" ".dbNumberFormat($rs['calllist_id']).", ".
+											 				  		" 1,  NOW() )";
+													 	$dbconn->executeUpdate($sql);
+														wlog("agent: ".$agent[$index]." get call list id : [".$rs['calllist_id']."] : ".$sql);
+														++$test_agent[$agent[$index]];
+														
+												}else{
+													
+														$sql = "INSERT INTO t_calllist_agent ( campaign_id , agent_id , calllist_id ,status ,assign_dt ) VALUES ( ".
+									 				  				" ".dbNumberFormat($tmp['search_campaign']).", ".
+									 				  				"  ".dbNumberFormat($agent[$winner[$index]])." , ".
+											 				  		" ".dbNumberFormat($rs['calllist_id']).", ".
+											 				  		" 1,  NOW() )";
+														$dbconn->executeUpdate($sql);
+														wlog("agent [winner] : ".$agent[$winner[$index]]." get call list id : [".$rs['calllist_id']."] : ".$sql);
+														++$test_agent[$agent[$winner[$index]]];
+												}
+									
+											$index++;
+										   if( $index >= $total_agent ){
+												$index = 0;
+												$interval++;
+											}
+										}   
+										//end while
+		 			    }
+		 			    //end search list type = 1
+		 			    
+		 			    //start search list type = 2
+	 			        else if( $tmp['search_list_type'] == 2){
+	 			     
+	 			        		 		//start while
+										while($rs=mysql_fetch_array($result)){
+												if( $interval != $list_per_agent){
+													
+													   $sql = " UPDATE t_calllist_agent SET agent_id = ".dbNumberFormat($agent[$index])." WHERE calllist_id = ".dbNumberFormat($rs['calllist_id']);
+													 	$dbconn->executeUpdate($sql);
+													   wlog("agent: ".$agent[$index]." get call list id : [".$rs['calllist_id']."] : ".$sql);
+														++$test_agent[$agent[$index]];
+														
+												}else{
+													
+													 $sql = " UPDATE t_calllist_agent SET agent_id = ".dbNumberFormat($agent[$winner[$index]])." WHERE calllist_id = ".dbNumberFormat($rs['calllist_id']);
+														
+														wlog("agent [winner] : ".$agent[$winner[$index]]." get call list id : [".$rs['calllist_id']."] : ".$sql);
+													 	$dbconn->executeUpdate($sql);
+														++$test_agent[$agent[$winner[$index]]];
+												}
+									
+											$index++;
+										   if( $index >= $total_agent ){
+												$index = 0;
+												$interval++;
+											}
+										}   
+										//end while
+	 			        	
+	 			        	
+	 			        }
+ 			        //end search list type = 2
+			 		
+					
+					
+					//show result
+					 	foreach ($test_agent as $k => $v) {
+					 		wlog("agentid[".$k."] total ".$v);
+					 	}
+					 	
+					 	//map data
+					 	for( $i=0; $i< count($data); $i++){
+					 		
+					 			$agentid = $data[$i]['aid'];
+					 			$value = $test_agent[$agentid];
+					 			$data[$i]['total'] = $value;
+					 			
+					 	
+					 	}
+					
+					 	
+		
+		$dbconn->dbClose();
+		echo json_encode( $data ); 
+		
+		
+		
+	}
+	
+?>

@@ -1,0 +1,365 @@
+2024-05-28 11:07:43  SELECT agent_id , first_name , last_name  , img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE  agent_id = 174 
+2024-05-28 11:07:54 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 11:07:54 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 11:07:54 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.4' 
+2024-05-28 11:07:54 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 11:07:54 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.4', '6655589a499ee' , NOW() );
+2024-05-28 11:07:54 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.4', 'Login' , NOW() );
+2024-05-28 11:07:54 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 11:07:54 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 11:07:54 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.4' 
+2024-05-28 11:07:54 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 11:07:54 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.4', '6655589a5f059' , NOW() );
+2024-05-28 11:07:54 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.4', 'Login' , NOW() );
+2024-05-28 11:07:54 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:07:54 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 11:07:54 page: 0
+2024-05-28 11:07:54 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-28 11:07:59 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:07:59 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 11:07:59 page: 0
+2024-05-28 11:07:59 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-28 11:13:06 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:13:42 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:14:34 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:14:35 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:14:42 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:24:02 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:26:08 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:27:10 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:28:27 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:29:39  SELECT agent_id , first_name , last_name  , img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE  agent_id = 234 
+2024-05-28 11:29:45 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'qc01' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 11:29:45 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 11:29:45 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 240 AND ip_addr != '192.168.113.4' 
+2024-05-28 11:29:45 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 240
+2024-05-28 11:29:45 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '240','192.168.113.4', '66555db97d8fa' , NOW() );
+2024-05-28 11:29:45 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '240','192.168.113.4', 'Login' , NOW() );
+2024-05-28 11:29:46 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:29:46 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.team_id  = 6 GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 11:29:47 page: 0
+2024-05-28 11:29:47 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 240 )  ORDER BY n.create_date DESC 
+2024-05-28 11:29:51  SELECT agent_id , first_name , last_name  , img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE  agent_id = 240 
+2024-05-28 11:29:56 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 11:29:56 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 11:29:56 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.4' 
+2024-05-28 11:29:56 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 11:29:56 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.4', '66555dc42be4d' , NOW() );
+2024-05-28 11:29:56 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.4', 'Login' , NOW() );
+2024-05-28 11:29:56 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:29:56 page: 0
+2024-05-28 11:29:56 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-28 11:29:56 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 11:29:58 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 11:29:58  SELECT agent_id, agent_login, first_name , last_name, first_name_th, last_name_th , genesysid, nickname, img_path, is_active, lv.role_label , a.group_id , group_name, a.team_id , team_name, last_login_dt  FROM  t_agents a  LEFT OUTER JOIN tl_role lv ON a.level_id = lv.role_lv  LEFT OUTER JOIN t_group g ON a.group_id = g.group_id  LEFT OUTER JOIN t_team t ON t.team_id = a.team_id  WHERE agent_id IS NOT NULL  ORDER BY a.team_id , first_name  
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =0, lv_manager =0, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 1 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =1, lv_sup =1, lv_qc =1, lv_manager =1, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 2 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =0, lv_manager =0, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 3 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =1, lv_qc =0, lv_manager =0, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 4 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =1, lv_qc =0, lv_manager =0, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 8 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =1, lv_sup =1, lv_qc =0, lv_manager =1, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 5 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =1, lv_qc =0, lv_manager =1, lv_project =1, lv_qa =1, lv_admin =1 WHERE module_id = 7 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =0, lv_manager =0, lv_project =0, lv_qa =0, lv_admin =0 WHERE module_id = 9 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =0, lv_manager =0, lv_project =0, lv_qa =0, lv_admin =0 WHERE module_id = 10 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =1, lv_sup =1, lv_qc =1, lv_manager =1, lv_project =1, lv_qa =1, lv_admin =1 WHERE module_id = 11 
+2024-05-28 11:30:03 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =1, lv_manager =0, lv_project =0, lv_qa =0, lv_admin =1 WHERE module_id = 13 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =0, lv_manager =0, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 1 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =1, lv_sup =1, lv_qc =1, lv_manager =1, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 2 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =0, lv_manager =0, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 3 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =1, lv_qc =0, lv_manager =0, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 4 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =1, lv_qc =0, lv_manager =0, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 8 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =1, lv_sup =1, lv_qc =0, lv_manager =1, lv_project =1, lv_qa =0, lv_admin =1 WHERE module_id = 5 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =1, lv_qc =0, lv_manager =1, lv_project =1, lv_qa =1, lv_admin =1 WHERE module_id = 7 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =0, lv_manager =0, lv_project =0, lv_qa =0, lv_admin =0 WHERE module_id = 9 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =0, lv_manager =0, lv_project =0, lv_qa =0, lv_admin =0 WHERE module_id = 10 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =1, lv_sup =1, lv_qc =1, lv_manager =1, lv_project =1, lv_qa =1, lv_admin =1 WHERE module_id = 11 
+2024-05-28 11:30:05 [permission_process][save] sql  UPDATE tl_module SET  lv_agent =0, lv_sup =0, lv_qc =1, lv_manager =0, lv_project =0, lv_qa =1, lv_admin =1 WHERE module_id = 13 
+2024-05-28 11:30:07  SELECT agent_id , first_name , last_name  , img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE  agent_id = 234 
+2024-05-28 11:30:13 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'qc01' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 11:30:13 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 11:30:13 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 240 AND ip_addr != '192.168.113.4' 
+2024-05-28 11:30:13 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 240
+2024-05-28 11:30:13 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '240','192.168.113.4', '66555dd586b50' , NOW() );
+2024-05-28 11:30:13 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '240','192.168.113.4', 'Login' , NOW() );
+2024-05-28 11:30:13 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:30:13 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.team_id  = 6 GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 11:30:14 page: 0
+2024-05-28 11:30:14 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 240 )  ORDER BY n.create_date DESC 
+2024-05-28 11:30:15 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:39:22 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:41:04 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:41:54 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:41:54 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 11:41:54 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-05-28 11:42:28 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:42:28 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 11:42:28 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 AND (AppStatus != 'Follow Doc')  ORDER BY app.create_date  DESC 
+2024-05-28 11:42:34 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:42:34 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 11:42:34 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-05-28 11:43:15 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) AND app.agent_id = '1'  ORDER BY app.create_date  DESC 
+2024-05-28 11:43:18 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-05-28 11:43:48 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:43:48 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 11:43:48 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-05-28 11:47:25 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 11:47:25 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 11:47:25 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-05-28 12:09:52 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 12:09:52 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 12:09:52 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-05-28 12:15:31 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '240' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 12:15:31 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 12:15:31 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 240 AND ip_addr != '192.168.113.4' 
+2024-05-28 12:15:31 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 240
+2024-05-28 12:15:31 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '240','192.168.113.4', '665568731f25c' , NOW() );
+2024-05-28 12:15:31 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '240','192.168.113.4', 'Login' , NOW() );
+2024-05-28 12:15:31 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 12:15:31 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.team_id  = 6 GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 12:15:31 page: 0
+2024-05-28 12:15:31 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 240 )  ORDER BY n.create_date DESC 
+2024-05-28 12:15:32 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 12:15:32 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 12:15:32 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-05-28 12:17:30 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'qc01' AND agent_password = '2ed0bb96c525c53151029e334a7f3d8395b03208'
+2024-05-28 12:17:30 is active is 1
+2024-05-28 12:17:34 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'qc01' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 12:17:34 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 12:17:34 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 240 AND ip_addr != '192.168.113.4' 
+2024-05-28 12:17:34 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 240
+2024-05-28 12:17:34 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '240','192.168.113.4', '665568eebd867' , NOW() );
+2024-05-28 12:17:34 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '240','192.168.113.4', 'Login' , NOW() );
+2024-05-28 12:17:35 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.team_id  = 6 GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 12:17:35 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 12:17:35 page: 0
+2024-05-28 12:17:35 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 240 )  ORDER BY n.create_date DESC 
+2024-05-28 12:17:37 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 12:17:37 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 12:17:37 [applicationVoice-pane_process][query] query : SELECT
+	app.app_id,
+	campaign.campaign_name AS camp,
+	CONCAT(agent.first_name, ' ', agent.last_name) AS owner,
+	app.last_wrapup_dt AS Sale_Date,
+	app.campaign_id AS camp_id,
+	qcqa.create_date AS qc_scored_date,
+	qcqa.QAStatus as qa_status
+FROM
+	t_aig_app_non_sale app
+	LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+	LEFT JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+	LEFT JOIN t_aig_qa_non_sale_answer qcqa ON app.app_id = qcqa.app_id
+WHERE
+	1 AND  !(qcqa.create_date IS NULL AND qcqa.QAStatus is not null) ORDER BY app.create_date  DESC 
+2024-05-28 15:31:13 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '240' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 15:31:13 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 15:31:13 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 240 AND ip_addr != '192.168.113.4' 
+2024-05-28 15:31:13 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 240
+2024-05-28 15:31:13 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '240','192.168.113.4', '665596513e7b9' , NOW() );
+2024-05-28 15:31:13 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '240','192.168.113.4', 'Login' , NOW() );
+2024-05-28 15:31:14 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.team_id  = 6 GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 15:31:14 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 15:31:14 page: 0
+2024-05-28 15:31:14 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 240 )  ORDER BY n.create_date DESC 
+2024-05-28 15:31:16 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 15:31:16 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 15:31:16 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 AND (AppStatus != 'Follow Doc')  ORDER BY app.create_date  DESC 
+2024-05-28 15:39:44 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 15:39:44 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 15:39:44 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.4' 
+2024-05-28 15:39:44 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 15:39:44 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.4', '665598501b9d8' , NOW() );
+2024-05-28 15:39:44 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.4', 'Login' , NOW() );
+2024-05-28 15:39:45 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 15:39:45 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 15:39:45 page: 0
+2024-05-28 15:39:45 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-28 15:39:47 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 15:39:47 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 ORDER BY app.create_date  DESC 
+2024-05-28 15:39:47 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 16:42:35 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 16:42:35 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 16:42:35 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.6' 
+2024-05-28 16:42:37 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'arkadmin' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 16:42:37 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 16:42:37 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.6', '6655a70d02e64' , NOW() );
+2024-05-28 16:42:37 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.6', 'Login' , NOW() );
+2024-05-28 16:42:37 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 16:42:37 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 16:42:37 page: 0
+2024-05-28 16:42:37 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-28 16:42:44 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 16:42:44 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 16:42:44 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 ORDER BY app.create_date  DESC 
+2024-05-28 17:03:05  SELECT agent_id , first_name , last_name  , img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE  agent_id = 234 
+2024-05-28 17:03:09 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 17:03:09 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 17:03:09 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.6' 
+2024-05-28 17:03:09 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 17:03:09 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.6', '6655abdd6dbc0' , NOW() );
+2024-05-28 17:03:09 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.6', 'Login' , NOW() );
+2024-05-28 17:03:09 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 17:03:09 page: 0
+2024-05-28 17:03:09 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-28 17:03:10 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 17:05:04 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 17:05:04 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 17:05:04 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 234 AND ip_addr != '192.168.113.4' 
+2024-05-28 17:05:09 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 17:05:09 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 17:05:09 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '234' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 17:05:09 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 17:05:09 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 17:05:09 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 234
+2024-05-28 17:05:09 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.4', '6655ac551648d' , NOW() );
+2024-05-28 17:05:09 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.4', '6655ac551739b' , NOW() );
+2024-05-28 17:05:09 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '234','192.168.113.4', '6655ac5515796' , NOW() );
+2024-05-28 17:05:09 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '234','192.168.113.4', 'Login' , NOW() );
+2024-05-28 17:05:09 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'demo4' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 17:05:09 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 246
+2024-05-28 17:05:09 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '246','192.168.113.4', '6655ac552f043' , NOW() );
+2024-05-28 17:05:09 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '246','192.168.113.4', 'Login' , NOW() );
+2024-05-28 17:05:09 session : SELECT tokenid  FROM t_session  WHERE agent_id = 234
+2024-05-28 17:05:09 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 17:05:09 page: 0
+2024-05-28 17:05:09 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 234 )  ORDER BY n.create_date DESC 
+2024-05-28 17:05:10 session : SELECT tokenid  FROM t_session  WHERE agent_id = 246
+2024-05-28 17:05:11 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 ORDER BY app.create_date  DESC 
+2024-05-28 17:05:11 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 17:06:40 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_id = '246' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 17:06:40 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 17:06:40 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 246 AND ip_addr != '192.168.113.4' 
+2024-05-28 17:06:40 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 246
+2024-05-28 17:06:40 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '246','192.168.113.4', '6655acb0a5493' , NOW() );
+2024-05-28 17:06:40 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '246','192.168.113.4', 'Login' , NOW() );
+2024-05-28 17:06:41 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.agent_id is not null  GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 17:06:41 session : SELECT tokenid  FROM t_session  WHERE agent_id = 246
+2024-05-28 17:06:41 page: 0
+2024-05-28 17:06:41 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 246 )  ORDER BY n.create_date DESC 
+2024-05-28 17:06:56 session : SELECT tokenid  FROM t_session  WHERE agent_id = 246
+2024-05-28 17:06:56 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 ORDER BY app.create_date  DESC 
+2024-05-28 17:06:56 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 17:07:23 [index_process][login] sql :  SELECT agent_id, genesysid , first_name , last_name , extension, is_active , level_id , team_name, img_path  FROM t_agents a LEFT OUTER JOIN t_team t  ON a.team_id = t.team_id  WHERE agent_login = 'qc01' AND agent_password = '505575b06b2e10356ed8128583a07e9aad2c4cff'
+2024-05-28 17:07:23 session init sql :DELETE  FROM t_session WHERE TIMEDIFF( NOW(), timestamp ) > '08:00:00' 
+2024-05-28 17:07:23 session init check concurrent session : SELECT agent_id FROM t_session WHERE agent_id = 240 AND ip_addr != '192.168.113.4' 
+2024-05-28 17:07:23 update last login  : UPDATE t_agents SET last_login_dt = NOW() WHERE agent_id = 240
+2024-05-28 17:07:23 session init : INSERT INTO t_session( agent_id , ip_addr , tokenid , timestamp ) VALUE(  '240','192.168.113.4', '6655acdb9f3f1' , NOW() );
+2024-05-28 17:07:23 session init Insert Login History : INSERT INTO t_login_history ( agent_id , ip , type , datetime ) VALUE(  '240','192.168.113.4', 'Login' , NOW() );
+2024-05-28 17:07:23 check sup permission :  SELECT c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name   , ag.img_path ,  ag.extension, t.team_name  , count( a.calllist_id ) as total_call , sum( a.new_cnt ) as new_cnt , sum( a.callback_cnt ) as success_cnt , sum( a.callback_cnt ) as callback_cnt , sum( a.follow_cnt ) as follow_cnt , sum( a.dnc_cnt ) as dnc_cnt , sum( a.bad_cnt ) as bad_cnt , sum( a.nocont_cnt) as nocont_cnt FROM  (  select campaign_id ,agent_id ,calllist_id  ,case when last_wrapup_option_id IS NULL then 1 else 0 end as new_cnt  ,case when last_wrapup_option_id = 0 then 1 else 0 end as success_cnt  ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt  ,case when last_wrapup_option_id in ( 2,9 ) then 1 else 0 end as follow_cnt  ,case when last_wrapup_option_id = 3 then 1 else 0 end as dnc_cnt  ,case when last_wrapup_option_id = 4 then 1 else 0 end as bad_cnt  ,case when last_wrapup_option_id = 8 then 1 else 0 end as nocont_cnt  FROM t_calllist_agent ) AS a  LEFT OUTER JOIN t_campaign c ON a.campaign_id = c.campaign_id   LEFT OUTER JOIN t_agents ag ON a.agent_id = ag.agent_id   LEFT OUTER JOIN t_team t ON ag.team_id = t.team_id   LEFT OUTER JOIN t_group g ON t.group_id = g.group_id   WHERE ag.team_id  = 6 GROUP BY c.campaign_name , a.campaign_id , ag.agent_id , ag.first_name , ag.last_name  ,ag.img_path ,  ag.extension, t.team_name 
+2024-05-28 17:07:23 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 17:07:24 page: 0
+2024-05-28 17:07:24 news load sql :   SELECT news_id , news_subject , news_detail , news_type , n.is_active, n.create_date, n.create_user , a.first_name , a.last_name , a.img_path  FROM t_news n LEFT OUTER JOIN t_agents a ON a.agent_id = n.create_user  WHERE a.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = 240 )  ORDER BY n.create_date DESC 
+2024-05-28 17:09:15 session : SELECT tokenid  FROM t_session  WHERE agent_id = 240
+2024-05-28 17:09:15 SELECT ex_app_url , campaign_id  FROM t_external_app_register WHERE ex_app_id = 3 AND is_active = 1 
+2024-05-28 17:09:15 [application-pane_process][query] query :  SELECT id, app_run_no, COALESCE(CONCAT(campaign.plancode,ProposalNumber),ProposalNumber) as quotation ,Firstname, Lastname, campaign.campaign_name as camp,  concat( agent.first_name ,' ', agent.last_name)  as owner , app.create_date as Sale_Date , AppStatus, app.campaign_id as camp_id,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 1 AND app_id = app.id LIMIT 1) as qc_name,  (SELECT CONCAT(a.first_name,' ',a.last_name) FROM t_aig_qa_answer qa INNER JOIN t_agents a ON qa.create_by = a.agent_id WHERE col_id = 2 AND app_id = app.id LIMIT 1) as qa_name  FROM t_aig_app app LEFT OUTER JOIN  t_agents  agent ON app.agent_id = agent.agent_id  LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id  WHERE 1 AND (AppStatus != 'Follow Doc')  ORDER BY app.create_date  DESC 
