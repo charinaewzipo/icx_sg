@@ -61,20 +61,20 @@ require_once("../../function/StartConnect.inc");
   .error-border {
     border: 2px solid red;
   }
+ 
 </style>
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="stylesheet" href="css/stylesheet.css" type="text/css" />
   <link href="../../css/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
-  <script>
-    var uid = <?php echo $_SESSION["uid"]; ?>;
-  </script>
+
   <script src="../../scripts/jquery-2.2.4.min.js"></script>
   <script src="../../scripts/jquery-ui.min.js"></script>
   <script src="../../scripts/jquery-ui-datepicker-th.js"></script>
   <script src="../../scripts/moment.min.js"></script>
   <script src="../../scripts/jquery.validate.min.js"></script>
+
   <title>Application Form</title>
   <!-- <script type="text/javascript" src="../scripts/function.js?v=<?= time(); ?>"></script>
   <script type="text/javascript" src="../scripts/jsvalidate.js?v=<?= time(); ?>"></script>
@@ -124,7 +124,7 @@ require_once("../../function/StartConnect.inc");
 </head>
 
 <body>
-
+<div class="modal"></div>
   <?php
   $formType = $_GET["formType"];
   $campaign_id = $_GET["campaign_id"];

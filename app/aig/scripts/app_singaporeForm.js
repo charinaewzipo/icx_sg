@@ -231,7 +231,7 @@ const manualSetDefaultValueForm = () => {
       gender: "F",
       dateOfBirth: "1996-08-07T17:00:00.000Z",
       maritalStatus: "S",
-      occupation: "17",
+      occupation: "18",
       isPolicyHolderDriving: "2",
     },
     contactInfo: {
@@ -317,14 +317,13 @@ const manualSetDefaultValueForm = () => {
   }
 };
 const manualSetDefaultValueFormInsuredList = () => {
-  console.log("manual");
   const insuredData = [
     {
       vehicleInfo: {
         make: "BMW",
         model: "52966",
         vehicleRegYear: "2017",
-        regNo: "SKE7499S",
+        regNo: "S1KE7499S",
         insuringWithCOE: "2",
         ageConditionBasis: "1",
         offPeakCar: "1",
@@ -343,7 +342,7 @@ const manualSetDefaultValueFormInsuredList = () => {
           driverGender: "M",
           driverMaritalStatus: "S",
           drivingExperience: "4",
-          occupation: "17",
+          occupation: "18",
           claimExperience: "Y",
           claimInfo: [
             {

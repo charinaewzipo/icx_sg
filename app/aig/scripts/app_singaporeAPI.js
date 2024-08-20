@@ -1,9 +1,9 @@
 let planData = null;
 let responsePayment=null;
 let quotationData=null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULnd6VXRBNUZINmswQ1Fnal9VbkpKT0JyYll6bFF2cGFiMDlGMVhaRE1zdDgiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxNDE2MzksImV4cCI6MTcyNDE0ODgzOSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.IZ3LrutwGAF3sShryGDnZz_sRm8zJpePi-7FJ8Sa6kvfNPzh5C4LXvupyq13_jLSvEGlAY4fjRniJoyHts1rwg2NWqhibELJkT_LchvHzwjY7I_kQMGge-KrnsUZ8AmGqKu53K7z0HpJ6LQrC6IbY7enyBN_MdkYcsAihDR9bT3VAHDLGpywwZS2Pdw-uf1pAfKAU7vqlJETPAggWOd16glNco2yCFLGq2vhEvS15CEzdQ8T6pqbSINT-1yTnRUVGmBz1Q_nyKIPFVHoiEJTd8DDqUEVEEiuTX2h9OMlpriGyYSCHYioofkicQxqo5zC1JbbGPy7u0NAWetp_VMCMQ"
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlV0UEFZOVpOSFB3V0JncUREcmpHeW5Xb21hWWJTSkt1YzhOY3JnU1NRM28iLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxNDg4OTgsImV4cCI6MTcyNDE1NjA5OCwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.Qtrpv3OEpP3-t6JB1hUn9Lkbgcx8f92_hsnqmYuLitVSSAS_Y1m8PDez5sGkYBEYXXFtTeTt6Hs9RykraVPy3fUP2-Ch2tA4Hn8PJvwH-WTIjwODek70nBd2baTkV-W9f3p480-PHPgtmjbLLNYYRv3K63nXMZg3aXdxt9sfGG6gisXqHEP0udDpnbHBWzcDkuR8cESyHwTLnJ_yfkFPeTUN0Of2_NAUtScf9aDu6sADgcL8473WW7Jxoj-5qkbGe1IIL4E7rKXAPCW73VTRVT9tKVB8T6K9klUe68ZoO-vDhgHATCxSJoaAN5lsG45fwCm-qiLZLAcKEo1KVNxowA"
 function fetchPremium(requestBody) {
-  console.log("Fetching plan data...");
+    document.body.classList.add('loading');
   const apiUrl =
     "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
   fetch(apiUrl, {
@@ -44,9 +44,14 @@ function fetchPremium(requestBody) {
         console.error("Invalid API response:", data);
       }
     })
-    .catch((error) => console.error("Error fetching plan data:", error));
+    .catch((error) => console.error("Error fetching plan data:", error))
+    .finally(() => {
+        // Remove 'loading' class from body after fetch is complete
+        document.body.classList.remove('loading');
+    });
 }
 async function fetchQuotation(requestBody) {
+    document.body.classList.add('loading');
   console.log("Fetching Quotation data...");
   const apiUrl =
     "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/confirm-quotation";
@@ -82,10 +87,13 @@ async function fetchQuotation(requestBody) {
     // Optionally, you can alert the user about the error
     window.alert("Failed to fetch quotation data. Please try again.");
     throw error; // Re-throw the error to be caught by the caller
+  } finally {
+    document.body.classList.remove('loading');
   }
 }
 async function fetchPolicy(requestBody) {
   console.log("Fetching Policy data...");
+  document.body.classList.add('loading');
   const apiUrl =
     "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/issue-policy";
 
@@ -120,6 +128,8 @@ async function fetchPolicy(requestBody) {
     // Optionally, you can alert the user about the error
     window.alert("Failed to fetch quotation data. Please try again.");
     throw error; // Re-throw the error to be caught by the caller
+  } finally {
+    document.body.classList.remove('loading');
   }
 }
 

@@ -741,8 +741,8 @@ document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
 
-  // manualSetDefaultValueForm();
-  // manualSetDefaultValueFormInsuredList();
+  manualSetDefaultValueForm();
+  manualSetDefaultValueFormInsuredList();
 
   
 });
