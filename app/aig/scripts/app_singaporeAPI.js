@@ -35,6 +35,8 @@ function fetchPremium(requestBody) {
           .catch((error) => {
             console.log("Error occurred:", error);
           });
+
+          clearPlanInfo()
         return planData;
       } else {
         console.error("Invalid API response:", data);

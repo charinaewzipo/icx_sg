@@ -151,19 +151,24 @@ function handleCategoryCampaign() {
 }
 
 function clearPlanInfo() {
-  planData = null;
-  var planSelect = document.getElementById("planSelect");
-  var planPoiSelect = document.getElementById("planPoiSelect");
-  var planCoverList = document.getElementById("planCoverList");
-  var planCoverCode = document.getElementById("planCoverCode");
-  var planCoverLimitAmount = document.getElementById("planCoverLimitAmount");
-  planSelect.innerHTML =
-    '<option value=""> <-- Please select an option --> </option>';
-  planPoiSelect.value = null;
-  planCoverList.innerHTML =
-    '<option value=""> <-- Please select an option --> </option>';
-  planCoverCode.innerHTML = null;
-  planCoverLimitAmount.innerHTML = null;
+  const planSelect = document.getElementById('planSelect');
+    planSelect.selectedIndex = 0;
+
+    // Clear the plan Poi input
+    const planPoiSelect = document.getElementById('planPoiSelect');
+    planPoiSelect.value = '';
+
+    // Clear the cover list
+    const coverListBody = document.getElementById('coverListBody');
+
+    // Remove all rows except the first one
+    const rows = coverListBody.querySelectorAll('.cover-row');
+    rows.forEach((row, index) => {
+        if (index !== 0) {
+            coverListBody.removeChild(row);
+        }
+    });
+
 }
 
 const handleSelectType = () => {
@@ -183,7 +188,6 @@ const handleSelectType = () => {
       selectedType = this.getAttribute("data-type");
       console.log("Selected Type:", selectedType);
       handleTypeConfirmQuote();
-      clearPlanInfo();
     });
   });
   handleTypeConfirmQuote();
@@ -684,31 +688,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   
 });
-document.addEventListener('DOMContentLoaded', function() {
-  const expiryDateInput = document.getElementById('expiryDate');
 
-  // Auto-format input on user interaction
-  expiryDateInput.addEventListener('input', function() {
-    let input = this.value;
-    console.log("input",input)
-      
-      // Remove all non-numeric characters
-      input = input.replace(/\D/g, '');
-
-      // Format input as MM/YY
-      if (input.length > 2) {
-          input = `${input.substring(0, 2)}/${input.substring(2, 4)}`;
-      }
-
-      // Ensure the length does not exceed the maximum allowed
-      if (input.length > 5) {
-          input = input.substring(0, 5);
-      }
-
-      this.value = input;
-  });
-  
-});
 
 const setDefaultPlanInfo = (insuredData) => {
   const planInfo = insuredData ? insuredData[0]?.planInfo : {};

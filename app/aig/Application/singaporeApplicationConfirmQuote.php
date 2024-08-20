@@ -79,8 +79,8 @@ require_once("../../function/StartConnect.inc");
   <title>Application Form</title>
   <!-- <script type="text/javascript" src="../scripts/function.js?v=<?= time(); ?>"></script>
   <script type="text/javascript" src="../scripts/jsvalidate.js?v=<?= time(); ?>"></script>
-  <script type="text/javascript" src="../scripts/jsvalidateSingapore.js?v=<?= time(); ?>"></script>
-  <SCRIPT type="text/javascript" src="js/app.js?v=<?= time(); ?>"></script> -->
+  <script type="text/javascript" src="../scripts/jsvalidateSingapore.js?v=<?= time(); ?>"></script> -->
+  <!-- <SCRIPT type="text/javascript" src="js/app.js?v=<?= time(); ?>"></script>  -->
   <script src="../scripts/app_singaporeApplication.js"></script>
   <script src="../scripts/app_singaporeAPI.js"></script>
   <script src="../scripts/singapore_database.js"></script>
@@ -98,6 +98,13 @@ require_once("../../function/StartConnect.inc");
       $("#datepicker4").datepicker();
       $("#datepicker5").datepicker();
       $("#datepicker6").datepicker();
+      $('input[name="payment_expiryDate"]').datepicker($.extend({}, {
+        yearRange: "c-1:c+10",
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'mm/y'
+    }));
     });
   
 
@@ -1560,8 +1567,10 @@ where name='PA Nature of Business'";
       <tr>
         <td>Expiry Date : <span style="color:red">*</span> </td>
         <td>
+          
         <input type="text" name="payment_expiryDate" id="expiryDate" maxlength="5" size="5" placeholder="MM/YY" required/>
       </td>
+      
       </tr>
       <tr>
         <td>Security Code : <span style="color:red">*</span> </td>
