@@ -15,7 +15,7 @@ require_once("../../function/StartConnect.inc");
   #insured-list-auto {
     display: none;
   }
-  
+
   h2 {
     border-bottom: none !important;
   }
@@ -57,9 +57,10 @@ require_once("../../function/StartConnect.inc");
     width: 100%;
     border-collapse: collapse;
   }
+
   .error-border {
-  border: 2px solid red;
-}
+    border: 2px solid red;
+  }
 </style>
 
 <head>
@@ -510,18 +511,18 @@ where name='PA Occupation'";
             </tr>
 
             <tr id="isPolicyHolderDrivingRow">
-  <td style="float:inline-start">isPolicyHolderDriving : <span style="color:red">*</span></td>
-  <td>
-    <div class="form-check">
-      <input type="radio" class="form-check-input" id="isPolicyHolderDrivingYes" name="isPolicyHolderDriving" value="2" checked>
-      <label class="form-check-label" for="isPolicyHolderDrivingYes">Yes</label>
-    </div>
-    <div class="form-check">
-      <input type="radio" class="form-check-input" id="isPolicyHolderDrivingNo" name="isPolicyHolderDriving" value="1">
-      <label class="form-check-label" for="isPolicyHolderDrivingNo">No</label>
-    </div>
-  </td>
-</tr>
+              <td style="float:inline-start">isPolicyHolderDriving : <span style="color:red">*</span></td>
+              <td>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="isPolicyHolderDrivingYes" name="isPolicyHolderDriving" value="2" checked>
+                  <label class="form-check-label" for="isPolicyHolderDrivingYes">Yes</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="isPolicyHolderDrivingNo" name="isPolicyHolderDriving" value="1">
+                  <label class="form-check-label" for="isPolicyHolderDrivingNo">No</label>
+                </div>
+              </td>
+            </tr>
 
           </table>
         </div>
@@ -795,7 +796,7 @@ where name='PA Nature of Business'";
                     BMW
                   </option>
                   <option value="Toyota">
-                  Toyota
+                    Toyota
                   </option>
 
                 </select>
@@ -840,7 +841,7 @@ where name='PA Nature of Business'";
 
               <th>&nbsp;</th>
               <td>Reg No. : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_vehicle_regNo" maxlength="60"  required/></td>
+              <td><input type="text" name="insured_auto_vehicle_regNo" maxlength="60" required /></td>
             </tr>
             <tr>
               <td style="float: inline-start;">Insuring With COE : </td>
@@ -893,7 +894,7 @@ where name='PA Nature of Business'";
             <tr>
               <td>Vehicle Usage : <span style="color:red">*</span></td>
               <td>
-                <input type="text" name="insured_auto_vehicle_vehicleUsage" maxlength="60"  required/>
+                <input type="text" name="insured_auto_vehicle_vehicleUsage" maxlength="60" required />
 
               </td>
               <th>&nbsp;</th>
@@ -922,16 +923,16 @@ where name='PA Nature of Business'";
               <th>&nbsp;</th>
               <td>Mileage Declaration : <span style="color:red">*</span></td>
               <td>
-                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" required/>
+                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" required />
               </td>
 
             </tr>
             <tr>
               <td>Engine No. : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_vehicle_engineNo" maxlength="60" required/></td>
+              <td><input type="text" name="insured_auto_vehicle_engineNo" maxlength="60" required /></td>
               <th>&nbsp;</th>
               <td>Chassis No. : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_vehicle_chassisNo" maxlength="60" required/></td>
+              <td><input type="text" name="insured_auto_vehicle_chassisNo" maxlength="60" required /></td>
             </tr>
             <tr>
               <td>Hire Purchase Company: <span style="color:red">*</span></td>
@@ -1114,7 +1115,7 @@ where name='PA Occupation'";
             <table id="table-form">
               <tr>
                 <td>
-                  <p>Claim Info</p>
+                  <h1>Claim Info</h1>
                 </td>
               </tr>
               <tr>
@@ -1406,75 +1407,75 @@ where name='PA Nature of Business'";
 
         <!--Form Insured List Plan info -->
         <div class="table">
-  <table id="table-form">
-    <tr>
-      <td>
-        <h1>Plan Info</h1>
-      </td>
-    </tr>
-    <tr>
-      <td style="white-space:nowrap">Plan Id : <span style="color:red">*</span> </td>
-      <td>
-        <select id="planSelect" name="planId" required>
-          <option value="">
-            <-- Please select an option -->
-          </option>
-        </select>
-      </td>
-      <th></th>
-      <td style="white-space: nowrap;">Plan Poi :</td>
-      <td colspan="2">
-        <input type="text" id="planPoiSelect" name="planPoi" readonly>
-      </td>
-    </tr>
-    <tr>
-      <td>Cover List</td>
-      <td></td>
-    </tr>
-    <tbody id="coverListBody">
-      <tr class="cover-row">
-        <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
-        <td>
-          <select name="plan_cover_list[]" class="planCoverList" required>
-            <option value="">
-              <-- Please select an option -->
-            </option>
-          </select>
-        </td>
-        <td style="padding-left:20px">Cover Code: <span style="color:red">*</span> </td>
-        <td style="width:70px">
-          <p class="planCoverCode"></p>
-        </td>
-        <td>Limit Amount:</td>
-        <td>
-          <p class="planCoverLimitAmount"></p>
-          <input type="hidden" class="selectedFlagInput" value="">
-          <p class="coverName" hidden></p>
-        </td>
-       
-        <td>
-          <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer" type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
-        </td>
-      </tr>
-    </tbody>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>
-        <button type="button" class="button add-cover" onclick="addCoverRow()">Add Cover</button>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <button type="button" class="button payment" id="btnPaymentOnline" style="margin-left: 20px;" onclick="validateAndSubmitFormCallPremium()">See plan</button>
-      </td>
-    </tr>
-  </table>
-</div>
+          <table id="table-form">
+            <tr>
+              <td>
+                <h1>Plan Info</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="white-space:nowrap">Plan Id : <span style="color:red">*</span> </td>
+              <td>
+                <select id="planSelect" name="planId" required>
+                  <option value="">
+                    <-- Please select an option -->
+                  </option>
+                </select>
+              </td>
+              <th></th>
+              <td style="white-space: nowrap;">Plan Poi :</td>
+              <td colspan="2">
+                <input type="text" id="planPoiSelect" name="planPoi" readonly>
+              </td>
+            </tr>
+            <tr>
+              <td>Cover List</td>
+              <td></td>
+            </tr>
+            <tbody id="coverListBody">
+              <tr class="cover-row">
+                <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
+                <td>
+                  <select name="plan_cover_list[]" class="planCoverList" required>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                  </select>
+                </td>
+                <td style="padding-left:20px">Cover Code: <span style="color:red">*</span> </td>
+                <td style="width:70px">
+                  <p class="planCoverCode"></p>
+                </td>
+                <td>Limit Amount:</td>
+                <td>
+                  <p class="planCoverLimitAmount"></p>
+                  <input type="hidden" class="selectedFlagInput" value="">
+                  <p class="coverName" hidden></p>
+                </td>
+
+                <td>
+                  <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer" type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
+                </td>
+              </tr>
+            </tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <button type="button" class="button add-cover" onclick="addCoverRow()">Add Cover</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button type="button" class="button payment" id="btnPaymentOnline" style="margin-left: 20px;" onclick="validateAndSubmitFormCallPremium()">See plan</button>
+              </td>
+            </tr>
+          </table>
+        </div>
 
 
 

@@ -1,5 +1,6 @@
 let planData = null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmZhbTVza2pwVnJYbmdIeE5yeVRDU00xeUpGdVo0XzZmc0FkbjVZUy1EcFUiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxMjA3MzEsImV4cCI6MTcyNDEyNzkzMSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.EUNPvBBHUwqm9If00KVF-YuIqJbuSfF-1dch--Q9fOt1NqsMuXdJlEuCRYMKDFyq6IMHrFKQV6Zpi5PtzffGdNBtvx3pusR2dlgSdTPuabeVDKj272CFOKTgfYwHom0h_TW9MFd7BjjsdC-FUCZD0nDSMNZYp0n8jXaOh4buYiInxJvYPQ6dIr_DPSnSxZyNLFEkaQkZ5lb5AWZ9K3jV8pROFYn22lb13Iq2OmqPPYmABiMIYQV9geIrPnYaQU1M1TP4S5bhSbkiOo4ys5EONJUfvKfIAfMXRMezrczsfzIscV6fQhn5xDClAHbTEBPKYXzQsS-C4YtwITQUaKwPEA"  
+const token =
+  "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmZhbTVza2pwVnJYbmdIeE5yeVRDU00xeUpGdVo0XzZmc0FkbjVZUy1EcFUiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxMjA3MzEsImV4cCI6MTcyNDEyNzkzMSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.EUNPvBBHUwqm9If00KVF-YuIqJbuSfF-1dch--Q9fOt1NqsMuXdJlEuCRYMKDFyq6IMHrFKQV6Zpi5PtzffGdNBtvx3pusR2dlgSdTPuabeVDKj272CFOKTgfYwHom0h_TW9MFd7BjjsdC-FUCZD0nDSMNZYp0n8jXaOh4buYiInxJvYPQ6dIr_DPSnSxZyNLFEkaQkZ5lb5AWZ9K3jV8pROFYn22lb13Iq2OmqPPYmABiMIYQV9geIrPnYaQU1M1TP4S5bhSbkiOo4ys5EONJUfvKfIAfMXRMezrczsfzIscV6fQhn5xDClAHbTEBPKYXzQsS-C4YtwITQUaKwPEA";
 function fetchPremium(requestBody) {
   console.log("Fetching plan data...");
   const apiUrl =
@@ -26,15 +27,15 @@ function fetchPremium(requestBody) {
 
         //addplan to db
         jQuery.agent
-        .insertPremiumData(planData.insuredList[0].planList["1"])
-        .then((response) => {
-          if (response?.result == "success") {
-            console.log("Response:", response);
-          }
-        })
-        .catch((error) => {
-          console.log("Error occurred:", error);
-        });
+          .insertPremiumData(planData.insuredList[0].planList["1"])
+          .then((response) => {
+            if (response?.result == "success") {
+              console.log("Response:", response);
+            }
+          })
+          .catch((error) => {
+            console.log("Error occurred:", error);
+          });
         return planData;
       } else {
         console.error("Invalid API response:", data);
@@ -238,7 +239,7 @@ const handleRequestBody = () => {
     producerCode: "0002466000",
     campaignCode: "",
   };
-    const requestBodyAh = {
+  const requestBodyAh = {
     propDate: "2024-07-26T18:25:43.511Z",
     productId: "600000060",
     distributionChannel: 10,
@@ -350,8 +351,5 @@ function validateAndSubmitFormCallPremium() {
   const apiBody = handleRequestBody();
   if (apiBody) {
     fetchPremium(apiBody);
-
   }
 }
-
-

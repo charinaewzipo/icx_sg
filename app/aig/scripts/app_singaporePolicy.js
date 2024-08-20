@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (policyid) {
     const paymentContainer = document.getElementById("payment-container");
     paymentContainer.removeAttribute("hidden");
+    const formElements = document.querySelectorAll(
+      "input:not(#payment-container input), select:not(#payment-container select)"
+    );
+    formElements.forEach((element) => {
+      element.disabled = true;
+    });
     jQuery.agent
       .getQuotationWithId(policyid)
       .then((response) => {
