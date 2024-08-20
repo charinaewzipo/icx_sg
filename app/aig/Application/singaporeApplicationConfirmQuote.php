@@ -1449,10 +1449,11 @@ where name='PA Nature of Business'";
         <td>
           <p class="planCoverLimitAmount"></p>
           <input type="hidden" class="selectedFlagInput" value="">
+          <p class="coverName" hidden></p>
         </td>
        
         <td>
-          <button type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
+          <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer" type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
         </td>
       </tr>
     </tbody>

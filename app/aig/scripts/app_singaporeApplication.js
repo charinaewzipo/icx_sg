@@ -425,6 +425,8 @@ function handleForm() {
         ageConditionBasis:
           formData.get("insured_auto_vehicle_ageConditionBasis") || "",
         offPeakCar: formData.get("insured_auto_vehicle_offPeakCar") || "",
+        vehicleUsage: formData.get("insured_auto_vehicle_vehicleUsage") || "",
+        
         mileageCondition:
           formData.get("insured_auto_vehicle_mileageCondition") || "",
         engineNo: formData.get("insured_auto_vehicle_engineNo") || "",
@@ -541,23 +543,32 @@ function getCoverList() {
 
   coverRows.forEach(row => {
     const coverSelect = row.querySelector(".planCoverList");
-    const coverId = coverSelect.value;
-    const coverCode = row.querySelector(".planCoverCode").innerText.trim();
-    const limitAmount = row.querySelector(".planCoverLimitAmount").innerText.trim();
+    const coverId = coverSelect ? coverSelect.value : '';
+
+    const coverCodeElement = row.querySelector(".planCoverCode");
+    const limitAmountElement = row.querySelector(".planCoverLimitAmount");
+    const coverNameElement = row.querySelector(".coverName");
     const selectedFlagInput = row.querySelector(".selectedFlagInput");
-    const selectedFlag = selectedFlagInput ? selectedFlagInput.value : 'N/A';
+
+    const coverCode = coverCodeElement ? coverCodeElement.innerText.trim() : 'N/A';
+    const limitAmount = limitAmountElement ? limitAmountElement.innerText.trim() : '0';
+    const coverName = coverNameElement ? coverNameElement.innerText.trim() : 'N/A';
+    const selectedFlag = selectedFlagInput ? selectedFlagInput.value : 'false';
+
     if (coverId) {
       coverList.push({
         id: coverId,
-        code: coverCode || 'N/A',
+        code: coverCode,
         limitAmount: limitAmount ? parseFloat(limitAmount.replace(/,/g, '')) : 0, // Convert to float
-        selectedFlag:(selectedFlag)==="true" ? true:false
+        name: coverName,
+        selectedFlag: selectedFlag === "true"
       });
     }
   });
 
   return coverList;
 }
+
 
 function getPlanDetail() {
   const formData = new FormData(document.querySelector("form")); // Assuming the form element is available
@@ -568,6 +579,9 @@ function getPlanDetail() {
       ? planListData?.planList[formData.get("planId")]?.planId
       : 0,
     planPoi: formData.get("planPoi"),
+    planDescription:planListData
+    ? planListData?.planList[formData.get("planId")]?.planDescription
+    : "",
     coverList: getCoverList()
   };
 
@@ -658,7 +672,69 @@ document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
   // setDefaultValueForm();
+  manualSetDefaultValueForm();
+  manualSetDefaultValueFormInsuredList();
+
 });
+
+const setDefaultPlanInfo = (insuredData) => {
+  const planInfo = insuredData ? insuredData[0]?.planInfo : {};
+  console.log("planInfo", planInfo);
+
+  if (planInfo) {
+    // Set Plan Info
+    const planIdSelect = document.querySelector('select[name="planId"]');
+    const planPoiInput = document.querySelector('input[name="planPoi"]');
+    if (planIdSelect) {
+      planIdSelect.innerHTML = '';
+
+      const option = document.createElement("option");
+      option.value = planInfo.planId || "";
+      option.text = planInfo.planDescription || "";
+
+      planIdSelect.appendChild(option);
+
+      planIdSelect.value = planInfo.planId || "";
+    }
+
+    if (planPoiInput) {
+      planPoiInput.value = planInfo.planPoi || "";
+    }
+
+    // Handle Cover List
+    const coverListBody = document.getElementById('coverListBody');
+    coverListBody.innerHTML = ""; // Clear existing covers
+
+    if (planInfo.coverList && Array.isArray(planInfo.coverList)) {
+      planInfo.coverList.forEach((cover) => {
+        const coverRow = document.createElement('tr');
+        coverRow.className = 'cover-row';
+        coverRow.innerHTML = `
+          <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span></td>
+          <td>
+            <select name="plan_cover_list[]" class="planCoverList" required style="width:216px">
+              <option value="${cover.id}">${cover.name}</option>
+            </select>
+          </td>
+          <td style="padding-left:20px">Cover Code: <span style="color:red">*</span></td>
+          <td style="width:70px">
+            <p class="planCoverCode">${cover.code || 'N/A'}</p>
+          </td>
+          <td>Limit Amount:</td>
+          <td>
+            <p class="planCoverLimitAmount">${cover.limitAmount ? parseFloat(cover.limitAmount).toLocaleString() : '0'}</p>
+            <input type="hidden" class="selectedFlagInput" value="${cover.selectedFlag || ''}">
+            <p class="coverName" hidden>${cover.name || ''}</p>
+          </td>
+          <td>
+            <button type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
+          </td>
+        `;
+        coverListBody.appendChild(coverRow);
+      });
+    }
+  }
+};
 
 const setDefaultValueForm = (dbData) => {
   const ncdInfo = JSON.parse(dbData.ncdInfo);
@@ -736,6 +812,7 @@ const setDefaultValueForm = (dbData) => {
 const setDefaultValueFormInsuredList = (insuredData) => {
   if (!insuredData || insuredData.length === 0) return;
 
+  setDefaultPlanInfo(insuredData);
   const vehicleInfo = insuredData[0].vehicleInfo;
   document.querySelector('select[name="insured_auto_vehicle_make"]').value =
     vehicleInfo.make;
@@ -758,6 +835,9 @@ const setDefaultValueFormInsuredList = (insuredData) => {
   document.querySelector(
     'select[name="insured_auto_vehicle_mileageCondition"]'
   ).value = vehicleInfo.mileageCondition;
+  document.querySelector(
+    'select[name="insured_auto_vehicle_vehicleUsage"]'
+  ).value = vehicleInfo.vehicleUsage;
   document.querySelector('input[name="insured_auto_vehicle_engineNo"]').value =
     vehicleInfo.engineNo;
   document.querySelector('input[name="insured_auto_vehicle_chassisNo"]').value =
