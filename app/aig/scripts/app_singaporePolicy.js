@@ -1,12 +1,22 @@
 let policyid = null;
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function()  {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   policyid = urlParams.get("policyid");
   console.log("policyid:", policyid);
   if (policyid) {
     const paymentContainer = document.getElementById("payment-container");
+    const addCoverButton = document.querySelector(".add-cover");
+    const seePlanButton = document.querySelector(".seePlan");
+    
     paymentContainer.removeAttribute("hidden");
+    if (addCoverButton) {
+        addCoverButton.setAttribute("hidden", "true");
+      }
+      
+      if (seePlanButton) {
+        seePlanButton.setAttribute("hidden", "true");
+      }
     const formElements = document.querySelectorAll(
       "input:not(#payment-container input), select:not(#payment-container select)"
     );

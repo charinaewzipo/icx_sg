@@ -1,6 +1,5 @@
 let planData = null;
-const token =
-  "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmZhbTVza2pwVnJYbmdIeE5yeVRDU00xeUpGdVo0XzZmc0FkbjVZUy1EcFUiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxMjA3MzEsImV4cCI6MTcyNDEyNzkzMSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.EUNPvBBHUwqm9If00KVF-YuIqJbuSfF-1dch--Q9fOt1NqsMuXdJlEuCRYMKDFyq6IMHrFKQV6Zpi5PtzffGdNBtvx3pusR2dlgSdTPuabeVDKj272CFOKTgfYwHom0h_TW9MFd7BjjsdC-FUCZD0nDSMNZYp0n8jXaOh4buYiInxJvYPQ6dIr_DPSnSxZyNLFEkaQkZ5lb5AWZ9K3jV8pROFYn22lb13Iq2OmqPPYmABiMIYQV9geIrPnYaQU1M1TP4S5bhSbkiOo4ys5EONJUfvKfIAfMXRMezrczsfzIscV6fQhn5xDClAHbTEBPKYXzQsS-C4YtwITQUaKwPEA";
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmlITVprV0VZeDVLVTU1M0F2LXJYX3FyQjQ0UV8yMm16SjhuaVByZUxVY0EiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxMzM0MDYsImV4cCI6MTcyNDE0MDYwNiwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.a5Y68NlX8Txvzv4TL0TAUcIqlbHUK_-AyRysMBHDchLaZeeldZ5PQw7fqN4RxWeuMxamlE1Baq6-hOaAG452s9Z_BzMH_T2SWxWyPeDOfJoyyvMDQ2HPBJ8qkyB-6zd1k6cW9VdA7sSOXm367tkM_E-MCSwUD1XOXVmEX5yO6zI6k26sEsQ6QGGoR995f_L6H9WhIGuMPCsG5KINc1a2Y4jLLkwdY_gv_qdrIw6pQ3Ovicz9Fc8j8KYwYB3eYPp3EkIVoDCqHGLpIiloU3NBeW54gMXfij9mUnUAI4LZpO1aZ5FqCCaU1xuBRNu8-di99mCNQkWfsi6tuS6bkjvkJQ"
 function fetchPremium(requestBody) {
   console.log("Fetching plan data...");
   const apiUrl =
@@ -353,3 +352,136 @@ function validateAndSubmitFormCallPremium() {
     fetchPremium(apiBody);
   }
 }
+async function fetchPayment(requestBody) {
+    console.log("Fetching payment data...");
+    const host ="ap-gateway.mastercard.com";
+    const merchantId = "TEST97454671";
+    const orderId= "777624035";
+    const apiUrl = `https://${host}/api/rest/version/llaatteesstt/merchant/${merchantId}/order/${orderId}/transaction/1`;
+
+    // Basic Auth credentials
+    const username = 'merchant.'+merchantId;  // Replace with your actual username
+    const password = '43e8e5dd31377e6cefe7f33f714246d3';  // Replace with your actual password
+    const credentials = btoa(`${username}:${password}`); // Base64 encode credentials
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "PUT",
+            headers: {
+                'Authorization': `Basic ${credentials}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            // Log response body for debugging
+            const errorText = await response.text();
+            throw new Error(`HTTP error! Status: ${response.status}, Body: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log("data", data);
+
+        if (data?.result === "SUCCESS") {
+            window.alert("Successfully!");
+        } else {
+            window.alert("Something Went Wrong!");
+        }
+
+        return data; // Return data for further processing
+    } catch (error) {
+        console.error("Error fetching payment data:", error);
+        window.alert("Failed to fetch payment data. Please try again.");
+        throw error; // Re-throw the error to be caught by the caller
+    }
+}
+
+//handlePayment
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentContainer = document.getElementById('payment-container');
+    const submitButton = document.getElementById('btnPayment');
+
+    if (!paymentContainer) {
+        console.error('The payment container was not found');
+        return;
+    }
+
+    // Function to get the data from the div elements
+    function getFormData() {
+        const selectElements = paymentContainer.querySelectorAll('select');
+        const inputElements = paymentContainer.querySelectorAll('input');
+        const formData = {};
+
+        selectElements.forEach(select => {
+            formData[select.name] = select.value;
+        });
+
+        inputElements.forEach(input => {
+            if (input.type === 'radio' && input.checked) {
+                formData[input.name] = input.value;
+            } else if (input.type !== 'radio') {
+                formData[input.name] = input.value;
+            }
+        });
+
+        const [expMonth, expYear] = formData['payment_expiryDate'] ? formData['payment_expiryDate'].split('/').map(val => val.trim()) : ['', ''];
+        
+        return {
+            apiOperation: "PAY",
+            order: {
+                amount: "100.00",
+                currency: "SGD"
+            },
+            sourceOfFunds: {
+                type: "CARD",
+                provided: {
+                    card: {
+                        number: "5123456789012346",
+                        // number: formData['payment_cardNumber'],
+                        expiry: {
+                            month: expMonth,
+                            year: expYear
+                        },
+                        securityCode: Number(formData['payment_securityCode'])
+                    }
+                }
+            }
+        };
+    }
+
+    function validateFields() {
+        const paymentMode = document.querySelector('select[name="Payment_Mode"]').value;
+        const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked');
+        const cardType = document.querySelector('select[name="Payment_CardType"]').value;
+        const cardNumber = document.querySelector('input[name="payment_cardNumber"]').value;
+        const expiryDate = document.querySelector('input[name="payment_expiryDate"]').value;
+        const securityCode = document.querySelector('input[name="payment_securityCode"]').value;
+
+        if (!paymentMode || !paymentFrequency || !cardType || !cardNumber || !expiryDate || !securityCode) {
+            window.alert('Please fill out all required fields.');
+            return false;
+        }
+
+        return true;
+    }
+    // Event listener for the button click
+    if (submitButton) {
+        submitButton.addEventListener('click', async function() {
+            paymentContainer.removeAttribute('hidden');
+            if (validateFields()){
+                const requestBody = getFormData();
+                try {
+                    await fetchPayment(requestBody);
+                } catch (error) {
+                    console.error("Failed to fetch payment data:", error);
+                    window.alert("Failed to fetch payment data. Please try again.");
+                }
+            }
+            
+        });
+    } else {
+        console.error('The submit button was not found');
+    }
+});
+

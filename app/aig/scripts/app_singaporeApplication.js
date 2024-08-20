@@ -681,6 +681,33 @@ document.addEventListener("DOMContentLoaded", () => {
   // setDefaultValueForm();
   manualSetDefaultValueForm();
   manualSetDefaultValueFormInsuredList();
+
+  
+});
+document.addEventListener('DOMContentLoaded', function() {
+  const expiryDateInput = document.getElementById('expiryDate');
+
+  // Auto-format input on user interaction
+  expiryDateInput.addEventListener('input', function() {
+    let input = this.value;
+    console.log("input",input)
+      
+      // Remove all non-numeric characters
+      input = input.replace(/\D/g, '');
+
+      // Format input as MM/YY
+      if (input.length > 2) {
+          input = `${input.substring(0, 2)}/${input.substring(2, 4)}`;
+      }
+
+      // Ensure the length does not exceed the maximum allowed
+      if (input.length > 5) {
+          input = input.substring(0, 5);
+      }
+
+      this.value = input;
+  });
+  
 });
 
 const setDefaultPlanInfo = (insuredData) => {
@@ -962,7 +989,6 @@ const setDefaultValueFormInsuredList = (insuredData) => {
     'select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]'
   ).value = claimInfo.insuredLiability;
 
-  const planInfo = insuredData[0].planInfo;
 };
 
 const transformDate = (dateString) => {
