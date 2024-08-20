@@ -29,9 +29,6 @@ document.addEventListener("DOMContentLoaded", function()  {
       element.disabled = true;
     });
 
-   
-
-
     jQuery.agent
       .getQuotationWithId(policyid)
       .then((response) => {

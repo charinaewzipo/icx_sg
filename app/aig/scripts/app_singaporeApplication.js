@@ -150,20 +150,6 @@ function handleCategoryCampaign() {
   }
 }
 
-function clearPlanInfo() {
-  const planSelect = document.getElementById('planSelect');
-    planSelect.selectedIndex = 0;
-    const planPoiSelect = document.getElementById('planPoiSelect');
-    planPoiSelect.value = '';
-    const coverListBody = document.getElementById('coverListBody');
-    const rows = coverListBody.querySelectorAll('.cover-row');
-    rows.forEach((row, index) => {
-        if (index !== 0) {
-            coverListBody.removeChild(row);
-        }
-    });
-}
-
 const handleSelectType = () => {
   const selectableItems = document.querySelectorAll(
     "#header-select-type .selectable"
@@ -185,7 +171,6 @@ const handleSelectType = () => {
   });
   handleTypeConfirmQuote();
 };
-
 const handleTypeConfirmQuote = () => {
   const ncdinfoContainer = document.getElementById("ncd-info-container");
   const remarkC = document.getElementById("remark-c-contanier");
@@ -254,7 +239,6 @@ const handleTypeConfirmQuote = () => {
     remarkCInput.style.display = "table-cell";
   }
 };
-
 const toggleNcdLevel = () => {
   const ncdLevel = document.getElementById("ncdLevel").value;
   const noClaimExperienceRow = document.getElementById("noClaimExperienceRow");
@@ -292,18 +276,6 @@ function showForm(selectedOption) {
   }
 }
 
-const clearForm = () => {
-  document
-    .getElementById("btnClearForm")
-    .addEventListener("click", function () {
-      console.log("clear");
-      const form = document.getElementById("application");
-      form.reset(); // This resets all form fields to their default values
-      form.querySelectorAll("[required]").forEach((field) => {
-        field.style.borderColor = ""; // Reset the border color if any fields were highlighted
-      });
-    });
-};
 function handleForm() {
   const formType = getTypeSelectForm();
   const customerType = getTypeCustomerType();
@@ -622,6 +594,7 @@ const handleValidateForm = () => {
       }
       try {
         const requestBody = handleForm();
+        //createpolicy
         if (policyid) {
           console.log("policyid", policyid);
           const paymentDetail = [
@@ -651,6 +624,7 @@ const handleValidateForm = () => {
             await jQuery.agent.insertPolicyData(policyid, responseData); // Ensure it completes
           }
         } else {
+          //createquotation
           const responseData = await fetchQuotation(requestBody);
           await jQuery.agent.insertQuotationData(requestBody, responseData); // Ensure it completes
         }
@@ -659,7 +633,92 @@ const handleValidateForm = () => {
       }
     });
 };
+//handlePayment
+document.addEventListener('DOMContentLoaded', function() {
+  const paymentContainer = document.getElementById('payment-container');
+  const submitButton = document.getElementById('btnPayment');
 
+  if (!paymentContainer) {
+      console.error('The payment container was not found');
+      return;
+  }
+
+  // Function to get the data from the div elements
+  function getFormData() {
+      const selectElements = paymentContainer.querySelectorAll('select');
+      const inputElements = paymentContainer.querySelectorAll('input');
+      const formData = {};
+
+      selectElements.forEach(select => {
+          formData[select.name] = select.value;
+      });
+
+      inputElements.forEach(input => {
+          if (input.type === 'radio' && input.checked) {
+              formData[input.name] = input.value;
+          } else if (input.type !== 'radio') {
+              formData[input.name] = input.value;
+          }
+      });
+
+      const [expMonth, expYear] = formData['payment_expiryDate'] ? formData['payment_expiryDate'].split('/').map(val => val.trim()) : ['', ''];
+      
+      return {
+          apiOperation: "PAY",
+          order: {
+              amount: "100.00",
+              currency: "SGD"
+          },
+          sourceOfFunds: {
+              type: "CARD",
+              provided: {
+                  card: {
+                      number: "5123456789012346",
+                      // number: formData['payment_cardNumber'],
+                      expiry: {
+                          month: expMonth,
+                          year: expYear
+                      },
+                      securityCode: Number(formData['payment_securityCode'])
+                  }
+              }
+          }
+      };
+  }
+
+  function validateFields() {
+      const paymentMode = document.querySelector('select[name="Payment_Mode"]').value;
+      const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked');
+      const cardType = document.querySelector('select[name="Payment_CardType"]').value;
+      const cardNumber = document.querySelector('input[name="payment_cardNumber"]').value;
+      const expiryDate = document.querySelector('input[name="payment_expiryDate"]').value;
+      const securityCode = document.querySelector('input[name="payment_securityCode"]').value;
+
+      if (!paymentMode || !paymentFrequency || !cardType || !cardNumber || !expiryDate || !securityCode) {
+          window.alert('Please fill out all required fields.');
+          return false;
+      }
+
+      return true;
+  }
+  if (submitButton) {
+      submitButton.addEventListener('click', async function() {
+          paymentContainer.removeAttribute('hidden');
+          if (validateFields()){
+              const requestBody = getFormData();
+              try {
+                  await fetchPayment(requestBody);
+              } catch (error) {
+                  console.error("Failed to fetch payment data:", error);
+                  window.alert("Failed to fetch payment data. Please try again.");
+              }
+          }
+          
+      });
+  } else {
+      console.error('The submit button was not found');
+  }
+});
 //initial
 window.onload = function () {
   showForm(document.querySelector('input[name="customerType"]:checked'));
@@ -671,7 +730,6 @@ document.addEventListener("DOMContentLoaded", () => {
   handleTypeConfirmQuote();
   handleCategoryCampaign();
 });
-document.addEventListener("DOMContentLoaded", clearForm);
 document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
@@ -682,287 +740,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
 });
 
-
-const setDefaultPlanInfo = (insuredData) => {
-  const planInfo = insuredData ? insuredData[0]?.planInfo : {};
-  console.log("planInfo", planInfo);
-
-  if (planInfo) {
-    // Set Plan Info
-    const planIdSelect = document.querySelector('select[name="planId"]');
-    const planPoiInput = document.querySelector('input[name="planPoi"]');
-    if (planIdSelect) {
-      planIdSelect.innerHTML = "";
-
-      const option = document.createElement("option");
-      option.value = planInfo.planId || "";
-      option.text = planInfo.planDescription || "";
-
-      planIdSelect.appendChild(option);
-
-      planIdSelect.value = planInfo.planId || "";
-    }
-
-    if (planPoiInput) {
-      planPoiInput.value = planInfo.planPoi || "";
-    }
-
-    // Handle Cover List
-    const coverListBody = document.getElementById("coverListBody");
-    coverListBody.innerHTML = ""; // Clear existing covers
-
-    if (
-      planInfo.coverList &&
-      Array.isArray(planInfo.coverList) &&
-      policyid == null
-    ) {
-      planInfo.coverList.forEach((cover) => {
-        const coverRow = document.createElement("tr");
-        coverRow.className = "cover-row";
-        coverRow.innerHTML = `
-          <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span></td>
-          <td>
-            <select name="plan_cover_list[]" class="planCoverList" required style="width:216px">
-              <option value="${cover.id}">${cover.name}</option>
-            </select>
-          </td>
-          <td style="padding-left:20px">Cover Code: <span style="color:red">*</span></td>
-          <td style="width:70px">
-            <p class="planCoverCode">${cover.code || "N/A"}</p>
-          </td>
-          <td>Limit Amount:</td>
-          <td>
-            <p class="planCoverLimitAmount">${
-              cover.limitAmount
-                ? parseFloat(cover.limitAmount).toLocaleString()
-                : "0"
-            }</p>
-            <input type="hidden" class="selectedFlagInput" value="${
-              cover.selectedFlag || ""
-            }">
-            <p class="coverName" hidden>${cover.name || ""}</p>
-          </td>
-          <td>
-            <button type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
-          </td>
-        `;
-        coverListBody.appendChild(coverRow);
-      });
-    } else if (
-      planInfo.coverList &&
-      Array.isArray(planInfo.coverList) &&
-      policyid !== null
-    ) {
-      planInfo.coverList.forEach((cover) => {
-        const coverRow = document.createElement("tr");
-        coverRow.className = "cover-row";
-        coverRow.innerHTML = `
-          <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span></td>
-          <td>
-            <select name="plan_cover_list[]" class="planCoverList" required style="width:216px" disabled>
-              <option value="${cover.id}">${cover.name}</option>
-            </select>
-          </td>
-          <td style="padding-left:20px">Cover Code: <span style="color:red">*</span></td>
-          <td style="width:70px">
-            <p class="planCoverCode">${cover.code || "N/A"}</p>
-          </td>
-          <td>Limit Amount:</td>
-          <td>
-            <p class="planCoverLimitAmount">${
-              cover.limitAmount
-                ? parseFloat(cover.limitAmount).toLocaleString()
-                : "0"
-            }</p>
-            <input type="hidden" class="selectedFlagInput" value="${
-              cover.selectedFlag || ""
-            }" disabled>
-            <p class="coverName" hidden>${cover.name || ""}</p>
-          </td>
-          <td>
-          </td>
-        `;
-        coverListBody.appendChild(coverRow);
-      });
-    }
-  }
-};
-
-const setDefaultValueForm = (dbData) => {
-  const ncdInfo = JSON.parse(dbData.ncdInfo);
-  const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
-  const insuredData = JSON.parse(dbData.insuredList);
-
-  document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
-  document.querySelector('select[name="NoClaimExperience"]').value =
-    ncdInfo.noClaimExperienceOther || "";
-
-  // Set Individual Policy Holder Info fields
-  document.querySelector('select[name="courtesyTitle"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.courtesyTitle;
-  document.querySelector('input[name="firstName"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.fullName.split(
-      " "
-    )[0];
-  document.querySelector('input[name="lastName"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.fullName.split(
-      " "
-    )[1];
-  document.querySelector('select[name="residentStatus"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.residentStatus;
-  document.querySelector('select[name="customerIdType"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdType;
-  document.querySelector('input[name="customerIdNo"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdNo;
-  document.querySelector('input[name="nationality"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.nationality;
-  document.querySelector('select[name="gender"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.gender;
-  document.querySelector('input[name="dateOfBirth"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth.split(
-      "T"
-    )[0];
-  document.querySelector('select[name="maritalStatus"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.maritalStatus;
-  document.querySelector('select[name="occupation"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.occupation;
-  document.querySelector('input[name="mobileNo"]').value =
-    individualPolicyHolderInfo.contactInfo.mobileNo;
-  document.querySelector('input[name="emailId"]').value =
-    individualPolicyHolderInfo.contactInfo.emailId;
-  document.querySelector('input[name="blockNo"]').value =
-    individualPolicyHolderInfo.contactInfo.blockNo;
-  document.querySelector('input[name="streetName"]').value =
-    individualPolicyHolderInfo.contactInfo.streetName;
-  document.querySelector('input[name="unitNo"]').value =
-    individualPolicyHolderInfo.contactInfo.unitNo;
-  document.querySelector('input[name="buildingName"]').value =
-    individualPolicyHolderInfo.contactInfo.buildingName;
-  document.querySelector('input[name="postCode"]').value =
-    individualPolicyHolderInfo.contactInfo.postCode;
-  document.querySelector('input[name="PolicyEffectiveDate"]').value =
-    dbData.policyEffDate.split(" ")[0];
-  document.querySelector('input[name="PolicyExpiryDate"]').value =
-    dbData.policyExpDate.split(" ")[0];
-  document.querySelector('input[name="campaignCode"]').value =
-    dbData.campaignCode;
-
-  const drivingYes = document.querySelector("#isPolicyHolderDrivingYes");
-  const drivingNo = document.querySelector("#isPolicyHolderDrivingNo");
-  if (
-    individualPolicyHolderInfo.individualPolicyHolderInfo
-      .isPolicyHolderDriving === "2"
-  ) {
-    drivingYes.checked = true;
-  } else {
-    drivingNo.checked = true;
-  }
-
-  setDefaultValueFormInsuredList(insuredData);
-};
-
-const setDefaultValueFormInsuredList = (insuredData) => {
-  if (!insuredData || insuredData.length === 0) return;
-
-  setDefaultPlanInfo(insuredData);
-  const vehicleInfo = insuredData[0].vehicleInfo;
-  document.querySelector('select[name="insured_auto_vehicle_make"]').value =
-    vehicleInfo.make;
-  document.querySelector('select[name="insured_auto_vehicle_model"]').value =
-    vehicleInfo.model;
-  document.querySelector(
-    'select[name="insured_auto_vehicle_vehicleRegYear"]'
-  ).value = vehicleInfo.vehicleRegYear;
-  document.querySelector('input[name="insured_auto_vehicle_regNo"]').value =
-    vehicleInfo.regNo;
-  document.querySelector(
-    `input[name="insured_auto_vehicle_insuringWithCOE"][value="${vehicleInfo.insuringWithCOE}"]`
-  ).checked = true;
-  document.querySelector(
-    'select[name="insured_auto_vehicle_ageConditionBasis"]'
-  ).value = vehicleInfo.ageConditionBasis;
-  document.querySelector(
-    `input[name="insured_auto_vehicle_offPeakCar"][value="${vehicleInfo.offPeakCar}"]`
-  ).checked = true;
-  document.querySelector(
-    'select[name="insured_auto_vehicle_mileageCondition"]'
-  ).value = vehicleInfo.mileageCondition;
-  document.querySelector(
-    'select[name="insured_auto_vehicle_vehicleUsage"]'
-  ).value = vehicleInfo.vehicleUsage;
-  document.querySelector('input[name="insured_auto_vehicle_engineNo"]').value =
-    vehicleInfo.engineNo;
-  document.querySelector('input[name="insured_auto_vehicle_chassisNo"]').value =
-    vehicleInfo.chassisNo;
-  document.querySelector(
-    'input[name="insured_auto_vehicle_mileageDeclaration"]'
-  ).value = vehicleInfo.mileageDeclaration || "";
-  document.querySelector(
-    'input[name="insured_auto_vehicle_hirePurchaseCompany"]'
-  ).value = vehicleInfo.hirePurchaseCompany;
-  document.querySelector(
-    'input[name="insured_auto_vehicle_declaredSI"]'
-  ).value = vehicleInfo.declaredSI;
-
-  const driverInfo = insuredData[0].driverInfo[0];
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverType"]'
-  ).value = driverInfo.driverType;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_driverName"]'
-  ).value = driverInfo.driverName;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_driverIdNumber"]'
-  ).value = driverInfo.driverIdNumber;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverIdType"]'
-  ).value = driverInfo.driverIdType;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverResidentStatus"]'
-  ).value = driverInfo.driverResidentStatus;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_driverDOB"]'
-  ).value = driverInfo.driverDOB.split("T")[0];
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverGender"]'
-  ).value = driverInfo.driverGender;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_driverNationality"]'
-  ).value = driverInfo.driverNationality;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_maritalStatus"]'
-  ).value = driverInfo.driverMaritalStatus;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_drivingExperience"]'
-  ).value = driverInfo.drivingExperience;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_occupation"]'
-  ).value = driverInfo.occupation;
-  document.querySelector(
-    `input[name="insured_auto_driverInfo_claimExperience"][value="${driverInfo.claimExperience}"]`
-  ).checked = true;
-
-  const claimInfo = driverInfo.claimInfo[0];
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_claimInfo_dateOfLoss"]'
-  ).value = claimInfo.dateOfLoss.split("T")[0];
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_claimInfo_lossDescription"]'
-  ).value = claimInfo.lossDescription;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_claimInfo_claimNature"]'
-  ).value = claimInfo.claimNature;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_claimInfo_claimAmount"]'
-  ).value = claimInfo.claimsAmount;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_claimInfo_claimStatus"]'
-  ).value = claimInfo.status;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]'
-  ).value = claimInfo.insuredLiability;
-
-};
 
 const transformDate = (dateString) => {
   return new Date(dateString).toISOString();

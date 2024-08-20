@@ -1461,7 +1461,7 @@ where name='PA Nature of Business'";
                 </td>
 
                 <td>
-                  <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer" type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
+                  <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer;float:inline-end;" type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
                 </td>
               </tr>
             </tbody>
