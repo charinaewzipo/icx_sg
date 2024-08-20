@@ -653,8 +653,7 @@ const setDefaultValueForm = (dbData) => {
 
 const setDefaultValueFormInsuredList = (insuredData) => {
   if (!insuredData || insuredData.length === 0) return;
-
-  setDefaultPlanInfo(insuredData);
+console.log("insuredData",insuredData)
   const vehicleInfo = insuredData[0].vehicleInfo;
   document.querySelector('select[name="insured_auto_vehicle_make"]').value =
     vehicleInfo.make;
@@ -678,7 +677,7 @@ const setDefaultValueFormInsuredList = (insuredData) => {
     'select[name="insured_auto_vehicle_mileageCondition"]'
   ).value = vehicleInfo.mileageCondition;
   document.querySelector(
-    'select[name="insured_auto_vehicle_vehicleUsage"]'
+    'input[name="insured_auto_vehicle_vehicleUsage"]'
   ).value = vehicleInfo.vehicleUsage;
   document.querySelector('input[name="insured_auto_vehicle_engineNo"]').value =
     vehicleInfo.engineNo;
@@ -695,6 +694,7 @@ const setDefaultValueFormInsuredList = (insuredData) => {
   ).value = vehicleInfo.declaredSI;
 
   const driverInfo = insuredData[0].driverInfo[0];
+  console.log("driverInfo",driverInfo)
   document.querySelector(
     'select[name="insured_auto_driverInfo_driverType"]'
   ).value = driverInfo.driverType;
@@ -751,4 +751,7 @@ const setDefaultValueFormInsuredList = (insuredData) => {
   document.querySelector(
     'select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]'
   ).value = claimInfo.insuredLiability;
+
+  setDefaultPlanInfo(insuredData);
+
 };

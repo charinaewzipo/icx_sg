@@ -420,8 +420,8 @@ function handleForm() {
             formData.get("insured_auto_driverInfo_maritalStatus") || "",
           drivingExperience:
             formData.get("insured_auto_driverInfo_drivingExperience") || "",
-          // occupation: formData.get("insured_auto_driverInfo_occupation") || "",
-          occupation: "18",
+          occupation: formData.get("insured_auto_driverInfo_occupation") || "",
+          // occupation: "18",
           claimExperience:
             formData.get("insured_auto_driverInfo_claimExperience") || "",
           claimInfo:
@@ -572,8 +572,14 @@ const handleValidateForm = () => {
     .addEventListener("submit", async function (event) {
       event.preventDefault();
       console.log("Form submission triggered");
+
+      // Create an instance of FormData from the form element
+      const form = event.target;
+      const formData = new FormData(form);
+
       console.log("form", handleForm());
       let isValid = true;
+
       document.querySelectorAll("input, select").forEach(function (field) {
         if (
           field.style.display !== "none" &&
@@ -592,39 +598,39 @@ const handleValidateForm = () => {
         alert("Please fill in all required fields.");
         return;
       }
+
       try {
         const requestBody = handleForm();
-        //createpolicy
-        if (policyid) {
+        console.log("requestBody",requestBody)
+        if (policyid && responsePayment) {
           console.log("policyid", policyid);
-          const paymentDetail = [
+          console.log("responsePayment", responsePayment);
+          const paymentDetails = [
             {
-              // Payment_Mode: formData.get('Payment_Mode'),
-              // Payment_Frequency: formData.get('Payment_Frequency'),
-              // Payment_CardType: formData.get('Payment_CardType'),
-              batchNo: "IP08072022",
-              orderNo: "7240000604",
-              paymentMode: 1001,
-              merchantId: "TEST97454572",
-              cardType: "1",
-              cardExpiryYear: "31",
-              paymentDate: "2024-08-06T00:00:00Z",
-              paymentFrequency: 1,
-              cardExpiryMonth: "5",
-              paymentAmount: 12000,
-              cardNumber: "450875xxxxxx1019",
-              currency: "SGD",
+              batchNo: `IP${responsePayment.transaction.acquirer.batch}`, 
+              orderNo: responsePayment.order.id,
+              paymentMode: Number(formData.get('Payment_Mode')), 
+              merchantId: responsePayment.merchant,
+              cardType: formData.get('Payment_CardType'),
+              cardExpiryMonth: responsePayment.sourceOfFunds.provided.card.expiry.month,
+              cardExpiryYear: responsePayment.sourceOfFunds.provided.card.expiry.year,
+              paymentDate: responsePayment.order.creationTime,
+              paymentFrequency: Number(formData.get('Payment_Frequency')),
+              paymentAmount: responsePayment.order.amount,
+              // cardNumber: formData.get('payment_cardNumber'),
+              cardNumber: responsePayment.sourceOfFunds.provided.card.number,
+              currency: responsePayment.order.currency
             },
           ];
-          const body = { ...requestBody, paymentDetail };
+          const body = { ...requestBody, paymentDetails };
           console.log("body", body);
-          const responseData = await fetchPolicy(requestBody);
+          const responseData = await fetchPolicy(body);
 
           if (responseData?.statusCode == "N02") {
             await jQuery.agent.insertPolicyData(policyid, responseData); // Ensure it completes
           }
         } else {
-          //createquotation
+          // Create quotation
           const responseData = await fetchQuotation(requestBody);
           await jQuery.agent.insertQuotationData(requestBody, responseData); // Ensure it completes
         }
@@ -633,6 +639,7 @@ const handleValidateForm = () => {
       }
     });
 };
+
 //handlePayment
 document.addEventListener('DOMContentLoaded', function() {
   const paymentContainer = document.getElementById('payment-container');
@@ -666,7 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return {
           apiOperation: "PAY",
           order: {
-              amount: "100.00",
+              amount: parseFloat(quotationData?.premiumPayable),
               currency: "SGD"
           },
           sourceOfFunds: {
@@ -733,9 +740,9 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
-  // setDefaultValueForm();
-  manualSetDefaultValueForm();
-  manualSetDefaultValueFormInsuredList();
+
+  // manualSetDefaultValueForm();
+  // manualSetDefaultValueFormInsuredList();
 
   
 });

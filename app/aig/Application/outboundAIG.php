@@ -19,8 +19,8 @@ function DBGetPolicyDetailsWithId($policyId) {
     }
 
     // Prepare the SQL query to select data by policyId
-    $sql = "SELECT id, policyId, productId, distributionChannel, producerCode, propDate, policyEffDate, policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo
-            FROM tubtim.insurance_data
+    $sql = "SELECT id, policyId, productId, distributionChannel, producerCode, propDate, policyEffDate, policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable, quoteLapseDate, `type`
+FROM tubtim.insurance_data
             WHERE policyId = ?";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
@@ -50,9 +50,7 @@ function DBGetPolicyDetailsWithId($policyId) {
     // Close the database connection
     $dbconn->dbconn->close();
 }
-
-
-function DBInsertQuotationData($formData, $response)
+function DBInsertQuotationData($formData, $response,$type)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -65,6 +63,7 @@ function DBInsertQuotationData($formData, $response)
     
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $productId = isset($formData['productId']) ? $formData['productId'] : 0;
+    $type = isset($type) ? $type : '';
     $distributionChannel = isset($formData['distributionChannel']) ? $formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : '0002466000';
     $propDate = isset($formData['propDate']) ? $formData['propDate'] : '';
@@ -85,10 +84,10 @@ function DBInsertQuotationData($formData, $response)
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
 
     $sql = "INSERT INTO insurance_data (
-        policyId, productId, distributionChannel, producerCode, propDate, policyEffDate,
+        policyId,type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo,premiumPayable,quoteLapseDate
     ) VALUES (
-        '$policyId', $productId, $distributionChannel, '$producerCode', '$propDate',
+        '$policyId','$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate', '$policyExpDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo' ,'$premiumPayable' ,'$quoteLapseDate'
     )";
@@ -223,15 +222,6 @@ function DBInsertPlanInfoWithCovers($planInfo) {
     $dbconn->dbconn->close();
 }
 
-
-
-
-
-
-
-
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     if (json_last_error() !== JSON_ERROR_NONE) {
@@ -242,7 +232,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($data['action'] === 'insertQuotation') {
             $formData = isset($data['formData']) ? $data['formData'] : array();
             $response = isset($data['response']) ? $data['response'] : array();
-            DBInsertQuotationData($formData, $response);
+            $type = isset($data['type']) ? $data['type'] : "";
+            DBInsertQuotationData($formData, $response,$type);
         } elseif ($data['action'] === 'getQuotationWithId') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
             DBGetPolicyDetailsWithId($policyid);

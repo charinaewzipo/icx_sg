@@ -35,7 +35,8 @@
         data: JSON.stringify({
           action: "insertQuotation",
           formData: formData,
-          response: response
+          response: response,
+          type:selectedType
         }),
         dataType: "json",
         success: function (response) {

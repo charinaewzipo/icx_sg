@@ -1,5 +1,7 @@
 let planData = null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmlITVprV0VZeDVLVTU1M0F2LXJYX3FyQjQ0UV8yMm16SjhuaVByZUxVY0EiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxMzM0MDYsImV4cCI6MTcyNDE0MDYwNiwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.a5Y68NlX8Txvzv4TL0TAUcIqlbHUK_-AyRysMBHDchLaZeeldZ5PQw7fqN4RxWeuMxamlE1Baq6-hOaAG452s9Z_BzMH_T2SWxWyPeDOfJoyyvMDQ2HPBJ8qkyB-6zd1k6cW9VdA7sSOXm367tkM_E-MCSwUD1XOXVmEX5yO6zI6k26sEsQ6QGGoR995f_L6H9WhIGuMPCsG5KINc1a2Y4jLLkwdY_gv_qdrIw6pQ3Ovicz9Fc8j8KYwYB3eYPp3EkIVoDCqHGLpIiloU3NBeW54gMXfij9mUnUAI4LZpO1aZ5FqCCaU1xuBRNu8-di99mCNQkWfsi6tuS6bkjvkJQ"
+let responsePayment=null;
+let quotationData=null;
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULnd6VXRBNUZINmswQ1Fnal9VbkpKT0JyYll6bFF2cGFiMDlGMVhaRE1zdDgiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxNDE2MzksImV4cCI6MTcyNDE0ODgzOSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.IZ3LrutwGAF3sShryGDnZz_sRm8zJpePi-7FJ8Sa6kvfNPzh5C4LXvupyq13_jLSvEGlAY4fjRniJoyHts1rwg2NWqhibELJkT_LchvHzwjY7I_kQMGge-KrnsUZ8AmGqKu53K7z0HpJ6LQrC6IbY7enyBN_MdkYcsAihDR9bT3VAHDLGpywwZS2Pdw-uf1pAfKAU7vqlJETPAggWOd16glNco2yCFLGq2vhEvS15CEzdQ8T6pqbSINT-1yTnRUVGmBz1Q_nyKIPFVHoiEJTd8DDqUEVEEiuTX2h9OMlpriGyYSCHYioofkicQxqo5zC1JbbGPy7u0NAWetp_VMCMQ"
 function fetchPremium(requestBody) {
   console.log("Fetching plan data...");
   const apiUrl =
@@ -106,7 +108,7 @@ async function fetchPolicy(requestBody) {
     console.log("data", data);
 
     // Alert based on statusCode
-    if (data?.statusCode === "S03") {
+    if (data?.statusCode === "N02") {
       window.alert(data?.statusMessage || "Successfully!");
     } else {
       window.alert("Something Went Wrong!");
@@ -185,8 +187,8 @@ const handleRequestBody = () => {
               formData.get("insured_auto_driverInfo_maritalStatus") || "",
             drivingExperience:
               formData.get("insured_auto_driverInfo_drivingExperience") || "",
-            occupation: "18",
-            //   occupation: formData.get("insured_auto_driverInfo_occupation") || "",
+            // occupation: "18",
+              occupation: formData.get("insured_auto_driverInfo_occupation") || "",
             claimExperience:
               formData.get("insured_auto_driverInfo_claimExperience") || "",
             claimInfo:
@@ -358,7 +360,7 @@ async function fetchPayment(requestBody) {
     console.log("Fetching payment data...");
     const host ="ap-gateway.mastercard.com";
     const merchantId = "TEST97454671";
-    const orderId= "777624035";
+    const orderId= quotationData?.quoteNo;
     const apiUrl = `https://${host}/api/rest/version/llaatteesstt/merchant/${merchantId}/order/${orderId}/transaction/1`;
 
     // Basic Auth credentials
@@ -387,6 +389,8 @@ async function fetchPayment(requestBody) {
 
         if (data?.result === "SUCCESS") {
             window.alert("Successfully!");
+            responsePayment=data
+
         } else {
             window.alert("Something Went Wrong!");
         }

@@ -25,20 +25,23 @@ document.addEventListener("DOMContentLoaded", function()  {
     const formElements = document.querySelectorAll(
       "input:not(#payment-container input), select:not(#payment-container select)"
     );
-    formElements.forEach((element) => {
-      element.disabled = true;
-    });
+    // formElements.forEach((element) => {
+    //   element.disabled = true;
+    // });
 
     jQuery.agent
-      .getQuotationWithId(policyid)
-      .then((response) => {
-        if (response?.result == "success") {
-          console.log("Response:", response);
-          setDefaultValueForm(response?.data);
-        }
-      })
-      .catch((error) => {
-        console.log("Error occurred:", error);
-      });
+    .getQuotationWithId(policyid)
+    .then((response) => {
+      if (response?.result == "success") {
+        console.log("Response:", response);
+        quotationData=response?.data
+        setDefaultValueForm(response?.data);
+      }
+    })
+    .catch((error) => {
+      console.error("Error occurred:", error);
+    });
+   
+    
   }
 });

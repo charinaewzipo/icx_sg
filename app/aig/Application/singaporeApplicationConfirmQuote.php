@@ -91,12 +91,16 @@ require_once("../../function/StartConnect.inc");
   </script>
   <script>
     $(function() {
-      $("#datepicker").datepicker();
-      $("#datepicker2").datepicker();
+      $("#datepicker").datepicker({maxDate :new Date()});
+      $("#datepicker2").datepicker({maxDate :new Date()});
       $("#datepicker3").datepicker();
       $("#datepicker4").datepicker();
-      $("#datepicker5").datepicker();
-      $("#datepicker6").datepicker();
+      $("#datepicker5").datepicker({
+    minDate: new Date() // Set the minimum date to today
+});
+      $("#datepicker6").datepicker({
+    minDate: new Date() // Set the minimum date to today
+});
       $('input[name="payment_expiryDate"]').datepicker($.extend({}, {
         yearRange: "c-1:c+10",
         changeMonth: true,
@@ -105,6 +109,16 @@ require_once("../../function/StartConnect.inc");
         dateFormat: 'mm/y'
       }));
     });
+
+    $body = $("body");
+			$(document).on({
+				ajaxStart: function() {
+					$body.addClass("loading");
+				},
+				ajaxStop: function() {
+					$body.removeClass("loading");
+				}
+			});
   </script>
 
 </head>
@@ -805,6 +819,11 @@ where name='PA Nature of Business'";
                   <option value="Toyota">
                     Toyota
                   </option>
+                  <option value="Ford">Ford</option>
+    <option value="Honda">Honda</option>
+    <option value="Chevrolet">Chevrolet</option>
+    <option value="Nissan">Nissan</option>
+    <option value="Mazda">Mazda</option>
 
                 </select>
               </td>
@@ -824,6 +843,11 @@ where name='PA Nature of Business'";
                   <option value="52968">
                     52968
                   </option>
+                  <option value="52969">52969</option>
+    <option value="52970">52970</option>
+    <option value="52971">52971</option>
+    <option value="52972">52972</option>
+    <option value="52973">52973</option>
 
                 </select>
               </td>
@@ -1126,7 +1150,7 @@ where name='PA Occupation'";
                 </td>
               </tr>
               <tr>
-                <td style="padding-left:20px">Date Of Loss : <span style="color:red">*</span></td>
+                <td style="padding:0px 30px">Date Of Loss : <span style="color:red">*</span></td>
                 <td>
                   <input type="text" id="datepicker3" name="insured_auto_driverInfo_claimInfo_dateOfLoss" required maxlength="10">
                 <th>&nbsp;</th>
@@ -1134,7 +1158,7 @@ where name='PA Occupation'";
                 <td><input type="text" name="insured_auto_driverInfo_claimInfo_lossDescription" maxlength="60" required /></td>
               </tr>
               <tr>
-                <td style="padding-left:20px">Claim Nature : <span style="color:red">*</span></td>
+                <td style="padding:0px 30px">Claim Nature : <span style="color:red">*</span></td>
                 <td><select name="insured_auto_driverInfo_claimInfo_claimNature" required>
                     <option value="">
                       <-- Please select an option -->
@@ -1158,7 +1182,7 @@ where name='PA Occupation'";
                 <td><input type="text" name="insured_auto_driverInfo_claimInfo_claimAmount" maxlength="60" required /></td>
               </tr>
               <tr>
-                <td style="padding-left:20px">Status : <span style="color:red">*</span></td>
+                <td style="padding:0px 30px">Status : <span style="color:red">*</span></td>
                 <td><select name="insured_auto_driverInfo_claimInfo_claimStatus" required>
                     <option value="">
                       <-- Please select an option -->
@@ -1449,7 +1473,7 @@ where name='PA Nature of Business'";
                     </option>
                   </select>
                 </td>
-                <td style="padding-left:20px">Cover Code: <span style="color:red">*</span> </td>
+                <td style="padding:0px 30px">Cover Code: <span style="color:red">*</span> </td>
                 <td style="width:70px">
                   <p class="planCoverCode"></p>
                 </td>
@@ -1524,11 +1548,11 @@ where name='PA Nature of Business'";
               <td style="float:inline-start">Payment Frequency : <span style="color:red">*</span></td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="Annual" checked>
+                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" checked>
                   <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="Monthly">
+                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2">
                   <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
                 </div>
               </td>
