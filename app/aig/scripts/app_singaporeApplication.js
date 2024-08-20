@@ -153,22 +153,15 @@ function handleCategoryCampaign() {
 function clearPlanInfo() {
   const planSelect = document.getElementById('planSelect');
     planSelect.selectedIndex = 0;
-
-    // Clear the plan Poi input
     const planPoiSelect = document.getElementById('planPoiSelect');
     planPoiSelect.value = '';
-
-    // Clear the cover list
     const coverListBody = document.getElementById('coverListBody');
-
-    // Remove all rows except the first one
     const rows = coverListBody.querySelectorAll('.cover-row');
     rows.forEach((row, index) => {
         if (index !== 0) {
             coverListBody.removeChild(row);
         }
     });
-
 }
 
 const handleSelectType = () => {

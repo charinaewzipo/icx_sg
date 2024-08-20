@@ -25,16 +25,16 @@ function fetchPremium(requestBody) {
         populatePlanSelect(planData.insuredList[0].planList);
 
         //addplan to db
-        jQuery.agent
-          .insertPremiumData(planData.insuredList[0].planList["1"])
-          .then((response) => {
-            if (response?.result == "success") {
-              console.log("Response:", response);
-            }
-          })
-          .catch((error) => {
-            console.log("Error occurred:", error);
-          });
+        // jQuery.agent
+        //   .insertPremiumData(planData.insuredList[0].planList["1"])
+        //   .then((response) => {
+        //     if (response?.result == "success") {
+        //       console.log("Response:", response);
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     console.log("Error occurred:", error);
+        //   });
 
           clearPlanInfo()
         return planData;

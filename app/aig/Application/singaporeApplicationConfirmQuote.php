@@ -61,7 +61,6 @@ require_once("../../function/StartConnect.inc");
   .error-border {
     border: 2px solid red;
   }
-
 </style>
 
 <head>
@@ -104,13 +103,9 @@ require_once("../../function/StartConnect.inc");
         changeYear: true,
         showButtonPanel: true,
         dateFormat: 'mm/y'
-    }));
+      }));
     });
-  
-
-   
-    
-    </script>
+  </script>
 
 </head>
 
@@ -1490,105 +1485,105 @@ where name='PA Nature of Business'";
         </div>
 
 
-        
+
       </fieldset>
-      
+
       <div id="payment-container" hidden>
-  <fieldset id="form-content">
-    <legend>Payment</legend>
-    <div class="table">
-      <div class="table-header">
-        <div class="header__item">Payment Type</div>
-        <div class="header__item">Action</div>
-      </div>
-      <div class="table-content">
-        <div class="table-row" style="padding:10px 0px;">
-          <div class="table-data">Online Payment Gateway </div>
-          <div class="table-data">
-            <button type="button" class="button payment" id="btnPayment" >Payment</button>
+        <fieldset id="form-content">
+          <legend>Payment</legend>
+          <div class="table">
+            <div class="table-header">
+              <div class="header__item">Payment Type</div>
+              <div class="header__item">Action</div>
+            </div>
+            <div class="table-content">
+              <div class="table-row" style="padding:10px 0px;">
+                <div class="table-data">Online Payment Gateway </div>
+                <div class="table-data">
+                  <button type="button" class="button payment" id="btnPayment">Payment</button>
+                </div>
+              </div>
+            </div>
           </div>
+          <br>
+          <h1 style="padding-left:0.5em">Additional</h1>
+          <table id="table-form">
+            <tr>
+              <td>Payment Mode : <span style="color:red">*</span> </td>
+              <td>
+                <select name="Payment_Mode" required>
+                  <option value=""> <-- Please select an option --> </option>
+                  <option value="1001">Credit Card Lump sum</option>
+                  <option value="122">Credit Card IPP</option>
+                  <option value="124">Recurring Credit Card</option>
+                  <option value="209">PayNow</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td style="float:inline-start">Payment Frequency : <span style="color:red">*</span></td>
+              <td>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="Annual" checked>
+                  <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="Monthly">
+                  <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Card Type : <span style="color:red">*</span> </td>
+              <td>
+                <select name="Payment_CardType" required>
+                  <option value=""> <-- Please select an option --> </option>
+                  <option value="1">Credit Card Lump Sum VISA</option>
+                  <option value="2">Credit Card Lump Sum MASTER</option>
+                  <option value="3">Credit Card IPP UOB 6 months</option>
+                  <option value="4">Credit Card IPP UOB 12 months</option>
+                  <option value="5">Credit Card IPP UOB 24 months</option>
+                  <option value="6">Credit Card IPP DBS 6 months</option>
+                  <option value="7">Credit Card IPP DBS 12 months</option>
+                  <option value="8">Credit Card IPP DBS 24 months</option>
+                  <option value="9">Recurring Credit Card VISA</option>
+                  <option value="10">Recurring Credit Card Master</option>
+                  <option value="23">Credit Card Lump Sum Amex</option>
+                  <option value="26">Recurring Credit Card Amex</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Card Number : <span style="color:red">*</span> </td>
+              <td>
+                <input type="text" name="payment_cardNumber" maxlength="60" required />
+              </td>
+            </tr>
+            <tr>
+              <td>Expiry Date : <span style="color:red">*</span> </td>
+              <td>
+
+                <input type="text" name="payment_expiryDate" id="expiryDate" maxlength="5" size="5" placeholder="MM/YY" required />
+              </td>
+
+            </tr>
+            <tr>
+              <td>Security Code : <span style="color:red">*</span> </td>
+              <td>
+                <input type="text" name="payment_securityCode" id="securityCode" maxlength="4" size="4" required />
+              </td>
+            </tr>
+          </table>
+        </fieldset>
         </div>
-      </div>
-    </div>
-    <br>
-    <h1 style="padding-left:0.5em">Additional</h1>
-    <table id="table-form">
-      <tr>
-        <td>Payment Mode : <span style="color:red">*</span> </td>
-        <td>
-          <select name="Payment_Mode" required>
-          <option value=""> <-- Please select an option --> </option>
-    <option value="1001">Credit Card Lump sum</option>
-    <option value="122">Credit Card IPP</option>
-    <option value="124">Recurring Credit Card</option>
-    <option value="209">PayNow</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td style="float:inline-start">Payment Frequency : <span style="color:red">*</span></td>
-        <td>
-          <div class="form-check">
-            <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="Annual" checked>
-            <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
-          </div>
-          <div class="form-check">
-            <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="Monthly">
-            <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>Card Type : <span style="color:red">*</span> </td>
-        <td>
-          <select name="Payment_CardType" required>
-          <option value=""> <-- Please select an option --> </option>
-    <option value="1">Credit Card Lump Sum VISA</option>
-    <option value="2">Credit Card Lump Sum MASTER</option>
-    <option value="3">Credit Card IPP UOB 6 months</option>
-    <option value="4">Credit Card IPP UOB 12 months</option>
-    <option value="5">Credit Card IPP UOB 24 months</option>
-    <option value="6">Credit Card IPP DBS 6 months</option>
-    <option value="7">Credit Card IPP DBS 12 months</option>
-    <option value="8">Credit Card IPP DBS 24 months</option>
-    <option value="9">Recurring Credit Card VISA</option>
-    <option value="10">Recurring Credit Card Master</option>
-    <option value="23">Credit Card Lump Sum Amex</option>
-    <option value="26">Recurring Credit Card Amex</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>Card Number : <span style="color:red">*</span> </td>
-        <td>
-          <input type="text" name="payment_cardNumber" maxlength="60" required />
-        </td>
-      </tr>
-      <tr>
-        <td>Expiry Date : <span style="color:red">*</span> </td>
-        <td>
-          
-        <input type="text" name="payment_expiryDate" id="expiryDate" maxlength="5" size="5" placeholder="MM/YY" required/>
-      </td>
-      
-      </tr>
-      <tr>
-        <td>Security Code : <span style="color:red">*</span> </td>
-        <td>
-        <input type="text" name="payment_securityCode" id="securityCode" maxlength="4" size="4" required />
-      </td>
-      </tr>
-    </table>
-  </fieldset>
-</di>
 
 
-      <div style="display: flex; justify-content: center;padding:1em 0px; ">
-        <input type="hidden" name="action" id="formAction" value="">
-        <button type="submit" class="button payment" id="btnPaymentOnline">Save</button>
-        <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
-        <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button>
-      </div>
+        <div style="display: flex; justify-content: center;padding:1em 0px; ">
+          <input type="hidden" name="action" id="formAction" value="">
+          <button type="submit" class="button payment" id="btnSaveForm">Save</button>
+          <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
+          <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->
+        </div>
 
     </form>
   </div>

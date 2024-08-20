@@ -2,10 +2,15 @@ let policyid = null;
 document.addEventListener("DOMContentLoaded", function()  {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
+  const paymentContainer = document.getElementById("payment-container");
   policyid = urlParams.get("policyid");
   console.log("policyid:", policyid);
+  if(!policyid){
+    paymentContainer.querySelectorAll("input, select").forEach((field) => {
+        field.removeAttribute("required");
+      });
+  }
   if (policyid) {
-    const paymentContainer = document.getElementById("payment-container");
     const addCoverButton = document.querySelector(".add-cover");
     const seePlanButton = document.querySelector(".seePlan");
     
@@ -23,6 +28,10 @@ document.addEventListener("DOMContentLoaded", function()  {
     formElements.forEach((element) => {
       element.disabled = true;
     });
+
+   
+
+
     jQuery.agent
       .getQuotationWithId(policyid)
       .then((response) => {
