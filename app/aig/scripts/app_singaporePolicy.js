@@ -40,11 +40,18 @@ document.addEventListener("DOMContentLoaded", function() {
     );
     formElements.forEach((element) => {
       if (element.tagName.toLowerCase() === "input") {
-        element.readOnly = true;
-        element.style.backgroundColor = "#e9ecef";
-        element.style.border = "1px solid rgb(118, 118, 118)";
+        if (element.type === "radio") {
+          // Style and disable radio buttons
+          element.style.pointerEvents = "none";
+          element.style.opacity = "0.5"; // Visual indication of being disabled
+        } else {
+          // Style and disable other input types
+          element.readOnly = true;
+          element.style.backgroundColor = "#e9ecef";
+          element.style.border = "1px solid rgb(118, 118, 118)";
+        }
       } else if (element.tagName.toLowerCase() === "select") {
-        // Disable select elements visually (workaround for readonly)
+        // Style and disable select elements
         element.style.pointerEvents = "none";
         element.style.backgroundColor = "#e9ecef";
         element.style.color = "#6c757d";
