@@ -103,7 +103,7 @@ function DBInsertQuotationData($formData, $response,$type)
     }
 }
 
-function DBInsertPolicyData($policyId, $response) {
+function DBInsertPolicyData($policyid, $policyNo) {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
 
@@ -112,14 +112,13 @@ function DBInsertPolicyData($policyId, $response) {
         exit();
     }
 
-    $policyNo = isset($response['policyNo']) ? $response['policyNo'] : '';
 
     // Use prepared statements to avoid SQL injection
-    $sql = "INSERT INTO policy_data (policyid, policyNo) VALUES (?, ?)";
+    $sql = "INSERT INTO policy_data (policyId, policyNo) VALUES (?, ?)";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind parameters
-        $stmt->bind_param("is", $policyId, $policyNo);
+        $stmt->bind_param("is", $policyid, $policyNo);
 
         // Execute the statement
         if ($stmt->execute()) {
@@ -239,9 +238,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             DBGetPolicyDetailsWithId($policyid);
 
         } elseif ($data['action'] === 'insertPolicy') {
-            $data = isset($data['data']) ? $data['data'] : "";
-            $response = isset($data['response']) ? $data['response'] : array();
-            DBInsertPolicyData($data,$response);
+            $policyid = isset($data['policyid']) ? $data['policyid'] : "";
+            $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
+          
+            DBInsertPolicyData($policyid,$policyNo);
         } elseif ($data['action'] === 'insertPremiumData') {
             $data = isset($data['data']) ? $data['data'] : "";
             DBInsertPlanInfoWithCovers($data);

@@ -627,7 +627,7 @@ const handleValidateForm = () => {
           const responseData = await fetchPolicy(body);
 
           if (responseData?.statusCode == "N02") {
-            await jQuery.agent.insertPolicyData(policyid, responseData); // Ensure it completes
+            await jQuery.agent.insertPolicyData(policyid, responseData?.policyNo); // Ensure it completes
           }
         } else {
           // Create quotation

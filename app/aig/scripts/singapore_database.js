@@ -49,15 +49,15 @@
         }
       });
     },
-    insertPolicyData: function (data,response) {
+    insertPolicyData: function (policyid,policyNo) {
       $.ajax({
         url: url,
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({
           action: "insertPolicy",
-          data:data,
-          response: response
+          policyid:policyid,
+          policyNo: policyNo
         }),
         dataType: "json",
         success: function (response) {

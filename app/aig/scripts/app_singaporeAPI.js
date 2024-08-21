@@ -122,7 +122,7 @@ async function fetchPolicy(requestBody) {
       window.alert("Something Went Wrong!");
     }
 
-    return data; // Return data for further processing
+    return data; 
   } catch (error) {
     console.error("Error fetching quotation data:", error);
     // Optionally, you can alert the user about the error
@@ -369,6 +369,7 @@ function validateAndSubmitFormCallPremium() {
 }
 async function fetchPayment(requestBody) {
     console.log("Fetching payment data...");
+    document.body.classList.add('loading');
     const host ="ap-gateway.mastercard.com";
     const merchantId = "TEST97498471";
     const orderId= quotationData?.quoteNo;
@@ -411,6 +412,8 @@ async function fetchPayment(requestBody) {
         console.error("Error fetching payment data:", error);
         window.alert("Failed to fetch payment data. Please try again.");
         throw error; // Re-throw the error to be caught by the caller
+    } finally{
+      document.body.classList.remove('loading');
     }
 }
 
