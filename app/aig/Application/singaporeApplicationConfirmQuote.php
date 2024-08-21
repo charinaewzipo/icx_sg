@@ -61,7 +61,6 @@ require_once("../../function/StartConnect.inc");
   .error-border {
     border: 2px solid red;
   }
- 
 </style>
 
 <head>
@@ -85,22 +84,27 @@ require_once("../../function/StartConnect.inc");
   <script src="../scripts/singapore_database.js"></script>
   <script src="../scripts/app_singaporePolicy.js"></script>
   <script src="../scripts/app_singaporeForm.js"></script>
+  <script src="../scripts/app_singaporeAH.js"></script>
 
   <script>
     const campaignID = <?php echo json_encode($_GET["campaign_id"]); ?>;
   </script>
   <script>
     $(function() {
-      $("#datepicker").datepicker({maxDate :new Date()});
-      $("#datepicker2").datepicker({maxDate :new Date()});
+      $("#datepicker").datepicker({
+        maxDate: new Date()
+      });
+      $("#datepicker2").datepicker({
+        maxDate: new Date()
+      });
       $("#datepicker3").datepicker();
       $("#datepicker4").datepicker();
       $("#datepicker5").datepicker({
-    minDate: new Date() // Set the minimum date to today
-});
+        minDate: new Date() // Set the minimum date to today
+      });
       $("#datepicker6").datepicker({
-    minDate: new Date() // Set the minimum date to today
-});
+        minDate: new Date() // Set the minimum date to today
+      });
       $('input[name="payment_expiryDate"]').datepicker($.extend({}, {
         yearRange: "c-1:c+10",
         changeMonth: true,
@@ -111,20 +115,20 @@ require_once("../../function/StartConnect.inc");
     });
 
     $body = $("body");
-			$(document).on({
-				ajaxStart: function() {
-					$body.addClass("loading");
-				},
-				ajaxStop: function() {
-					$body.removeClass("loading");
-				}
-			});
+    $(document).on({
+      ajaxStart: function() {
+        $body.addClass("loading");
+      },
+      ajaxStop: function() {
+        $body.removeClass("loading");
+      }
+    });
   </script>
 
 </head>
 
 <body>
-<div class="modal"></div>
+  <div class="modal"></div>
   <?php
   $formType = $_GET["formType"];
   $campaign_id = $_GET["campaign_id"];
@@ -820,10 +824,10 @@ where name='PA Nature of Business'";
                     Toyota
                   </option>
                   <option value="Ford">Ford</option>
-    <option value="Honda">Honda</option>
-    <option value="Chevrolet">Chevrolet</option>
-    <option value="Nissan">Nissan</option>
-    <option value="Mazda">Mazda</option>
+                  <option value="Honda">Honda</option>
+                  <option value="Chevrolet">Chevrolet</option>
+                  <option value="Nissan">Nissan</option>
+                  <option value="Mazda">Mazda</option>
 
                 </select>
               </td>
@@ -844,10 +848,10 @@ where name='PA Nature of Business'";
                     52968
                   </option>
                   <option value="52969">52969</option>
-    <option value="52970">52970</option>
-    <option value="52971">52971</option>
-    <option value="52972">52972</option>
-    <option value="52973">52973</option>
+                  <option value="52970">52970</option>
+                  <option value="52971">52971</option>
+                  <option value="52972">52972</option>
+                  <option value="52973">52973</option>
 
                 </select>
               </td>
@@ -1231,214 +1235,215 @@ where name='PA Occupation'";
         </div>
         <!--Form Insured List (A&H) -->
         <div id="insured-list-ah">
-          <table id="table-form">
-            <tr>
-              <td>
-                <h1>Person Info</h1>
-              </td>
-            </tr>
-            <tr>
-              <td>Insured Firstname : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_ah_insuredFirstName" maxlength="60" required /></td>
-              <th>&nbsp;</th>
-              <td>Insured Lastname: <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_ah_insuredLastName" maxlength="60" required /></td>
-            </tr>
-            <tr>
-              <td>Insured Resident Status : <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_ah_insuredResidentStatus" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredResidentStatus'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
+          <table id="table-form" class="table-ah">
+            <thead>
+
+            </thead>
+
+            <tbody>
+              <tr>
+                <td colspan="4">
+                  <h2>Person </h2>
+                </td>
+                <td style="float:inline-end">
+                  <button type="button" id="add-row-btn" class="button">Add Row</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Insured Firstname : <span style="color:red">*</span></td>
+                <td><input type="text" name="insured_ah_insuredFirstName" maxlength="60" required /></td>
+                <th>&nbsp;</th>
+                <td>Insured Lastname: <span style="color:red">*</span></td>
+                <td><input type="text" name="insured_ah_insuredLastName" maxlength="60" required /></td>
+              </tr>
+              <tr>
+                <td>Insured Resident Status : <span style="color:red">*</span></td>
+                <td>
+                  <select name="insured_ah_insuredResidentStatus" required>
+                    <option value="">
+                      <-- Please select an option -->
                     </option>
-                  <?php
-                  }
-                  ?>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredResidentStatus'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
 
-                </select>
-              </td>
-              <th>&nbsp;</th>
-              <td>Insured Type : <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_ah_insuredIdType" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredIdType'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
+                  </select>
+                </td>
+                <th>&nbsp;</th>
+                <td>Insured Type : <span style="color:red">*</span></td>
+                <td>
+                  <select name="insured_ah_insuredIdType" required>
+                    <option value="">
+                      <-- Please select an option -->
                     </option>
-                  <?php
-                  }
-                  ?>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredIdType'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
 
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Insured ID Number : <span style="color:red">*</span></td>
-              <td>
-                <input type="text" name="insured_ah_insuredIdNumber" maxlength="60" required />
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Insured ID Number : <span style="color:red">*</span></td>
+                <td>
+                  <input type="text" name="insured_ah_insuredIdNumber" maxlength="60" required />
 
 
-              </td>
-              <th>&nbsp;</th>
-              <td>Insured Gender : <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_ah_insuredGender" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredGender'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
+                </td>
+                <th>&nbsp;</th>
+                <td>Insured Gender : <span style="color:red">*</span></td>
+                <td>
+                  <select name="insured_ah_insuredGender" required>
+                    <option value="">
+                      <-- Please select an option -->
                     </option>
-                  <?php
-                  }
-                  ?>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredGender'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
 
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Insured Date Of Birth : <span style="color:red">*</span></td>
-              <td>
-                <input type="text" id="datepicker4" name="insured_ah_insuredDateOfBirth" maxlength="60" required />
-              </td>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Insured Date Of Birth : <span style="color:red">*</span></td>
+                <td>
+                  <input type="text" id="datepicker4" name="insured_ah_insuredDateOfBirth" maxlength="60" required />
+                </td>
 
-              </td>
-              <th>&nbsp;</th>
-              <td>Insured Marital Status: <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_ah_insuredMaritalStatus" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredMaritalStatus'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
+                </td>
+                <th>&nbsp;</th>
+                <td>Insured Marital Status: <span style="color:red">*</span></td>
+                <td>
+                  <select name="insured_ah_insuredMaritalStatus" required>
+                    <option value="">
+                      <-- Please select an option -->
                     </option>
-                  <?php
-                  }
-                  ?>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredMaritalStatus'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
 
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Insured Occupation : <span style="color:red">*</span> </td>
-              <td>
-                <select name="insured_ah_insuredOccupation" required>
-                  <option value=""> <-- Please select an option --></option>
-                  <?php
-                  $strSQL = "SELECT name, id, description
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Insured Occupation : <span style="color:red">*</span> </td>
+                <td>
+                  <select name="insured_ah_insuredOccupation" required>
+                    <option value=""> <-- Please select an option --></option>
+                    <?php
+                    $strSQL = "SELECT name, id, description
 FROM tubtim.t_aig_sg_lov 
 where name='PA Occupation'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
 
-                  ?>
-                </select>
-              <th>&nbsp;</th>
-              <td>Relation To Policyholder : </td>
-              <td>
-                <select name="insured_ah_relationToPolicyholder">
-                  <option value=""> <-- Please select an option --></option>
-                  <?php
-                  $strSQL = "SELECT name, id, description
+                    ?>
+                  </select>
+                <th>&nbsp;</th>
+                <td>Relation To Policyholder : </td>
+                <td>
+                  <select name="insured_ah_relationToPolicyholder">
+                    <option value=""> <-- Please select an option --></option>
+                    <?php
+                    $strSQL = "SELECT name, id, description
 FROM tubtim.t_aig_sg_lov 
 where name='PH Relation'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
 
-                  ?>
-                </select>
+                    ?>
+                  </select>
 
-              </td>
-            </tr>
-            <tr>
-              <td>Insured Campaign Code: <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_ah_insuredCampaignCode" maxlength="60" required /></td>
-              <th>&nbsp;</th>
-            </tr>
-            <tr>
-              <td>Nature Of Business: <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_ah_natureOfBusiness">
-                  <option value=""> <-- Please select an option --></option>
-                  <?php
-                  $strSQL = "SELECT name, id, description
+                </td>
+              </tr>
+              <tr>
+                <td>Insured Campaign Code: <span style="color:red">*</span></td>
+                <td><input type="text" name="insured_ah_insuredCampaignCode" maxlength="60" required /></td>
+                <th>&nbsp;</th>
+              </tr>
+              <tr>
+                <td>Nature Of Business: <span style="color:red">*</span></td>
+                <td>
+                  <select name="insured_ah_natureOfBusiness">
+                    <option value=""> <-- Please select an option --></option>
+                    <?php
+                    $strSQL = "SELECT name, id, description
 FROM tubtim.t_aig_sg_lov 
 where name='PA Nature of Business'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
 
-                  ?>
-                </select>
-              </td>
-              <th>&nbsp;</th>
-            </tr>
-            <tr>
-              <td style="float:inline-end">reservefield1: <span style="color:red; ">*</span></td>
-              <td><input type="text" name="insured_ah_reservefield1" maxlength="60" required /></td>
-              <th>&nbsp;</th>
-            </tr>
-            <tr>
-              <td style="float:inline-end">reservefield2: <span style="color:red; ">*</span></td>
-              <td><input type="text" name="insured_ah_reservefield2" maxlength="60" required /></td>
-              <th>&nbsp;</th>
-            </tr>
+                    ?>
+                  </select>
+                </td>
+                <th>&nbsp;</th>
+              </tr>
+
+
+            </tbody>
           </table>
         </div>
 
         <!--Form Insured List Plan info -->
         <div class="table">
-          <table id="table-form">
+          <table id="table-form" name="plan-info">
             <tr>
               <td>
                 <h1>Plan Info</h1>
@@ -1599,15 +1604,15 @@ where name='PA Nature of Business'";
             </tr>
           </table>
         </fieldset>
-        </div>
+      </div>
 
 
-        <div style="display: flex; justify-content: center;padding:1em 0px; ">
-          <input type="hidden" name="action" id="formAction" value="">
-          <button type="submit" class="button payment" id="btnSaveForm">Save</button>
-          <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
-          <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->
-        </div>
+      <div style="display: flex; justify-content: center;padding:1em 0px; ">
+        <input type="hidden" name="action" id="formAction" value="">
+        <button type="submit" class="button payment" id="btnSaveForm">Save</button>
+        <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
+        <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->
+      </div>
 
     </form>
   </div>
