@@ -97,6 +97,37 @@ function handleCategoryCampaign() {
         },
       ],
     },
+    ah: {
+      "new-business": [
+        {
+          value: "ASP",
+          text: "ASP",
+          code: 600101,
+        },
+        {
+          value: "CAHP",
+          text: "CAHP",
+          code: 600102,
+        },
+        {
+          value: "CCIP",
+          text: "CCIP",
+          code: 600103,
+        },
+      ],
+      pom: [
+        {
+          value: "DHI",
+          text: "DHI",
+          code: 600201,
+        },
+        {
+          value: "Max PA",
+          text: "Max PA",
+          code: 600202,
+        },
+      ],
+    },
   };
 
   const urlParams = new URLSearchParams(window.location.search);
