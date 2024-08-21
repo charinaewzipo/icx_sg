@@ -1,7 +1,7 @@
 let planData = null;
 let responsePayment=null;
 let quotationData=null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlV0UEFZOVpOSFB3V0JncUREcmpHeW5Xb21hWWJTSkt1YzhOY3JnU1NRM28iLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQxNDg4OTgsImV4cCI6MTcyNDE1NjA5OCwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.Qtrpv3OEpP3-t6JB1hUn9Lkbgcx8f92_hsnqmYuLitVSSAS_Y1m8PDez5sGkYBEYXXFtTeTt6Hs9RykraVPy3fUP2-Ch2tA4Hn8PJvwH-WTIjwODek70nBd2baTkV-W9f3p480-PHPgtmjbLLNYYRv3K63nXMZg3aXdxt9sfGG6gisXqHEP0udDpnbHBWzcDkuR8cESyHwTLnJ_yfkFPeTUN0Of2_NAUtScf9aDu6sADgcL8473WW7Jxoj-5qkbGe1IIL4E7rKXAPCW73VTRVT9tKVB8T6K9klUe68ZoO-vDhgHATCxSJoaAN5lsG45fwCm-qiLZLAcKEo1KVNxowA"
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmNueHZKdnpFRFJYMzZqUF9lNk5fcWM0TEdISWt2U2hQZk9nOTNPQ1c4UTAiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQyMjg5OTAsImV4cCI6MTcyNDIzNjE5MCwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.P7M2hiOZO280i3I_xNgE5XX9_u2Q0c9IjzRLaEJ2ushcUn2nFMAGNwFgVQ-stSKVaqQrnGQ5EHOTRI-oF7JpqdUsrMlzM-KonTtCR2F9_wNGOf3nTn-vn8XJvH-2TK1zYk5bL8sulKU5K3kvNJxHC-u93b6TtA2rkBQaX6cbZao_rIkHRmiFbZmND9la1LgZyuWisJVJ9zVhd0YO4zJ7SQVzHs7jN8R1PcXlM4GdKSNsIcBNDJ8iN7t_fC06W6RH6Cudy77f4JjsT4kZDzfKuLJ0j65jJ_gu15Msdh2job742O4QHP8jwKJaPn0x2tZ6-wtoD_ZO76nEg9RFwHF1iw"
 function fetchPremium(requestBody) {
     document.body.classList.add('loading');
   const apiUrl =
@@ -161,6 +161,7 @@ const handleRequestBody = () => {
       : "",
     ncdInfo: {
       ncdLevel: Number(formData.get("Ncd_Level")),
+      
     },
     policyHolderInfo: {
       customerType: formData.get("customerType"),
@@ -369,13 +370,13 @@ function validateAndSubmitFormCallPremium() {
 async function fetchPayment(requestBody) {
     console.log("Fetching payment data...");
     const host ="ap-gateway.mastercard.com";
-    const merchantId = "TEST97454671";
+    const merchantId = "TEST97498471";
     const orderId= quotationData?.quoteNo;
     const apiUrl = `https://${host}/api/rest/version/llaatteesstt/merchant/${merchantId}/order/${orderId}/transaction/1`;
 
     // Basic Auth credentials
     const username = 'merchant.'+merchantId;  // Replace with your actual username
-    const password = '43e8e5dd31377e6cefe7f33f714246d3';  // Replace with your actual password
+    const password = '8fb334a463b16d4e4d19e3f7639edfd4';  // Replace with your actual password
     const credentials = btoa(`${username}:${password}`); // Base64 encode credentials
 
     try {

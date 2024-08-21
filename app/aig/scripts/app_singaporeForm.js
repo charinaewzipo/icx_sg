@@ -211,7 +211,6 @@ function clearPlanInfo() {
   });
 }
 const manualSetDefaultValueForm = () => {
-  console.log("manual run");
   const ncdInfo = {
     ncdLevel: 0,
     previousInsurer: "NCD0033",
@@ -273,7 +272,7 @@ const manualSetDefaultValueForm = () => {
     individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdType;
   document.querySelector('input[name="customerIdNo"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdNo;
-  document.querySelector('input[name="nationality"]').value =
+  document.querySelector('select[name="nationality"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.nationality;
   document.querySelector('select[name="gender"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.gender;
@@ -323,11 +322,11 @@ const manualSetDefaultValueFormInsuredList = () => {
         make: "BMW",
         model: "52966",
         vehicleRegYear: "2017",
-        regNo: "S1KE7499S",
+        regNo: "S21KE749S",
         insuringWithCOE: "2",
         ageConditionBasis: "1",
         offPeakCar: "1",
-        vehicleUsage: "222",
+        vehicleUsage: "204",
         mileageCondition: "1838000062",
         engineNo: "E7230005683A",
         chassisNo: "C7230005683A",
@@ -394,7 +393,7 @@ const manualSetDefaultValueFormInsuredList = () => {
       '"]'
   ).checked = true;
   document.querySelector(
-    'input[name="insured_auto_vehicle_vehicleUsage"]'
+    'select[name="insured_auto_vehicle_vehicleUsage"]'
   ).value = vehicleInfo.vehicleUsage;
   document.querySelector(
     'select[name="insured_auto_vehicle_mileageCondition"]'
@@ -407,7 +406,7 @@ const manualSetDefaultValueFormInsuredList = () => {
     'input[name="insured_auto_vehicle_mileageDeclaration"]'
   ).value = vehicleInfo.mileageDeclaration;
   document.querySelector(
-    'input[name="insured_auto_vehicle_hirePurchaseCompany"]'
+    'select[name="insured_auto_vehicle_hirePurchaseCompany"]'
   ).value = vehicleInfo.hirePurchaseCompany;
   document.querySelector(
     'input[name="insured_auto_vehicle_declaredSI"]'
@@ -436,7 +435,7 @@ const manualSetDefaultValueFormInsuredList = () => {
     'select[name="insured_auto_driverInfo_driverGender"]'
   ).value = driverInfo.driverGender;
   document.querySelector(
-    'input[name="insured_auto_driverInfo_driverNationality"]'
+    'select[name="insured_auto_driverInfo_driverNationality"]'
   ).value = driverInfo.driverNationality;
   document.querySelector(
     'select[name="insured_auto_driverInfo_maritalStatus"]'
@@ -603,7 +602,7 @@ const setDefaultValueForm = (dbData) => {
     individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdType;
   document.querySelector('input[name="customerIdNo"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdNo;
-  document.querySelector('input[name="nationality"]').value =
+  document.querySelector('select[name="nationality"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.nationality;
   document.querySelector('select[name="gender"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.gender;
@@ -676,7 +675,7 @@ console.log("insuredData",insuredData)
     'select[name="insured_auto_vehicle_mileageCondition"]'
   ).value = vehicleInfo.mileageCondition;
   document.querySelector(
-    'input[name="insured_auto_vehicle_vehicleUsage"]'
+    'select[name="insured_auto_vehicle_vehicleUsage"]'
   ).value = vehicleInfo.vehicleUsage;
   document.querySelector('input[name="insured_auto_vehicle_engineNo"]').value =
     vehicleInfo.engineNo;
@@ -686,7 +685,7 @@ console.log("insuredData",insuredData)
     'input[name="insured_auto_vehicle_mileageDeclaration"]'
   ).value = vehicleInfo.mileageDeclaration || "";
   document.querySelector(
-    'input[name="insured_auto_vehicle_hirePurchaseCompany"]'
+    'select[name="insured_auto_vehicle_hirePurchaseCompany"]'
   ).value = vehicleInfo.hirePurchaseCompany;
   document.querySelector(
     'input[name="insured_auto_vehicle_declaredSI"]'
@@ -716,7 +715,7 @@ console.log("insuredData",insuredData)
     'select[name="insured_auto_driverInfo_driverGender"]'
   ).value = driverInfo.driverGender;
   document.querySelector(
-    'input[name="insured_auto_driverInfo_driverNationality"]'
+    'select[name="insured_auto_driverInfo_driverNationality"]'
   ).value = driverInfo.driverNationality;
   document.querySelector(
     'select[name="insured_auto_driverInfo_maritalStatus"]'

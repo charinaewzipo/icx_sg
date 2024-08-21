@@ -84,7 +84,7 @@ require_once("../../function/StartConnect.inc");
   <script src="../scripts/singapore_database.js"></script>
   <script src="../scripts/app_singaporePolicy.js"></script>
   <script src="../scripts/app_singaporeForm.js"></script>
-  <script src="../scripts/app_singaporeAH.js"></script>
+  <!-- <script src="../scripts/app_singaporeAH.js"></script> -->
 
   <script>
     const campaignID = <?php echo json_encode($_GET["campaign_id"]); ?>;
@@ -258,13 +258,13 @@ require_once("../../function/StartConnect.inc");
                       <-- Please select an option -->
                     </option>
                     <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'ncdLevel'";
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Level'";
                     $objQuery = mysqli_query($Conn, $strSQL);
                     while ($objResuut = mysqli_fetch_array($objQuery)) {
                       $data[] = $objResuut;
                     ?>
                       <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
+                        <?php echo $objResuut["description"]; ?>%
                       </option>
                     <?php
                     }
@@ -301,7 +301,24 @@ require_once("../../function/StartConnect.inc");
               <tr id="haveExperienceRow" style="display:none">
                 <td>Previous Insurer: <span style="color:red">*</span> </td>
                 <td>
-                  <input type="text" name="haveEx-PreviousInsurer" maxlength="60" size="30" />
+                <select name="haveEx-PreviousInsurer"  required>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Previous Insurer'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
+                  </select>
+                  <!-- <input type="text" name="haveEx-PreviousInsurer" maxlength="60" size="30" /> -->
                 </td>
                 <th>&nbsp;</th>
                 <td>Previous PolicyNo.: <span style="color:red">*</span> </td>
@@ -398,7 +415,24 @@ require_once("../../function/StartConnect.inc");
               </td>
               <th>&nbsp;</th>
               <td>Nationality : <span style="color:red">*</span></td>
-              <td><input type="text" name="nationality" maxlength="60" size="30" required /></td>
+              <td>
+              <select name="nationality" required>
+                  <option value="">
+                    <-- Please select an option -->
+                  </option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Nationality'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
+                </select>
             </tr>
             <tr>
               <td>Date Of Birth : <span style="color:red">*</span></td>
@@ -488,7 +522,7 @@ require_once("../../function/StartConnect.inc");
                   <?php
                   $strSQL = "SELECT name, id, description
 FROM tubtim.t_aig_sg_lov 
-where name='PA Occupation'";
+where name='Occupation'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -563,7 +597,7 @@ where name='PA Occupation'";
                   <?php
                   $strSQL = "SELECT name, id, description
 FROM tubtim.t_aig_sg_lov 
-where name='PA Nature of Business'";
+where name='Nature of Business'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -817,17 +851,18 @@ where name='PA Nature of Business'";
                   <option value="">
                     <-- Please select an option -->
                   </option>
-                  <option value="BMW">
-                    BMW
-                  </option>
-                  <option value="Toyota">
-                    Toyota
-                  </option>
-                  <option value="Ford">Ford</option>
-                  <option value="Honda">Honda</option>
-                  <option value="Chevrolet">Chevrolet</option>
-                  <option value="Nissan">Nissan</option>
-                  <option value="Mazda">Mazda</option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'brand'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
 
                 </select>
               </td>
@@ -838,20 +873,18 @@ where name='PA Nature of Business'";
                   <option value="">
                     <-- Please select an option -->
                   </option>
-                  <option value="52966">
-                    52966
-                  </option>
-                  <option value="52967">
-                    52967
-                  </option>
-                  <option value="52968">
-                    52968
-                  </option>
-                  <option value="52969">52969</option>
-                  <option value="52970">52970</option>
-                  <option value="52971">52971</option>
-                  <option value="52972">52972</option>
-                  <option value="52973">52973</option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'model'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
 
                 </select>
               </td>
@@ -929,7 +962,24 @@ where name='PA Nature of Business'";
             <tr>
               <td>Vehicle Usage : <span style="color:red">*</span></td>
               <td>
-                <input type="text" name="insured_auto_vehicle_vehicleUsage" maxlength="60" required />
+              <select name="insured_auto_vehicle_vehicleUsage" required>
+                  <option value="">
+                    <-- Please select an option -->
+                  </option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Vehicle Usage'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
+
+                </select>
 
               </td>
               <th>&nbsp;</th>
@@ -941,7 +991,7 @@ where name='PA Nature of Business'";
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'mileageCondition'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Mileage Condition'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -971,7 +1021,26 @@ where name='PA Nature of Business'";
             </tr>
             <tr>
               <td>Hire Purchase Company: <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_vehicle_hirePurchaseCompany" maxlength="60" required /></td>
+              <td>
+
+              <select name="insured_auto_vehicle_hirePurchaseCompany" required>
+                  <option value="">
+                    <-- Please select an option -->
+                  </option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Hire Purchase'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
+
+                </select>
               <th>&nbsp;</th>
               <td>Declared SI : <span style="color:red">*</span></td>
               <td><input type="text" name="insured_auto_vehicle_declaredSI" maxlength="60" required /></td>
@@ -1081,7 +1150,24 @@ where name='PA Nature of Business'";
                 </select></td>
               <th>&nbsp;</th>
               <td>Driver Nationality : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_driverInfo_driverNationality" maxlength="60" required /></td>
+              <td>
+              <select name="insured_auto_driverInfo_driverNationality" required>
+                  <option value="">
+                    <-- Please select an option -->
+                  </option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Nationality'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
+              </td>
             </tr>
             <tr>
               <td>Driver Marital Status : <span style="color:red">*</span></td>
@@ -1115,7 +1201,7 @@ where name='PA Nature of Business'";
                   <?php
                   $strSQL = "SELECT name, id, description
 FROM tubtim.t_aig_sg_lov 
-where name='PA Occupation'";
+where name='Occupation'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;

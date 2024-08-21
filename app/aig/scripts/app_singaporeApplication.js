@@ -253,7 +253,7 @@ const toggleNcdLevel = () => {
 };
 const toggleNcdNoExperience = () => {
   const ncdNoExperience = document.getElementById("ncdNoExperience").value;
-  const displayStyle = ncdNoExperience == "0" ? "block" : "none";
+  const displayStyle = ncdNoExperience == "4" ? "block" : "none";
   document.getElementById("otherExperience").style.display = displayStyle;
 };
 const toggleClaimExperience = (selectedOption) => {
