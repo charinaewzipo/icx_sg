@@ -273,7 +273,7 @@ const manualSetDefaultValueForm = () => {
     individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdType;
   document.querySelector('input[name="customerIdNo"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdNo;
-  document.querySelector('input[name="nationality"]').value =
+  document.querySelector('select[name="nationality"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.nationality;
   document.querySelector('select[name="gender"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.gender;
@@ -394,7 +394,7 @@ const manualSetDefaultValueFormInsuredList = () => {
       '"]'
   ).checked = true;
   document.querySelector(
-    'input[name="insured_auto_vehicle_vehicleUsage"]'
+    'select[name="insured_auto_vehicle_vehicleUsage"]'
   ).value = vehicleInfo.vehicleUsage;
   document.querySelector(
     'select[name="insured_auto_vehicle_mileageCondition"]'
@@ -407,7 +407,7 @@ const manualSetDefaultValueFormInsuredList = () => {
     'input[name="insured_auto_vehicle_mileageDeclaration"]'
   ).value = vehicleInfo.mileageDeclaration;
   document.querySelector(
-    'input[name="insured_auto_vehicle_hirePurchaseCompany"]'
+    'select[name="insured_auto_vehicle_hirePurchaseCompany"]'
   ).value = vehicleInfo.hirePurchaseCompany;
   document.querySelector(
     'input[name="insured_auto_vehicle_declaredSI"]'
@@ -436,7 +436,7 @@ const manualSetDefaultValueFormInsuredList = () => {
     'select[name="insured_auto_driverInfo_driverGender"]'
   ).value = driverInfo.driverGender;
   document.querySelector(
-    'input[name="insured_auto_driverInfo_driverNationality"]'
+    'select[name="insured_auto_driverInfo_driverNationality"]'
   ).value = driverInfo.driverNationality;
   document.querySelector(
     'select[name="insured_auto_driverInfo_maritalStatus"]'
