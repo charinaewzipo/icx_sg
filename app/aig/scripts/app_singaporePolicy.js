@@ -15,26 +15,18 @@ document.addEventListener("DOMContentLoaded", function() {
       field.removeAttribute("required");
     });
   }
-
-  // If 'policyid' exists
   if (policyid) {
     const addCoverButton = document.querySelector(".add-cover");
     const seePlanButton = document.querySelector(".seePlan");
-
-    // Show the payment container
     paymentContainer.removeAttribute("hidden");
 
-    // Hide the 'add cover' button if it exists
     if (addCoverButton) {
       addCoverButton.setAttribute("hidden", "true");
     }
     
-    // Hide the 'see plan' button if it exists
     if (seePlanButton) {
       seePlanButton.setAttribute("hidden", "true");
     }
-
-    // Disable all input and select elements outside the payment container
     const formElements = document.querySelectorAll(
       "input:not(#payment-container input), select:not(#payment-container select)"
     );
@@ -70,13 +62,51 @@ document.addEventListener("DOMContentLoaded", function() {
       .then((response) => {
         if (response?.result == "success") {
           console.log("Response:", response);
-          quotationData = response?.data;
-          // Set default values in the form based on the quotation data
           setDefaultValueForm(response?.data);
+          const extractData= extractQuotationData(response?.data);
+          quotationData = extractData;
+          console.log("quotationData",quotationData)
         }
       })
       .catch((error) => {
         console.error("Error occurred:", error);
       });
   }
+
 });
+function extractQuotationData(data) {
+  try {
+    // Parse JSON strings if they are strings
+    if (data.ncdInfo && typeof data.ncdInfo === 'string') {
+      try {
+        data.ncdInfo = JSON.parse(data.ncdInfo);
+      } catch (e) {
+        console.error("Error parsing ncdInfo:", e);
+        data.ncdInfo = {}; // Default to an empty object if parsing fails
+      }
+    }
+    
+    if (data.policyHolderInfo && typeof data.policyHolderInfo === 'string') {
+      try {
+        data.policyHolderInfo = JSON.parse(data.policyHolderInfo);
+      } catch (e) {
+        console.error("Error parsing policyHolderInfo:", e);
+        data.policyHolderInfo = {}; // Default to an empty object if parsing fails
+      }
+    }
+    
+    if (data.insuredList && typeof data.insuredList === 'string') {
+      try {
+        data.insuredList = JSON.parse(data.insuredList);
+      } catch (e) {
+        console.error("Error parsing insuredList:", e);
+        data.insuredList = []; // Default to an empty array if parsing fails
+      }
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error extracting quotation data:", error);
+    return null;
+  }
+}

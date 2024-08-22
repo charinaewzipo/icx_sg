@@ -1,8 +1,9 @@
 let planData = null;
 let responsePayment=null;
 let quotationData=null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmNueHZKdnpFRFJYMzZqUF9lNk5fcWM0TEdISWt2U2hQZk9nOTNPQ1c4UTAiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQyMjg5OTAsImV4cCI6MTcyNDIzNjE5MCwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.P7M2hiOZO280i3I_xNgE5XX9_u2Q0c9IjzRLaEJ2ushcUn2nFMAGNwFgVQ-stSKVaqQrnGQ5EHOTRI-oF7JpqdUsrMlzM-KonTtCR2F9_wNGOf3nTn-vn8XJvH-2TK1zYk5bL8sulKU5K3kvNJxHC-u93b6TtA2rkBQaX6cbZao_rIkHRmiFbZmND9la1LgZyuWisJVJ9zVhd0YO4zJ7SQVzHs7jN8R1PcXlM4GdKSNsIcBNDJ8iN7t_fC06W6RH6Cudy77f4JjsT4kZDzfKuLJ0j65jJ_gu15Msdh2job742O4QHP8jwKJaPn0x2tZ6-wtoD_ZO76nEg9RFwHF1iw"
-function fetchPremium(requestBody) {
+let selectProduct=null;
+const token =  "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlE0bWJ4bi1MVDRnTncxREtoMTFneUpKR1pjMnhHdUo5b1B0NXZsaEFycUkiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQzMTg2NTIsImV4cCI6MTcyNDMyNTg1MiwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.H66_IIIIGkzeiipAGaN9mSxqGsPYvonQ8azO-8UV8PT0Iv-3QDBqQUvnhYmgRK5QuL3j8pttUMLd_CUtAOYveTnW_5sSJEC9pckQHZj44JN7u8CU3l_GcRLjemfNYSou7gjL0BBL25-1083TV2-s_Cbt1b7Rvjcl6LsW4bPDdBZ3cs7wMz3SpfITI3ZhNeht35XHZvP7ghr9d6lFLAosbYhISH_JcQ6N9mnfpw4DCfnyUheCZmeZcOrvkD2tWUviivn19n_mo-hcIrtbH-KoMEKK6pho8ezjkxtcehisRO_1poGAnwL8mPELr12pd9XvYR9EUG4tnffhqWXWhjrBrQ"
+function fetchPremiumAH(requestBody,index) {
     document.body.classList.add('loading');
   const apiUrl =
     "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
@@ -24,21 +25,7 @@ function fetchPremium(requestBody) {
         data.Policy.insuredList[0]
       ) {
         planData = data.Policy;
-        populatePlanSelect(planData.insuredList[0].planList);
-
-        //addplan to db
-        // jQuery.agent
-        //   .insertPremiumData(planData.insuredList[0].planList["1"])
-        //   .then((response) => {
-        //     if (response?.result == "success") {
-        //       console.log("Response:", response);
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     console.log("Error occurred:", error);
-        //   });
-
-          clearPlanInfo()
+        populatePlanSelectAH(planData.insuredList[0].planList,index);
         return planData;
       } else {
         console.error("Invalid API response:", data);
@@ -49,6 +36,40 @@ function fetchPremium(requestBody) {
         // Remove 'loading' class from body after fetch is complete
         document.body.classList.remove('loading');
     });
+}
+function fetchPremium(requestBody) {
+  document.body.classList.add('loading');
+const apiUrl =
+  "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
+fetch(apiUrl, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(requestBody),
+})
+  .then((response) => response.json())
+  .then((data) => {
+    console.log("responseData", data);
+    if (
+      data &&
+      data.Policy &&
+      data.Policy.insuredList &&
+      data.Policy.insuredList[0]
+    ) {
+      planData = data.Policy;
+      populatePlanSelect(planData.insuredList[0].planList);
+      return planData;
+    } else {
+      console.error("Invalid API response:", data);
+    }
+  })
+  .catch((error) => console.error("Error fetching plan data:", error))
+  .finally(() => {
+      // Remove 'loading' class from body after fetch is complete
+      document.body.classList.remove('loading');
+  });
 }
 async function fetchQuotation(requestBody) {
     document.body.classList.add('loading');
@@ -137,7 +158,7 @@ const handleRequestBody = () => {
   const formData = new FormData(document.getElementById("application"));
   const requestBodyHome = {
     propDate: "2024-07-26T18:25:43.511Z",
-    productId: "600000060",
+    productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: "0000064000",
     applicationReceivedDate: "",
@@ -154,7 +175,7 @@ const handleRequestBody = () => {
     ],
   };
   const requestBodyAuto = {
-    productId: 600000080,
+    productId: formData.get("select-product"),
     distributionChannel: 10,
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
@@ -255,20 +276,23 @@ const handleRequestBody = () => {
   };
   const requestBodyAh = {
     propDate: "2024-07-26T18:25:43.511Z",
-    productId: "600000060",
-    distributionChannel: 10,
+    // productId: formData.get("select-product"),
+    productId: 600000060,
+    
+    distributionChannel: "10",
     producerCode: "0000064000",
     applicationReceivedDate: "",
-    policyEffDate: formData.get("PolicyEffectiveDate"),
-    policyExpDate: formData.get("PolicyExpiryDate"),
+    policyEffDate: "",
+    policyExpDate: "",
     insuredList: [
       {
         addressInfo: {
-          ownerOccupiedType: formData.get("insured_home_ownerOccupiedType"),
+          ownerOccupiedType: "62",
         },
       },
     ],
   };
+
 
   switch (selectedType) {
     case "home":
@@ -329,7 +353,7 @@ const handleRequiredField = () => {
 };
 
 //see plan
-function validateAndSubmitFormCallPremium() {
+function validateAndSubmitFormCallPremium(index) {
   const formElement = document.getElementById("application");
   const formData = new FormData(formElement);
   const requiredFields = handleRequiredField();
@@ -361,10 +385,16 @@ function validateAndSubmitFormCallPremium() {
     window.alert("Please fill in all required fields.");
     return;
   }
-
   const apiBody = handleRequestBody();
   if (apiBody) {
     fetchPremium(apiBody);
+  }
+}
+function callPremiumAH(index) {
+
+  const apiBody = handleRequestBody();
+  if (apiBody) {
+    fetchPremiumAH(apiBody,index);
   }
 }
 async function fetchPayment(requestBody) {

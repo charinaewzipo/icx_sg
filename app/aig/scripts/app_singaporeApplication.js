@@ -16,170 +16,6 @@ function getTypeCustomerType() {
   );
   return selectedRadio ? selectedRadio.value : null;
 }
-function handleCategoryCampaign() {
-  const typeSelect = document.getElementById("select-type");
-  const categorySelect = document.getElementById("category-select");
-  const campaignSelect = document.getElementById("campaign-select");
-  const campaignCode = document.getElementById("campaign-code");
-  const categoryCampaignDiv = document.getElementById("category-campaign");
-  const subPlanDiv = document.getElementById("sub-plan-select");
-
-  const optionsData = {
-    home: {
-      "new-business": [
-        {
-          value: "EPHCI",
-          text: "EPHCI",
-          code: 600001,
-        },
-        {
-          value: "Homes Essential",
-          text: "Homes Essential",
-          code: 600002,
-        },
-        {
-          value: "Homes Advantage Package",
-          text: "Homes Advantage Package",
-          code: 600003,
-        },
-      ],
-      renewal: [
-        {
-          value: "EPHCI",
-          text: "EPHCI",
-          code: 600005,
-        },
-        {
-          value: "Homes Essential",
-          text: "Homes Essential",
-          code: 600004,
-        },
-        {
-          value: "Homes Advantage Package",
-          text: "Homes Advantage Package",
-          code: 600006,
-        },
-        {
-          value: "PHPP",
-          text: "PHPP",
-          code: 600007,
-        },
-      ],
-    },
-    auto: {
-      "new-business": [
-        {
-          value: "ASP",
-          text: "ASP",
-          code: 600101,
-        },
-        {
-          value: "CAHP",
-          text: "CAHP",
-          code: 600102,
-        },
-        {
-          value: "CCIP",
-          text: "CCIP",
-          code: 600103,
-        },
-      ],
-      pom: [
-        {
-          value: "DHI",
-          text: "DHI",
-          code: 600201,
-        },
-        {
-          value: "Max PA",
-          text: "Max PA",
-          code: 600202,
-        },
-      ],
-    },
-    ah: {
-      "new-business": [
-        {
-          value: "ASP",
-          text: "ASP",
-          code: 600101,
-        },
-        {
-          value: "CAHP",
-          text: "CAHP",
-          code: 600102,
-        },
-        {
-          value: "CCIP",
-          text: "CCIP",
-          code: 600103,
-        },
-      ],
-      pom: [
-        {
-          value: "DHI",
-          text: "DHI",
-          code: 600201,
-        },
-        {
-          value: "Max PA",
-          text: "Max PA",
-          code: 600202,
-        },
-      ],
-    },
-  };
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const selectedType = urlParams.get("formType");
-
-  if (selectedType) {
-    typeSelect.value = selectedType;
-    handleTypeChange(selectedType);
-  }
-
-  typeSelect.addEventListener("change", function () {
-    handleTypeChange(this.value);
-  });
-
-  categorySelect.addEventListener("change", function () {
-    const selectedCategory = this.value;
-    if (selectedCategory) {
-      subPlanDiv.style.display = "block";
-      campaignSelect.innerHTML =
-        '<option value=""><-- Please select a campaign --></option>';
-      optionsData[typeSelect.value][selectedCategory].forEach((campaign) => {
-        const option = document.createElement("option");
-        option.value = campaign.code;
-        option.textContent = campaign.text;
-        campaignSelect.appendChild(option);
-      });
-    } else {
-      subPlanDiv.style.display = "none";
-    }
-    campaignSelect.addEventListener("change", function () {
-      campaignCode.value = this.value;
-    });
-  });
-
-  function handleTypeChange(selectedType) {
-    categoryCampaignDiv.style.display = selectedType ? "block" : "none";
-    categorySelect.innerHTML =
-      '<option value=""><-- Please select a category --></option>';
-    campaignSelect.innerHTML =
-      '<option value=""><-- Please select a campaign --></option>';
-    subPlanDiv.style.display = "none";
-
-    if (selectedType) {
-      Object.keys(optionsData[selectedType]).forEach((category) => {
-        const option = document.createElement("option");
-        option.value = category;
-        option.textContent = category.replace(/-/g, " ");
-        categorySelect.appendChild(option);
-      });
-    }
-  }
-}
 
 const handleSelectType = () => {
   const selectableItems = document.querySelectorAll(
@@ -217,6 +53,7 @@ const handleTypeConfirmQuote = () => {
   const isPolicyHolderDrivingRow = document.getElementById(
     "isPolicyHolderDrivingRow"
   );
+  const planInfoContainer = document.getElementById("plan-info-container-main");
   ncdinfoContainer.style.display = "none";
   remarkC.style.display = "none";
   remarkCInput.style.display = "none";
@@ -250,7 +87,7 @@ const handleTypeConfirmQuote = () => {
     }
     isPolicyHolderDrivingRow.style.display = "table-row";
   } else if (selectedType === "ah") {
-    [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto].forEach(
+    [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto,planInfoContainer].forEach(
       (container) => {
         container.querySelectorAll("input, select").forEach((field) => {
           field.removeAttribute("required");
@@ -268,6 +105,7 @@ const handleTypeConfirmQuote = () => {
     insuredListAh.style.display = "block";
     remarkC.style.display = "table-cell";
     remarkCInput.style.display = "table-cell";
+    planInfoContainer.style.display="none"
   }
 };
 const toggleNcdLevel = () => {
@@ -315,7 +153,7 @@ function handleForm() {
   ////////////////handlePocicyDetail form
   const policyDetail = {
     policyId: policyid ? policyid : "",
-    productId: 600000080,
+    productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: "0002466000",
     propDate: "",
@@ -512,17 +350,13 @@ function handleForm() {
       ],
     };
   } else if (formType === "ah") {
-    insuredObject.personInfo = {};
-    const insuredFullName =
-      formData.get("insured_ah_insuredFirstName") +
-      " " +
-      formData.get("insured_ah_insuredLastName");
-    insuredObject.personInfo.insuredFullName = insuredFullName;
-    for (const [name, value] of formData.entries()) {
-      if (name.includes("insured_ah_")) {
-        insuredObject.personInfo[name.replace("insured_ah_", "")] = value;
-      }
-    }
+    insuredList=collectFormData()
+    const fullForm = {
+      ...policyDetail,
+      policyHolderInfo,
+      insuredList,
+    };
+    return fullForm
   }
 
   insuredObject.planInfo = {};
@@ -653,8 +487,9 @@ const handleValidateForm = () => {
               currency: responsePayment.order.currency
             },
           ];
+          // const policyRequestBody=removeKeysFromQuotationData(quotationData)
           const body = { ...requestBody, paymentDetails };
-          console.log("body", body);
+
           const responseData = await fetchPolicy(body);
 
           if (responseData?.statusCode == "N02") {
@@ -766,19 +601,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(queryString);
   selectedType = urlParams.get("formType");
   handleTypeConfirmQuote();
-  handleCategoryCampaign();
+  // handleCategoryCampaign();
 });
 document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
 
   manualSetDefaultValueForm();
+  // manualSetInsuredPerson()
   manualSetDefaultValueFormInsuredList();
 
   
 });
 
+const removeKeysFromQuotationData = (data) => {
+  const keysToRemove = ['quoteLapseDate', 'quoteNo', 'type','premiumPayable','id'];
+  
+  keysToRemove.forEach(key => {
+    delete data[key];
+  });
 
+  return data;
+};
 const transformDate = (dateString) => {
   return new Date(dateString).toISOString();
 };

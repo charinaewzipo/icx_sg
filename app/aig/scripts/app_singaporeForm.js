@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Function to populate cover options in a dropdown
   function populateCoverOptions(selectElement) {
     const planId = document.getElementById("planSelect").value;
     const planListData = planData.insuredList[0];
@@ -33,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Function to add a new cover row
   window.addCoverRow = function () {
     const coverListBody = document.getElementById("coverListBody");
     const newRow = document.createElement("tr");
@@ -211,7 +209,9 @@ function clearPlanInfo() {
   });
 }
 const manualSetDefaultValueForm = () => {
-  console.log("manual run");
+  const productDetail={
+    productId:600000080
+  }
   const ncdInfo = {
     ncdLevel: 0,
     previousInsurer: "NCD0033",
@@ -252,7 +252,7 @@ const manualSetDefaultValueForm = () => {
   };
 
   // Set form fields based on the object data
-
+  document.querySelector('select[name="select-product"]').value = productDetail?.productId;
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther;
@@ -327,7 +327,7 @@ const manualSetDefaultValueFormInsuredList = () => {
         insuringWithCOE: "2",
         ageConditionBasis: "1",
         offPeakCar: "1",
-        vehicleUsage: "222",
+        vehicleUsage: "216",
         mileageCondition: "1838000062",
         engineNo: "E7230005683A",
         chassisNo: "C7230005683A",
@@ -395,7 +395,7 @@ const manualSetDefaultValueFormInsuredList = () => {
   ).checked = true;
   document.querySelector(
     'select[name="insured_auto_vehicle_vehicleUsage"]'
-  ).value = vehicleInfo.vehicleUsage;
+  ).value = vehicleInfo.vehicleUsage
   document.querySelector(
     'select[name="insured_auto_vehicle_mileageCondition"]'
   ).value = vehicleInfo.mileageCondition;
@@ -472,6 +472,143 @@ const manualSetDefaultValueFormInsuredList = () => {
     'select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]'
   ).value = driverInfo.claimInfo[0].insuredLiability;
 };
+const setInsuredPerson = (insuredData) => {
+  // const defaultData = [
+  //   {
+  //     personInfo: {
+  //       insuredFirstName: "charin",
+  //       insuredLastName: "aewzipo",
+  //       insuredFullName: "charin",
+  //       insuredResidentStatus: "1",
+  //       insuredIdType: "6",
+  //       insuredIdNumber: "S9499999F",
+  //       insuredGender: "F",
+  //       insuredDateOfBirth: "08/04/1996",
+  //       insuredMaritalStatus: "S",
+  //       insuredOccupation: "17",
+  //       insuredCampaignCode: "12",
+  //       relationToPolicyholder: "1",
+  //       natureOfBusiness: "17",
+  //     },
+  //     planInfo: {
+  //       planId: "1839000460",
+  //       planDescription: "Homes Essentials",
+  //       planPoi: "12",
+  //       covers: [
+  //         {
+  //           id: "9",
+  //           code: "FF0004",
+  //           name: "Renovations",
+  //           limitAmount: "100000",
+  //         },
+  //         {
+  //           id: "10",
+  //           code: "TL0001",
+  //           name: "Tenant's Liability",
+  //           limitAmount: "100000",
+  //         },
+  //       ],
+  //     },
+  //   },
+  //   {
+  //     personInfo: {
+  //       insuredFirstName: "charin2",
+  //       insuredLastName: "aewzipo",
+  //       insuredFullName: "charin2",
+  //       insuredResidentStatus: "2",
+  //       insuredIdType: "6",
+  //       insuredIdNumber: "S94992999F",
+  //       insuredGender: "F",
+  //       insuredDateOfBirth: "08/04/1995",
+  //       insuredMaritalStatus: "S",
+  //       insuredOccupation: "20",
+  //       insuredCampaignCode: "12",
+  //       relationToPolicyholder: "2",
+  //       natureOfBusiness: "17",
+  //     },
+  //     planInfo: {
+  //       planId: "1839000460",
+  //       planDescription: "Homes Essentials",
+  //       planPoi: "60",
+  //       covers: [
+  //         {
+  //           id: "9",
+  //           code: "FF0004",
+  //           name: "Bill Relief Protector",
+  //           limitAmount: "100000",
+  //         },
+  //       ],
+  //     },
+  //   },
+  // ];
+  const formSections = document.querySelectorAll('table[id^="table-form-"]');
+  formSections.forEach((section, index) => {
+    if (index >= insuredData.length) return; // Prevent index out of bounds
+    const data = insuredData[index];
+    const personInfo = data.personInfo;
+    const planInfo = personInfo.planInfo;
+    console.log("planInfo", planInfo);
+    section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
+      personInfo.insuredFirstName || "";
+    section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
+      personInfo.insuredLastName || "";
+    section.querySelector('[name^="insured_ah_insuredResidentStatus_"]').value =
+      personInfo.insuredResidentStatus || "";
+    section.querySelector('[name^="insured_ah_insuredIdType_"]').value =
+      personInfo.insuredIdType || "";
+    section.querySelector('[name^="insured_ah_insuredIdNumber_"]').value =
+      personInfo.insuredIdNumber || "";
+    section.querySelector('[name^="insured_ah_insuredGender_"]').value =
+      personInfo.insuredGender || "";
+    section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =
+      personInfo.insuredDateOfBirth || "";
+    section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value =
+      personInfo.insuredMaritalStatus || "";
+    section.querySelector('[name^="insured_ah_insuredOccupation_"]').value =
+      personInfo.insuredOccupation || "";
+    section.querySelector(
+      '[name^="insured_ah_relationToPolicyholder_"]'
+    ).value = personInfo.relationToPolicyholder || "";
+    section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value =
+      personInfo.insuredCampaignCode || "";
+    section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value =
+      personInfo.natureOfBusiness || "";
+
+
+      const populatePlanAndCovers = (planInfo, section) => {
+        const planSelect = section.querySelector('[name^="planId"]');
+        planSelect.innerHTML = ""; // Clear existing options
+    
+        const defaultOption = document.createElement("option");
+        defaultOption.value = planInfo.planId;
+        defaultOption.textContent = planInfo.planDescription;
+        planSelect.appendChild(defaultOption);
+    
+        const coverList = section.querySelector(".planCoverList");
+        coverList.innerHTML = ""; // Clear existing covers
+    
+        planInfo.covers.forEach((cover, coverIndex) => {
+          
+          const coverOption = document.createElement("option");
+          coverOption.value = cover.id;
+          coverOption.setAttribute("data-cover-code", cover.code);
+          coverOption.setAttribute("data-cover-name", cover.name);
+          coverOption.setAttribute("data-cover-amount", cover.limitAmount);
+          coverOption.textContent = cover.name;
+          // if (coverIndex === 0) {
+          //   coverOption.selected = true; 
+          // }
+          coverList.appendChild(coverOption);
+        });
+    
+        section.querySelector('[name^="planPoi"]').value = planInfo.planPoi || "";
+      };
+    
+      populatePlanAndCovers(planInfo, section);
+    
+  });
+};
+
 const setDefaultPlanInfo = (insuredData) => {
   const planInfo = insuredData ? insuredData[0]?.planInfo : {};
   console.log("planInfo", planInfo);
@@ -582,6 +719,7 @@ const setDefaultValueForm = (dbData) => {
   const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
   const insuredData = JSON.parse(dbData.insuredList);
 
+  document.querySelector('select[name="select-product"]').value = dbData?.productId;
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther || "";
@@ -603,7 +741,7 @@ const setDefaultValueForm = (dbData) => {
     individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdType;
   document.querySelector('input[name="customerIdNo"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdNo;
-  document.querySelector('input[name="nationality"]').value =
+  document.querySelector('select[name="nationality"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.nationality;
   document.querySelector('select[name="gender"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.gender;
@@ -646,13 +784,14 @@ const setDefaultValueForm = (dbData) => {
   } else {
     drivingNo.checked = true;
   }
+  console.log("insuredData",insuredData)
+  dbData.type==="ah" ? setInsuredPerson(insuredData):setDefaultValueFormInsuredList(insuredData);
 
-  setDefaultValueFormInsuredList(insuredData);
 };
 
 const setDefaultValueFormInsuredList = (insuredData) => {
+  console.log("setInsuredList(not person)")
   if (!insuredData || insuredData.length === 0) return;
-console.log("insuredData",insuredData)
   const vehicleInfo = insuredData[0].vehicleInfo;
   document.querySelector('select[name="insured_auto_vehicle_make"]').value =
     vehicleInfo.make;
@@ -676,7 +815,7 @@ console.log("insuredData",insuredData)
     'select[name="insured_auto_vehicle_mileageCondition"]'
   ).value = vehicleInfo.mileageCondition;
   document.querySelector(
-    'input[name="insured_auto_vehicle_vehicleUsage"]'
+    'select[name="insured_auto_vehicle_vehicleUsage"]'
   ).value = vehicleInfo.vehicleUsage;
   document.querySelector('input[name="insured_auto_vehicle_engineNo"]').value =
     vehicleInfo.engineNo;
@@ -686,14 +825,14 @@ console.log("insuredData",insuredData)
     'input[name="insured_auto_vehicle_mileageDeclaration"]'
   ).value = vehicleInfo.mileageDeclaration || "";
   document.querySelector(
-    'input[name="insured_auto_vehicle_hirePurchaseCompany"]'
+    'select[name="insured_auto_vehicle_hirePurchaseCompany"]'
   ).value = vehicleInfo.hirePurchaseCompany;
   document.querySelector(
     'input[name="insured_auto_vehicle_declaredSI"]'
   ).value = vehicleInfo.declaredSI;
 
   const driverInfo = insuredData[0].driverInfo[0];
-  console.log("driverInfo",driverInfo)
+  console.log("driverInfo", driverInfo);
   document.querySelector(
     'select[name="insured_auto_driverInfo_driverType"]'
   ).value = driverInfo.driverType;
@@ -716,7 +855,7 @@ console.log("insuredData",insuredData)
     'select[name="insured_auto_driverInfo_driverGender"]'
   ).value = driverInfo.driverGender;
   document.querySelector(
-    'input[name="insured_auto_driverInfo_driverNationality"]'
+    'select[name="insured_auto_driverInfo_driverNationality"]'
   ).value = driverInfo.driverNationality;
   document.querySelector(
     'select[name="insured_auto_driverInfo_maritalStatus"]'
@@ -752,5 +891,4 @@ console.log("insuredData",insuredData)
   ).value = claimInfo.insuredLiability;
 
   setDefaultPlanInfo(insuredData);
-
 };
