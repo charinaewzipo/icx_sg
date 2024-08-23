@@ -41,7 +41,6 @@ const handleSelectType = () => {
 const handleTypeConfirmQuote = () => {
   const ncdinfoContainer = document.getElementById("ncd-info-container");
   const remarkC = document.getElementById("remark-c-contanier");
-  const remarkCInput = document.getElementById("remark-c-input");
   const insuredListHome = document.getElementById("insured-list-home");
   const insuredListAuto = document.getElementById("insured-list-auto");
   const insuredListAh = document.getElementById("insured-list-ah");
@@ -55,7 +54,6 @@ const handleTypeConfirmQuote = () => {
   const planInfoContainer = document.getElementById("plan-info-container-main");
   ncdinfoContainer.style.display = "none";
   remarkC.style.display = "none";
-  remarkCInput.style.display = "none";
   insuredListHome.style.display = "none";
   insuredListAuto.style.display = "none";
   insuredListAh.style.display = "none";
@@ -95,8 +93,7 @@ const handleTypeConfirmQuote = () => {
     insuredListAuto.style.display = "block";
   } else if (selectedType === "ah") {
     insuredListAh.style.display = "block";
-    remarkC.style.display = "table-cell";
-    remarkCInput.style.display = "table-cell";
+    remarkC.style.display = "table-row";
     planInfoContainer.style.display="none"
   }
 };
@@ -607,7 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
 
-  manualSetDefaultValueForm();
+  // manualSetDefaultValueForm();
   // manualSetInsuredPerson()
   // manualSetInsuredVehicleList();
 

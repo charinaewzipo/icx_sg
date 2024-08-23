@@ -924,6 +924,8 @@ const setInsuredVehicleList = (insuredData) => {
   claimInfoElements.forEach((field) => {
     field.removeAttribute("required");
   });
+
+  
   if (claimExperienceElement && claimExperienceElement.checked) {
     const claimInfo = driverInfo.claimInfo && driverInfo.claimInfo[0] ? driverInfo.claimInfo[0] : {};
     

@@ -181,95 +181,65 @@ require("../scripts/app_singaporeAH.php")
         <p class="selectable" data-type="ah">A&H</p> -->
     </div>
     <form id="application" novalidate>
-    <div id="top-detail">
-      <div id="app-detail" style="padding:5px 10px">
-        <table>
-          <tr>
-            <td>
-              <h1>Product Name : </h1>
-            </td>
-            <td>
-            
-<select name="select-product" id="select-product" style="max-width:216px" required>
-                    <option value="">
-                      <-- Please select an product -->
-                    </option>
-                    <?php
-                     if ($formType === 'ah') {
-                      // $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
-                      $strSQL = "SELECT * FROM t_aig_sg_product ";
-                    } else {
-                      $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
-                    }
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                      $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["product_id"]; ?>">
-                        <?php echo $objResuut["product_name"]; ?>
-                      </option>
-                    <?php
-                    }
-                    ?>
+      <!-- <div id="top-detail">
+        <div id="app-detail" style="padding:5px 10px">
+          <table>
+           
+          </table>
+        </div>
+      </div> -->
 
-                  </select>
-
-
-
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div id="user-detail">
-        <table align="right">
-          <tr>
-            <td>
-              <h1>Date : </h1>
-            </td>
-            <td>
-              <?php echo "$currentdate_app" ?>
-            </td>
-            <td>&nbsp;</td>
-            <td>
-              <h1>License : </h1>
-            </td>
-            <td>
-              <?php print $license_code; ?>
-            </td>
-            <td>&nbsp;</td>
-            <td>
-              <h1>TSR : </h1>
-            </td>
-            <td>
-              <?php echo $first_name; ?>&nbsp;
-              <?php echo $last_name; ?>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </div>
-   
       <!--Form PolicyDetail -->
       <div id="confirmQuoteContainer">
+        
         <fieldset id="form-content">
+          <legend>Product Detail</legend>
           <table id="table-form">
-            <tr>
-              <td>PolicyId: <span style="color:red">*</span></td>
-              <td><?php echo $Run_no ?>5612367 </td>
-              <th></th>
-              <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
-              <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required></td>
-              <td style="white-space:nowrap;">Policy Expiry Date: <span style="color:red">*</span></td>
-              <td><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" required></td>
+          <tr>
+              <td>
+                <h1 style="white-space:nowrap;">Product Name : </h1>
+              </td>
+              <td>
+                <select name="select-product" id="select-product"  required>
+                  <option value="">
+                    <-- Please select an product -->
+                  </option>
+                  <?php
+                  if ($formType === 'ah') {
+                    // $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
+                    $strSQL = "SELECT * FROM t_aig_sg_product ";
+                  } else {
+                    $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
+                  }
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["product_id"]; ?>">
+                      <?php echo $objResuut["product_name"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
+
+                </select>
+              </td>
+              <td style="white-space:nowrap; ">Campaign Code:</td>
+              <td>
+                <input type="text" id="campaign-code" name="campaignCode" style="max-width: 130px;">
+              </td>
             </tr>
             <tr>
-              <td>Campaign Code:</td>
-              <td>
-                <input type="text" id="campaign-code" name="campaignCode" style="max-width: 110px;">
-              </td>
-              <td></td>
-              <td id="remark-c-contanier">RemarksC: </td>
-              <td id="remark-c-input" style="white-space:nowrap;">
+              <td id="policyid-text">PolicyId: <span style="color:red">*</span></td>
+            <td id="policyid-display"><input type="text" id="policyid-input"  style="display: inline-block; " readonly/></td>
+              <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
+              <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
+              <td style="white-space:nowrap;">Policy Expiry Date: <span style="color:red">*</span></td>
+              <td><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" required style="max-width: 130px;"></td>
+            </tr>
+            <tr id="remark-c-contanier">
+              <td>RemarksC: </td>
+              <td style="white-space:nowrap;">
                 <input type="text" name="RemarkCInput" value="" ?>
               </td>
             </tr>

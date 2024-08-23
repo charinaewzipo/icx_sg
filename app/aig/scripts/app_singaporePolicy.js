@@ -4,7 +4,9 @@ document.addEventListener("DOMContentLoaded", function() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const paymentContainer = document.getElementById("payment-container");
-  
+  const policyidText = document.getElementById("policyid-text");
+  const policyInput =document.getElementById('policyid-input');
+  const policyDisplay = document.getElementById('policyid-display');
   // Retrieve 'policyid' from the URL parameters
   policyid = urlParams.get("policyid");
   console.log("policyid:", policyid);
@@ -14,10 +16,13 @@ document.addEventListener("DOMContentLoaded", function() {
     paymentContainer.querySelectorAll("input, select").forEach((field) => {
       field.removeAttribute("required");
     });
+    policyidText.style.display="none"
+    policyDisplay.style.display="none";
   }
   if (policyid) {
     const addCoverButton = document.querySelector(".add-cover");
     const seePlanButton = document.querySelector(".seePlan");
+    policyInput.value=policyid
     paymentContainer.removeAttribute("hidden");
 
     if (addCoverButton) {
