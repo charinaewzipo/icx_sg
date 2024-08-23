@@ -914,25 +914,37 @@ const setInsuredVehicleList = (insuredData) => {
     `input[name="insured_auto_driverInfo_claimExperience"][value="${driverInfo.claimExperience}"]`
   ).checked = true;
 
-  const claimInfo = driverInfo.claimInfo[0];
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_claimInfo_dateOfLoss"]'
-  ).value = claimInfo.dateOfLoss.split("T")[0];
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_claimInfo_lossDescription"]'
-  ).value = claimInfo.lossDescription;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_claimInfo_claimNature"]'
-  ).value = claimInfo.claimNature;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_claimInfo_claimAmount"]'
-  ).value = claimInfo.claimsAmount;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_claimInfo_claimStatus"]'
-  ).value = claimInfo.status;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]'
-  ).value = claimInfo.insuredLiability;
+ 
+  
+  const claimExperienceElement = document.querySelector(
+    `input[name="insured_auto_driverInfo_claimExperience"][value="${driverInfo.claimExperience}"]`
+  );
+  const claimInfoElements = document.querySelectorAll("#claim-info input, #claim-info select");
+    
+  claimInfoElements.forEach((field) => {
+    field.removeAttribute("required");
+  });
+  if (claimExperienceElement && claimExperienceElement.checked) {
+    const claimInfo = driverInfo.claimInfo && driverInfo.claimInfo[0] ? driverInfo.claimInfo[0] : {};
+    
+    // Helper function to set value if element exists
+    const setValue = (selector, value) => {
+      const element = document.querySelector(selector);
+      if (element) {
+        element.value = value || '';
+      }
+    };
+  
+    setValue('input[name="insured_auto_driverInfo_claimInfo_dateOfLoss"]', claimInfo.dateOfLoss ? claimInfo.dateOfLoss.split("T")[0] : '');
+    setValue('input[name="insured_auto_driverInfo_claimInfo_lossDescription"]', claimInfo.lossDescription);
+    setValue('select[name="insured_auto_driverInfo_claimInfo_claimNature"]', claimInfo.claimNature);
+    setValue('input[name="insured_auto_driverInfo_claimInfo_claimAmount"]', claimInfo.claimsAmount);
+    setValue('select[name="insured_auto_driverInfo_claimInfo_claimStatus"]', claimInfo.status);
+    setValue('select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]', claimInfo.insuredLiability);
+  } 
+  
+  
+  
 
   
 };

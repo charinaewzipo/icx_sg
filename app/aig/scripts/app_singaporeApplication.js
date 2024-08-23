@@ -49,7 +49,6 @@ const handleTypeConfirmQuote = () => {
   const ncdNoExperience = document.getElementById(
     "insured_auto_driverInfo_claimExperience"
   );
-  const claimInfo = document.getElementById("claim-info");
   const isPolicyHolderDrivingRow = document.getElementById(
     "isPolicyHolderDrivingRow"
   );
@@ -61,7 +60,6 @@ const handleTypeConfirmQuote = () => {
   insuredListAuto.style.display = "none";
   insuredListAh.style.display = "none";
   isPolicyHolderDrivingRow.style.display = "none";
-
   if (selectedType === "home") {
     [ncdinfoContainer, properateForm, insuredListAuto, insuredListAh].forEach(
       (container) => {
@@ -78,13 +76,7 @@ const handleTypeConfirmQuote = () => {
         });
       }
     );
-    if (ncdNoExperience === "N") {
-      claimInfo.forEach((container) => {
-        container.querySelectorAll("input, select").forEach((field) => {
-          field.removeAttribute("required");
-        });
-      });
-    }
+    
     isPolicyHolderDrivingRow.style.display = "table-row";
   } else if (selectedType === "ah") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto,planInfoContainer].forEach(
@@ -129,6 +121,21 @@ const toggleClaimExperience = (selectedOption) => {
   const ncdNoExperience = document.getElementById("claim-info");
   const displayStyle = selectedOption.value == "Y" ? "block" : "none";
   ncdNoExperience.style.display = displayStyle;
+
+  const claimInfo = document.querySelectorAll("#claim-info"); 
+  if (selectedOption.value === "N") {
+      claimInfo.forEach((container) => {
+          container.querySelectorAll("input, select").forEach((field) => {
+              field.removeAttribute("required");
+          });
+      });
+  } else {
+      claimInfo.forEach((container) => {
+          container.querySelectorAll("input, select").forEach((field) => {
+              field.setAttribute("required", "required");
+          });
+      });
+  }
 };
 function showForm(selectedOption) {
   document.getElementById("individualForm").style.display = "none";
