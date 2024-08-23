@@ -231,7 +231,7 @@ require("../scripts/app_singaporeAH.php")
             </tr>
             <tr>
               <td id="policyid-text">PolicyId: <span style="color:red">*</span></td>
-            <td id="policyid-display"><input type="text" id="policyid-input"  style="display: inline-block; " readonly/></td>
+            <td id="policyid-display"><input type="text" id="policyid-input"  style="display: inline-block; width:216px;" readonly/></td>
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <td style="white-space:nowrap;">Policy Expiry Date: <span style="color:red">*</span></td>
