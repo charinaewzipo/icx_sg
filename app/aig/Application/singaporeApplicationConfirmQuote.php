@@ -206,7 +206,7 @@ require("../scripts/app_singaporeAH.php")
                       $data[] = $objResuut;
                     ?>
                       <option value="<?php echo $objResuut["product_id"]; ?>">
-                        <?php echo $objResuut["product_name"]; ?>%
+                        <?php echo $objResuut["product_name"]; ?>
                       </option>
                     <?php
                     }
