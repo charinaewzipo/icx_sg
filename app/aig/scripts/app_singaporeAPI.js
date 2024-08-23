@@ -2,7 +2,8 @@ let planData = null;
 let responsePayment=null;
 let quotationData=null;
 let selectProduct=null;
-const token =  "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlE0bWJ4bi1MVDRnTncxREtoMTFneUpKR1pjMnhHdUo5b1B0NXZsaEFycUkiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQzMTg2NTIsImV4cCI6MTcyNDMyNTg1MiwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.H66_IIIIGkzeiipAGaN9mSxqGsPYvonQ8azO-8UV8PT0Iv-3QDBqQUvnhYmgRK5QuL3j8pttUMLd_CUtAOYveTnW_5sSJEC9pckQHZj44JN7u8CU3l_GcRLjemfNYSou7gjL0BBL25-1083TV2-s_Cbt1b7Rvjcl6LsW4bPDdBZ3cs7wMz3SpfITI3ZhNeht35XHZvP7ghr9d6lFLAosbYhISH_JcQ6N9mnfpw4DCfnyUheCZmeZcOrvkD2tWUviivn19n_mo-hcIrtbH-KoMEKK6pho8ezjkxtcehisRO_1poGAnwL8mPELr12pd9XvYR9EUG4tnffhqWXWhjrBrQ"
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmtQWTJLODhwZUkwNEVTcDI5WmVFSmRJMnBKdE1JZ2R4WU1jQWR3aU1WNGciLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQzNzkzOTQsImV4cCI6MTcyNDM4NjU5NCwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.0_3ud9TAmUOb3QqOzvoIwnSO33SQuNqK4BrljEpVNjM3jKBglYqY77L5gdvvtK20J40A6pW4kRV6yBWX0nLAHbiDEpyENx1_19bkqx3F0TmLqlZLfGnlqB5mHMXcOLFuUFUhYZ9P3AuKSgYgx_omQTJuzJfTNRlvPA9ZbWIlVe9hkgyd29WJlmOwpH2ZgIIKw2FSA5qF_Evpw3ijRt8GgqeIbH1sBlaPumSrC9r6jdwNuFVofZfpr7xSqy0MY38xwCteMKNRsOAo8O0lWAxvfbVmZtFmm95lIakrgXmbNoCCNAmyLsJVR0KnS5kJQiKpnkXfv3GRcBGaeHhHrMgwZQ"  
+
 function fetchPremiumAH(requestBody,index) {
     document.body.classList.add('loading');
   const apiUrl =
@@ -157,15 +158,18 @@ async function fetchPolicy(requestBody) {
 const handleRequestBody = () => {
   const formData = new FormData(document.getElementById("application"));
   const requestBodyHome = {
-    propDate: "2024-07-26T18:25:43.511Z",
+    propDate: new Date(),
     productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: "0000064000",
     applicationReceivedDate: "",
-    // policyEffDate: formData.get("PolicyEffectiveDate"),
-    // policyExpDate: formData.get("PolicyExpiryDate"),
-    policyEffDate: new Date(),
-    policyExpDate: new Date(),
+    policyEffDate: formData.get("PolicyEffectiveDate")
+    ? transformDate(formData.get("PolicyEffectiveDate"))
+    : "",
+    policyExpDate:formData.get("PolicyExpiryDate")
+    ? transformDate(formData.get("PolicyExpiryDate"))
+    : "",
+   
     insuredList: [
       {
         addressInfo: {
@@ -275,7 +279,7 @@ const handleRequestBody = () => {
     campaignCode: "",
   };
   const requestBodyAh = {
-    propDate: "2024-07-26T18:25:43.511Z",
+    propDate: new Date(),
     // productId: formData.get("select-product"),
     productId: 600000060,
     
@@ -391,7 +395,6 @@ function validateAndSubmitFormCallPremium(index) {
   }
 }
 function callPremiumAH(index) {
-
   const apiBody = handleRequestBody();
   if (apiBody) {
     fetchPremiumAH(apiBody,index);

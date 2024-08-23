@@ -156,7 +156,7 @@ function handleForm() {
     productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: "0002466000",
-    propDate: "",
+    propDate: new Date(),
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
@@ -166,25 +166,25 @@ function handleForm() {
     campaignCode: formData.get("campaignCode"),
   };
   if (formType === "auto") {
-    policyDetail.ncdInfo = {
-      ncdLevel: 0,
-      previousInsurer: "NCD0033",
-      previousPolicyNo: "prev123",
-      noClaimExperienceOther: "",
-    };
-    // policyDetail.ncdInfo = {};
-    // policyDetail.ncdInfo.ncdLevel = Number(formData.get("Ncd_Level"));
-    // policyDetail.ncdInfo.previousInsurer = formData.get(
-    //   "haveEx-PreviousInsurer"
-    // );
-    // policyDetail.ncdInfo.previousPolicyNo = formData.get(
-    //   "haveEx-PreviousPolicyNo"
-    // );
-    // policyDetail.ncdInfo.noClaimExperience = formData.get("NoClaimExperience");
-    // policyDetail.ncdInfo.noClaimExperienceOther =
-    //   formData.get("otherExperience");
+    // policyDetail.ncdInfo = {
+    //   ncdLevel: 0,
+    //   previousInsurer: "NCD0033",
+    //   previousPolicyNo: "prev123",
+    //   noClaimExperienceOther: "",
+    // };
+    policyDetail.ncdInfo = {};
+    policyDetail.ncdInfo.ncdLevel = Number(formData.get("Ncd_Level"));
+    policyDetail.ncdInfo.previousInsurer = formData.get(
+      "haveEx-PreviousInsurer"
+    );
+    policyDetail.ncdInfo.previousPolicyNo = formData.get(
+      "haveEx-PreviousPolicyNo"
+    );
+    policyDetail.ncdInfo.noClaimExperience = formData.get("NoClaimExperience");
+    policyDetail.ncdInfo.noClaimExperienceOther =
+      formData.get("otherExperience");
   } else if (formType === "ah") {
-    policyDetail.remarkC = formData.get("RemarkCInput");
+    policyDetail.remarksC = formData.get("RemarkCInput");
   }
 
   ////////////////handlePolicyholder form
@@ -487,8 +487,8 @@ const handleValidateForm = () => {
               currency: responsePayment.order.currency
             },
           ];
-          // const policyRequestBody=removeKeysFromQuotationData(quotationData)
-          const body = { ...requestBody, paymentDetails };
+          const policyRequestBody=removeKeysFromQuotationData(quotationData)
+          const body = { ...policyRequestBody, paymentDetails };
 
           const responseData = await fetchPolicy(body);
 
@@ -517,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Function to get the data from the div elements
-  function getFormData() {
+  function getFormDataPayment() {
       const selectElements = paymentContainer.querySelectorAll('select');
       const inputElements = paymentContainer.querySelectorAll('input');
       const formData = {};
@@ -546,8 +546,8 @@ document.addEventListener('DOMContentLoaded', function() {
               type: "CARD",
               provided: {
                   card: {
-                      number: "5123456789012346",
-                      // number: formData['payment_cardNumber'],
+                      // number: "5123456789012346",
+                      number: formData['payment_cardNumber'],
                       expiry: {
                           month: expMonth,
                           year: expYear
@@ -578,7 +578,7 @@ document.addEventListener('DOMContentLoaded', function() {
       submitButton.addEventListener('click', async function() {
           paymentContainer.removeAttribute('hidden');
           if (validateFields()){
-              const requestBody = getFormData();
+              const requestBody = getFormDataPayment();
               try {
                   await fetchPayment(requestBody);
               } catch (error) {
@@ -601,7 +601,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(queryString);
   selectedType = urlParams.get("formType");
   handleTypeConfirmQuote();
-  // handleCategoryCampaign();
+
 });
 document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
@@ -609,19 +609,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   manualSetDefaultValueForm();
   // manualSetInsuredPerson()
-  manualSetDefaultValueFormInsuredList();
+  // manualSetInsuredVehicleList();
 
   
 });
-
+document.addEventListener('DOMContentLoaded', function() {
+  
+});
 const removeKeysFromQuotationData = (data) => {
-  const keysToRemove = ['quoteLapseDate', 'quoteNo', 'type','premiumPayable','id'];
+  const keysToRemove = ['quoteLapseDate', 'quoteNo', 'type','premiumPayable','id','propDate'];
   
   keysToRemove.forEach(key => {
     delete data[key];
   });
+  if (data.policyEffDate) {
+    data.policyEffDate = formatDateToISO(data.policyEffDate);
+  }
+  if (data.policyExpDate) {
+    data.policyExpDate = formatDateToISO(data.policyExpDate);
+  }
+
 
   return data;
+};
+const formatDateToISO = (dateStr) => {
+  const [datePart, timePart] = dateStr.split(' ');
+  const dateISO = new Date(`${datePart}T${timePart}Z`).toISOString();
+  return dateISO.split('.')[0] + 'Z';
 };
 const transformDate = (dateString) => {
   return new Date(dateString).toISOString();

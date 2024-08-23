@@ -101,7 +101,6 @@ require("../scripts/app_singaporeAH.php")
   <script src="../scripts/singapore_database.js"></script>
   <script src="../scripts/app_singaporePolicy.js"></script>
   <script src="../scripts/app_singaporeForm.js"></script>
-  <!-- <script src="../scripts/app_singaporeAH.js"></script> -->
 
   <script>
     const campaignID = <?php echo json_encode($_GET["campaign_id"]); ?>;
@@ -190,31 +189,33 @@ require("../scripts/app_singaporeAH.php")
               <h1>Product Name : </h1>
             </td>
             <td>
-              <select id="select-product" name="select-product" style="max-width:216px" require>
-                <option value=""><-- Please select a product --></option>
-                <?php
-
-                // if ($formType === 'ah') {
-                //   $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
-                // } else {
-                //   $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
-                // }
-                $strSQL = "SELECT * FROM t_aig_sg_product ";
-                $objQuery = mysqli_query($Conn, $strSQL);
-                if ($objQuery) {
-                  while ($objResult = mysqli_fetch_array($objQuery)) {
-                ?>
-                    <option value="<?php echo htmlspecialchars($objResult["product_id"]); ?>">
-                      <?php echo htmlspecialchars($objResult["product_name"]); ?>%
+            
+<select name="select-product" id="select-product" style="max-width:216px" required>
+                    <option value="">
+                      <-- Please select an product -->
                     </option>
-                <?php
-                  }
-                } else {
-                  // Handle query error
-                  echo '<option value="">No products available</option>';
-                }
-                ?>
-              </select>
+                    <?php
+                     if ($formType === 'ah') {
+                      // $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
+                      $strSQL = "SELECT * FROM t_aig_sg_product ";
+                    } else {
+                      $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
+                    }
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["product_id"]; ?>">
+                        <?php echo $objResuut["product_name"]; ?>%
+                      </option>
+                    <?php
+                    }
+                    ?>
+
+                  </select>
+
+
+
             </td>
           </tr>
         </table>
@@ -269,7 +270,7 @@ require("../scripts/app_singaporeAH.php")
               <td></td>
               <td id="remark-c-contanier">RemarksC: </td>
               <td id="remark-c-input" style="white-space:nowrap;">
-                <input type="text" name="RemarkCInput" maxlength="10" value="" ?>
+                <input type="text" name="RemarkCInput" value="" ?>
               </td>
             </tr>
           </table>
@@ -829,11 +830,11 @@ where name='Nature of Business'";
               <td style="float: inline-start;">Smoke Detector Available : </td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="smokeDetecYes" name="insured_home_smokeDetectorAvailable" value="Yes" checked>
+                  <input type="radio" class="form-check-input" id="smokeDetecYes" name="insured_home_smokeDetectorAvailable" value="1" checked>
                   <label class="form-check-label" for="smokeDetecYes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="smokeDetecNo" name="insured_home_smokeDetectorAvailable" value="No">
+                  <input type="radio" class="form-check-input" id="smokeDetecNo" name="insured_home_smokeDetectorAvailable" value="2">
                   <label class="form-check-label" for="smokeDetecNo">No</label>
                 </div>
               </td>
@@ -842,11 +843,11 @@ where name='Nature of Business'";
               <td style="float: inline-start;">Auto Sprinkler : </td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="autoSprinkYes" name="insured_home_autoSprinklerAvailable" value="Yes" checked>
+                  <input type="radio" class="form-check-input" id="autoSprinkYes" name="insured_home_autoSprinklerAvailable" value="1" checked>
                   <label class="form-check-label" for="autoSprinkYes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="autoSprinkNo" name="insured_home_autoSprinklerAvailable" value="No">
+                  <input type="radio" class="form-check-input" id="autoSprinkNo" name="insured_home_autoSprinklerAvailable" value="2">
                   <label class="form-check-label" for="autoSprinkNo">No</label>
                 </div>
               </td>
@@ -855,11 +856,11 @@ where name='Nature of Business'";
               <td style="float: inline-start;">Security System Available : </td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="securityYes" name="insured_home_securitySystemAvailable" value="Yes" checked>
+                  <input type="radio" class="form-check-input" id="securityYes" name="insured_home_securitySystemAvailable" value="1" checked>
                   <label class="form-check-label" for="securityYes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="securityNo" name="insured_home_securitySystemAvailable" value="No">
+                  <input type="radio" class="form-check-input" id="securityNo" name="insured_home_securitySystemAvailable" value="2">
                   <label class="form-check-label" for="securityNo">No</label>
                 </div>
               </td>

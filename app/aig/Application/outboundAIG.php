@@ -19,7 +19,7 @@ function DBGetPolicyDetailsWithId($policyId) {
     }
 
     // Prepare the SQL query to select data by policyId
-    $sql = "SELECT id, policyId, productId, distributionChannel, producerCode, propDate, policyEffDate, policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable, quoteLapseDate, `type`
+    $sql = "SELECT id, policyId, productId, distributionChannel, producerCode, propDate, policyEffDate, policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable, quoteLapseDate, `type`,remarksC
 FROM tubtim.insurance_data
             WHERE policyId = ?";
 
@@ -64,6 +64,7 @@ function DBInsertQuotationData($formData, $response,$type)
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $productId = isset($formData['productId']) ? $formData['productId'] : 0;
     $type = isset($type) ? $type : '';
+    $remarksC =  isset($formData['remarksC']) ? $formData['remarksC'] : '';
     $distributionChannel = isset($formData['distributionChannel']) ? $formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : '0002466000';
     $propDate = isset($formData['propDate']) ? $formData['propDate'] : '';
@@ -85,11 +86,11 @@ function DBInsertQuotationData($formData, $response,$type)
 
     $sql = "INSERT INTO insurance_data (
         policyId,type, productId, distributionChannel, producerCode, propDate, policyEffDate,
-        policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo,premiumPayable,quoteLapseDate
+        policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo,premiumPayable,quoteLapseDate,remarksC
     ) VALUES (
         '$policyId','$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate', '$policyExpDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
-        '$insuredList', '$quoteNo' ,'$premiumPayable' ,'$quoteLapseDate'
+        '$insuredList', '$quoteNo' ,'$premiumPayable' ,'$quoteLapseDate','$remarksC'
     )";
 
     // Execute query

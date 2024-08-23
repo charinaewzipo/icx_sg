@@ -494,7 +494,7 @@ where name='PA Nature of Business'";
             const personInfo = {
                 insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '',
                 insuredLastName: section.querySelector('[name^="insured_ah_insuredLastName_"]').value || '',
-                insuredFullName: section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '' + ' ' + section.querySelector('[name^="insured_ah_insuredLastName_"]').value || '',
+                insuredFullName: (section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '') + ' ' + (section.querySelector('[name^="insured_ah_insuredLastName_"]').value || ''),
                 insuredResidentStatus: section.querySelector('[name^="insured_ah_insuredResidentStatus_"]').value || '',
                 insuredIdType: section.querySelector('[name^="insured_ah_insuredIdType_"]').value || '',
                 insuredIdNumber: section.querySelector('[name^="insured_ah_insuredIdNumber_"]').value || '',
@@ -507,7 +507,7 @@ where name='PA Nature of Business'";
                 natureOfBusiness: section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value || '',
                 planInfo:{
                     ...planInfo,
-                    covers: covers // Add covers if needed
+                    covers: covers
                 }
             };
             

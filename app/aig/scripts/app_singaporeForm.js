@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <!-- Options will be populated by JavaScript -->
           </select>
         </td>
-        <td style="padding-left:20px">Cover Code: <span style="color:red">*</span> </td>
+        <td style="padding:0px 30px">Cover Code: <span style="color:red">*</span> </td>
         <td style="width:70px">
           <p class="planCoverCode"></p>
         </td>
@@ -209,9 +209,7 @@ function clearPlanInfo() {
   });
 }
 const manualSetDefaultValueForm = () => {
-  const productDetail={
-    productId:600000080
-  }
+
   const ncdInfo = {
     ncdLevel: 0,
     previousInsurer: "NCD0033",
@@ -252,7 +250,7 @@ const manualSetDefaultValueForm = () => {
   };
 
   // Set form fields based on the object data
-  document.querySelector('select[name="select-product"]').value = productDetail?.productId;
+  // document.querySelector('select[name="select-product"]').value = productDetail?.productId;
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther;
@@ -316,7 +314,7 @@ const manualSetDefaultValueForm = () => {
     drivingNo.checked = true;
   }
 };
-const manualSetDefaultValueFormInsuredList = () => {
+const manualSetInsuredVehicleList = () => {
   const insuredData = [
     {
       vehicleInfo: {
@@ -723,7 +721,7 @@ const setDefaultValueForm = (dbData) => {
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther || "";
-
+  document.querySelector('input[name="RemarkCInput"]').value=dbData?.remarksC||""
   // Set Individual Policy Holder Info fields
   document.querySelector('select[name="courtesyTitle"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.courtesyTitle;
@@ -785,12 +783,58 @@ const setDefaultValueForm = (dbData) => {
     drivingNo.checked = true;
   }
   console.log("insuredData",insuredData)
-  dbData.type==="ah" ? setInsuredPerson(insuredData):setDefaultValueFormInsuredList(insuredData);
+  switch (dbData.type) {
+    case "home":
+      return setInsuredHome(insuredData),setDefaultPlanInfo(insuredData);
+    case "auto":
+      return setInsuredVehicleList(insuredData),setDefaultPlanInfo(insuredData);
+    case "ah":
+      return  setInsuredPerson(insuredData);
+    default:
+      
+      return null
+  }
 
 };
+const setInsuredHome = (insuredData) => {
+  console.log("setInsuredList home");
+  if (!insuredData || insuredData.length === 0) return;
 
-const setDefaultValueFormInsuredList = (insuredData) => {
-  console.log("setInsuredList(not person)")
+  const addressInfo = insuredData[0].addressInfo;
+
+  // Map the addressInfo data to the form fields
+  document.querySelector('[name="insured_home_dwellingType"]').value = addressInfo.dwellingType || '';
+  document.querySelector('[name="insured_home_flatType"]').value = addressInfo.flatType || '';
+  document.querySelector('[name="insured_home_ownerOccupiedType"]').value = addressInfo.ownerOccupiedType || '';
+  document.querySelector('[name="insured_home_floorOccupied"]').value = addressInfo.floorOccupied || '';
+  document.querySelector('[name="insured_home_constructionType"]').value = addressInfo.constructionType || '';
+  document.querySelector('[name="insured_home_yearBuilt"]').value = addressInfo.yearBuilt || '';
+  document.querySelector('[name="insured_home_insuredBlockNo"]').value = addressInfo.insuredBlockNo || '';
+  document.querySelector('[name="insured_home_insuredStreetName"]').value = addressInfo.insuredStreetName || '';
+  document.querySelector('[name="insured_home_insuredUnitNo"]').value = addressInfo.insuredUnitNo || '';
+  document.querySelector('[name="insured_home_insuredBuildingName"]').value = addressInfo.insuredBuildingName || '';
+  document.querySelector('[name="insured_home_insuredPostCode"]').value = addressInfo.insuredPostCode || '';
+
+  if (addressInfo.smokeDetectorAvailable === "1") {
+      document.getElementById('smokeDetecYes').checked = true;
+  } else if (addressInfo.smokeDetectorAvailable === "2") {
+      document.getElementById('smokeDetecNo').checked = true;
+  }
+
+  if (addressInfo.autoSprinklerAvailable === "1") {
+      document.getElementById('autoSprinkYes').checked = true;
+  } else if (addressInfo.autoSprinklerAvailable === "2") {
+      document.getElementById('autoSprinkNo').checked = true;
+  }
+
+  if (addressInfo.securitySystemAvailable === "1") {
+      document.getElementById('securityYes').checked = true;
+  } else if (addressInfo.securitySystemAvailable === "2") {
+      document.getElementById('securityNo').checked = true;
+  }
+};
+const setInsuredVehicleList = (insuredData) => {
+  console.log("setInsuredList vehicle")
   if (!insuredData || insuredData.length === 0) return;
   const vehicleInfo = insuredData[0].vehicleInfo;
   document.querySelector('select[name="insured_auto_vehicle_make"]').value =
@@ -890,5 +934,5 @@ const setDefaultValueFormInsuredList = (insuredData) => {
     'select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]'
   ).value = claimInfo.insuredLiability;
 
-  setDefaultPlanInfo(insuredData);
+  
 };
