@@ -197,7 +197,7 @@ require("../scripts/app_singaporeAH.php")
           <table id="table-form">
           <tr>
               <td>
-                <h1 style="white-space:nowrap;">Product Name : </h1>
+                <p style="white-space:nowrap;">Product Name : <span style="color:red">*</span></p>
               </td>
               <td>
                 <select name="select-product" id="select-product"  required>
