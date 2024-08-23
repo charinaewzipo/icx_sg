@@ -489,16 +489,9 @@ const handleValidateForm = () => {
           ];
           const policyRequestBody=removeKeysFromQuotationData(quotationData)
           const body = { ...policyRequestBody, paymentDetails };
-
-          const responseData = await fetchPolicy(body);
-
-          if (responseData?.statusCode == "N02") {
-            await jQuery.agent.insertPolicyData(policyid, responseData?.policyNo); // Ensure it completes
-          }
+          await fetchPolicy(body);
         } else {
-          // Create quotation
-          const responseData = await fetchQuotation(requestBody);
-          await jQuery.agent.insertQuotationData(requestBody, responseData); // Ensure it completes
+         await fetchQuotation(requestBody);
         }
       } catch (error) {
         console.error("Error fetching quotation or inserting data:", error);
@@ -611,11 +604,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // manualSetInsuredPerson()
   // manualSetInsuredVehicleList();
 
-  
 });
-document.addEventListener('DOMContentLoaded', function() {
-  
-});
+
 const removeKeysFromQuotationData = (data) => {
   const keysToRemove = ['quoteLapseDate', 'quoteNo', 'type','premiumPayable','id','propDate'];
   

@@ -9,7 +9,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Function to fetch data for agents
-function DBGetPolicyDetailsWithId($policyId) {
+function DBGetPolicyDetailsWithId($policyId)
+{
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
 
@@ -50,7 +51,7 @@ FROM tubtim.insurance_data
     // Close the database connection
     $dbconn->dbconn->close();
 }
-function DBInsertQuotationData($formData, $response,$type)
+function DBInsertQuotationData($formData, $response, $type)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -59,8 +60,8 @@ function DBInsertQuotationData($formData, $response,$type)
         echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
         exit();
     }
- 
-    
+
+
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $productId = isset($formData['productId']) ? $formData['productId'] : 0;
     $type = isset($type) ? $type : '';
@@ -74,8 +75,8 @@ function DBInsertQuotationData($formData, $response,$type)
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
     $quoteLapseDate = isset($response['quoteLapseDate'])
-    ? transformDate($response['quoteLapseDate'])
-    : '2024-08-07T17:00:00.000Z';
+        ? transformDate($response['quoteLapseDate'])
+        : '2024-08-07T17:00:00.000Z';
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
@@ -104,7 +105,8 @@ function DBInsertQuotationData($formData, $response,$type)
     }
 }
 
-function DBInsertPolicyData($policyid, $policyNo) {
+function DBInsertPolicyData($policyid, $policyNo)
+{
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
 
@@ -138,7 +140,78 @@ function DBInsertPolicyData($policyid, $policyNo) {
     $dbconn->dbconn->close();
 }
 
-function DBInsertPlanInfoWithCovers($planInfo) {
+function DBInsertPaymentLog($request, $response)
+{
+    // Create database connection
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    // Extract data from request and response
+    $order_amount = isset($request['order']['amount']) ? $request['order']['amount'] : 0.00;
+    $order_currency = isset($request['order']['currency']) ? $request['order']['currency'] : '';
+    $sourceOfFundsType = isset($request['sourceOfFunds']['type']) ? $request['sourceOfFunds']['type'] : '';
+    $cardNumber = isset($request['sourceOfFunds']['provided']['card']['number']) ? maskCreditCardNumbers($request['sourceOfFunds']['provided']['card']['number']) : '';
+    $expiryMonth = isset($request['sourceOfFunds']['provided']['card']['expiry']['month']) ? $request['sourceOfFunds']['provided']['card']['expiry']['month'] : '';
+    $expiryYear = isset($request['sourceOfFunds']['provided']['card']['expiry']['year']) ? $request['sourceOfFunds']['provided']['card']['expiry']['year'] : '';
+    $securityCode = isset($request['sourceOfFunds']['provided']['card']['securityCode']) ? $request['sourceOfFunds']['provided']['card']['securityCode'] : '';
+    $merchant = isset($response['merchant']) ? $response['merchant'] : '';
+    $result = isset($response['result']) ? $response['result'] : '';
+    $timeOfLastUpdate = isset($response['timeOfLastUpdate']) ? $response['timeOfLastUpdate'] : '';
+    $timeOfRecord = isset($response['timeOfRecord']) ? $response['timeOfRecord'] : '';
+
+    // Encode the response array as a JSON string
+    $responseJson = isset($response) ? json_encode($response) : '{}';
+    $responseJson = mysqli_real_escape_string($dbconn->dbconn, $responseJson);
+
+    // SQL query to insert data into the database
+    $sql = "INSERT INTO payment_log (order_amount, order_currency, source_of_funds_type, card_number, card_expiry_month, card_expiry_year, card_security_code, merchant, result, time_of_lastupdate, time_of_record, response_json) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    // Use prepared statements to avoid SQL injection
+    if ($stmt = $dbconn->dbconn->prepare($sql)) {
+        // Bind parameters
+        $stmt->bind_param(
+            "dsssssssssss",
+            $order_amount,
+            $order_currency,
+            $sourceOfFundsType,
+            $cardNumber,
+            $expiryMonth,
+            $expiryYear,
+            $securityCode,
+            $merchant,
+            $result,
+            $timeOfLastUpdate,
+            $timeOfRecord,
+            $responseJson
+        );
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            echo json_encode(array("result" => "success", "message" => "Data inserted successfully"));
+        } else {
+            echo json_encode(array("result" => "error", "message" => "Data insertion failed: " . $stmt->error));
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement"));
+    }
+
+    // Close the database connection
+    $dbconn->dbconn->close();
+}
+
+
+
+function DBInsertPlanInfoWithCovers($planInfo)
+{
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
 
@@ -151,7 +224,8 @@ function DBInsertPlanInfoWithCovers($planInfo) {
     $sqlPlan = "INSERT INTO plan_info (plan_id, plan_description, plan_poi, plan_code, net_premium) VALUES (?, ?, ?, ?, ?)";
 
     if ($stmtPlan = $dbconn->dbconn->prepare($sqlPlan)) {
-        $stmtPlan->bind_param("isids",
+        $stmtPlan->bind_param(
+            "isids",
             $planInfo['planId'],
             $planInfo['planDescription'],
             $planInfo['planPoi'],
@@ -188,7 +262,8 @@ function DBInsertPlanInfoWithCovers($planInfo) {
             $selectedFlag = $cover['selectedFlag'] ? 1 : 0;
 
             // Bind parameters for cover information
-            $stmtCover->bind_param("iissssiiisid",
+            $stmtCover->bind_param(
+                "iissssiiisid",
                 $planId,
                 $cover['id'],
                 $cover['code'],
@@ -233,21 +308,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $formData = isset($data['formData']) ? $data['formData'] : array();
             $response = isset($data['response']) ? $data['response'] : array();
             $type = isset($data['type']) ? $data['type'] : "";
-            DBInsertQuotationData($formData, $response,$type);
+            DBInsertQuotationData($formData, $response, $type);
         } elseif ($data['action'] === 'getQuotationWithId') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
             DBGetPolicyDetailsWithId($policyid);
-
         } elseif ($data['action'] === 'insertPolicy') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
-          
-            DBInsertPolicyData($policyid,$policyNo);
+
+            DBInsertPolicyData($policyid, $policyNo);
         } elseif ($data['action'] === 'insertPremiumData') {
             $data = isset($data['data']) ? $data['data'] : "";
             DBInsertPlanInfoWithCovers($data);
-        } 
-        else {
+        } elseif ($data['action'] === 'insertPaymentLog') {
+            $request = isset($data['request']) ? $data['request'] : array();
+            $response = isset($data['response']) ? $data['response'] : array();
+
+            DBInsertPaymentLog($request, $response);
+        } else {
             echo json_encode(array("result" => "error", "message" => "Invalid action"));
         }
     } else {
@@ -256,7 +334,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(array("result" => "error", "message" => "Invalid request method"));
 }
-function transformDate($dateString) {
+function transformDate($dateString)
+{
     $dateParts = explode('/', $dateString);
 
     if (count($dateParts) === 3) {
@@ -271,4 +350,24 @@ function transformDate($dateString) {
     } else {
         throw new Exception("Invalid date format: $dateString");
     }
+}
+function maskCreditCardNumbers($text) {
+    // Define the pattern to match credit card numbers
+    $creditCardPattern = '/\b(?:\d[ -]*?){13,19}\b/';
+    
+    // Function to mask the card number
+    function maskCard($card) {
+        // Remove non-digit characters
+        $cleaned = preg_replace('/\D/', '', $card);
+        // Mask all but the last 4 digits
+        if (strlen($cleaned) > 4) {
+            return str_repeat('*', strlen($cleaned) - 4) . substr($cleaned, -4);
+        }
+        return $cleaned; // Return as-is if it doesn't meet the length requirement
+    }
+
+    // Use preg_replace_callback to replace each match with a masked version
+    return preg_replace_callback($creditCardPattern, function($matches) {
+        return maskCard($matches[0]);
+    }, $text);
 }

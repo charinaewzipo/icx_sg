@@ -89,6 +89,27 @@
           // Handle the error here
         }
       });
+    },
+    insertPaymentLog: function (request,response) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "insertPaymentLog",
+          request:request,
+          response:response
+        }),
+        dataType: "json",
+        success: function (response) {
+          console.log("Insert Response:", response);
+          // Handle the response data here
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX Error:", error);
+          // Handle the error here
+        }
+      });
     }
   };
 })(jQuery);

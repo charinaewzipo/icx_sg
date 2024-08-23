@@ -2,8 +2,7 @@ let planData = null;
 let responsePayment=null;
 let quotationData=null;
 let selectProduct=null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmtQWTJLODhwZUkwNEVTcDI5WmVFSmRJMnBKdE1JZ2R4WU1jQWR3aU1WNGciLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQzNzkzOTQsImV4cCI6MTcyNDM4NjU5NCwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.0_3ud9TAmUOb3QqOzvoIwnSO33SQuNqK4BrljEpVNjM3jKBglYqY77L5gdvvtK20J40A6pW4kRV6yBWX0nLAHbiDEpyENx1_19bkqx3F0TmLqlZLfGnlqB5mHMXcOLFuUFUhYZ9P3AuKSgYgx_omQTJuzJfTNRlvPA9ZbWIlVe9hkgyd29WJlmOwpH2ZgIIKw2FSA5qF_Evpw3ijRt8GgqeIbH1sBlaPumSrC9r6jdwNuFVofZfpr7xSqy0MY38xwCteMKNRsOAo8O0lWAxvfbVmZtFmm95lIakrgXmbNoCCNAmyLsJVR0KnS5kJQiKpnkXfv3GRcBGaeHhHrMgwZQ"  
-
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULkItRUxDZmVWYmNwY3dOYUNhbi02cldZdUZhaVUyZDFUTGxnS0wydDgzbWciLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQzOTMxMDUsImV4cCI6MTcyNDQwMDMwNSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.EM7Bynpmg7ixlUspPANei3T4qGt7XYvKVVDKecKQlDX-6IjwkBwD2e2F6O5pzh7kX9Ry_ElfeblqaqX9o78djFSzqBNhKTY14VNDikj1AE5qflC0-MaUbTRbFpS2aCYo4tZLHeHF86Kyp3QdiqJQ7RAL07l9Vu4l5eBNHTvxPRbMuiDQvJDClpI0UTvgCNJB56k5P2DrrwHL2gVu5cFlt1pMPsx4Fi3G0JqcoYAXdDxYuGKV3OWZEu5wzhwzhvpDrxT7wWnijLOGF99CO6QD0HNrB1QTblU57HsMMSfdggXTNGUoGPd31dJSghg_cJ5nyKeao3qMpbyH2yqoxGshnw"
 function fetchPremiumAH(requestBody,index) {
     document.body.classList.add('loading');
   const apiUrl =
@@ -98,6 +97,8 @@ async function fetchQuotation(requestBody) {
 
     // Alert based on statusCode
     if (data?.statusCode === "S03") {
+      await jQuery.agent.insertQuotationData(requestBody, data); 
+
       window.alert(data?.statusMessage || "Successfully!");
     } else {
       window.alert("Something Went Wrong!");
@@ -139,6 +140,7 @@ async function fetchPolicy(requestBody) {
 
     // Alert based on statusCode
     if (data?.statusCode === "N02") {
+        await jQuery.agent.insertPolicyData(policyid, data?.policyNo); 
       window.alert(data?.statusMessage || "Successfully!");
     } else {
       window.alert("Something Went Wrong!");
@@ -433,8 +435,9 @@ async function fetchPayment(requestBody) {
         console.log("data", data);
 
         if (data?.result === "SUCCESS") {
+          responsePayment=data
+          await jQuery.agent.insertPaymentLog(requestBody, data);
             window.alert("Successfully!");
-            responsePayment=data
 
         } else {
             window.alert("Something Went Wrong!");

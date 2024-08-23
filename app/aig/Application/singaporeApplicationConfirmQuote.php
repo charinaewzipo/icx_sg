@@ -793,7 +793,7 @@ where name='Nature of Business'";
               <th>&nbsp;</th>
               <td>Year Built : </td>
               <td>
-                <input type="text" name="insured_home_yearBuilt" maxlength="60" />
+                <input type="text" name="insured_home_yearBuilt" maxlength="4" placeholder="ex.2019" />
               </td>
             </tr>
             <tr>
