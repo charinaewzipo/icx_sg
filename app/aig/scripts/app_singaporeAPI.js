@@ -2,7 +2,9 @@ let planData = null;
 let responsePayment=null;
 let quotationData=null;
 let selectProduct=null;
-const token ="eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULkYyaXFzNVlhelRPRmluc1FXRDY0ZnBRa0ZqLW1uZ28xNC1HYTd4aXVDZTQiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQ2NDQ3NDcsImV4cCI6MTcyNDY1MTk0NywiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.XiCwCEyRclHBKM_9D9Pmktljmslgg6YLwepvZ_E0ua56UcTHllJt62wibzCYx9U33GkjM4a2DAWQJO_Op97ggMhsJRka-7nFCDGfodY9qGYLensMXX7beqFlwVdhPwax2MEfWijAi_x3-Qyfe8jQc_jqqUi9zG_NhyFLi2TY4QZPDF5-SMaCSyFetXJcL1Om3eRcbhYzEtljQdPMvcc1wUvHCmWK-jpMFFAUVqZITIi1vWkpdZSZXgLjRPW238Si0BM_mLxNdYZo1tYKi64AXEMWMghbhH_6w83trSDO404TuJhk1pNLqi9646ZRv9878ty0QFncna7rLGdDcwpFwg"
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlhOVzRrN1NoNVE4VDZYZko1T1IteEVnUVMyMEJYaWU2M2syRWo4bGlqUVEiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQ2NTMzMDEsImV4cCI6MTcyNDY2MDUwMSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.INwgKbHn7tfUaX4JVkkrTiTdjFGO4xT4IE_baB0ROSw7X6SVhrwF9moecREHyD528oRd_fTZuNOHSnkeogozFB5pH8DHmE-OhCQYyoWhAZCvWEZ_IPwwAriCbAaSiEqWoc6AFLsvn5ZUXoLBObiM8FUpDX_1-I_-Y9VvV6P_IFZHqrHpkQRwcmNG7SR-lqcTqOlba1bZMQhWYoXVRS2Qqf25fvhk9Wr6BduT5o8AHixmkDEifDa6kDRG43oRdoMHIRuXG-ed2_m8mXgae6T1_wQ35HEXFiLL6C9C1J1MXoYDgsoRrMsWQguJR0_-dRmMA0HhPQlx_M4q-L0SU2J2mw" 
+
+
 function fetchPremiumAH(requestBody,index) {
     document.body.classList.add('loading');
   const apiUrl =
@@ -28,6 +30,8 @@ function fetchPremiumAH(requestBody,index) {
         populatePlanSelectAH(planData.insuredList[0].planList,index);
         return planData;
       } else {
+    
+        window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage:${data?.Policy?.statusMessage}`);
         console.error("Invalid API response:", data);
       }
     })
@@ -62,6 +66,7 @@ fetch(apiUrl, {
       populatePlanSelect(planData.insuredList[0].planList);
       return planData;
     } else {
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage:${data?.Policy?.statusMessage}`);
       console.error("Invalid API response:", data);
     }
   })
@@ -87,27 +92,21 @@ async function fetchQuotation(requestBody) {
       body: JSON.stringify(requestBody),
     });
 
-    // Check if response is OK
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
+  
     const data = await response.json();
     console.log("data", data);
 
     // Alert based on statusCode
     if (data?.statusCode === "S03") {
       await jQuery.agent.insertQuotationData(requestBody, data); 
-
       window.alert(data?.statusMessage || "Successfully!");
     } else {
-      window.alert("Something Went Wrong!");
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage:${data?.Policy?.statusMessage}`);
     }
 
     return data; // Return data for further processing
   } catch (error) {
     console.error("Error fetching quotation data:", error);
-    // Optionally, you can alert the user about the error
     window.alert("Failed to fetch quotation data. Please try again.");
     throw error; // Re-throw the error to be caught by the caller
   } finally {
@@ -130,10 +129,6 @@ async function fetchPolicy(requestBody) {
       body: JSON.stringify(requestBody),
     });
 
-    // Check if response is OK
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
 
     const data = await response.json();
     console.log("data", data);
@@ -143,7 +138,7 @@ async function fetchPolicy(requestBody) {
         await jQuery.agent.insertPolicyData(policyid, data?.policyNo); 
       window.alert(data?.statusMessage || "Successfully!");
     } else {
-      window.alert("Something Went Wrong!");
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage:${data?.Policy?.statusMessage}`);
     }
 
     return data; 
