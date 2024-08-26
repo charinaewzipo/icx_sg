@@ -2,7 +2,8 @@ let planData = null;
 let responsePayment=null;
 let quotationData=null;
 let selectProduct=null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULkItRUxDZmVWYmNwY3dOYUNhbi02cldZdUZhaVUyZDFUTGxnS0wydDgzbWciLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQzOTMxMDUsImV4cCI6MTcyNDQwMDMwNSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.EM7Bynpmg7ixlUspPANei3T4qGt7XYvKVVDKecKQlDX-6IjwkBwD2e2F6O5pzh7kX9Ry_ElfeblqaqX9o78djFSzqBNhKTY14VNDikj1AE5qflC0-MaUbTRbFpS2aCYo4tZLHeHF86Kyp3QdiqJQ7RAL07l9Vu4l5eBNHTvxPRbMuiDQvJDClpI0UTvgCNJB56k5P2DrrwHL2gVu5cFlt1pMPsx4Fi3G0JqcoYAXdDxYuGKV3OWZEu5wzhwzhvpDrxT7wWnijLOGF99CO6QD0HNrB1QTblU57HsMMSfdggXTNGUoGPd31dJSghg_cJ5nyKeao3qMpbyH2yqoxGshnw"
+const token ="eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULnNSS0l5NlJIemtoZ3Q0dnNTMUt4SEFUUksza2tXVW55UFM3TF9UcjlZek0iLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQ0MDIxMDEsImV4cCI6MTcyNDQwOTMwMSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.gHteEYMvhPDksGspgFFaNn74NZYhDQ9GwEJs0Xr4ICqsubNGbbrqqv6Pdx_31sF8F45IPJ-G11PrqUvT6ukz3iwVK5JPGjehvxuwK1xuwnIlRVUEJDdHWyyh6yiBahl0BUIV34aCDE5G7ckYB0H0lRYGAA-vSX0nchq64k9nqCAG8XBrQ5zSrfiQuzrGyE_QPx9EIwqzg1xddE85Wdpej0mulZRBhpzZZwR-yynwvT6kKZM5bWd-wEnGhrZnaeqEcXIqBCzaH1o75q9E2JSUdDPWiCKhS8Q8C0_zuyK4Dg-nmLDySfeiqHj7i8YgtHfTeZCKkGLqyJj7JviiEtIwxQ" 
+
 function fetchPremiumAH(requestBody,index) {
     document.body.classList.add('loading');
   const apiUrl =
@@ -314,11 +315,13 @@ const handleRequestBody = () => {
 };
 const handleRequiredField = () => {
   const requiredFieldsTypeHome = [
+    "select-product",
     "PolicyEffectiveDate",
     "PolicyExpiryDate",
     "insured_home_ownerOccupiedType",
   ];
   const requiredFieldsTypeAuto = [
+    "select-product",
     "PolicyEffectiveDate",
     "Ncd_Level",
     "customerType",
@@ -339,6 +342,7 @@ const handleRequiredField = () => {
     "insured_auto_driverInfo_claimExperience",
   ];
   const requiredFieldsTypeAh = [
+    "select-product",
     "PolicyEffectiveDate",
     "Ncd_Level",
     "customerType",
@@ -425,26 +429,29 @@ async function fetchPayment(requestBody) {
             body: JSON.stringify(requestBody),
         });
 
-        if (!response.ok) {
-            // Log response body for debugging
-            const errorText = await response.text();
-            throw new Error(`HTTP error! Status: ${response.status}, Body: ${errorText}`);
-        }
+       
 
         const data = await response.json();
         console.log("data", data);
 
         if (data?.result === "SUCCESS") {
           responsePayment=data
-          await jQuery.agent.insertPaymentLog(requestBody, data);
-            window.alert("Successfully!");
+          await jQuery.agent.insertPaymentLog(requestBody, data,policyid);
+            window.alert(data?.result);
 
-        } else {
+        }else if (data?.result === "ERROR" && data?.error) {
+          console.log("hello error")
+
+          const { cause, explanation, field, validationType } = data.error;
+          window.alert(`Error: ${cause}\nExplanation: ${explanation}\nField: ${field}\nValidation: ${validationType}`);
+      } 
+        else {
             window.alert("Something Went Wrong!");
         }
 
         return data; // Return data for further processing
     } catch (error) {
+    
         console.error("Error fetching payment data:", error);
         window.alert("Failed to fetch payment data. Please try again.");
         throw error; // Re-throw the error to be caught by the caller

@@ -90,7 +90,7 @@
         }
       });
     },
-    insertPaymentLog: function (request,response) {
+    insertPaymentLog: function (request,response,policyid) {
       $.ajax({
         url: url,
         type: "POST",
@@ -98,7 +98,8 @@
         data: JSON.stringify({
           action: "insertPaymentLog",
           request:request,
-          response:response
+          response:response,
+          policyid:policyid
         }),
         dataType: "json",
         success: function (response) {

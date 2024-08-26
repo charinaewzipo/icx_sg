@@ -140,7 +140,7 @@ function DBInsertPolicyData($policyid, $policyNo)
     $dbconn->dbconn->close();
 }
 
-function DBInsertPaymentLog($request, $response)
+function DBInsertPaymentLog($request, $response,$policyid)
 {
     // Create database connection
     $dbconn = new dbconn();
@@ -169,14 +169,14 @@ function DBInsertPaymentLog($request, $response)
     $responseJson = mysqli_real_escape_string($dbconn->dbconn, $responseJson);
 
     // SQL query to insert data into the database
-    $sql = "INSERT INTO payment_log (order_amount, order_currency, source_of_funds_type, card_number, card_expiry_month, card_expiry_year, card_security_code, merchant, result, time_of_lastupdate, time_of_record, response_json) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO payment_log (order_amount, order_currency, source_of_funds_type, card_number, card_expiry_month, card_expiry_year, card_security_code, merchant, result, time_of_lastupdate, time_of_record, response_json,policyId) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
     // Use prepared statements to avoid SQL injection
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind parameters
         $stmt->bind_param(
-            "dsssssssssss",
+            "dssssssssssss",
             $order_amount,
             $order_currency,
             $sourceOfFundsType,
@@ -188,7 +188,8 @@ function DBInsertPaymentLog($request, $response)
             $result,
             $timeOfLastUpdate,
             $timeOfRecord,
-            $responseJson
+            $responseJson,
+            $policyid
         );
 
         // Execute the statement
@@ -323,8 +324,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($data['action'] === 'insertPaymentLog') {
             $request = isset($data['request']) ? $data['request'] : array();
             $response = isset($data['response']) ? $data['response'] : array();
-
-            DBInsertPaymentLog($request, $response);
+            $policyid = isset($data['policyid']) ? $data['policyid'] : "";
+            DBInsertPaymentLog($request, $response,$policyid);
         } else {
             echo json_encode(array("result" => "error", "message" => "Invalid action"));
         }

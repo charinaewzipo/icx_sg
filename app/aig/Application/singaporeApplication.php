@@ -72,7 +72,7 @@ require("../scripts/app_singaporeAH.php")
   }
 
   .error-border {
-    border: 2px solid red;
+    border: 1px solid red;
   }
 
   #insured-list-ah hr:last-child {
@@ -175,7 +175,7 @@ require("../scripts/app_singaporeAH.php")
     <div id="header"> </div>
 
     <div id="header-select-type">
-      <p class="selectable" data-type=<?php echo $formType ?>><?php echo strtoupper($formType) ?></p>
+      <p class="selectable" data-type=<?php echo $formType ?>><?php echo $formType === 'ah'?"A&H":strtoupper($formType) ?></p>
       <!-- <p class="selectable" data-type="home">HOME</p>
         <p class="selectable" data-type="auto">AUTO</p>
         <p class="selectable" data-type="ah">A&H</p> -->
@@ -917,11 +917,11 @@ where name='Nature of Business'";
               <td style="float: inline-start;">Insuring With COE : </td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="Yes" name="insured_auto_vehicle_insuringWithCOE" value="2" checked>
+                  <input type="radio" class="form-check-input"  name="insured_auto_vehicle_insuringWithCOE" value="2" checked>
                   <label class="form-check-label" for="Yes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="No" name="insured_auto_vehicle_insuringWithCOE" value="1">
+                  <input type="radio" class="form-check-input"  name="insured_auto_vehicle_insuringWithCOE" value="1">
                   <label class="form-check-label" for="No">No</label>
                 </div>
               </td>
@@ -952,11 +952,11 @@ where name='Nature of Business'";
               <td style="float: inline-start;">Off Peak Car : </td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="Yes" name="insured_auto_vehicle_offPeakCar" value="2" checked>
+                  <input type="radio" class="form-check-input"  name="insured_auto_vehicle_offPeakCar" value="2" checked>
                   <label class="form-check-label" for="Yes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="No" name="insured_auto_vehicle_offPeakCar" value="1">
+                  <input type="radio" class="form-check-input"  name="insured_auto_vehicle_offPeakCar" value="1">
                   <label class="form-check-label" for="No">No</label>
                 </div>
               </td>
@@ -1484,7 +1484,7 @@ where name='Occupation'";
             <tr>
               <td>Security Code : <span style="color:red">*</span> </td>
               <td>
-                <input type="text" name="payment_securityCode" id="securityCode" maxlength="4" size="4" required />
+                <input type="text" name="payment_securityCode" id="securityCode" maxlength="10" size="10" required />
               </td>
             </tr>
           </table>
