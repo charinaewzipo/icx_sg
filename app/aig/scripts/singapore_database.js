@@ -27,6 +27,31 @@
         });
       });
     },
+    getPaymentLogWithId: function (policyid) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: url,
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            action: "getPaymentLogWithId",
+            policyid: policyid
+          }),
+          dataType: "text",
+          success: function (response) {
+            try {
+              console.log("response",response)
+              const cleanedResponse = response.trim();
+              const jsonResponse = JSON.parse(cleanedResponse);
+              resolve(jsonResponse);
+            } catch (error) {
+              console.error("Error parsing JSON:", error);
+              reject(error);
+            }
+          },
+        });
+      });
+    },
     insertQuotationData: function (formData, response) {
       $.ajax({
         url: url,

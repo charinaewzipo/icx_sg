@@ -1,4 +1,33 @@
 let policyid = null;
+let statusPayment = null;
+const hideFormData = (elements) => {
+  elements.forEach((element) => {
+    const tagName = element.tagName.toLowerCase();
+
+    if (tagName === "input") {
+      if (element.type === "radio") {
+        // Style and disable radio buttons
+        element.style.pointerEvents = "none";
+        element.style.opacity = "0.5"; // Visual indication of being disabled
+      } else {
+        // Style and disable other input types
+        element.readOnly = true;
+        element.style.backgroundColor = "#e9ecef";
+        element.style.border = "1px solid rgb(118, 118, 118)";
+      }
+    } else if (tagName === "select") {
+      // Style and disable select elements
+      element.style.pointerEvents = "none";
+      element.style.backgroundColor = "#e9ecef";
+      element.style.color = "#6c757d";
+    } else if (tagName === "button") {
+      // Disable button elements
+      element.disabled = true;
+      element.style.pointerEvents = "none";
+      element.style.opacity = "0.65"; // Visual indication of being disabled
+    }
+  });
+};
 
 document.addEventListener("DOMContentLoaded", function() {
   const queryString = window.location.search;
@@ -32,34 +61,20 @@ document.addEventListener("DOMContentLoaded", function() {
     if (seePlanButton) {
       seePlanButton.setAttribute("hidden", "true");
     }
-    const formElements = document.querySelectorAll(
-      "input:not(#payment-container input), select:not(#payment-container select)"
-    );
-    formElements.forEach((element) => {
-      if (element.tagName.toLowerCase() === "input") {
-        if (element.type === "radio") {
-          // Style and disable radio buttons
-          element.style.pointerEvents = "none";
-          element.style.opacity = "0.5"; // Visual indication of being disabled
-        } else {
-          // Style and disable other input types
-          element.readOnly = true;
-          element.style.backgroundColor = "#e9ecef";
-          element.style.border = "1px solid rgb(118, 118, 118)";
-        }
-      } else if (element.tagName.toLowerCase() === "select") {
-        // Style and disable select elements
-        element.style.pointerEvents = "none";
-        element.style.backgroundColor = "#e9ecef";
-        element.style.color = "#6c757d";
-      }
-    });
+
+  
+     const formElements = document.querySelectorAll(
+        "input:not(#payment-container input), select:not(#payment-container select), button:not(#payment-container button)"
+     )
+     hideFormData(formElements)
+
     $("#datepicker, #datepicker2, #datepicker3, #datepicker4, #datepicker5, #datepicker6").each(function() {
       $(this).attr("readonly", true).on('focus', function(event) {
         event.preventDefault(); // Prevent datepicker from opening
       });
     });
   
+   
   
     // Fetch the quotation data with the policy ID
     jQuery.agent
@@ -71,6 +86,21 @@ document.addEventListener("DOMContentLoaded", function() {
           const extractData= extractQuotationData(response?.data);
           quotationData = extractData;
           console.log("quotationData",quotationData)
+        }
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+      });
+      jQuery.agent
+      .getPaymentLogWithId(policyid)
+      .then((response) => {
+        if (response?.data?.result == "SUCCESS") {
+          statusPayment=response?.data?.result;
+          console.log("Payment Response:", response);
+          const paymentElement = document.querySelectorAll(
+            "input, select,button"
+          );
+          hideFormData(paymentElement)
         }
       })
       .catch((error) => {

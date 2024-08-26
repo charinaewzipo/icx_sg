@@ -51,6 +51,47 @@ FROM tubtim.insurance_data
     // Close the database connection
     $dbconn->dbconn->close();
 }
+function DBGetPaymentLogWithId($policyId)
+{
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    // Prepare the SQL query to select data by policyId
+    $sql = "SELECT * FROM tubtim.payment_log
+            WHERE policyId = ?";
+
+    if ($stmt = $dbconn->dbconn->prepare($sql)) {
+        // Bind the policyId parameter
+        $stmt->bind_param("i", $policyId);
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
+        // Fetch the data as an associative array
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+            echo json_encode(array("result" => "success", "data" => $data));
+        } else {
+            echo json_encode(array("result" => "error", "message" => "No data found for the given policyId"));
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement"));
+    }
+
+    // Close the database connection
+    $dbconn->dbconn->close();
+}
 function DBInsertQuotationData($formData, $response, $type)
 {
     $dbconn = new dbconn();
@@ -313,7 +354,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($data['action'] === 'getQuotationWithId') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
             DBGetPolicyDetailsWithId($policyid);
-        } elseif ($data['action'] === 'insertPolicy') {
+        } elseif ($data['action'] === 'getPaymentLogWithId') {
+            $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
+            DBGetPaymentLogWithId($policyid);
+        }
+        elseif ($data['action'] === 'insertPolicy') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
 
