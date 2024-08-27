@@ -63,9 +63,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
   
-     const formElements = document.querySelectorAll(
-        "input:not(#payment-container input), select:not(#payment-container select), button:not(#payment-container button)"
-     )
+    const formElements = document.querySelectorAll(
+      "input:not(#payment-container input), select:not(#payment-container select), button:not(#payment-container button):not(#btnSaveForm)"
+  );
+  
+  
      hideFormData(formElements)
 
     $("#datepicker, #datepicker2, #datepicker3, #datepicker4, #datepicker5, #datepicker6").each(function() {
@@ -97,10 +99,11 @@ document.addEventListener("DOMContentLoaded", function() {
         if (response?.data?.result == "SUCCESS") {
           statusPayment=response?.data?.result;
           console.log("Payment Response:", response);
-          const paymentElement = document.querySelectorAll(
-            "input, select,button"
-          );
-          hideFormData(paymentElement)
+          const paymentElements = document.querySelectorAll(
+            "input, select, button:not(#btnSaveForm)"
+        );
+       
+          hideFormData(paymentElements)
         }
       })
       .catch((error) => {

@@ -15,7 +15,6 @@
           dataType: "text",
           success: function (response) {
             try {
-              console.log("response",response)
               const cleanedResponse = response.trim();
               const jsonResponse = JSON.parse(cleanedResponse);
               resolve(jsonResponse);

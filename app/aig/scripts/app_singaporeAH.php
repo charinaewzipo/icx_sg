@@ -254,7 +254,10 @@ where name='PA Nature of Business'";
     document.addEventListener('DOMContentLoaded', () => {
         addPlanInfoSections(2);
         attachPlanSelectEventListeners()
-        attachCoverSelectEventListeners()
+        setTimeout(() => {
+
+            attachCoverSelectEventListeners()
+        }, 2000)
 
         function attachPlanSelectEventListeners() {
             const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
@@ -268,17 +271,28 @@ where name='PA Nature of Business'";
             });
         }
 
-        function attachCoverSelectEventListeners() {
-            // Select all cover select elements
-            const coverSelectElements = document.querySelectorAll('.planCoverList');
-            coverSelectElements.forEach((selectElement, index) => {
-                // Attach event listener to each cover select element
-                selectElement.addEventListener('change', function(event) {
-                    console.log("change", index + 1)
-                    handleCoverSelectChange(event, index + 1); // Pass the 1-based index to the handler
-                });
-            });
+   function attachCoverSelectEventListeners() {
+    const coverSelectElements = document.querySelectorAll('.planCoverList');
+
+    coverSelectElements.forEach((selectElement, index) => {
+        if (quotationData) {
+            const coversList = quotationData?.insuredList[index]?.personInfo?.planInfo?.covers;
+            console.log("Covers for index", index, ":", coversList);
+
+            if (coversList) {
+                // Populate the existing select element
+
+                populateCoverOptionsAHAutomatic(selectElement, coversList, 0);
+
+                // Create additional rows for the remaining covers
+                for (let i = 1; i < coversList.length; i++) {
+                    createAndPopulateRow(index + 1, coversList, i);
+                }
+            }
         }
+    });
+}
+
 
 
         function handlePlanSelectChange(event, index) {
@@ -295,7 +309,6 @@ where name='PA Nature of Business'";
                     planPoiSelect.value = plan.planPoi;
                 }
 
-                // Update cover options for all cover dropdowns within the same index
                 planCoverLists.forEach((select) => populateCoverOptionsAH(select, plan.coverList));
             }
         }
@@ -409,6 +422,64 @@ where name='PA Nature of Business'";
             populateCoverOptionsAH(newCoverSelect, plan.coverList);
             disableSelectedOptionsAH(index);
         };
+        function populateCoverOptionsAHAutomatic(selectElement, coversList, coverIndex) {
+    if (!coversList || coversList.length === 0) {
+        console.error('Covers list is empty or undefined');
+        return;
+    }
+
+    coversList.forEach((cover, index) => {
+        const option = document.createElement('option');
+        option.value = cover.id;
+        option.textContent = `${cover.name}`;
+        
+        // Automatically select the option that matches the coverIndex
+        if (index === coverIndex) {
+            option.selected = true;
+        }
+
+        // Append the option to the select element
+        selectElement.appendChild(option);
+    });
+}
+
+function createAndPopulateRow(index, coversList, coverIndex) {
+    let coverListBody = document.getElementById(`coverListBody${index}`);
+    
+    if (!coverListBody) {
+        // Create the container if it doesn't exist
+        coverListBody = document.createElement('table');
+        coverListBody.id = `coverListBody${index}`;
+        document.body.appendChild(coverListBody); // Append to body or any specific container
+    }
+
+    const newRow = document.createElement('tr');
+    newRow.classList.add('cover-row');
+
+    newRow.innerHTML = `
+        <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
+        <td>
+            <select name="plan_cover_list_${index}[]" class="planCoverList" required style="max-width: 216px; pointer-events: none; background-color: rgb(233, 236, 239); color: rgb(108, 117, 125);>
+                <!-- Options will be populated by JavaScript -->
+            </select>
+        </td>
+        <td></td>
+        <td>
+            <button style="color:#65558F; background-color:white; border:1px solid white;" type="button" class="removeCoverBtn" >Remove</button>
+        </td>
+    `;
+
+    coverListBody.appendChild(newRow);
+
+    const selectElement = newRow.querySelector('.planCoverList');
+    if (selectElement) {
+        populateCoverOptionsAHAutomatic(selectElement, coversList, coverIndex);
+    } else {
+        console.error(`Select element not found in the new row for index ${index}`);
+    }
+}
+ 
+
     });
 
     function disableSelectedOptionsAH(index) {
@@ -451,6 +522,7 @@ where name='PA Nature of Business'";
         if (selectedPlanId) {
             const plan = planList[selectedPlanId];
             const coverList = plan.coverList;
+
             if (coverList && coverList.hasOwnProperty(coverId)) {
                 return coverList[coverId];
             }
@@ -463,13 +535,13 @@ where name='PA Nature of Business'";
         const formSections = document.querySelectorAll('table[id^="table-form-"]');
 
         formSections.forEach((section) => {
-             const planSelect = section.querySelector('[name^="planId"]');
-        const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
-        const planId = selectedOption ? selectedOption.getAttribute('data-plan-id') || '' : '';
-        const planDescription = selectedOption ? selectedOption.getAttribute('data-plan-description') || '' : '';
+            const planSelect = section.querySelector('[name^="planId"]');
+            const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
+            const planId = selectedOption ? selectedOption.getAttribute('data-plan-id') || '' : '';
+            const planDescription = selectedOption ? selectedOption.getAttribute('data-plan-description') || '' : '';
             const planInfo = {
                 planId: "1838000064",
-                planDescription:planDescription,
+                planDescription: planDescription,
                 planPoi: 12
                 // planId: planId,
                 // planDescription:planDescription,
@@ -489,7 +561,7 @@ where name='PA Nature of Business'";
                     });
                 }
             });
-            
+
             const personInfo = {
                 insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '',
                 insuredLastName: section.querySelector('[name^="insured_ah_insuredLastName_"]').value || '',
@@ -498,22 +570,22 @@ where name='PA Nature of Business'";
                 insuredIdType: section.querySelector('[name^="insured_ah_insuredIdType_"]').value || '',
                 insuredIdNumber: section.querySelector('[name^="insured_ah_insuredIdNumber_"]').value || '',
                 insuredGender: section.querySelector('[name^="insured_ah_insuredGender_"]').value || '',
-                insuredDateOfBirth: section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value? transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value) : '',
+                insuredDateOfBirth: section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value ? transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value) : '',
                 insuredMaritalStatus: section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value || '',
                 insuredOccupation: section.querySelector('[name^="insured_ah_insuredOccupation_"]').value || '',
                 insuredCampaignCode: section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value || '',
                 relationToPolicyholder: section.querySelector('[name^="insured_ah_relationToPolicyholder_"]').value || '',
                 natureOfBusiness: section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value || '',
-                planInfo:{
+                planInfo: {
                     ...planInfo,
                     covers: covers
                 }
             };
-            
+
 
             const insuredData = {
                 personInfo: personInfo,
-               
+
             };
 
             insuredList.push(insuredData);
