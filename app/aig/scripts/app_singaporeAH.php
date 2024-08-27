@@ -271,7 +271,6 @@ where name='PA Nature of Business'";
         function attachCoverSelectEventListeners() {
             // Select all cover select elements
             const coverSelectElements = document.querySelectorAll('.planCoverList');
-            console.log("coverSelectElements", coverSelectElements.length)
             coverSelectElements.forEach((selectElement, index) => {
                 // Attach event listener to each cover select element
                 selectElement.addEventListener('change', function(event) {

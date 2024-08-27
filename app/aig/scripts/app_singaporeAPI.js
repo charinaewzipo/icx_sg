@@ -2,8 +2,7 @@ let planData = null;
 let responsePayment=null;
 let quotationData=null;
 let selectProduct=null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlhOVzRrN1NoNVE4VDZYZko1T1IteEVnUVMyMEJYaWU2M2syRWo4bGlqUVEiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQ2NTMzMDEsImV4cCI6MTcyNDY2MDUwMSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.INwgKbHn7tfUaX4JVkkrTiTdjFGO4xT4IE_baB0ROSw7X6SVhrwF9moecREHyD528oRd_fTZuNOHSnkeogozFB5pH8DHmE-OhCQYyoWhAZCvWEZ_IPwwAriCbAaSiEqWoc6AFLsvn5ZUXoLBObiM8FUpDX_1-I_-Y9VvV6P_IFZHqrHpkQRwcmNG7SR-lqcTqOlba1bZMQhWYoXVRS2Qqf25fvhk9Wr6BduT5o8AHixmkDEifDa6kDRG43oRdoMHIRuXG-ed2_m8mXgae6T1_wQ35HEXFiLL6C9C1J1MXoYDgsoRrMsWQguJR0_-dRmMA0HhPQlx_M4q-L0SU2J2mw" 
-
+const token ="eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmowdmRiR3YtZTFqX25FaUI4aW5EVGhVUnNkd3hfR2JxeEZJMTZ4cVp5b0kiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQ2NjA4MjEsImV4cCI6MTcyNDY2ODAyMSwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.DdPxw_rJX_MtdjEYaa-Did2-xwq8Lhs4kEI8w7gAFoFV9danwudn4jwynuFZYQKEHZHXra3zSCSmG4m3JZ8NClLIIsFRdYD9uTK5SwDGeiXLEvoy2Zsx54-_BJQ1cP5urZdKDeFaTlkvRtDVUmNDb4ghlmQV-f0SeHQpZFsjCbIQeQ9X90pSgyPh-TwXzpwbOIE5c5JzrP9UpUmB2BzjFHvRQcU_WT9Iumc26qF6nvWa_TRMJAkWiZt3BEOwvudn2esdiywZXbrH6_tok89TYSJLwHaPwg1F4gCPMmaT4e-ckO1JUz4zxuG_QxBPm9zYV-mMHNywKR7Ay_QKCk3ixg"
 
 function fetchPremiumAH(requestBody,index) {
     document.body.classList.add('loading');
@@ -30,8 +29,7 @@ function fetchPremiumAH(requestBody,index) {
         populatePlanSelectAH(planData.insuredList[0].planList,index);
         return planData;
       } else {
-    
-        window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage:${data?.Policy?.statusMessage}`);
+        window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
         console.error("Invalid API response:", data);
       }
     })
@@ -66,7 +64,7 @@ fetch(apiUrl, {
       populatePlanSelect(planData.insuredList[0].planList);
       return planData;
     } else {
-      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage:${data?.Policy?.statusMessage}`);
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
       console.error("Invalid API response:", data);
     }
   })
@@ -101,7 +99,7 @@ async function fetchQuotation(requestBody) {
       await jQuery.agent.insertQuotationData(requestBody, data); 
       window.alert(data?.statusMessage || "Successfully!");
     } else {
-      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage:${data?.Policy?.statusMessage}`);
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
     }
 
     return data; // Return data for further processing
@@ -138,7 +136,7 @@ async function fetchPolicy(requestBody) {
         await jQuery.agent.insertPolicyData(policyid, data?.policyNo); 
       window.alert(data?.statusMessage || "Successfully!");
     } else {
-      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage:${data?.Policy?.statusMessage}`);
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
     }
 
     return data; 
