@@ -1,10 +1,11 @@
 <script>
-    
     function createListAhSection(index) {
-
-    return `
+        return `
     <table id="table-form-${index}" class="table-ah" name="table-form-${index}">
-        	<tbody>
+        <thead>
+            <!-- Add any required table headers here -->
+        </thead>
+        <tbody>
             <tr>
                 <td colspan="6">
                     <h2>Person ${index}</h2>
@@ -112,7 +113,7 @@
                         <option value=""> <-- Please select an option --></option>
                         <?php
                         $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='PA Occupation'";
                         $objQuery = mysqli_query($Conn, $strSQL);
                         while ($objResuut = mysqli_fetch_array($objQuery)) {
@@ -134,7 +135,7 @@ where name='PA Occupation'";
                         <option value=""> <-- Please select an option --></option>
                  <?php
                     $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='PH Relation'";
                     $objQuery = mysqli_query($Conn, $strSQL);
                     while ($objResuut = mysqli_fetch_array($objQuery)) {
@@ -161,7 +162,7 @@ where name='PH Relation'";
                         <option value=""> <-- Please select an option --></option>
                      <?php
                         $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='PA Nature of Business'";
                         $objQuery = mysqli_query($Conn, $strSQL);
                         while ($objResuut = mysqli_fetch_array($objQuery)) {
@@ -178,29 +179,29 @@ where name='PA Nature of Business'";
                 </td>
                 <th style="width:50px">&nbsp;</th>
                 <td>
-                    <button type="button" class="button seePlan" id="btnPaymentOnline${index}" onclick="fetchPlanData(${index})">See plan</button>
+                    <button type="button" class="button seePlan" id="btnPaymentOnline${index}" onclick="callPremiumAH(${index})">See plan</button>
                 </td>
             </tr>
         </tbody>
-        
-      
-        <tbody>
-          <tr>
-              <td>
-                <h1>Plan Info</h1>
-              </td>
+
+
+    
+        <thead>
+            <tr>
+                <td>
+                    <h1>Plan Info</h1>
+                </td>
             </tr>
-       
+        </thead>
+        <tbody>
             <tr>
                 <td style="white-space:nowrap">Plan Id : <span style="color:red">*</span> </td>
                 <td>
-                   <select id="planSelect${index}" name="planId${index}" required onchange="handlePlanChange(this, ${index})">
-    <option value="">
-        <-- Please select an option -->
-    </option>
-    
-</select>
-
+                    <select id="planSelect${index}" name="planId${index}" required>
+                        <option value="">
+                            <-- Please select an option -->
+                        </option>
+                    </select>
                 </td>
                 <th style="width:50px"></th>
                 <td style="white-space: nowrap;">Plan Poi :</td>
@@ -214,7 +215,7 @@ where name='PA Nature of Business'";
             </tr>
             <tbody id="coverListBody${index}">
                 <tr class="cover-row">
-                    <td style="padding:0 30px">Cover Name: <span style="color:red">*</span> </td>
+                    <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
                     <td>
                         <select name="plan_cover_list_${index}[]" class="planCoverList" style="max-width: 216px;" required>
                             <option value="">
@@ -222,62 +223,23 @@ where name='PA Nature of Business'";
                             </option>
                         </select>
                     </td>
-                <td></td>
-                <td>Limit Amount:</td>
-                <td>
-                <input type="text" class="planCoverLimitAmount${index}" id="planCoverLimitAmount${index}" readonly>
-                  
-                </td>
-                 
+                    <td></td>
+                    <td>
+                        <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer;" type="button" class="removeCoverBtn" onclick="removeCoverRowIndex(this, ${index})">Remove</button>
+                    </td>
                 </tr>
             </tbody>
-           
+            <tr>
+                <td></td>
+                <td style="float:inline-end">
+                    <button type="button" class="button add-cover" onclick="addCoverRowIndex(${index})" style="margin: 5px 0;">Add Cover</button>
+                </td>
+            </tr>
         </tbody>
     </table>
     <hr style="margin:10px 0px">
     `;
-}
-
-function handlePlanChange(selectElement, index) {
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const planPoi = selectedOption.getAttribute('data-poi');
-    const planId = selectElement.value;
-    const insuredDob = document.getElementById(`datepicker-${index}`).value;
-    if (planPoi) {
-        document.getElementById(`planPoiSelect${index}`).value = planPoi;
     }
-    if (planId) {
-        fetchCoverList(planId,planPoi,insuredDob, index);
-    }
-}
-
-function fetchCoverList(planId, planPoi,insuredDob,index) {
-    fetch('../scripts/get_plan_covers.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({ plan_id: planId,plan_poi:planPoi,insuredDateOfBirth:insuredDob })
-    })
-    .then(response => response.text())
-    .then(data => {
-        const selectElement = document.querySelector(`#coverListBody${index} select`);
-        selectElement.innerHTML = data;
-        selectElement.addEventListener('change', function() {
-            handleCoverChange(this, index);
-        });
-    })
-    .catch(error => console.error('Error fetching cover list:', error));
-}
-function handleCoverChange(selectElement, index) {
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const selectedNetPremium = selectedOption.getAttribute('data-netpremium');
-    const relatedElement = document.querySelector(`#planCoverLimitAmount${index}`);
-    
-    if (relatedElement) {
-        relatedElement.value = selectedNetPremium; 
-    } 
-}
 
     function addPlanInfoSections(count) {
         const insuredContainer = document.getElementById('insured-list-ah');
@@ -293,6 +255,7 @@ function handleCoverChange(selectElement, index) {
         addPlanInfoSections(2);
         attachPlanSelectEventListeners()
         setTimeout(() => {
+
             attachCoverSelectEventListeners()
         }, 2000)
 
@@ -300,9 +263,10 @@ function handleCoverChange(selectElement, index) {
             const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
 
             planSelectElements.forEach(selectElement => {
+                // Attach event listener to each planSelect element
                 selectElement.addEventListener('change', function(event) {
-                    const index = this.id.replace('planSelect', ''); 
-                    // handlePlanSelectChange(event, index);
+                    const index = this.id.replace('planSelect', ''); // Extract the index from the ID
+                    handlePlanSelectChange(event, index);
                 });
             });
         }
@@ -425,19 +389,19 @@ function handleCoverChange(selectElement, index) {
                 return;
             }
 
-            // const planId = planSelect.value;
-            // const planListData = planData.insuredList[0]; // Assuming insuredList[0] contains the plan data
-            // const plan = planListData.planList[planId];
+            const planId = planSelect.value;
+            const planListData = planData.insuredList[0]; // Assuming insuredList[0] contains the plan data
+            const plan = planListData.planList[planId];
 
-            // if (!plan || !plan.coverList) {
-            //     alert("No covers available for the selected plan.");
-            //     return;
-            // }
+            if (!plan || !plan.coverList) {
+                alert("No covers available for the selected plan.");
+                return;
+            }
 
             const newRow = document.createElement("tr");
             newRow.classList.add("cover-row");
 
-            
+            // Create a new row with a dropdown for cover list and populate it
             newRow.innerHTML = `
             <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
             <td>
@@ -537,6 +501,7 @@ function createAndPopulateRow(index, coversList, coverIndex) {
     }
 
     function populatePlanSelectAH(planList, index) {
+        console.log("planList:", planList)
         const planSelect = document.getElementById(`planSelect${index}`);
         let planListOptions = '<option value=""> <-- Please select an option --> </option>';
 
@@ -573,13 +538,15 @@ function createAndPopulateRow(index, coversList, coverIndex) {
         formSections.forEach((section) => {
             const planSelect = section.querySelector('[name^="planId"]');
             const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
-            // const planId = selectedOption ? selectedOption.getAttribute('data-plan-id') || '' : '';
-            const planId = selectedOption ? selectedOption.value || '' : '';
-            const planDescription = selectedOption ? selectedOption.getAttribute('data-desc') || '' : '';
+            const planId = selectedOption ? selectedOption.getAttribute('data-plan-id') || '' : '';
+            const planDescription = selectedOption ? selectedOption.getAttribute('data-plan-description') || '' : '';
             const planInfo = {
-                planId: planId,
-                planDescription:planDescription,
-                planPoi: section.querySelector('[name^="planPoi"]').value || ''
+                planId: "1838000064",
+                planDescription: planDescription,
+                planPoi: 12
+                // planId: planId,
+                // planDescription:planDescription,
+                // planPoi: section.querySelector('[name^="planPoi"]').value || ''
             };
 
             const covers = [];
@@ -589,9 +556,9 @@ function createAndPopulateRow(index, coversList, coverIndex) {
                 if (selectedOption) {
                     covers.push({
                         id: selectedOption.value || '',
-                        // code: selectedOption.getAttribute('data-cover-code') || null,
-                        name: selectedOption.getAttribute('data-name') || null,
-                        limitAmount: selectedOption.getAttribute('data-netpremium') || null
+                        code: selectedOption.getAttribute('data-cover-code') || null,
+                        name: selectedOption.getAttribute('data-cover-name') || null,
+                        limitAmount: selectedOption.getAttribute('data-cover-amount') || null
                     });
                 }
             });
@@ -628,83 +595,4 @@ function createAndPopulateRow(index, coversList, coverIndex) {
 
         return insuredList;
     }
-
-
-    function calculateAge(dob) {
-    const dobDate = new Date(dob);
-    const today = new Date();
-    const age = today.getFullYear() - dobDate.getFullYear();
-    const monthDiff = today.getMonth() - dobDate.getMonth();
-    
-    // If the month difference is negative or the current month is before the birth month, subtract 1 year
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
-        age--;
-    }
-
-    return age;
-}
-function resetPlanData(index) {
-    const planDropdown = document.querySelector(`select[name="plan_cover_list_${index}[]"]`);
-    if (planDropdown) {
-        planDropdown.innerHTML = "<option value=''> <-- Please select an option --></option>";
-    }
-
-    const coverLimitAmountInput = document.querySelector(`.planCoverLimitAmount${index}`);
-    if (coverLimitAmountInput) {
-        coverLimitAmountInput.value = '';
-    }
-
-    const planPoiInput = document.getElementById(`planPoiSelect${index}`);
-    if (planPoiInput) {
-        planPoiInput.value = '';
-    }
-}
-function fetchPlanData(index) {
-    resetPlanData(index);
-    const insuredDobElement = document.getElementById(`datepicker-${index}`);
-    const insuredDob = insuredDobElement ? insuredDobElement.value : '';
-    if(!insuredDob){
-        window.alert("Please provide the Insured Date Of Birth.");
-        return;
-    }
-    const age = calculateAge(insuredDob);
-
-if (age > 69) {
-    window.alert("Age must be 69 or less.");
-    return;
-}
-    const url = '../scripts/get_plan_data.php';
-    document.body.classList.add('loading');
-
-fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        populatePlanDropdown(data, index);
-    })
-    .catch(error => {
-        console.error('Error fetching plan data:', error);
-    })
-    .finally(() => {
-        document.body.classList.remove('loading');
-    });
-     
-}
-
-function populatePlanDropdown(data, index) {
-    const selectElement = document.getElementById(`planSelect${index}`);
-    
-    // Clear existing options
-    selectElement.innerHTML = '<option value=""><-- Please select an option --></option>';
-
-    // Populate the dropdown with the fetched data
-    data.forEach(plan => {
-        const option = document.createElement('option');
-        option.value = plan.plan_id;
-        option.textContent = `${plan.plan_desc} (${plan.plan_poi})`;
-        option.setAttribute('data-poi', plan.plan_poi);
-        option.setAttribute('data-desc', plan.plan_desc);
-
-        selectElement.appendChild(option);
-    });
-}
 </script>

@@ -1,11 +1,10 @@
 let planData = null;
-let responsePayment=null;
-let quotationData=null;
-let selectProduct=null;
-const token ="eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULk5sV3pKYTRvb2g4QU9oSDUxSW9DMHZnZjUzOTBTd2xmbllSLUl6cENvTUEiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjQ3MzQ3MTIsImV4cCI6MTcyNDc0MTkxMiwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.N57tZi6mYDqybiKhQgPR5ajaouvS5g7EIDNm19P_5rzSiJHtY_n2ri1X373ZxPHEo4BTuxPdyqC9CMULjka-iurR4YyyB_TGJLgNLwx2QnS-M7ZvRFbhx_b3kWHHyg7fKOijJmco8tUmkinxkqLkXDTvZPL0wL119v871pBzxfOmGlFvsnTrLA79Lu-JX08EiptowQ-pp9Pml7tVkKzF0tzckz8838siJx9WLVy5IExbB0pGOMRZKBMyQz0_7i8x9PwqMUsSTtJTbFzvTVtztrFeFfUh7TD4dzXxtcZx09j7iE1p8-MS_SXoEijqSNJY461p5nWd3meYvtXMlMW10w"
-
-function fetchPremiumAH(requestBody,index) {
-    document.body.classList.add('loading');
+let responsePayment = null;
+let quotationData = null;
+let selectProduct = null;
+const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULl9XZUhqVmFwYWJJMUNsNHlyZjdLamxSV1NMMGRIemw3S2xIOWRENXhRWGsiLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjUzOTE0NzQsImV4cCI6MTcyNTM5ODY3NCwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.jZbUDuae1MG1dfdS48BJEzDVWqWUaLTNXFUn0mppgor1subRtdotxvAICTDzVNOfjvJRNrZzyWoLvo2md7vs6uWDaJeO6dxYh3vdJV8ihE99GD5RtsiD_0KTOv0ee4nEjOffwBm9zuKN0-HXPaqoQyPnmP3reb_N17rLVenK3-lx7zHRDJlaf2sfT2se7QQ5OeD0vWM9WQKcrk7HXDiZYEGHZicng6v9i1pQr-PhdPB6PUK-WarAjYvP_Axw0ytMY0l-kbKcdSlw7Nd4XXwDwvTL9yN2P9RRcfUdgT_NM1VYTiijY26IuOTATE5EPqWJQvKvMfMrrdMqw6voMALhJg"
+function fetchPremiumAH(requestBody, index) {
+  document.body.classList.add('loading');
   const apiUrl =
     "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
   fetch(apiUrl, {
@@ -26,7 +25,7 @@ function fetchPremiumAH(requestBody,index) {
         data.Policy.insuredList[0]
       ) {
         planData = data.Policy;
-        populatePlanSelectAH(planData.insuredList[0].planList,index);
+        populatePlanSelectAH(planData.insuredList[0].planList, index);
         return planData;
       } else {
         window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
@@ -35,47 +34,48 @@ function fetchPremiumAH(requestBody,index) {
     })
     .catch((error) => console.error("Error fetching plan data:", error))
     .finally(() => {
-        // Remove 'loading' class from body after fetch is complete
-        document.body.classList.remove('loading');
+      // Remove 'loading' class from body after fetch is complete
+      document.body.classList.remove('loading');
     });
 }
 function fetchPremium(requestBody) {
   document.body.classList.add('loading');
-const apiUrl =
-  "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
-fetch(apiUrl, {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(requestBody),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    console.log("responseData", data);
-    if (
-      data &&
-      data.Policy &&
-      data.Policy.insuredList &&
-      data.Policy.insuredList[0]
-    ) {
-      planData = data.Policy;
-      populatePlanSelect(planData.insuredList[0].planList);
-      return planData;
-    } else {
-      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
-      console.error("Invalid API response:", data);
-    }
+  const apiUrl =
+    "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
+  fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
   })
-  .catch((error) => console.error("Error fetching plan data:", error))
-  .finally(() => {
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("responseData", data);
+      if (
+        data &&
+        data.Policy &&
+        data.Policy.insuredList &&
+        data.Policy.insuredList[0]
+      ) {
+        planData = data.Policy;
+        populatePlanSelect(planData.insuredList[0].planList);
+        return planData;
+      } else {
+        window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
+        console.error("Invalid API response:", data);
+      }
+    })
+    .catch((error) => console.error("Error fetching plan data:", error))
+    .finally(() => {
       // Remove 'loading' class from body after fetch is complete
       document.body.classList.remove('loading');
-  });
+    });
 }
 async function fetchQuotation(requestBody) {
-    document.body.classList.add('loading');
+
+  document.body.classList.add('loading');
   console.log("Fetching Quotation data...");
   const apiUrl =
     "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/confirm-quotation";
@@ -90,14 +90,21 @@ async function fetchQuotation(requestBody) {
       body: JSON.stringify(requestBody),
     });
 
-  
+
     const data = await response.json();
     console.log("data", data);
 
     // Alert based on statusCode
     if (data?.statusCode === "S03") {
-      await jQuery.agent.insertQuotationData(requestBody, data); 
+      function redirectToSamePageWithPolicyId() {
+        const policyId = data?.policyId;
+        const url = new URL(window.location.href);
+        url.searchParams.set('policyid', policyId);
+        window.location.href = url.toString();
+      }
+      await jQuery.agent.insertQuotationData(requestBody, data);
       window.alert(data?.statusMessage || "Successfully!");
+      redirectToSamePageWithPolicyId();
     } else {
       window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
     }
@@ -133,13 +140,13 @@ async function fetchPolicy(requestBody) {
 
     // Alert based on statusCode
     if (data?.statusCode === "N02") {
-        await jQuery.agent.insertPolicyData(policyid, data?.policyNo); 
+      await jQuery.agent.insertPolicyData(policyid, data?.policyNo);
       window.alert(data?.statusMessage || "Successfully!");
     } else {
       window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
     }
 
-    return data; 
+    return data;
   } catch (error) {
     console.error("Error fetching quotation data:", error);
     // Optionally, you can alert the user about the error
@@ -159,12 +166,12 @@ const handleRequestBody = () => {
     producerCode: "0000064000",
     applicationReceivedDate: "",
     policyEffDate: formData.get("PolicyEffectiveDate")
-    ? transformDate(formData.get("PolicyEffectiveDate"))
-    : "",
-    policyExpDate:formData.get("PolicyExpiryDate")
-    ? transformDate(formData.get("PolicyExpiryDate"))
-    : "",
-   
+      ? transformDate(formData.get("PolicyEffectiveDate"))
+      : "",
+    policyExpDate: formData.get("PolicyExpiryDate")
+      ? transformDate(formData.get("PolicyExpiryDate"))
+      : "",
+
     insuredList: [
       {
         addressInfo: {
@@ -181,7 +188,7 @@ const handleRequestBody = () => {
       : "",
     ncdInfo: {
       ncdLevel: Number(formData.get("Ncd_Level")),
-      
+
     },
     policyHolderInfo: {
       customerType: formData.get("customerType"),
@@ -219,52 +226,52 @@ const handleRequestBody = () => {
             drivingExperience:
               formData.get("insured_auto_driverInfo_drivingExperience") || "",
             // occupation: "18",
-              occupation: formData.get("insured_auto_driverInfo_occupation") || "",
+            occupation: formData.get("insured_auto_driverInfo_occupation") || "",
             claimExperience:
               formData.get("insured_auto_driverInfo_claimExperience") || "",
             claimInfo:
               formData.get("insured_auto_driverInfo_claimExperience") === "Y"
                 ? [
-                    {
-                      dateOfLoss: formData.get(
-                        "insured_auto_driverInfo_claimInfo_dateOfLoss"
+                  {
+                    dateOfLoss: formData.get(
+                      "insured_auto_driverInfo_claimInfo_dateOfLoss"
+                    )
+                      ? transformDate(
+                        formData.get(
+                          "insured_auto_driverInfo_claimInfo_dateOfLoss"
+                        )
                       )
-                        ? transformDate(
-                            formData.get(
-                              "insured_auto_driverInfo_claimInfo_dateOfLoss"
-                            )
-                          )
-                        : "",
-                      lossDescription:
+                      : "",
+                    lossDescription:
+                      formData.get(
+                        "insured_auto_driverInfo_claimInfo_lossDescription"
+                      ) || "",
+                    claimNature:
+                      formData.get(
+                        "insured_auto_driverInfo_claimInfo_claimNature"
+                      ) || "",
+                    claimsAmount:
+                      parseFloat(
                         formData.get(
-                          "insured_auto_driverInfo_claimInfo_lossDescription"
-                        ) || "",
-                      claimNature:
+                          "insured_auto_driverInfo_claimInfo_claimAmount"
+                        )
+                      ) || 0,
+                    status:
+                      parseInt(
                         formData.get(
-                          "insured_auto_driverInfo_claimInfo_claimNature"
-                        ) || "",
-                      claimsAmount:
-                        parseFloat(
-                          formData.get(
-                            "insured_auto_driverInfo_claimInfo_claimAmount"
-                          )
-                        ) || 0,
-                      status:
-                        parseInt(
-                          formData.get(
-                            "insured_auto_driverInfo_claimInfo_claimStatus"
-                          ),
-                          10
-                        ) || 0,
-                      insuredLiability:
-                        parseInt(
-                          formData.get(
-                            "insured_auto_driverInfo_claimInfo_insuredLiability"
-                          ),
-                          10
-                        ) || 0,
-                    },
-                  ]
+                          "insured_auto_driverInfo_claimInfo_claimStatus"
+                        ),
+                        10
+                      ) || 0,
+                    insuredLiability:
+                      parseInt(
+                        formData.get(
+                          "insured_auto_driverInfo_claimInfo_insuredLiability"
+                        ),
+                        10
+                      ) || 0,
+                  },
+                ]
                 : [],
           },
         ],
@@ -277,7 +284,7 @@ const handleRequestBody = () => {
     propDate: new Date(),
     // productId: formData.get("select-product"),
     productId: 600000060,
-    
+
     distributionChannel: "10",
     producerCode: "0000064000",
     applicationReceivedDate: "",
@@ -395,61 +402,61 @@ function validateAndSubmitFormCallPremium(index) {
 function callPremiumAH(index) {
   const apiBody = handleRequestBody();
   if (apiBody) {
-    fetchPremiumAH(apiBody,index);
+    fetchPremiumAH(apiBody, index);
   }
 }
 async function fetchPayment(requestBody) {
-    console.log("Fetching payment data...");
-    document.body.classList.add('loading');
-    const host ="ap-gateway.mastercard.com";
-    const merchantId = "TEST97498471";
-    const orderId= quotationData?.quoteNo;
-    const apiUrl = `https://${host}/api/rest/version/llaatteesstt/merchant/${merchantId}/order/${orderId}/transaction/1`;
+  console.log("Fetching payment data...");
+  document.body.classList.add('loading');
+  const host = "ap-gateway.mastercard.com";
+  const merchantId = "TEST97498471";
+  const orderId = quotationData?.quoteNo;
+  const apiUrl = `https://${host}/api/rest/version/llaatteesstt/merchant/${merchantId}/order/${orderId}/transaction/1`;
 
-    // Basic Auth credentials
-    const username = 'merchant.'+merchantId;  // Replace with your actual username
-    const password = '8fb334a463b16d4e4d19e3f7639edfd4';  // Replace with your actual password
-    const credentials = btoa(`${username}:${password}`); // Base64 encode credentials
+  // Basic Auth credentials
+  const username = 'merchant.' + merchantId;  // Replace with your actual username
+  const password = '8fb334a463b16d4e4d19e3f7639edfd4';  // Replace with your actual password
+  const credentials = btoa(`${username}:${password}`); // Base64 encode credentials
 
-    try {
-        const response = await fetch(apiUrl, {
-            method: "PUT",
-            headers: {
-                'Authorization': `Basic ${credentials}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-        });
+  try {
+    const response = await fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-       
 
-        const data = await response.json();
-        console.log("data", data);
 
-        if (data?.result === "SUCCESS") {
-          responsePayment=data
-          await jQuery.agent.insertPaymentLog(requestBody, data,policyid);
-            window.alert(data?.result);
+    const data = await response.json();
+    console.log("data", data);
 
-        }else if (data?.result === "ERROR" && data?.error) {
-          console.log("hello error")
+    if (data?.result === "SUCCESS") {
+      responsePayment = data
+      await jQuery.agent.insertPaymentLog(requestBody, data, policyid);
+      window.alert(data?.result);
 
-          const { cause, explanation, field, validationType } = data.error;
-          window.alert(`Error: ${cause}\nExplanation: ${explanation}\nField: ${field}\nValidation: ${validationType}`);
-      } 
-        else {
-            window.alert("Something Went Wrong!");
-        }
+    } else if (data?.result === "ERROR" && data?.error) {
+      console.log("hello error")
 
-        return data; // Return data for further processing
-    } catch (error) {
-    
-        console.error("Error fetching payment data:", error);
-        window.alert("Failed to fetch payment data. Please try again.");
-        throw error; // Re-throw the error to be caught by the caller
-    } finally{
-      document.body.classList.remove('loading');
+      const { cause, explanation, field, validationType } = data.error;
+      window.alert(`Error: ${cause}\nExplanation: ${explanation}\nField: ${field}\nValidation: ${validationType}`);
     }
+    else {
+      window.alert("Something Went Wrong!");
+    }
+
+    return data; // Return data for further processing
+  } catch (error) {
+
+    console.error("Error fetching payment data:", error);
+    window.alert("Failed to fetch payment data. Please try again.");
+    throw error; // Re-throw the error to be caught by the caller
+  } finally {
+    document.body.classList.remove('loading');
+  }
 }
 
 

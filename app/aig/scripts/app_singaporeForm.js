@@ -380,16 +380,16 @@ const manualSetInsuredVehicleList = () => {
     vehicleInfo.regNo;
   document.querySelector(
     'input[name="insured_auto_vehicle_insuringWithCOE"][value="' +
-      vehicleInfo.insuringWithCOE +
-      '"]'
+    vehicleInfo.insuringWithCOE +
+    '"]'
   ).checked = true;
   document.querySelector(
     'select[name="insured_auto_vehicle_ageConditionBasis"]'
   ).value = vehicleInfo.ageConditionBasis;
   document.querySelector(
     'input[name="insured_auto_vehicle_offPeakCar"][value="' +
-      vehicleInfo.offPeakCar +
-      '"]'
+    vehicleInfo.offPeakCar +
+    '"]'
   ).checked = true;
   document.querySelector(
     'select[name="insured_auto_vehicle_vehicleUsage"]'
@@ -447,8 +447,8 @@ const manualSetInsuredVehicleList = () => {
   ).value = driverInfo.occupation;
   document.querySelector(
     'input[name="insured_auto_driverInfo_claimExperience"][value="' +
-      driverInfo.claimExperience +
-      '"]'
+    driverInfo.claimExperience +
+    '"]'
   ).checked = true;
 
   (document.querySelector(
@@ -545,7 +545,7 @@ const setInsuredPerson = (insuredData) => {
     const data = insuredData[index];
     const personInfo = data.personInfo;
     const planInfo = personInfo.planInfo;
-    console.log("planInfo", planInfo);
+    console.log("planInfo", planInfo)
     section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
       personInfo.insuredFirstName || "";
     section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
@@ -573,37 +573,44 @@ const setInsuredPerson = (insuredData) => {
       personInfo.natureOfBusiness || "";
 
 
-      const populatePlanAndCovers = (planInfo, section) => {
-        const planSelect = section.querySelector('[name^="planId"]');
-        planSelect.innerHTML = ""; // Clear existing options
-    
-        const defaultOption = document.createElement("option");
-        defaultOption.value = planInfo.planId;
-        defaultOption.textContent = planInfo.planDescription;
-        planSelect.appendChild(defaultOption);
-    
-        const coverList = section.querySelector(".planCoverList");
-        coverList.innerHTML = ""; // Clear existing covers
-    
-        planInfo.covers.forEach((cover, coverIndex) => {
-          
-          const coverOption = document.createElement("option");
-          coverOption.value = cover.id;
-          coverOption.setAttribute("data-cover-code", cover.code);
-          coverOption.setAttribute("data-cover-name", cover.name);
-          coverOption.setAttribute("data-cover-amount", cover.limitAmount);
-          coverOption.textContent = cover.name;
-          // if (coverIndex === 0) {
-          //   coverOption.selected = true; 
-          // }
-          coverList.appendChild(coverOption);
-        });
-    
-        section.querySelector('[name^="planPoi"]').value = planInfo.planPoi || "";
-      };
-    
-      populatePlanAndCovers(planInfo, section);
-    
+    const populatePlanAndCovers = (planInfo, section, index) => {
+      console.log("index:", index)
+      const planSelect = section.querySelector('[name^="planId"]');
+      planSelect.innerHTML = ""; // Clear existing options
+
+      const defaultOption = document.createElement("option");
+      defaultOption.value = planInfo.planId;
+      defaultOption.textContent = planInfo.planDescription;
+      planSelect.appendChild(defaultOption);
+
+      const coverList = section.querySelector(".planCoverList");
+      coverList.innerHTML = ""; // Clear existing covers
+
+      planInfo.covers.forEach((cover, coverIndex) => {
+        const relatedElement = document.querySelector(`#planCoverLimitAmount${index + 1}`);
+
+        if (relatedElement) {
+          relatedElement.value = cover.limitAmount;
+        }
+        const coverOption = document.createElement("option");
+        coverOption.value = cover.id;
+        coverOption.setAttribute("data-cover-code", cover.code);
+        coverOption.setAttribute("data-cover-name", cover.name);
+        coverOption.setAttribute("data-cover-amount", cover.limitAmount);
+        coverOption.textContent = cover.name;
+        // if (coverIndex === 0) {
+        //   coverOption.selected = true; 
+        // }
+        coverList.appendChild(coverOption);
+
+
+      });
+
+      section.querySelector('[name^="planPoi"]').value = planInfo.planPoi || "";
+    };
+
+    populatePlanAndCovers(planInfo, section, index);
+
   });
 };
 
@@ -656,14 +663,12 @@ const setDefaultPlanInfo = (insuredData) => {
             </td>
             <td>Limit Amount:</td>
             <td>
-              <p class="planCoverLimitAmount">${
-                cover.limitAmount
-                  ? parseFloat(cover.limitAmount).toLocaleString()
-                  : "0"
-              }</p>
-              <input type="hidden" class="selectedFlagInput" value="${
-                cover.selectedFlag || ""
-              }">
+              <p class="planCoverLimitAmount">${cover.limitAmount
+            ? parseFloat(cover.limitAmount).toLocaleString()
+            : "0"
+          }</p>
+              <input type="hidden" class="selectedFlagInput" value="${cover.selectedFlag || ""
+          }">
               <p class="coverName" hidden>${cover.name || ""}</p>
             </td>
             <td>
@@ -693,14 +698,12 @@ const setDefaultPlanInfo = (insuredData) => {
             </td>
             <td>Limit Amount:</td>
             <td>
-              <p class="planCoverLimitAmount">${
-                cover.limitAmount
-                  ? parseFloat(cover.limitAmount).toLocaleString()
-                  : "0"
-              }</p>
-              <input type="hidden" class="selectedFlagInput" value="${
-                cover.selectedFlag || ""
-              }" disabled>
+              <p class="planCoverLimitAmount">${cover.limitAmount
+            ? parseFloat(cover.limitAmount).toLocaleString()
+            : "0"
+          }</p>
+              <input type="hidden" class="selectedFlagInput" value="${cover.selectedFlag || ""
+          }" disabled>
               <p class="coverName" hidden>${cover.name || ""}</p>
             </td>
             <td>
@@ -721,7 +724,7 @@ const setDefaultValueForm = (dbData) => {
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther || "";
-  document.querySelector('input[name="RemarkCInput"]').value=dbData?.remarksC||""
+  document.querySelector('input[name="RemarkCInput"]').value = dbData?.remarksC || ""
   // Set Individual Policy Holder Info fields
   document.querySelector('select[name="courtesyTitle"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.courtesyTitle;
@@ -782,16 +785,15 @@ const setDefaultValueForm = (dbData) => {
   } else {
     drivingNo.checked = true;
   }
-  console.log("insuredData",insuredData)
   switch (dbData.type) {
     case "home":
-      return setInsuredHome(insuredData),setDefaultPlanInfo(insuredData);
+      return setInsuredHome(insuredData), setDefaultPlanInfo(insuredData);
     case "auto":
-      return setInsuredVehicleList(insuredData),setDefaultPlanInfo(insuredData);
+      return setInsuredVehicleList(insuredData), setDefaultPlanInfo(insuredData);
     case "ah":
-      return  setInsuredPerson(insuredData);
+      return setInsuredPerson(insuredData);
     default:
-      
+
       return null
   }
 
@@ -816,21 +818,21 @@ const setInsuredHome = (insuredData) => {
   document.querySelector('[name="insured_home_insuredPostCode"]').value = addressInfo.insuredPostCode || '';
 
   if (addressInfo.smokeDetectorAvailable === "1") {
-      document.getElementById('smokeDetecYes').checked = true;
+    document.getElementById('smokeDetecYes').checked = true;
   } else if (addressInfo.smokeDetectorAvailable === "2") {
-      document.getElementById('smokeDetecNo').checked = true;
+    document.getElementById('smokeDetecNo').checked = true;
   }
 
   if (addressInfo.autoSprinklerAvailable === "1") {
-      document.getElementById('autoSprinkYes').checked = true;
+    document.getElementById('autoSprinkYes').checked = true;
   } else if (addressInfo.autoSprinklerAvailable === "2") {
-      document.getElementById('autoSprinkNo').checked = true;
+    document.getElementById('autoSprinkNo').checked = true;
   }
 
   if (addressInfo.securitySystemAvailable === "1") {
-      document.getElementById('securityYes').checked = true;
+    document.getElementById('securityYes').checked = true;
   } else if (addressInfo.securitySystemAvailable === "2") {
-      document.getElementById('securityNo').checked = true;
+    document.getElementById('securityNo').checked = true;
   }
 };
 const setInsuredVehicleList = (insuredData) => {
@@ -914,21 +916,21 @@ const setInsuredVehicleList = (insuredData) => {
     `input[name="insured_auto_driverInfo_claimExperience"][value="${driverInfo.claimExperience}"]`
   ).checked = true;
 
- 
-  
+
+
   const claimExperienceElement = document.querySelector(
     `input[name="insured_auto_driverInfo_claimExperience"][value="${driverInfo.claimExperience}"]`
   );
   const claimInfoElements = document.querySelectorAll("#claim-info input, #claim-info select");
-    
+
   claimInfoElements.forEach((field) => {
     field.removeAttribute("required");
   });
 
-  
+
   if (claimExperienceElement && claimExperienceElement.checked) {
     const claimInfo = driverInfo.claimInfo && driverInfo.claimInfo[0] ? driverInfo.claimInfo[0] : {};
-    
+
     // Helper function to set value if element exists
     const setValue = (selector, value) => {
       const element = document.querySelector(selector);
@@ -936,17 +938,17 @@ const setInsuredVehicleList = (insuredData) => {
         element.value = value || '';
       }
     };
-  
+
     setValue('input[name="insured_auto_driverInfo_claimInfo_dateOfLoss"]', claimInfo.dateOfLoss ? claimInfo.dateOfLoss.split("T")[0] : '');
     setValue('input[name="insured_auto_driverInfo_claimInfo_lossDescription"]', claimInfo.lossDescription);
     setValue('select[name="insured_auto_driverInfo_claimInfo_claimNature"]', claimInfo.claimNature);
     setValue('input[name="insured_auto_driverInfo_claimInfo_claimAmount"]', claimInfo.claimsAmount);
     setValue('select[name="insured_auto_driverInfo_claimInfo_claimStatus"]', claimInfo.status);
     setValue('select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]', claimInfo.insuredLiability);
-  } 
-  
-  
-  
+  }
 
-  
+
+
+
+
 };

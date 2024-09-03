@@ -104,6 +104,7 @@ require("../scripts/app_singaporeAH.php")
 
   <script>
     const campaignID = <?php echo json_encode($_GET["campaign_id"]); ?>;
+    console.log("campaignID:", campaignID)
   </script>
   <script>
     $(function() {
@@ -206,8 +207,8 @@ require("../scripts/app_singaporeAH.php")
                   </option>
                   <?php
                   if ($formType === 'ah') {
-                    // $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
-                    $strSQL = "SELECT * FROM t_aig_sg_product ";
+                    $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
+                    // $strSQL = "SELECT * FROM t_aig_sg_product ";
                   } else {
                     $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
                   }
@@ -226,7 +227,7 @@ require("../scripts/app_singaporeAH.php")
               </td>
               <td style="white-space:nowrap; ">Campaign Code:</td>
               <td>
-                <input type="text" id="campaign-code" name="campaignCode" style="max-width: 130px;">
+                <input type="text" id="campaign-code" name="campaignCode" style="max-width: 130px;" value='<?php echo $campaign_id; ?>' readonly>
               </td>
             </tr>
             <tr>
@@ -1494,7 +1495,7 @@ where name='Occupation'";
 
       <div style="display: flex; justify-content: center;padding:1em 0px; ">
         <input type="hidden" name="action" id="formAction" value="">
-        <button type="submit" class="button payment" id="btnSaveForm">Save</button>
+        <button type="submit" class="button payment" id="btnSaveForm">Create</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->
       </div>
