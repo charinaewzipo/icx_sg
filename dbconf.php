@@ -13,7 +13,7 @@
    // $db_password="tubtim1234";               //user password
     $db_username= "root";        //user login
     $db_password= "";               //user password
-    $db_name= "tubtim";              //database instant
+    $db_name= "icx_sg";              //database instant
    define('DURATION_TIMEOUT', 36000);
    define('GENE_CLIENTID', '017bed41-27fd-48fc-a1a0-ba23123d6338');
    define('GENE_CLIENTSECRET', 'hecwc0rF0pd4o7ZFIXvBPfAMt_plyFdYPfKnVcQ1zlU');

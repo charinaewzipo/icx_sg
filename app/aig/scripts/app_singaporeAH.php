@@ -113,7 +113,7 @@
                         <option value=""> <-- Please select an option --></option>
                         <?php
                         $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='PA Occupation'";
                         $objQuery = mysqli_query($Conn, $strSQL);
                         while ($objResuut = mysqli_fetch_array($objQuery)) {
@@ -135,7 +135,7 @@ where name='PA Occupation'";
                         <option value=""> <-- Please select an option --></option>
                  <?php
                     $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='PH Relation'";
                     $objQuery = mysqli_query($Conn, $strSQL);
                     while ($objResuut = mysqli_fetch_array($objQuery)) {
@@ -162,7 +162,7 @@ where name='PH Relation'";
                         <option value=""> <-- Please select an option --></option>
                      <?php
                         $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='PA Nature of Business'";
                         $objQuery = mysqli_query($Conn, $strSQL);
                         while ($objResuut = mysqli_fetch_array($objQuery)) {
@@ -501,6 +501,7 @@ function createAndPopulateRow(index, coversList, coverIndex) {
     }
 
     function populatePlanSelectAH(planList, index) {
+        console.log("planList:", planList)
         const planSelect = document.getElementById(`planSelect${index}`);
         let planListOptions = '<option value=""> <-- Please select an option --> </option>';
 

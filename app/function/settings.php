@@ -1,7 +1,7 @@
 <?php
 //Database
 $GLOBALS["db_server"] = "localhost";
-$GLOBALS["db_database"] = "tubtim";
+$GLOBALS["db_database"] = "icx_sg";
 $GLOBALS["db_user"] = "root";
 $GLOBALS["db_password"] = "";
 // $GLOBALS["db_server"] = "192.168.50.2";

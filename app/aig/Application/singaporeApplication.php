@@ -523,7 +523,7 @@ require("../scripts/app_singaporeAH.php")
                   <option value=""> <-- Please select an option --></option>
                   <?php
                   $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='Occupation'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
@@ -598,7 +598,7 @@ where name='Occupation'";
                   <option value=""> <-- Please select an option --></option>
                   <?php
                   $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='Nature of Business'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
@@ -1202,7 +1202,7 @@ where name='Nature of Business'";
                   <option value=""> <-- Please select an option --></option>
                   <?php
                   $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 where name='Occupation'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {

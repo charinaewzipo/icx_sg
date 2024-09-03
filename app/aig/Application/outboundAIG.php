@@ -21,7 +21,7 @@ function DBGetPolicyDetailsWithId($policyId)
 
     // Prepare the SQL query to select data by policyId
     $sql = "SELECT id, policyId, productId, distributionChannel, producerCode, propDate, policyEffDate, policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable, quoteLapseDate, `type`,remarksC
-FROM tubtim.insurance_data
+FROM insurance_data
             WHERE policyId = ?";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
@@ -62,7 +62,7 @@ function DBGetPaymentLogWithId($policyId)
     }
 
     // Prepare the SQL query to select data by policyId
-    $sql = "SELECT * FROM tubtim.payment_log
+    $sql = "SELECT * FROM payment_log
             WHERE policyId = ?";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {

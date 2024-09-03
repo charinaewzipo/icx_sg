@@ -1,7 +1,7 @@
 <?php
 //config Server
 $ServerName = "localhost";
-$DatabaseName = "tubtim";
+$DatabaseName = "icx_sg";
 $User = "root";
 $Password = "";
 
