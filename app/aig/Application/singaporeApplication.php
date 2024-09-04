@@ -390,6 +390,7 @@ require("../scripts/app_singaporeAH.php")
 
               <td>Fullname : <span style="color:red">*</span></td>
               <td><input type="text" name="firstName" maxlength="100" size="30" required /></td>
+              <td><input type="text" name="lastName" maxlength="60" size="30" hidden/></td>
             </tr>
             <!-- <tr>
              

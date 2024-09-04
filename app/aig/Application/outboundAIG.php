@@ -21,7 +21,7 @@ function DBGetPolicyDetailsWithId($policyId)
 
     // Prepare the SQL query to select data by policyId
     $sql = "SELECT id, policyId, productId, distributionChannel, producerCode, propDate, policyEffDate, policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable, quoteLapseDate, `type`,remarksC
-FROM insurance_data
+FROM t_app
             WHERE policyId = ?";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
@@ -126,7 +126,7 @@ function DBInsertQuotationData($formData, $response, $type)
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
 
-    $sql = "INSERT INTO insurance_data (
+    $sql = "INSERT INTO t_app (
         policyId,type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo,premiumPayable,quoteLapseDate,remarksC
     ) VALUES (

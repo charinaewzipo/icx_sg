@@ -706,7 +706,7 @@ function fetchCallingList() {
     .then(response => response.text())
     .then(data => {
         const result =JSON.parse(data)
-        if (Array.isArray(result) && result.length > 0) {
+        if (Array.isArray(result) && result.length > 0 && policyid === null) {
             manualSetDefaultValueFormCallingList(result[0]);  // Assuming you want the first item
         } 
 

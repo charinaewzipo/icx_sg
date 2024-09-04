@@ -754,13 +754,11 @@ const setDefaultValueForm = (dbData) => {
   document.querySelector('select[name="courtesyTitle"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.courtesyTitle;
   document.querySelector('input[name="firstName"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.fullName.split(
-      " "
-    )[0];
-  document.querySelector('input[name="lastName"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.fullName.split(
-      " "
-    )[1];
+    individualPolicyHolderInfo.individualPolicyHolderInfo.fullName;
+  // document.querySelector('input[name="lastName"]').value =
+  //   individualPolicyHolderInfo.individualPolicyHolderInfo.fullName.split(
+  //     " "
+  //   )[1];
   document.querySelector('select[name="residentStatus"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.residentStatus;
   document.querySelector('select[name="customerIdType"]').value =

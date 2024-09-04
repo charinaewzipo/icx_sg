@@ -193,7 +193,8 @@ function handleForm() {
 
   ////////////////handlePolicyholder form
 
-  const fullName = formData.get("firstName") + " " + formData.get("lastName");
+  const fullName = formData.get("firstName");
+  // const fullName = formData.get("firstName") + " " + formData.get("lastName");
   policyHolderInfo = {
     customerType: formData.get("customerType"),
     individualPolicyHolderInfo: {
