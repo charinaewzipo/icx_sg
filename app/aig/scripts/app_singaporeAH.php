@@ -290,6 +290,8 @@ function handleCoverChange(selectElement, index) {
 
     // Add 3 Plan Info sections when the page loads
     document.addEventListener('DOMContentLoaded', () => {
+        fetchCallingList()
+        fetchCampaignDetail()
         addPlanInfoSections(2);
         attachPlanSelectEventListeners()
         setTimeout(() => {
@@ -690,6 +692,56 @@ fetch(url)
      
 }
 
+function fetchCallingList() {
+    document.body.classList.add('loading');
+    const callListId = <?php echo json_encode($_GET["calllist_id"]); ?>;
+    console.log("callListId:", callListId)
+    fetch('../scripts/get_callList_data.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({calllist_id:callListId })
+    })
+    .then(response => response.text())
+    .then(data => {
+        const result =JSON.parse(data)
+        if (Array.isArray(result) && result.length > 0) {
+            manualSetDefaultValueFormCallingList(result[0]);  // Assuming you want the first item
+        } 
+
+    })
+    .catch(error => console.error('Error fetching cover list:', error))
+    .finally(() => {
+        document.body.classList.remove('loading');
+    });
+}
+function fetchCampaignDetail() {
+    document.body.classList.add('loading');
+    const campaign_id = <?php echo json_encode($_GET["campaign_id"]); ?>;
+    fetch('../scripts/get_campaign_data.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({campaign_id:campaign_id })
+    })
+    .then(response => response.text())
+    .then(data => {
+        // const result =JSON.parse(data)
+        // console.log("selectedType",selectedType)
+        // if (Array.isArray(result) && result.length > 0) {
+        //     // selectedType =result[0].cp_type  // Assuming you want the first item
+        //     console.log("result[0].cp_type:", result[0].cp_type)
+        // } 
+
+        // console.log("data:", data)
+    })
+    .catch(error => console.error('Error fetching cover list:', error))
+    .finally(() => {
+        document.body.classList.remove('loading');
+    });
+}
 function populatePlanDropdown(data, index) {
     const selectElement = document.getElementById(`planSelect${index}`);
     

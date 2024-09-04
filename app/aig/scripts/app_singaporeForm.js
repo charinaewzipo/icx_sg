@@ -314,6 +314,31 @@ const manualSetDefaultValueForm = () => {
     drivingNo.checked = true;
   }
 };
+const manualSetDefaultValueFormCallingList = (data) => {
+
+  // document.querySelector('select[name="courtesyTitle"]').value = "Mr"; // Assuming title from data is "Mr"
+  // document.querySelector('select[name="select-product"]').value = data.udf2;
+  document.querySelector('input[name="firstName"]').value = data.name;
+  document.querySelector('input[name="dateOfBirth"]').value = data.dob;
+  document.querySelector('input[name="customerIdNo"]').value = data.passport_no; // Assuming using passport_no as customerIdNo
+  // document.querySelector('input[name="mobileNo"]').value = data.udf1;
+  document.querySelector('input[name="emailId"]').value = data.email || ""; // Use email from data if available
+  document.querySelector('input[name="postCode"]').value = data.home_post_cd;
+  // document.querySelector('input[name="PolicyEffectiveDate"]').value = "10/30/2024";
+  // document.querySelector('input[name="PolicyEffectiveDate"]').value = data.udf19;
+  // document.querySelector('input[name="PolicyExpiryDate"]').value = data.udf20;
+  // document.querySelector('input[name="campaignCode"]').value = data.udf12 || ""; // Campaign code
+
+  // Assuming these are required fields; update as needed
+  document.querySelector('input[name="blockNo"]').value = data.home_addr1 || "";
+  document.querySelector('input[name="streetName"]').value = data.home_addr2 || "";
+  document.querySelector('input[name="unitNo"]').value = data.home_addr3 || "";
+  document.querySelector('input[name="buildingName"]').value = data.home_city || "";
+  document.querySelector('select[name="maritalStatus"]').value = data.marital_status || "";
+  document.querySelector('select[name="nationality"]').value = data.nationality || "";
+  // document.querySelector('select[name="occupation"]').value = data.udf9 || ""; // Assuming occupation from udf9
+};
+
 const manualSetInsuredVehicleList = () => {
   const insuredData = [
     {

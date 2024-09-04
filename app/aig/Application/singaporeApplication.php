@@ -346,7 +346,7 @@ require("../scripts/app_singaporeAH.php")
         <h1 style="padding-left:0.5em">Individual PolicyHolder Info</h1><br>
         <legend>PolicyHolder Info</legend>
 
-        <table id="table-form">
+        <table id="table-form" hidden>
           <tr>
             <td style="float:inline-start">Customer Type : <span style="color:red">*</span></td>
             <td style="width:20px"></td>
@@ -387,14 +387,17 @@ require("../scripts/app_singaporeAH.php")
                 </select>
               </td>
               <td>&nbsp;</td>
+
+              <td>Fullname : <span style="color:red">*</span></td>
+              <td><input type="text" name="firstName" maxlength="100" size="30" required /></td>
             </tr>
-            <tr>
-              <td>Firstname : <span style="color:red">*</span></td>
-              <td><input type="text" name="firstName" maxlength="60" size="30" required /></td>
+            <!-- <tr>
+             
               <th>&nbsp;</th>
+              
               <td>Lastname : </td>
               <td><input type="text" name="lastName" maxlength="60" size="30" /></td>
-            </tr>
+            </tr> -->
             <tr>
               <td>Gender : <span style="color:red">*</span> </td>
               <td>
