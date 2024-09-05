@@ -3,7 +3,8 @@ let responsePayment = null;
 let quotationData = null;
 let selectProduct = null;
 let calllistDetail = null;
-const token = "eyJraWQiOiItNlk1TWVEaDVxNUotRGJkdTAyQ1BueWRRdkY1TW9TRFBpaHlFTFhUUWZRIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULnpWQ0RfOC1aOFA2TURydXFwUmhMWV82SGUyZ2N0dDFOTmlRWE9ZX2FON28iLCJpc3MiOiJodHRwczovL2RldmF1dGgxLmN1c3RvbWVycGx0Zm0uYWlnLmNvbS9vYXV0aDIvYXVzbWdtYnllU28yRUh1SnMxZDYiLCJhdWQiOiJDSUFNX0FQUFMiLCJpYXQiOjE3MjU0MTc3NDQsImV4cCI6MTcyNTQyNDk0NCwiY2lkIjoiMG9hZnRjdnh6ZWVDbTByazExZDciLCJzY3AiOlsiU0dFd2F5UGFydG5lcnNfSVIiXSwic3ViIjoiMG9hZnRjdnh6ZWVDbTByazExZDcifQ.iEqwUEan5KOqRq0CZf7ZjHwpRnpbdAvtEfRSlUHvMksvt_UFDINgHhoAsRDBcdN6QDKUlACKx65lvGB2dlg-gZA6sLlh_gwt1HZ77_yZVZbuHtASoRPY4wJg-sqrW79Gd4z1jXCQ3gOu6bZZLL1z0SMwp4cnG9pvjxPFEd9GcRiUTxwgKaO10O95w4y2fDyo_jNSIlkGHgLekhcNOsod0RCbO8CL2EvnaH4eZbS773KdohYtD8KETxqGSbQqFNEKREJnZ9p46T_wEFrecFO4hczIXXqI0UkZ5SYkT0q1Y036dUQSu5SMhGZS_tK0B1eWgTUFduZq6BvPas5FE38e_Q"
+let token = null;
+
 
 function fetchPremiumAH(requestBody, index) {
   document.body.classList.add('loading');
@@ -461,5 +462,27 @@ async function fetchPayment(requestBody) {
   }
 }
 
+function fetchTokenAiG() {
+  fetch('../scripts/get_aig_token.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+    .then(response => {
 
+      return response.json()
+    })
+    .then(data => {
+      if (data && data.current_token) {
+        token = data?.current_token || data?.default_token
 
+      } else {
+        console.error('No valid token found in the response:', data);
+      }
+    })
+    .catch(error => console.error('Error fetching token:', error));
+}
+document.addEventListener("DOMContentLoaded", function () {
+  fetchTokenAiG()
+})
