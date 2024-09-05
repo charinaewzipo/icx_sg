@@ -145,6 +145,7 @@ async function fetchPolicy(requestBody) {
     if (data?.statusCode === "N02") {
       await jQuery.agent.insertPolicyData(policyid, data?.policyNo);
       window.alert(data?.statusMessage || "Successfully!");
+      window.location.reload();
     } else {
       window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
     }
@@ -434,16 +435,18 @@ async function fetchPayment(requestBody) {
 
 
     const data = await response.json();
-    console.log("data", data);
-
-    await jQuery.agent.insertPaymentLog(requestBody, data, policyid || null);
+    const formData = new FormData(document.getElementById("application"));
+    const objectPayment = {
+      paymentMode: Number(formData.get('Payment_Mode')),
+      paymentFrequency: Number(formData.get('Payment_Frequency')),
+      cardType: formData.get('Payment_CardType'),
+    }
+    await jQuery.agent.insertPaymentLog(requestBody, data, policyid || null, objectPayment);
     if (data?.result === "SUCCESS") {
-      responsePayment = data
       window.alert(data?.result);
+      window.location.reload();
 
     } else if (data?.result === "ERROR" && data?.error) {
-      console.log("hello error")
-
       const { cause, explanation, field, validationType } = data.error;
       window.alert(`Error: ${cause}\nExplanation: ${explanation}\nField: ${field}\nValidation: ${validationType}`);
     }

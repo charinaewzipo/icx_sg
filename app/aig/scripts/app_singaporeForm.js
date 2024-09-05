@@ -570,7 +570,7 @@ const setInsuredPerson = (insuredData) => {
     const data = insuredData[index];
     const personInfo = data.personInfo;
     const planInfo = personInfo.planInfo;
-    console.log("planInfo", planInfo)
+    // console.log("planInfo", planInfo)
     section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
       personInfo.insuredFirstName || "";
     section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
@@ -599,7 +599,6 @@ const setInsuredPerson = (insuredData) => {
 
 
     const populatePlanAndCovers = (planInfo, section, index) => {
-      console.log("index:", index)
       const planSelect = section.querySelector('[name^="planId"]');
       planSelect.innerHTML = ""; // Clear existing options
 

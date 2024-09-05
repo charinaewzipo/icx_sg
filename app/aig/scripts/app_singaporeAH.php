@@ -315,7 +315,7 @@ function handleCoverChange(selectElement, index) {
     coverSelectElements.forEach((selectElement, index) => {
         if (quotationData) {
             const coversList = quotationData?.insuredList[index]?.personInfo?.planInfo?.covers;
-            console.log("Covers for index", index, ":", coversList);
+            // console.log("Covers for index", index, ":", coversList);
 
             if (coversList) {
                 // Populate the existing select element

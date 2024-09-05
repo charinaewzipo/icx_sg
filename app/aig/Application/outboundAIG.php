@@ -63,6 +63,47 @@ function DBGetPaymentLogWithId($policyId)
 
     // Prepare the SQL query to select data by policyId
     $sql = "SELECT * FROM t_aig_sg_payment_log
+            WHERE policyId = ? and result='SUCCESS'";
+
+    if ($stmt = $dbconn->dbconn->prepare($sql)) {
+        // Bind the policyId parameter
+        $stmt->bind_param("i", $policyId);
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
+        // Fetch the data as an associative array
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+            echo json_encode(array("result" => "success", "data" => $data));
+        } else {
+            echo json_encode(array("result" => "error", "message" => "No data found for the given policyId"));
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement"));
+    }
+
+    // Close the database connection
+    $dbconn->dbconn->close();
+}
+function DBGetPolicyCreateOrNot($policyId)
+{
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    // Prepare the SQL query to select data by policyId
+    $sql = "SELECT * FROM policy_data
             WHERE policyId = ?";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
@@ -181,7 +222,7 @@ function DBInsertPolicyData($policyid, $policyNo)
     $dbconn->dbconn->close();
 }
 
-function DBInsertPaymentLog($request, $response,$policyid)
+function DBInsertPaymentLog($request, $response, $policyid,$objectPayment)
 {
     // Create database connection
     $dbconn = new dbconn();
@@ -195,42 +236,58 @@ function DBInsertPaymentLog($request, $response,$policyid)
     // Extract data from request and response
     $order_amount = isset($request['order']['amount']) ? $request['order']['amount'] : 0.00;
     $order_currency = isset($request['order']['currency']) ? $request['order']['currency'] : '';
-    $sourceOfFundsType = isset($request['sourceOfFunds']['type']) ? $request['sourceOfFunds']['type'] : '';
-    $cardNumber = isset($request['sourceOfFunds']['provided']['card']['number']) ? maskCreditCardNumbers($request['sourceOfFunds']['provided']['card']['number']) : '';
-    $expiryMonth = isset($request['sourceOfFunds']['provided']['card']['expiry']['month']) ? $request['sourceOfFunds']['provided']['card']['expiry']['month'] : '';
-    $expiryYear = isset($request['sourceOfFunds']['provided']['card']['expiry']['year']) ? $request['sourceOfFunds']['provided']['card']['expiry']['year'] : '';
-    $securityCode = isset($request['sourceOfFunds']['provided']['card']['securityCode']) ? $request['sourceOfFunds']['provided']['card']['securityCode'] : '';
+    $source_of_funds_type = isset($request['sourceOfFunds']['type']) ? $request['sourceOfFunds']['type'] : '';
+    $card_number = isset($response['sourceOfFunds']['provided']['card']['number']) ? ($response['sourceOfFunds']['provided']['card']['number']) : '';
+    $card_expiry_month = isset($request['sourceOfFunds']['provided']['card']['expiry']['month']) ? $request['sourceOfFunds']['provided']['card']['expiry']['month'] : '';
+    $card_expiry_year = isset($request['sourceOfFunds']['provided']['card']['expiry']['year']) ? $request['sourceOfFunds']['provided']['card']['expiry']['year'] : '';
+    $card_security_code = isset($request['sourceOfFunds']['provided']['card']['securityCode']) ? $request['sourceOfFunds']['provided']['card']['securityCode'] : '';
     $merchant = isset($response['merchant']) ? $response['merchant'] : '';
     $result = isset($response['result']) ? $response['result'] : '';
-    $timeOfLastUpdate = isset($response['timeOfLastUpdate']) ? $response['timeOfLastUpdate'] : '';
-    $timeOfRecord = isset($response['timeOfRecord']) ? $response['timeOfRecord'] : '';
+    $time_of_lastupdate = isset($response['timeOfLastUpdate']) ? $response['timeOfLastUpdate'] : '';
+    $time_of_record = isset($response['timeOfRecord']) ? $response['timeOfRecord'] : '';
+
+    // New fields
+    $batch_no = isset($response['transaction']['acquirer']['batch']) ? 'IP' . $response['transaction']['acquirer']['batch'] : '';
+    $order_no = isset($response['order']['id']) ? $response['order']['id'] : '';
+    $payment_mode = isset($objectPayment['paymentMode']) ? (int)$objectPayment['paymentMode'] : 0;
+    $card_type = isset($objectPayment['cardType']) ? $objectPayment['cardType'] : '';
+    $payment_frequency = isset($objectPayment['paymentFrequency']) ? (int)$objectPayment['paymentFrequency'] : 0;
+    $payment_date = isset($response['order']['creationTime']) ? $response['order']['creationTime'] : '';
 
     // Encode the response array as a JSON string
-    $responseJson = isset($response) ? json_encode($response) : '{}';
-    $responseJson = mysqli_real_escape_string($dbconn->dbconn, $responseJson);
+    $response_json = isset($response) ? json_encode($response) : '{}';
+    $response_json = mysqli_real_escape_string($dbconn->dbconn, $response_json);
 
     // SQL query to insert data into the database
-    $sql = "INSERT INTO t_aig_sg_payment_log (order_amount, order_currency, source_of_funds_type, card_number, card_expiry_month, card_expiry_year, card_security_code, merchant, result, time_of_lastupdate, time_of_record, response_json,policyId) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+    $sql = "INSERT INTO t_aig_sg_payment_log 
+                (batch_no, order_no, payment_mode, card_type, card_expiry_month, card_expiry_year, payment_date, payment_frequency, order_amount, card_number, order_currency, source_of_funds_type, merchant, result, time_of_lastupdate, time_of_record, response_json, policyId,card_security_code) 
+            VALUES 
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
     // Use prepared statements to avoid SQL injection
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind parameters
         $stmt->bind_param(
-            "dssssssssssss",
+            "sssssssssssssssssss",
+            $batch_no,
+            $order_no,
+            $payment_mode,
+            $card_type,
+            $card_expiry_month,
+            $card_expiry_year,
+            $payment_date,
+            $payment_frequency,
             $order_amount,
+            $card_number,
             $order_currency,
-            $sourceOfFundsType,
-            $cardNumber,
-            $expiryMonth,
-            $expiryYear,
-            $securityCode,
+            $source_of_funds_type,
             $merchant,
             $result,
-            $timeOfLastUpdate,
-            $timeOfRecord,
-            $responseJson,
-            $policyid
+            $time_of_lastupdate,
+            $time_of_record,
+            $response_json,
+            $policyid,
+            $card_security_code
         );
 
         // Execute the statement
@@ -252,92 +309,7 @@ function DBInsertPaymentLog($request, $response,$policyid)
 
 
 
-function DBInsertPlanInfoWithCovers($planInfo)
-{
-    $dbconn = new dbconn();
-    $res = $dbconn->createConn();
 
-    if ($res == "404") {
-        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
-        exit();
-    }
-
-    // Insert plan information
-    $sqlPlan = "INSERT INTO plan_info (plan_id, plan_description, plan_poi, plan_code, net_premium) VALUES (?, ?, ?, ?, ?)";
-
-    if ($stmtPlan = $dbconn->dbconn->prepare($sqlPlan)) {
-        $stmtPlan->bind_param(
-            "isids",
-            $planInfo['planId'],
-            $planInfo['planDescription'],
-            $planInfo['planPoi'],
-            $planInfo['planCode'],
-            $planInfo['netPremium']
-        );
-
-        if ($stmtPlan->execute()) {
-            // Get the last inserted plan_id for use in cover insertions
-            $planId = $dbconn->dbconn->insert_id;
-        } else {
-            echo json_encode(array("result" => "error", "message" => "Plan data insertion failed: " . $stmtPlan->error));
-            $stmtPlan->close();
-            $dbconn->dbconn->close();
-            return;
-        }
-
-        $stmtPlan->close();
-    } else {
-        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement for plan data: " . $dbconn->dbconn->error));
-        $dbconn->dbconn->close();
-        return;
-    }
-
-    // Insert cover information
-    $sqlCover = "INSERT INTO cover_list (plan_id, cover_id, cover_code, cover_description, cover_name, auto_attached, optional_flag, cover_type, cover_premium, limit_display, final_excess, selected_flag) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-    if ($stmtCover = $dbconn->dbconn->prepare($sqlCover)) {
-        foreach ($planInfo['coverList'] as $cover) {
-            // Convert boolean to integer (0 or 1)
-            $autoAttached = $cover['autoAttached'] ? 1 : 0;
-            $optionalFlag = $cover['optionalFlag'] ? 1 : 0;
-            $selectedFlag = $cover['selectedFlag'] ? 1 : 0;
-
-            // Bind parameters for cover information
-            $stmtCover->bind_param(
-                "iissssiiisid",
-                $planId,
-                $cover['id'],
-                $cover['code'],
-                $cover['description'],
-                $cover['name'],
-                $autoAttached,
-                $optionalFlag,
-                $cover['type'],
-                $cover['premium'],
-                $cover['limitDisplay'],
-                $cover['finalExcess'],
-                $selectedFlag
-            );
-
-            // Execute the statement for each cover
-            if (!$stmtCover->execute()) {
-                echo json_encode(array("result" => "error", "message" => "Cover data insertion failed: " . $stmtCover->error));
-                break; // Exit loop if error occurs
-            }
-        }
-
-        echo json_encode(array("result" => "success", "message" => "All cover data inserted successfully"));
-
-        // Close the statement
-        $stmtCover->close();
-    } else {
-        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement for cover data: " . $dbconn->dbconn->error));
-    }
-
-    // Close the database connection
-    $dbconn->dbconn->close();
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -358,19 +330,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
             DBGetPaymentLogWithId($policyid);
         }
+         
+        elseif ($data['action'] === 'getPolicyCreateOrNot') {
+            $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
+            DBGetPolicyCreateOrNot($policyid);
+        }
         elseif ($data['action'] === 'insertPolicy') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
 
             DBInsertPolicyData($policyid, $policyNo);
-        } elseif ($data['action'] === 'insertPremiumData') {
-            $data = isset($data['data']) ? $data['data'] : "";
-            DBInsertPlanInfoWithCovers($data);
-        } elseif ($data['action'] === 'insertPaymentLog') {
+        }  elseif ($data['action'] === 'insertPaymentLog') {
             $request = isset($data['request']) ? $data['request'] : array();
             $response = isset($data['response']) ? $data['response'] : array();
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
-            DBInsertPaymentLog($request, $response,$policyid);
+            $objectPayment = isset($data['objectPayment']) ? $data['objectPayment'] : array();
+            DBInsertPaymentLog($request, $response,$policyid,$objectPayment);
         } else {
             echo json_encode(array("result" => "error", "message" => "Invalid action"));
         }

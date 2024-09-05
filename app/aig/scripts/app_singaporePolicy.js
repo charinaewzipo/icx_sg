@@ -29,55 +29,65 @@ const hideFormData = (elements) => {
   });
 };
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const paymentContainer = document.getElementById("payment-container");
   const policyidText = document.getElementById("policyid-text");
-  const policyInput =document.getElementById('policyid-input');
+  const policyInput = document.getElementById('policyid-input');
   const policyDisplay = document.getElementById('policyid-display');
+  const btnDraftForm = document.getElementById('btnDraftForm');
+  const btnEditForm = document.getElementById('btnEditForm');
+  const btnSaveForm = document.getElementById('btnSaveForm');
   // Retrieve 'policyid' from the URL parameters
   policyid = urlParams.get("policyid");
   console.log("policyid:", policyid);
 
-  // If 'policyid' is not found, remove 'required' attribute from inputs and selects in the payment container
+
+
+  //หากไม่มีpolicy หรืออยู่step create quote
   if (!policyid) {
     paymentContainer.querySelectorAll("input, select").forEach((field) => {
       field.removeAttribute("required");
     });
-    policyidText.style.display="none"
-    policyDisplay.style.display="none";
+    policyidText.style.display = "none"
+    policyDisplay.style.display = "none";
+    btnEditForm.style.display = "none";
   }
+
   if (policyid) {
     const addCoverButton = document.querySelector(".add-cover");
     const seePlanButton = document.querySelector(".seePlan");
-    policyInput.value=policyid
+    btnDraftForm.style.display = "none";
+    policyInput.value = policyid
     paymentContainer.removeAttribute("hidden");
+
+
 
     if (addCoverButton) {
       addCoverButton.setAttribute("hidden", "true");
     }
-    
+
     if (seePlanButton) {
       seePlanButton.setAttribute("hidden", "true");
     }
 
-  
-    const formElements = document.querySelectorAll(
-      "input:not(#payment-container input), select:not(#payment-container select), button:not(#payment-container button):not(#btnSaveForm)"
-  );
-  
-  
-     hideFormData(formElements)
 
-    $("#datepicker, #datepicker2, #datepicker3, #datepicker4, #datepicker5, #datepicker6").each(function() {
-      $(this).attr("readonly", true).on('focus', function(event) {
+    const formElements = document.querySelectorAll(
+      "input:not(#payment-container input), select:not(#payment-container select), button:not(#payment-container button):not(#btnSaveForm):not(#btnEditForm)"
+    );
+
+
+    hideFormData(formElements)
+
+    $("#datepicker, #datepicker2, #datepicker3, #datepicker4, #datepicker5, #datepicker6").each(function () {
+      $(this).attr("readonly", true).on('focus', function (event) {
         event.preventDefault(); // Prevent datepicker from opening
       });
     });
-  
-   
-  
+
+
+
     // Fetch the quotation data with the policy ID
     jQuery.agent
       .getQuotationWithId(policyid)
@@ -85,25 +95,45 @@ document.addEventListener("DOMContentLoaded", function() {
         if (response?.result == "success") {
           console.log("Response:", response);
           setDefaultValueForm(response?.data);
-          const extractData= extractQuotationData(response?.data);
+          const extractData = extractQuotationData(response?.data);
           quotationData = extractData;
-          console.log("quotationData",quotationData)
         }
       })
       .catch((error) => {
         console.error("Error occurred:", error);
       });
-      jQuery.agent
+
+    jQuery.agent
       .getPaymentLogWithId(policyid)
       .then((response) => {
+        console.log("response:", response)
+
+        //if payment successful but no policy
         if (response?.data?.result == "SUCCESS") {
-          statusPayment=response?.data?.result;
-          console.log("Payment Response:", response);
+          responsePayment = response?.data
+
+          jQuery.agent.getPolicyCreateOrNot(policyid).then((response) => {
+            //if policy was successfully created
+            if (response?.result == "success") {
+              btnSaveForm.setAttribute("hidden", "true");
+            } else {
+              paymentContainer.querySelectorAll("input, select").forEach((field) => {
+                field.removeAttribute("required");
+              });
+            }
+
+          })
           const paymentElements = document.querySelectorAll(
             "input, select, button:not(#btnSaveForm)"
-        );
-       
+          );
+
           hideFormData(paymentElements)
+          btnDraftForm.setAttribute("hidden", "true");
+          btnEditForm.setAttribute("hidden", "true");
+        }
+        // if no payment
+        else {
+
         }
       })
       .catch((error) => {
@@ -123,7 +153,7 @@ function extractQuotationData(data) {
         data.ncdInfo = {}; // Default to an empty object if parsing fails
       }
     }
-    
+
     if (data.policyHolderInfo && typeof data.policyHolderInfo === 'string') {
       try {
         data.policyHolderInfo = JSON.parse(data.policyHolderInfo);
@@ -132,7 +162,7 @@ function extractQuotationData(data) {
         data.policyHolderInfo = {}; // Default to an empty object if parsing fails
       }
     }
-    
+
     if (data.insuredList && typeof data.insuredList === 'string') {
       try {
         data.insuredList = JSON.parse(data.insuredList);

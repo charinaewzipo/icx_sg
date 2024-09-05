@@ -469,37 +469,36 @@ const handleValidateForm = () => {
         return;
       }
 
-      try {
-        const requestBody = handleForm();
-        console.log("requestBody", requestBody)
-        if (policyid && responsePayment) {
-          console.log("policyid", policyid);
-          console.log("responsePayment", responsePayment);
-          const paymentDetails = [
-            {
-              batchNo: `IP${responsePayment.transaction.acquirer.batch}`,
-              orderNo: responsePayment.order.id,
-              paymentMode: Number(formData.get('Payment_Mode')),
-              merchantId: responsePayment.merchant,
-              cardType: formData.get('Payment_CardType'),
-              cardExpiryMonth: responsePayment.sourceOfFunds.provided.card.expiry.month,
-              cardExpiryYear: responsePayment.sourceOfFunds.provided.card.expiry.year,
-              paymentDate: responsePayment.order.creationTime,
-              paymentFrequency: Number(formData.get('Payment_Frequency')),
-              paymentAmount: responsePayment.order.amount,
-              // cardNumber: formData.get('payment_cardNumber'),
-              cardNumber: responsePayment.sourceOfFunds.provided.card.number,
-              currency: responsePayment.order.currency
-            },
-          ];
-          const policyRequestBody = removeKeysFromQuotationData(quotationData)
-          const body = { ...policyRequestBody, paymentDetails };
-          await fetchPolicy(body);
-        } else {
-          await fetchQuotation(requestBody);
-        }
-      } catch (error) {
-        console.error("Error fetching quotation or inserting data:", error);
+
+      const requestBody = handleForm();
+      console.log("requestBody", requestBody)
+      console.log("responsePayment", responsePayment);
+      if (policyid && responsePayment) {
+        const paymentDetails = [
+          {
+            batchNo: responsePayment.batch_no,
+            orderNo: responsePayment.order_no,
+            paymentMode: responsePayment.payment_mode,
+            merchantId: responsePayment.merchant,
+            cardType: responsePayment.card_type,
+            cardExpiryMonth: responsePayment.card_expiry_month,
+            cardExpiryYear: responsePayment.card_expiry_year,
+            paymentDate: new Date(responsePayment.payment_date).toISOString(),
+            paymentFrequency: responsePayment.payment_frequency,
+            paymentAmount: responsePayment.order_amount,
+            cardNumber: responsePayment.card_number,
+            currency: responsePayment.order_currency
+          },
+        ];
+
+        const policyRequestBody = removeKeysFromQuotationData(quotationData)
+        const body = { ...policyRequestBody, paymentDetails };
+        await fetchPolicy(body);
+        console.log("fetch policy")
+      } else {
+        // await fetchQuotation(requestBody);
+        console.log("fetch quotation")
+
       }
     });
 };

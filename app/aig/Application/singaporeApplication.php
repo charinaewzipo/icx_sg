@@ -78,6 +78,15 @@ require("../scripts/app_singaporeAH.php")
   #insured-list-ah hr:last-child {
     display: none;
   }
+  .draft-button{
+    background-color: #fff !important;
+    color:#52525e !important; 
+    border: 1px solid #52525e !important;
+    &:hover{
+      background-color: #52525e!important;
+      color:#fff !important;
+    }
+  }
 </style>
 
 <head>
@@ -1410,22 +1419,9 @@ where name='Occupation'";
       <div id="payment-container" hidden>
         <fieldset id="form-content">
           <legend>Payment</legend>
-          <div class="table">
-            <div class="table-header">
-              <div class="header__item">Payment Type</div>
-              <div class="header__item">Action</div>
-            </div>
-            <div class="table-content">
-              <div class="table-row" style="padding:10px 0px;">
-                <div class="table-data">Online Payment Gateway </div>
-                <div class="table-data">
-                  <button type="button" class="button payment" id="btnPayment">Payment</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <br>
-          <h1 style="padding-left:0.5em">Additional</h1>
+         
+      
+          <!-- <h1 style="padding-left:0.5em">Additional</h1> -->
           <table id="table-form">
             <tr>
               <td>Payment Mode : <span style="color:red">*</span> </td>
@@ -1493,12 +1489,30 @@ where name='Occupation'";
               </td>
             </tr>
           </table>
+          <br>
+          <div class="table">
+            <div class="table-header">
+              <div class="header__item">Payment Type</div>
+              <div class="header__item">Action</div>
+            </div>
+            <div class="table-content">
+              <div class="table-row" style="padding:10px 0px;">
+                <div class="table-data">Online Payment Gateway </div>
+                <div class="table-data">
+                  <button type="button" class="button payment" id="btnPayment">Payment</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </fieldset>
       </div>
 
 
-      <div style="display: flex; justify-content: center;padding:1em 0px; ">
+      <div style="display: flex; justify-content: center;padding:1em 0px; gap:10px">
         <input type="hidden" name="action" id="formAction" value="">
+
+        <button type="button" class="button draft-button" id="btnDraftForm">Draft</button>
+        <button type="button" class="button edit" id="btnEditForm">Edit</button>
         <button type="submit" class="button payment" id="btnSaveForm">Create</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->
