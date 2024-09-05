@@ -62,7 +62,7 @@ function DBGetPaymentLogWithId($policyId)
     }
 
     // Prepare the SQL query to select data by policyId
-    $sql = "SELECT * FROM payment_log
+    $sql = "SELECT * FROM t_aig_sg_payment_log
             WHERE policyId = ?";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
@@ -210,7 +210,7 @@ function DBInsertPaymentLog($request, $response,$policyid)
     $responseJson = mysqli_real_escape_string($dbconn->dbconn, $responseJson);
 
     // SQL query to insert data into the database
-    $sql = "INSERT INTO payment_log (order_amount, order_currency, source_of_funds_type, card_number, card_expiry_month, card_expiry_year, card_security_code, merchant, result, time_of_lastupdate, time_of_record, response_json,policyId) 
+    $sql = "INSERT INTO t_aig_sg_payment_log (order_amount, order_currency, source_of_funds_type, card_number, card_expiry_month, card_expiry_year, card_security_code, merchant, result, time_of_lastupdate, time_of_record, response_json,policyId) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
     // Use prepared statements to avoid SQL injection
