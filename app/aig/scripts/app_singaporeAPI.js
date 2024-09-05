@@ -436,9 +436,9 @@ async function fetchPayment(requestBody) {
     const data = await response.json();
     console.log("data", data);
 
+    await jQuery.agent.insertPaymentLog(requestBody, data, policyid || null);
     if (data?.result === "SUCCESS") {
       responsePayment = data
-      await jQuery.agent.insertPaymentLog(requestBody, data, policyid);
       window.alert(data?.result);
 
     } else if (data?.result === "ERROR" && data?.error) {
