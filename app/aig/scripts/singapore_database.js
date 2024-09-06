@@ -26,6 +26,30 @@
         });
       });
     },
+    getDraftDataWithId: function (draftid) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: url,
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            action: "getDraftDataWithId",
+            draftid: draftid
+          }),
+          dataType: "text",
+          success: function (response) {
+            try {
+              const cleanedResponse = response.trim();
+              const jsonResponse = JSON.parse(cleanedResponse);
+              resolve(jsonResponse);
+            } catch (error) {
+              console.error("Error parsing JSON:", error);
+              reject(error);
+            }
+          },
+        });
+      });
+    },
     getPaymentLogWithId: function (policyid) {
       return new Promise((resolve, reject) => {
         $.ajax({
@@ -114,6 +138,56 @@
         error: function (xhr, status, error) {
           console.error("AJAX Error:", error);
           // Handle the error here
+        }
+      });
+    },
+    insertDraftQuoteData: function (formData) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "insertDraftQuoteData",
+          formData: formData,
+          type: selectedType
+        }),
+        dataType: "text",
+        success: function (response) {
+          console.log("Insert Response:", response);
+          // Handle the response data here
+          // window.location.reload();
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX Error:", error);
+          // Handle the error here
+        }
+      });
+    },
+    updateDraftQuoteData: function (formData, draftid) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "updateDraftQuoteData",
+          formData: formData,
+          type: selectedType,
+          draftid: draftid
+        }),
+        dataType: "text",
+        success: function (response) {
+          try {
+            var jsonResponse = JSON.parse(response.trim());  // Manually parse the JSON and remove extra spaces
+            console.log("Insert Response:", jsonResponse);
+            if (jsonResponse.result === "success") {
+              window.location.reload();
+            }
+          } catch (e) {
+            console.error("JSON Parsing Error:", e, response);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX Error:", error);
         }
       });
     },

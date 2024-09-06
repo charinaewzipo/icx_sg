@@ -110,27 +110,39 @@ require("../scripts/app_singaporeAH.php")
   <script src="../scripts/singapore_database.js"></script>
   <script src="../scripts/app_singaporePolicy.js"></script>
   <script src="../scripts/app_singaporeForm.js"></script>
+  <script src="../scripts/app_singaporeDraft.js"></script>
 
   <script>
     const campaignID = <?php echo json_encode($_GET["campaign_id"]); ?>;
     console.log("campaignID:", campaignID)
   </script>
   <script>
+    var datepickerOptions = {
+    dateFormat: 'mm/dd/yy',
+    changeMonth: true,
+    changeYear: true,
+    showAnim: "slideDown"
+};
     $(function() {
-      $("#datepicker").datepicker({
-        maxDate: new Date()
-      });
-      $("#datepicker2").datepicker({
-        maxDate: new Date()
-      });
-      $("#datepicker3").datepicker();
-      $("#datepicker4").datepicker();
-      $("#datepicker5").datepicker({
-        minDate: new Date() // Set the minimum date to today
-      });
-      $("#datepicker6").datepicker({
-        minDate: new Date() // Set the minimum date to today
-      });
+      $("#datepicker").datepicker($.extend({}, datepickerOptions, {
+    maxDate: new Date()
+}));
+
+$("#datepicker2").datepicker($.extend({}, datepickerOptions, {
+    maxDate: new Date()
+}));
+
+$("#datepicker3").datepicker(datepickerOptions);
+
+$("#datepicker4").datepicker(datepickerOptions);
+
+$("#datepicker5").datepicker($.extend({}, datepickerOptions, {
+    minDate: new Date()
+}));
+
+$("#datepicker6").datepicker($.extend({}, datepickerOptions, {
+    minDate: new Date()
+}));
       $('input[name="payment_expiryDate"]').datepicker($.extend({}, {
         yearRange: "c-1:c+10",
         changeMonth: true,
@@ -140,21 +152,16 @@ require("../scripts/app_singaporeAH.php")
       }));
 
 
-      $("#datepicker-1").datepicker({
-        maxDate: new Date()
-      });
-      $("#datepicker-2").datepicker({
-        maxDate: new Date()
-      });
-      $("#datepicker-3").datepicker({
-        maxDate: new Date()
-      });
-      $("#datepicker-4").datepicker({
-        maxDate: new Date()
-      });
-      $("#datepicker-5").datepicker({
-        maxDate: new Date()
-      });
+      //insured person date
+      for (var i = 1; i <= 10; i++) {
+    $("#datepicker-" + i).datepicker({
+        maxDate: new Date(),
+        dateFormat: 'mm/dd/yy',  // Add any other common options
+        changeMonth: true,
+        changeYear: true,
+        showAnim: "slideDown"
+    });
+}
     });
 
     $body = $("body");
@@ -1511,9 +1518,10 @@ where name='Occupation'";
       <div style="display: flex; justify-content: center;padding:1em 0px; gap:10px">
         <input type="hidden" name="action" id="formAction" value="">
 
-        <button type="button" class="button draft-button" id="btnDraftForm">Draft</button>
+        <button type="button" class="button draft-button" id="btnDraftForm"  onclick="handleClickDraftButton()">Draft</button>
+        <button type="button" class="button draft-button" id="btnSaveDraftForm"  onclick="handleClickSaveDraftButton()" hidden>Save Draft</button>
         <button type="button" class="button edit" id="btnEditForm">Edit</button>
-        <button type="submit" class="button payment" id="btnSaveForm">Create</button>
+        <button type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->
       </div>

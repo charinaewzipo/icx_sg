@@ -290,7 +290,14 @@ function handleCoverChange(selectElement, index) {
 
     // Add 3 Plan Info sections when the page loads
     document.addEventListener('DOMContentLoaded', () => {
-        fetchCallingList()
+        const queryString = window.location.search;
+         const urlParams = new URLSearchParams(queryString);
+         checkDraftid = urlParams.get("draftid");
+         checkPolicyid = urlParams.get("policyid");
+        if(!checkDraftid&&!checkPolicyid){
+            fetchCallingList()
+        }
+      
         fetchCampaignDetail()
         addPlanInfoSections(2);
         attachPlanSelectEventListeners()

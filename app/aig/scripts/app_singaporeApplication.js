@@ -496,12 +496,13 @@ const handleValidateForm = () => {
         await fetchPolicy(body);
         console.log("fetch policy")
       } else {
-        // await fetchQuotation(requestBody);
+        await fetchQuotation(requestBody);
         console.log("fetch quotation")
 
       }
     });
 };
+
 
 //handlePayment
 document.addEventListener('DOMContentLoaded', function () {

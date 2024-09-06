@@ -1,5 +1,6 @@
 let policyid = null;
 let statusPayment = null;
+let isEditing = false;
 const hideFormData = (elements) => {
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
@@ -47,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //หากไม่มีpolicy หรืออยู่step create quote
   if (!policyid) {
+
     paymentContainer.querySelectorAll("input, select").forEach((field) => {
       field.removeAttribute("required");
     });
@@ -56,6 +58,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (policyid) {
+    btnSaveForm.textContent = "Create Policy"
+    btnSaveForm.title = "Please make the payment"
     const addCoverButton = document.querySelector(".add-cover");
     const seePlanButton = document.querySelector(".seePlan");
     btnDraftForm.style.display = "none";
@@ -133,7 +137,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         // if no payment
         else {
-
+          btnSaveForm.disabled = true;
+          btnSaveForm.style.opacity = "0.65"; // Visual indication of being disabled
         }
       })
       .catch((error) => {

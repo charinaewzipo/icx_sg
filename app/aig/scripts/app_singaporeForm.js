@@ -321,7 +321,7 @@ const manualSetDefaultValueFormCallingList = (data) => {
   document.querySelector('input[name="firstName"]').value = data.name;
   document.querySelector('input[name="dateOfBirth"]').value = data.dob;
   document.querySelector('input[name="customerIdNo"]').value = data.passport_no; // Assuming using passport_no as customerIdNo
-  // document.querySelector('input[name="mobileNo"]').value = data.udf1;
+  document.querySelector('input[name="mobileNo"]').value = data.udf1;
   document.querySelector('input[name="emailId"]').value = data.email || ""; // Use email from data if available
   document.querySelector('input[name="postCode"]').value = data.home_post_cd;
   // document.querySelector('input[name="PolicyEffectiveDate"]').value = "10/30/2024";
@@ -496,6 +496,7 @@ const manualSetInsuredVehicleList = () => {
   ).value = driverInfo.claimInfo[0].insuredLiability;
 };
 const setInsuredPerson = (insuredData) => {
+  console.log("insuredData:", insuredData)
   // const defaultData = [
   //   {
   //     personInfo: {
@@ -570,7 +571,7 @@ const setInsuredPerson = (insuredData) => {
     const data = insuredData[index];
     const personInfo = data.personInfo;
     const planInfo = personInfo.planInfo;
-    // console.log("planInfo", planInfo)
+    console.log("planInfo", planInfo)
     section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
       personInfo.insuredFirstName || "";
     section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
@@ -584,7 +585,9 @@ const setInsuredPerson = (insuredData) => {
     section.querySelector('[name^="insured_ah_insuredGender_"]').value =
       personInfo.insuredGender || "";
     section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =
-      personInfo.insuredDateOfBirth || "";
+      personInfo.insuredDateOfBirth.split(
+        "T"
+      )[0] || "";
     section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value =
       personInfo.insuredMaritalStatus || "";
     section.querySelector('[name^="insured_ah_insuredOccupation_"]').value =
@@ -601,10 +604,11 @@ const setInsuredPerson = (insuredData) => {
     const populatePlanAndCovers = (planInfo, section, index) => {
       const planSelect = section.querySelector('[name^="planId"]');
       planSelect.innerHTML = ""; // Clear existing options
-
       const defaultOption = document.createElement("option");
       defaultOption.value = planInfo.planId;
-      defaultOption.textContent = planInfo.planDescription;
+      defaultOption.textContent = planInfo.planDescription || "<-- Please select an option -->";
+      defaultOption.setAttribute("data-desc", planInfo.planDescription);
+      defaultOption.setAttribute("data-poi", planInfo.planPoi);
       planSelect.appendChild(defaultOption);
 
       const coverList = section.querySelector(".planCoverList");
@@ -618,10 +622,9 @@ const setInsuredPerson = (insuredData) => {
         }
         const coverOption = document.createElement("option");
         coverOption.value = cover.id;
-        coverOption.setAttribute("data-cover-code", cover.code);
-        coverOption.setAttribute("data-cover-name", cover.name);
-        coverOption.setAttribute("data-cover-amount", cover.limitAmount);
-        coverOption.textContent = cover.name;
+        coverOption.setAttribute("data-name", cover.name);
+        coverOption.setAttribute("data-netpremium", cover.limitAmount);
+        coverOption.textContent = cover.name || "<-- Please select an option -->";
         // if (coverIndex === 0) {
         //   coverOption.selected = true; 
         // }
@@ -744,7 +747,7 @@ const setDefaultValueForm = (dbData) => {
   const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
   const insuredData = JSON.parse(dbData.insuredList);
 
-  document.querySelector('select[name="select-product"]').value = dbData?.productId;
+  document.querySelector('select[name="select-product"]').value = dbData?.productId || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther || "";

@@ -103,6 +103,7 @@ async function fetchQuotation(requestBody) {
         const policyId = data?.policyId;
         const url = new URL(window.location.href);
         url.searchParams.set('policyid', policyId);
+        url.searchParams.delete('draftid');
         window.location.href = url.toString();
       }
       await jQuery.agent.insertQuotationData(requestBody, data);
