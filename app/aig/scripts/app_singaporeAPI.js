@@ -443,7 +443,7 @@ async function fetchPayment(requestBody) {
 
     } else if (data?.result === "ERROR" && data?.error) {
       const { cause, explanation, field, validationType } = data.error;
-      window.alert(`Error: ${cause}\nExplanation: ${explanation}\nField: ${field}\nValidation: ${validationType}`);
+      window.alert(`Error: ${cause}\nExplanation: ${explanation}`);
     }
     else {
       window.alert("Something Went Wrong!");

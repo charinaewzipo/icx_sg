@@ -1392,7 +1392,7 @@ where name='Occupation'";
                 <td>Limit Amount:</td>
                 <td>
                   <p class="planCoverLimitAmount"></p>
-                  <input type="hidden" class="selectedFlagInput" value="">
+                  <input type="hidden" class="selectedFlagInput" value="" readonly>
                   <p class="coverName" hidden></p>
                 </td>
 
@@ -1518,7 +1518,7 @@ where name='Occupation'";
       <div style="display: flex; justify-content: center;padding:1em 0px; gap:10px">
         <input type="hidden" name="action" id="formAction" value="">
 
-        <button type="button" class="button draft-button" id="btnDraftForm"  onclick="handleClickDraftButton()">Save Draft</button>
+        <button type="button" class="button draft-button" id="btnDraftForm"  onclick="handleClickDraftButton()">Save</button>
         <button type="button" class="button draft-button" id="btnSaveDraftForm"  onclick="handleClickSaveDraftButton()" hidden>Save</button>
         <button type="button" class="button edit" id="btnEditForm" onclick="handleEditQuote()" hidden>Edit</button>
         <button type="submit" class="button payment" id="btnSaveForm">Create Quote</button>

@@ -1,6 +1,5 @@
 let policyid = null
 let statusPayment = null;
-let isEditing = false;
 const hideFormData = (elements) => {
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
@@ -30,6 +29,34 @@ const hideFormData = (elements) => {
   });
 };
 
+const unhideFormData = (elements) => {
+  elements.forEach((element) => {
+    const tagName = element.tagName.toLowerCase();
+
+    if (tagName === "input") {
+      if (element.type === "radio") {
+        // Enable radio buttons
+        element.style.pointerEvents = "";
+        element.style.opacity = ""; // Reset the opacity
+      } else {
+        // Enable other input types
+        element.readOnly = false;
+        element.style.backgroundColor = ""; // Reset background color
+        element.style.border = ""; // Reset border style
+      }
+    } else if (tagName === "select") {
+      // Enable select elements
+      element.style.pointerEvents = "";
+      element.style.backgroundColor = ""; // Reset background color
+      element.style.color = ""; // Reset text color
+    } else if (tagName === "button") {
+      // Enable button elements
+      element.disabled = false;
+      element.style.pointerEvents = "";
+      element.style.opacity = ""; // Reset opacity
+    }
+  });
+};
 document.addEventListener("DOMContentLoaded", function () {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
