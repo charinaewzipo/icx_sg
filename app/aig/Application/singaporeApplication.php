@@ -247,7 +247,7 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
               </td>
             </tr>
             <tr>
-              <td id="policyid-text">PolicyId: <span style="color:red">*</span></td>
+              <td id="policyid-text">PolicyId:</td>
             <td id="policyid-display"><input type="text" id="policyid-input"  style="display: inline-block; width:216px;" readonly/></td>
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
@@ -1518,9 +1518,9 @@ where name='Occupation'";
       <div style="display: flex; justify-content: center;padding:1em 0px; gap:10px">
         <input type="hidden" name="action" id="formAction" value="">
 
-        <button type="button" class="button draft-button" id="btnDraftForm"  onclick="handleClickDraftButton()">Draft</button>
-        <button type="button" class="button draft-button" id="btnSaveDraftForm"  onclick="handleClickSaveDraftButton()" hidden>Save Draft</button>
-        <button type="button" class="button edit" id="btnEditForm">Edit</button>
+        <button type="button" class="button draft-button" id="btnDraftForm"  onclick="handleClickDraftButton()">Save Draft</button>
+        <button type="button" class="button draft-button" id="btnSaveDraftForm"  onclick="handleClickSaveDraftButton()" hidden>Save</button>
+        <button type="button" class="button edit" id="btnEditForm" onclick="handleEditQuote()" hidden>Edit</button>
         <button type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->

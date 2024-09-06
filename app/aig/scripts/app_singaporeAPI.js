@@ -99,16 +99,9 @@ async function fetchQuotation(requestBody) {
 
     // Alert based on statusCode
     if (data?.statusCode === "S03") {
-      function redirectToSamePageWithPolicyId() {
-        const policyId = data?.policyId;
-        const url = new URL(window.location.href);
-        url.searchParams.set('policyid', policyId);
-        url.searchParams.delete('draftid');
-        window.location.href = url.toString();
-      }
-      await jQuery.agent.insertQuotationData(requestBody, data);
+      await jQuery.agent.updateQuoteData(requestBody, data, id);
       window.alert(data?.statusMessage || "Successfully!");
-      redirectToSamePageWithPolicyId();
+      window.location.reload();
     } else {
       window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
     }
@@ -144,7 +137,8 @@ async function fetchPolicy(requestBody) {
 
     // Alert based on statusCode
     if (data?.statusCode === "N02") {
-      await jQuery.agent.insertPolicyData(policyid, data?.policyNo);
+      await jQuery.agent.updatePolicyNo(policyid, data?.policyNo);
+      // await jQuery.agent.insertPolicyData(policyid, data?.policyNo);
       window.alert(data?.statusMessage || "Successfully!");
       window.location.reload();
     } else {

@@ -1,37 +1,35 @@
-let draftid = null;
+// let draftid = null;
 document.addEventListener("DOMContentLoaded", function () {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  draftid = urlParams.get("draftid");
-  console.log("draftid:", draftid);
-
-  if (draftid) {
+  if (id) {
     document.getElementById("btnSaveDraftForm").style.display = "block";
     document.getElementById("btnDraftForm").style.display = "none";
-    jQuery.agent
-      .getDraftDataWithId(draftid)
-      .then((response) => {
-        console.log("response", response)
-        if (response?.result == "success") {
-          setDefaultValueForm(response?.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error occurred:", error);
-      });
+    // jQuery.agent
+    //   .getDraftDataWithId(id)
+    //   .then((response) => {
+    //     console.log("response", response)
+    //     if (response?.result == "success") {
+    //       setDefaultValueForm(response?.data);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error occurred:", error);
+    //   });
 
 
   }
 
 
 })
-const handleClickDraftButton = () => {
+const handleClickDraftButton = async () => {
   console.log("handleClickDraft")
   const requestBody = handleForm();
-  jQuery.agent.insertDraftQuoteData(requestBody);
+  await jQuery.agent.insertQuotationData(requestBody, null);
 }
 const handleClickSaveDraftButton = () => {
   console.log("handleClickSaveDraft")
   const requestBody = handleForm();
-  jQuery.agent.updateDraftQuoteData(requestBody, draftid);
+  jQuery.agent.updateQuoteData(requestBody, null, id);
+}
+const handleEditQuote = () => {
+  console.log("Edit")
 }

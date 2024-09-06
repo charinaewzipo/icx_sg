@@ -292,9 +292,8 @@ function handleCoverChange(selectElement, index) {
     document.addEventListener('DOMContentLoaded', () => {
         const queryString = window.location.search;
          const urlParams = new URLSearchParams(queryString);
-         checkDraftid = urlParams.get("draftid");
-         checkPolicyid = urlParams.get("policyid");
-        if(!checkDraftid&&!checkPolicyid){
+         checkParamsId = urlParams.get("id");
+        if(!checkParamsId){
             fetchCallingList()
         }
       
@@ -302,7 +301,7 @@ function handleCoverChange(selectElement, index) {
         addPlanInfoSections(2);
         attachPlanSelectEventListeners()
         setTimeout(() => {
-            attachCoverSelectEventListeners()
+            // attachCoverSelectEventListeners()
         }, 2000)
 
         function attachPlanSelectEventListeners() {
@@ -322,11 +321,7 @@ function handleCoverChange(selectElement, index) {
     coverSelectElements.forEach((selectElement, index) => {
         if (quotationData) {
             const coversList = quotationData?.insuredList[index]?.personInfo?.planInfo?.covers;
-            // console.log("Covers for index", index, ":", coversList);
-
             if (coversList) {
-                // Populate the existing select element
-
                 populateCoverOptionsAHAutomatic(selectElement, coversList, 0);
 
                 // Create additional rows for the remaining covers
@@ -474,14 +469,15 @@ function handleCoverChange(selectElement, index) {
     }
 
     coversList.forEach((cover, index) => {
+        console.log("cover:", cover)
         const option = document.createElement('option');
         option.value = cover.id;
-        option.textContent = `${cover.name}`;
+        option.textContent = cover.name||"<-- Please select an option --> ";
         
         // Automatically select the option that matches the coverIndex
-        if (index === coverIndex) {
-            option.selected = true;
-        }
+        // if (index === coverIndex) {
+        //     option.selected = true;
+        // }
 
         // Append the option to the select element
         selectElement.appendChild(option);
@@ -599,7 +595,7 @@ function createAndPopulateRow(index, coversList, coverIndex) {
                     covers.push({
                         id: selectedOption.value || '',
                         // code: selectedOption.getAttribute('data-cover-code') || null,
-                        name: selectedOption.getAttribute('data-name') || null,
+                        name: selectedOption.getAttribute('data-name')||null ,
                         limitAmount: selectedOption.getAttribute('data-netpremium') || null
                     });
                 }
@@ -713,7 +709,7 @@ function fetchCallingList() {
     .then(response => response.text())
     .then(data => {
         const result =JSON.parse(data)
-        if (Array.isArray(result) && result.length > 0 && policyid === null) {
+        if (Array.isArray(result) && result.length > 0 && id === null) {
             manualSetDefaultValueFormCallingList(result[0]);  // Assuming you want the first item
         } 
 

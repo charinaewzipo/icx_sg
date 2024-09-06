@@ -473,7 +473,8 @@ const handleValidateForm = () => {
       const requestBody = handleForm();
       console.log("requestBody", requestBody)
       console.log("responsePayment", responsePayment);
-      if (policyid && responsePayment) {
+      console.log("quotationData", quotationData)
+      if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         const paymentDetails = [
           {
             batchNo: responsePayment.batch_no,

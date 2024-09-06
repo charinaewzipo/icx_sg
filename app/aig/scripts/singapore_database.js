@@ -2,7 +2,7 @@
   var url = "outboundAIG.php";
 
   jQuery.agent = {
-    getQuotationWithId: function (policyid) {
+    getQuotationWithId: function (id) {
       return new Promise((resolve, reject) => {
         $.ajax({
           url: url,
@@ -10,7 +10,7 @@
           contentType: "application/json",
           data: JSON.stringify({
             action: "getQuotationWithId",
-            policyid: policyid
+            id: id
           }),
           dataType: "text",
           success: function (response) {
@@ -109,7 +109,7 @@
           response: response,
           type: selectedType
         }),
-        dataType: "json",
+        dataType: "text",
         success: function (response) {
           console.log("Insert Response:", response);
           // Handle the response data here
@@ -127,6 +127,27 @@
         contentType: "application/json",
         data: JSON.stringify({
           action: "insertPolicy",
+          policyid: policyid,
+          policyNo: policyNo
+        }),
+        dataType: "json",
+        success: function (response) {
+          console.log("Insert Response:", response);
+          // Handle the response data here
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX Error:", error);
+          // Handle the error here
+        }
+      });
+    },
+    updatePolicyNo: function (policyid, policyNo) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "updatePolicyNo",
           policyid: policyid,
           policyNo: policyNo
         }),
@@ -163,16 +184,17 @@
         }
       });
     },
-    updateDraftQuoteData: function (formData, draftid) {
+    updateQuoteData: function (formData, response, id) {
       $.ajax({
         url: url,
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({
-          action: "updateDraftQuoteData",
+          action: "updateQuoteData",
           formData: formData,
+          response: response,
           type: selectedType,
-          draftid: draftid
+          id: id
         }),
         dataType: "text",
         success: function (response) {

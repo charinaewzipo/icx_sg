@@ -1,4 +1,4 @@
-let policyid = null;
+let policyid = null
 let statusPayment = null;
 let isEditing = false;
 const hideFormData = (elements) => {
@@ -40,15 +40,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnDraftForm = document.getElementById('btnDraftForm');
   const btnEditForm = document.getElementById('btnEditForm');
   const btnSaveForm = document.getElementById('btnSaveForm');
-  // Retrieve 'policyid' from the URL parameters
-  policyid = urlParams.get("policyid");
-  console.log("policyid:", policyid);
-
-
+  const btnSaveDraftForm = document.getElementById('btnSaveDraftForm');
+  id = urlParams.get("id");
 
   //หากไม่มีpolicy หรืออยู่step create quote
-  if (!policyid) {
-
+  if (!id) {
     paymentContainer.querySelectorAll("input, select").forEach((field) => {
       field.removeAttribute("required");
     });
@@ -57,93 +53,91 @@ document.addEventListener("DOMContentLoaded", function () {
     btnEditForm.style.display = "none";
   }
 
-  if (policyid) {
-    btnSaveForm.textContent = "Create Policy"
-    btnSaveForm.title = "Please make the payment"
-    const addCoverButton = document.querySelector(".add-cover");
-    const seePlanButton = document.querySelector(".seePlan");
-    btnDraftForm.style.display = "none";
-    policyInput.value = policyid
-    paymentContainer.removeAttribute("hidden");
+  if (id) {
+    async function handleQuotation(id) {
+      try {
+        const response = await jQuery.agent.getQuotationWithId(id);
+        if (response?.result !== "success") {
+          throw new Error("Failed to fetch quotation");
+        }
 
+        console.log("Response:", response);
+        setDefaultValueForm(response?.data);
+        const extractData = extractQuotationData(response?.data);
+        quotationData = extractData;
+        policyid = response?.data?.policyId
+        const policyId = response?.data?.policyId;
+        const policyNo = response?.data?.policyNo;
+        console.log("policyNo:", policyNo)
 
+        if (policyId && !policyNo) {
+          configureCreatePolicyState();
+        } else if (policyNo) {
+          // Policy already issued
+          console.log("Issued Policy");
+          hideAllFormElements();
+        }
 
-    if (addCoverButton) {
-      addCoverButton.setAttribute("hidden", "true");
+        if (policyId) {
+          const paymentResponse = await jQuery.agent.getPaymentLogWithId(policyId);
+          handlePaymentResponse(paymentResponse);
+          responsePayment = paymentResponse?.data;
+
+        }
+
+        // Ensure payment container fields aren't marked as required
+        paymentContainer.querySelectorAll("input, select").forEach((field) => {
+          field.removeAttribute("required");
+        });
+
+      } catch (error) {
+        console.error("Error occurred:", error);
+      }
     }
 
-    if (seePlanButton) {
-      seePlanButton.setAttribute("hidden", "true");
+    function configureCreatePolicyState() {
+      btnSaveForm.textContent = "Create Policy";
+      btnSaveForm.title = "Please make the payment";
+      btnDraftForm.style.display = "none";
+
+      paymentContainer.removeAttribute("hidden");
+
+      const formElements = document.querySelectorAll(
+        "input:not(#payment-container input), select:not(#payment-container select), button:not(#payment-container button):not(#btnSaveForm):not(#btnEditForm)"
+      );
+      hideFormData(formElements);
+    }
+
+    function hideAllFormElements() {
+      const formElements = document.querySelectorAll("input, select, button");
+      hideFormData(formElements);
+
+      btnSaveDraftForm.style.display = "none";
+      btnSaveForm.style.display = "none";
+    }
+
+    function handlePaymentResponse(paymentResponse) {
+      btnSaveDraftForm.style.display = "none";
+
+      if (paymentResponse?.data?.result !== "SUCCESS") {
+        // Payment not successful
+        btnSaveForm.disabled = true;
+        btnSaveForm.style.opacity = "0.65";
+        btnEditForm.style.display = "block";
+      } else {
+        // Payment successful
+        console.log("paymentResponse:", paymentResponse)
+        populatePaymentForm(paymentResponse?.data)
+        const formElements = document.querySelectorAll(
+          "input, select, button:not(#btnSaveForm)"
+        );
+        hideFormData(formElements);
+        btnEditForm.style.display = "none";
+      }
     }
 
 
-    const formElements = document.querySelectorAll(
-      "input:not(#payment-container input), select:not(#payment-container select), button:not(#payment-container button):not(#btnSaveForm):not(#btnEditForm)"
-    );
-
-
-    hideFormData(formElements)
-
-    $("#datepicker, #datepicker2, #datepicker3, #datepicker4, #datepicker5, #datepicker6").each(function () {
-      $(this).attr("readonly", true).on('focus', function (event) {
-        event.preventDefault(); // Prevent datepicker from opening
-      });
-    });
-
-
-
-    // Fetch the quotation data with the policy ID
-    jQuery.agent
-      .getQuotationWithId(policyid)
-      .then((response) => {
-        if (response?.result == "success") {
-          console.log("Response:", response);
-          setDefaultValueForm(response?.data);
-          const extractData = extractQuotationData(response?.data);
-          quotationData = extractData;
-        }
-      })
-      .catch((error) => {
-        console.error("Error occurred:", error);
-      });
-
-    jQuery.agent
-      .getPaymentLogWithId(policyid)
-      .then((response) => {
-        console.log("response:", response)
-
-        //if payment successful but no policy
-        if (response?.data?.result == "SUCCESS") {
-          responsePayment = response?.data
-
-          jQuery.agent.getPolicyCreateOrNot(policyid).then((response) => {
-            //if policy was successfully created
-            if (response?.result == "success") {
-              btnSaveForm.setAttribute("hidden", "true");
-            } else {
-              paymentContainer.querySelectorAll("input, select").forEach((field) => {
-                field.removeAttribute("required");
-              });
-            }
-
-          })
-          const paymentElements = document.querySelectorAll(
-            "input, select, button:not(#btnSaveForm)"
-          );
-
-          hideFormData(paymentElements)
-          btnDraftForm.setAttribute("hidden", "true");
-          btnEditForm.setAttribute("hidden", "true");
-        }
-        // if no payment
-        else {
-          btnSaveForm.disabled = true;
-          btnSaveForm.style.opacity = "0.65"; // Visual indication of being disabled
-        }
-      })
-      .catch((error) => {
-        console.error("Error occurred:", error);
-      });
+    handleQuotation(id);
   }
 
 });
@@ -182,4 +176,34 @@ function extractQuotationData(data) {
     console.error("Error extracting quotation data:", error);
     return null;
   }
+}
+function populatePaymentForm(paymentData) {
+  // Payment Mode
+  const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
+  paymentModeSelect.value = paymentData.payment_mode;
+
+  // Payment Frequency
+  const paymentFrequencyAnnual = document.querySelector('#paymentFrequencyAnnual');
+  const paymentFrequencyMonthly = document.querySelector('#paymentFrequencyMonthly');
+  if (paymentData.payment_frequency === 1) {
+    paymentFrequencyAnnual.checked = true;
+  } else if (paymentData.payment_frequency === 2) {
+    paymentFrequencyMonthly.checked = true;
+  }
+
+  // Card Type
+  const cardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
+  cardTypeSelect.value = paymentData.card_type;
+
+  // Card Number
+  const cardNumberInput = document.querySelector('input[name="payment_cardNumber"]');
+  cardNumberInput.value = paymentData.card_number;
+
+  // Expiry Date (MM/YY)
+  const expiryDateInput = document.querySelector('input[name="payment_expiryDate"]');
+  expiryDateInput.value = `${paymentData.card_expiry_month}/${paymentData.card_expiry_year.slice(-2)}`; // Format as MM/YY
+
+  // Security Code
+  const securityCodeInput = document.querySelector('input[name="payment_securityCode"]');
+  securityCodeInput.value = paymentData.card_security_code;
 }

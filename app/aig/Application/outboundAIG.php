@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 ob_start();
 header('Content-Type: application/json; charset=UTF-8');
 // Function to fetch data for agents
-function DBGetPolicyDetailsWithId($policyId)
+function DBGetQuoteDetailsWithId($id)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -21,12 +21,12 @@ function DBGetPolicyDetailsWithId($policyId)
     }
 
     // Prepare the SQL query to select data by policyId
-    $sql = "SELECT id, policyId, productId, distributionChannel, producerCode, propDate, policyEffDate, policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable, quoteLapseDate, `type`,remarksC
-        FROM t_aig_app WHERE policyId = ?";
+    $sql = "SELECT *
+        FROM t_aig_app WHERE id = ?";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind the policyId parameter
-        $stmt->bind_param("i", $policyId);
+        $stmt->bind_param("i", $id);
 
         // Execute the statement
         $stmt->execute();
@@ -51,46 +51,7 @@ function DBGetPolicyDetailsWithId($policyId)
     // Close the database connection
     $dbconn->dbconn->close();
 }
-function DBGetDraftDataWithId($draftid)
-{
-    $dbconn = new dbconn();
-    $res = $dbconn->createConn();
 
-    if ($res == "404") {
-        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
-        exit();
-    }
-
-    // Prepare the SQL query to select data by policyId
-    $sql = "SELECT * FROM t_aig_app_draft WHERE policyId = ?";
-
-    if ($stmt = $dbconn->dbconn->prepare($sql)) {
-        // Bind the policyId parameter
-        $stmt->bind_param("i", $draftid);
-
-        // Execute the statement
-        $stmt->execute();
-
-        // Get the result
-        $result = $stmt->get_result();
-
-        // Fetch the data as an associative array
-        if ($result->num_rows > 0) {
-            $data = $result->fetch_assoc();
-            echo json_encode(array("result" => "success", "data" => $data));
-        } else {
-            echo json_encode(array("result" => "error", "message" => "No data found for the given policyId"));
-        }
-
-        // Close the statement
-        $stmt->close();
-    } else {
-        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement"));
-    }
-
-    // Close the database connection
-    $dbconn->dbconn->close();
-}
 function DBGetPaymentLogWithId($policyId)
 {
     $dbconn = new dbconn();
@@ -275,7 +236,7 @@ function DBInsertDraftQuoteData($formData, $type)
         echo json_encode(array("result" => "success", "message" => "Data inserted successfully"));
     }
 }
-function DBUpdateDraftQuoteData($formData, $type,$draftid)
+function DBUpdateQuoteData($formData, $response, $type, $id)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -284,12 +245,13 @@ function DBUpdateDraftQuoteData($formData, $type,$draftid)
         echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
         exit();
     }
-   
-    if (empty($draftid)) {
-        echo json_encode(array("result" => "error", "message" => "draftid is required for updating"));
+
+    if (empty($id)) {
+        echo json_encode(array("result" => "error", "message" => "id is required for updating"));
         return;
     }
 
+    // Form data
     $productId = isset($formData['productId']) ? (int)$formData['productId'] : 0;
     $type = isset($type) ? $type : '';
     $remarksC = isset($formData['remarksC']) ? $formData['remarksC'] : '';
@@ -303,12 +265,19 @@ function DBUpdateDraftQuoteData($formData, $type,$draftid)
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
 
+    // Response data
+    $policyId = isset($response['policyId']) ? $response['policyId'] : '';
+    $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
+    $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
+    $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDate($response['quoteLapseDate']) : null;
+
+    // Escape the strings for safe query execution
     $ncdInfo = mysqli_real_escape_string($dbconn->dbconn, $ncdInfo);
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
 
-    // SQL query to update the record
-    $sql = "UPDATE t_aig_app_draft
+    // Initialize the SQL query
+    $sql = "UPDATE t_aig_app
         SET 
             type = '$type',
             productId = $productId,
@@ -321,12 +290,22 @@ function DBUpdateDraftQuoteData($formData, $type,$draftid)
             ncdInfo = '$ncdInfo',
             policyHolderInfo = '$policyHolderInfo',
             insuredList = '$insuredList',
-            remarksC = '$remarksC'
-        WHERE policyId = '$draftid'";
+            remarksC = '$remarksC',
+            policyId = '$policyId',
+            quoteNo = '$quoteNo',
+            premiumPayable = '$premiumPayable',
+            quoteLapseDate = " . ($quoteLapseDate === null ? 'NULL' : "'$quoteLapseDate'") . "";
+
+    // Add quote_create_date if response is not null
+    if (!empty($response)) {
+        $sql .= ", quote_create_date = NOW()";
+    }
+
+    // Complete the WHERE clause
+    $sql .= " WHERE id = '$id'";
 
     // Execute query
     $result = $dbconn->executeUpdate($sql);
-
 
     header('Content-Type: application/json; charset=UTF-8');
     if (!$result) {
@@ -335,9 +314,42 @@ function DBUpdateDraftQuoteData($formData, $type,$draftid)
     } else {
         echo json_encode(array("result" => "success", "message" => "Data updated successfully"));
     }
-
-
 }
+
+function DBUpdatePolicyNo($policyid, $policyNo)
+{
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    // Use prepared statements to avoid SQL injection
+    $sql = "UPDATE t_aig_app SET policyNo = ?, policy_create_date = NOW() WHERE policyId = ?";
+
+    if ($stmt = $dbconn->dbconn->prepare($sql)) {
+        // Bind parameters
+        $stmt->bind_param("si", $policyNo, $policyid);
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            echo json_encode(array("result" => "success", "message" => "Policy number and creation date updated successfully"));
+        } else {
+            echo json_encode(array("result" => "error", "message" => "Update failed: " . $stmt->error));
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement"));
+    }
+
+    // Close the database connection
+    $dbconn->dbconn->close();
+}
+
 
 function DBInsertPolicyData($policyid, $policyNo)
 {
@@ -481,19 +493,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $type = isset($data['type']) ? $data['type'] : "";
             DBInsertDraftQuoteData($formData, $type);
         } 
-        elseif ($data['action'] === 'updateDraftQuoteData') {
+        elseif ($data['action'] === 'updateQuoteData') {
             $formData = isset($data['formData']) ? $data['formData'] : array();
+            $response = isset($data['response']) ? $data['response'] : array();
             $type = isset($data['type']) ? $data['type'] : "";
-            $draftid = isset($data['draftid']) ? $data['draftid'] : "";
-            DBUpdateDraftQuoteData($formData, $type,$draftid);
+            $id = isset($data['id']) ? $data['id'] : "";
+            DBUpdateQuoteData($formData,$response ,$type,$id);
         } 
         elseif ($data['action'] === 'getQuotationWithId') {
-            $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
-            DBGetPolicyDetailsWithId($policyid);
-        } 
-        elseif ($data['action'] === 'getDraftDataWithId') {
-            $draftid = isset($data['draftid']) ? $data['draftid'] : 0;
-            DBGetDraftDataWithId($draftid);
+            $id = isset($data['id']) ? $data['id'] : 0;
+            DBGetQuoteDetailsWithId($id);
         } 
         elseif ($data['action'] === 'getPaymentLogWithId') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
@@ -509,7 +518,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
 
             DBInsertPolicyData($policyid, $policyNo);
-        }  elseif ($data['action'] === 'insertPaymentLog') {
+        } 
+        elseif ($data['action'] === 'updatePolicyNo') {
+            $policyid = isset($data['policyid']) ? $data['policyid'] : "";
+            $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
+
+            DBUpdatePolicyNo($policyid, $policyNo);
+        } 
+         elseif ($data['action'] === 'insertPaymentLog') {
             $request = isset($data['request']) ? $data['request'] : array();
             $response = isset($data['response']) ? $data['response'] : array();
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
