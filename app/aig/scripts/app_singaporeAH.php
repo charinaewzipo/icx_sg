@@ -229,9 +229,18 @@ where name='PA Nature of Business'";
                   
                 </td>
                  
-                </tr>
+          
             </tbody>
-           
+                 </tr>
+                <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="float:inline-end">
+                    <button type="button" class="button add-cover" onclick="addCoverRowIndex(${index})" style="margin: 5px 0;">Add Cover</button>
+                </td>
+            </tr>
         </tbody>
     </table>
     <hr style="margin:10px 0px">
@@ -261,23 +270,31 @@ function fetchCoverList(planId, planPoi,insuredDob,index) {
     })
     .then(response => response.text())
     .then(data => {
-        const selectElement = document.querySelector(`#coverListBody${index} select`);
+        const selectElement = document.querySelector(`#coverListBody${index} select.planCoverList`);
         selectElement.innerHTML = data;
+        
+        // Add event listener to update the limit amount field
         selectElement.addEventListener('change', function() {
-            handleCoverChange(this, index);
+            const selectedOption = this.options[this.selectedIndex];
+            const limitInput = document.querySelector(`#planCoverLimitAmount${index}`);
+            
+            if (selectedOption) {
+                const netPremium = selectedOption.getAttribute('data-netpremium');
+                limitInput.value = netPremium ? netPremium : '';
+            }
         });
     })
     .catch(error => console.error('Error fetching cover list:', error));
 }
-function handleCoverChange(selectElement, index) {
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const selectedNetPremium = selectedOption.getAttribute('data-netpremium');
-    const relatedElement = document.querySelector(`#planCoverLimitAmount${index}`);
+// function handleCoverChange(selectElement, index) {
+//     const selectedOption = selectElement.options[selectElement.selectedIndex];
+//     const selectedNetPremium = selectedOption.getAttribute('data-netpremium');
+//     const relatedElement = document.querySelector(`#planCoverLimitAmount${index}`);
     
-    if (relatedElement) {
-        relatedElement.value = selectedNetPremium; 
-    } 
-}
+//     if (relatedElement) {
+//         relatedElement.value = selectedNetPremium; 
+//     } 
+// }
 
     function addPlanInfoSections(count) {
         const insuredContainer = document.getElementById('insured-list-ah');
@@ -290,6 +307,8 @@ function handleCoverChange(selectElement, index) {
 
     // Add 3 Plan Info sections when the page loads
     document.addEventListener('DOMContentLoaded', () => {
+       
+
         const queryString = window.location.search;
          const urlParams = new URLSearchParams(queryString);
          checkParamsId = urlParams.get("id");
@@ -304,6 +323,10 @@ function handleCoverChange(selectElement, index) {
             // attachCoverSelectEventListeners()
         }, 2000)
 
+
+
+
+        
         function attachPlanSelectEventListeners() {
             const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
 
@@ -420,48 +443,84 @@ function handleCoverChange(selectElement, index) {
             }
         };
 
-        window.addCoverRowIndex = function(index) {
-            const coverListBody = document.getElementById(`coverListBody${index}`);
-            const planSelect = document.getElementById(`planSelect${index}`);
+        // A set to keep track of selected option values
+const selectedOptionValues = new Set();
 
-            if (!planSelect || planSelect.value === "") {
-                alert("Please select a plan first.");
-                return;
-            }
+window.addCoverRowIndex = function(index) {
+    const coverListBody = document.getElementById(`coverListBody${index}`);
 
-            // const planId = planSelect.value;
-            // const planListData = planData.insuredList[0]; // Assuming insuredList[0] contains the plan data
-            // const plan = planListData.planList[planId];
+    const newRow = document.createElement("tr");
+    newRow.classList.add("cover-row");
 
-            // if (!plan || !plan.coverList) {
-            //     alert("No covers available for the selected plan.");
-            //     return;
-            // }
+    newRow.innerHTML = `
+        <td style="padding:0 30px">Cover Name: <span style="color:red">*</span> </td>
+        <td>
+            <select name="plan_cover_list_${index}[]" class="planCoverList" style="max-width: 216px;" >
+                <option value="">
+                    &lt;-- Please select an option --&gt;
+                </option>
+                <!-- Options will be populated here -->
+            </select>
+        </td>
+        <td></td>
+        <td>Limit Amount:</td>
+        <td>
+            <input type="text" class="planCoverLimitAmount${index}" id="planCoverLimitAmount${index}" readonly>
+        </td>
+        <td>
+            <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer;" type="button" class="removeCoverBtn" onclick="removeCoverRowIndex(this, ${index})">Remove</button>
+        </td>
+    `;
 
-            const newRow = document.createElement("tr");
-            newRow.classList.add("cover-row");
+    coverListBody.appendChild(newRow);
 
-            
-            newRow.innerHTML = `
-            <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
-            <td>
-                <select name="plan_cover_list_${index}[]" class="planCoverList" required>
-                    <!-- Options will be populated by JavaScript -->
-                </select>
-            </td>
-            <td></td>
-              <td>
-                        <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer;" type="button" class="removeCoverBtn" onclick="removeCoverRowIndex(this,${index})">Remove</button>
-                    </td>
-           
-        `;
+    const newCoverSelect = newRow.querySelector(".planCoverList");
+    populateCoverOptionsAH(newCoverSelect, index);
+    
+    // Add event listener to update the limit amount field
+    newCoverSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const limitInput = newRow.querySelector(`.planCoverLimitAmount${index}`);
+        
+        if (selectedOption) {
+            const netPremium = selectedOption.getAttribute('data-netpremium');
+            limitInput.value = netPremium ? netPremium : '';
+        }
+        
+        // Update the set with the newly selected option
+        selectedOptionValues.add(selectedOption.value);
+    });
+};
 
-            coverListBody.appendChild(newRow);
+// Function to populate options and disable already selected options
+function populateCoverOptionsAH(selectElement, index) {
+    const options = [
+        { value: "58", netPremium: "20.28", name: "Plan 1" },
+        { value: "59", netPremium: "31.15", name: "Plan 2" },
+        { value: "60", netPremium: "43.72", name: "Plan 3" }
+    ];
 
-            const newCoverSelect = newRow.querySelector(".planCoverList");
-            populateCoverOptionsAH(newCoverSelect, plan.coverList);
-            disableSelectedOptionsAH(index);
-        };
+    selectElement.innerHTML = `
+        <option value="">
+            &lt;-- Please select an option --&gt;
+        </option>
+    `;
+
+    options.forEach(option => {
+        const optionElement = document.createElement("option");
+        optionElement.value = option.value;
+        optionElement.textContent = option.name;
+        optionElement.setAttribute('data-netpremium', option.netPremium);
+
+        // Disable options that are already selected
+        if (selectedOptionValues.has(option.value)) {
+            optionElement.disabled = true;
+        }
+
+        selectElement.appendChild(optionElement);
+    });
+}
+
         function populateCoverOptionsAHAutomatic(selectElement, coversList, coverIndex) {
     if (!coversList || coversList.length === 0) {
         console.error('Covers list is empty or undefined');
@@ -762,4 +821,5 @@ function populatePlanDropdown(data, index) {
         selectElement.appendChild(option);
     });
 }
+
 </script>
