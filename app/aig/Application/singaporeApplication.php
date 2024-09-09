@@ -118,9 +118,10 @@ require("../scripts/app_singaporeAH.php")
   </script>
   <script>
     var datepickerOptions = {
-    dateFormat: 'mm/dd/yy',
-    changeMonth: true,
-    changeYear: true,
+      yearRange: "c-80:c+20",
+      changeMonth: true,
+      changeYear: true,
+      dateFormat: 'mm/dd/yy',
     showAnim: "slideDown"
 };
     $(function() {
