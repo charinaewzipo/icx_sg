@@ -320,6 +320,11 @@ const manualSetDefaultValueFormCallingList = (data) => {
   // document.querySelector('select[name="select-product"]').value = data.udf2;
   document.querySelector('input[name="firstName"]').value = data.name;
   document.querySelector('input[name="dateOfBirth"]').value = data.dob;
+  const dob = data.dob;
+  if (dob) {
+    const age = calculateAge(dob);
+    document.getElementById('agePolicyHolder').value = age;
+  }
   document.querySelector('input[name="customerIdNo"]').value = data.passport_no; // Assuming using passport_no as customerIdNo
   document.querySelector('input[name="mobileNo"]').value = data.udf1;
   document.querySelector('input[name="emailId"]').value = data.email || ""; // Use email from data if available
@@ -519,6 +524,11 @@ const setInsuredPerson = (insuredData) => {
       personInfo.insuredDateOfBirth.split(
         "T"
       )[0] || "";
+    const dob = personInfo.insuredDateOfBirth;
+    if (dob) {
+      const age = calculateAge(dob);
+      section.querySelector('[name^="ageInsuredPerson_"]').value = age;
+    }
     section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value =
       personInfo.insuredMaritalStatus || "";
     section.querySelector('[name^="insured_ah_insuredOccupation_"]').value =
@@ -669,6 +679,11 @@ const setDefaultValueForm = (dbData) => {
     individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth.split(
       "T"
     )[0];
+  const dob = individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth;
+  if (dob) {
+    const age = calculateAge(dob);
+    document.getElementById('agePolicyHolder').value = age;
+  }
   document.querySelector('select[name="maritalStatus"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.maritalStatus;
   document.querySelector('select[name="occupation"]').value =

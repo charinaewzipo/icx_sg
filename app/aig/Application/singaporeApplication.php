@@ -118,6 +118,8 @@ require("./getToken.php");
     console.log("campaignID:", campaignID)
   </script>
   <script>
+
+    
     var datepickerOptions = {
       yearRange: "c-80:c+20",
       changeMonth: true,
@@ -127,7 +129,11 @@ require("./getToken.php");
 };
     $(function() {
       $("#datepicker").datepicker($.extend({}, datepickerOptions, {
-    maxDate: new Date()
+    maxDate: new Date(),
+    onSelect: function(dateText) {
+      const age = calculateAge(dateText);
+      $("#agePolicyHolder").val(age);
+    }
 }));
 
 $("#datepicker2").datepicker($.extend({}, datepickerOptions, {
@@ -156,13 +162,19 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
 
       //insured person date
       for (var i = 1; i <= 10; i++) {
-    $("#datepicker-" + i).datepicker({
-        maxDate: new Date(),
-        dateFormat: 'mm/dd/yy',  // Add any other common options
-        changeMonth: true,
-        changeYear: true,
-        showAnim: "slideDown"
-    });
+        $("#datepicker-" + i).datepicker({
+    yearRange: "c-80:c+20",
+    maxDate: new Date(),
+    dateFormat: 'mm/dd/yy',
+    changeMonth: true,
+    changeYear: true,
+    showAnim: "slideDown",
+    onSelect: function(dateText) {
+        const age = calculateAge(dateText);
+
+        $(`#ageInsuredPerson_${i}`).val(age);
+    }
+});
 }
     });
 
@@ -362,7 +374,7 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
       <fieldset id="form-content">
         <br>
         <h1 style="padding-left:0.5em">Individual Policy Holder Info</h1><br>
-        <legend>Policy Holder info</legend>
+        <legend>Policy Holder Info</legend>
 
         <table id="table-form" hidden>
           <tr>
@@ -465,7 +477,10 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
                 <input type="text" id="datepicker" name="dateOfBirth" maxlength="10" required>
               </td>
               <th>&nbsp;</th>
-
+              <td>Age :</td>   
+              <td>
+    <input type="text" id="agePolicyHolder" name="agePolicyHolder" maxlength="4"  readonly style="max-width:50px">  years old
+  </td>
             </tr>
             <tr>
               <td style="white-space:nowrap">Marital Status : <span style="color:red">*</span> </td>
@@ -536,7 +551,7 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
                 </select>
               </td>
               <th>&nbsp;</th>
-              <td>CustomerId No. <span style="color:red">*</span></td>
+              <td>CustomerId No. : <span style="color:red">*</span></td>
               <td><input type="text" name="customerIdNo" maxlength="60" size="30" required /></td>
             </tr>
             <tr>

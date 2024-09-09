@@ -99,9 +99,15 @@ async function fetchQuotation(requestBody) {
 
     // Alert based on statusCode
     if (data?.statusCode === "S03") {
-      await jQuery.agent.updateQuoteData(requestBody, data, id);
-      window.alert(data?.statusMessage || "Successfully!");
-      window.location.reload();
+      if (id) {
+        await jQuery.agent.updateQuoteData(requestBody, data, id);
+        window.alert(data?.statusMessage || "Successfully!");
+        window.location.reload();
+      } else {
+        await jQuery.agent.insertQuotationData(requestBody, data);
+        window.alert(data?.statusMessage || "Successfully!");
+        window.location.reload();
+      }
     } else {
       window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
     }

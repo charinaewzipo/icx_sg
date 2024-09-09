@@ -590,6 +590,8 @@ document.addEventListener('DOMContentLoaded', function () {
   } else {
     console.error('The submit button was not found');
   }
+
+
 });
 //initial
 window.onload = function () {
@@ -601,17 +603,17 @@ document.addEventListener("DOMContentLoaded", () => {
   selectedType = urlParams.get("formType");
   handleTypeConfirmQuote();
 
+
 });
 document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
-
-
   // manualSetDefaultValueForm();
   // manualSetInsuredPerson()
   // manualSetInsuredVehicleList();
 
 });
+
 
 const removeKeysFromQuotationData = (data) => {
   const keysToRemove = ['quoteLapseDate', 'quoteNo', 'type', 'premiumPayable', 'id', 'propDate'];

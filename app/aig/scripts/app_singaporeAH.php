@@ -86,24 +86,10 @@
                 <td>Insured Date Of Birth: <span style="color:red">*</span></td>
                 <td><input type="text" id="datepicker-${index}" name="insured_ah_insuredDateOfBirth_${index}" maxlength="60" required /></td>
                 <th style="width:50px">&nbsp;</th>
-                <td>Insured Marital Status: <span style="color:red">*</span></td>
-                <td>
-                    <select name="insured_ah_insuredMaritalStatus_${index}" required>
-                        <option value=""> <-- Please select an option --></option>
-                        <?php
-                        $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredMaritalStatus'";
-                        $objQuery = mysqli_query($Conn, $strSQL);
-                        while ($objResuut = mysqli_fetch_array($objQuery)) {
-                            $data[] = $objResuut;
-                        ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                        }
-                    ?>
-                    </select>
-                </td>
+               <td>Age :</td>   
+              <td>
+                <input type="text" id="ageInsuredPerson_${index}" name="ageInsuredPerson_${index}" maxlength="4" readonly  style="max-width:50px">  years old
+              </td>
             </tr>
             <tr>
                 <td>Insured Occupation: <span style="color:red">*</span></td>
@@ -149,13 +135,26 @@ where name='PH Relation'";
                     </select>
                 </td>
             </tr>
-            <tr>
-                <td>Insured Campaign Code: <span style="color:red">*</span></td>
-                <td><input type="text" name="insured_ah_insuredCampaignCode_${index}" maxlength="60" required /></td>
+            <tr> <td>Insured Marital Status: <span style="color:red">*</span></td>
+                <td>
+                    <select name="insured_ah_insuredMaritalStatus_${index}" required>
+                        <option value=""> <-- Please select an option --></option>
+                        <?php
+                        $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredMaritalStatus'";
+                        $objQuery = mysqli_query($Conn, $strSQL);
+                        while ($objResuut = mysqli_fetch_array($objQuery)) {
+                            $data[] = $objResuut;
+                        ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                        }
+                    ?>
+                    </select>
+                </td>
                 <th style="width:50px">&nbsp;</th>
-            </tr>
-            <tr>
-                <td>Nature Of Business: <span style="color:red">*</span></td>
+  <td>Nature Of Business: <span style="color:red">*</span></td>
                 <td>
                     <select name="insured_ah_natureOfBusiness_${index}" required>
                         <option value=""> <-- Please select an option --></option>
@@ -176,6 +175,13 @@ where name='PA Nature of Business'";
                     ?>
                     </select>
                 </td>
+                
+            </tr>
+            <tr>
+            <td>Insured Campaign Code: <span style="color:red">*</span></td>
+                <td><input type="text" name="insured_ah_insuredCampaignCode_${index}" maxlength="60" required /></td>
+                
+              
                 <th style="width:50px">&nbsp;</th>
                 <td>
                     <button type="button" class="button seePlan" id="btnPaymentOnline${index}" onclick="fetchPlanData(${index})">See plan</button>
@@ -303,7 +309,25 @@ function fetchCoverList(planId, planPoi,insuredDob,index) {
             const insuredSectionHTML = createListAhSection(i);
             insuredContainer.innerHTML += insuredSectionHTML;
         }
+        for (let i = 1; i <= count; i++) {
+        initializeDatepicker(i);
     }
+    }
+    function initializeDatepicker(index) {
+    $(`#datepicker-${index}`).datepicker({
+        yearRange: "c-80:c+20",
+        maxDate: new Date(),
+        dateFormat: 'mm/dd/yy',
+        changeMonth: true,
+        changeYear: true,
+        showAnim: "slideDown",
+        onSelect: function(dateText) {
+            const age = calculateAge(dateText);
+            console.log("age:", age)
+            $(`#ageInsuredPerson_${index}`).val(age);
+        }
+    });
+}
 
     // Add 3 Plan Info sections when the page loads
     document.addEventListener('DOMContentLoaded', () => {
@@ -697,10 +721,16 @@ function createAndPopulateRow(index, coversList, coverIndex) {
     function calculateAge(dob) {
     const dobDate = new Date(dob);
     const today = new Date();
-    const age = today.getFullYear() - dobDate.getFullYear();
-    const monthDiff = today.getMonth() - dobDate.getMonth();
     
-    // If the month difference is negative or the current month is before the birth month, subtract 1 year
+    if (isNaN(dobDate.getTime())) {
+        console.error('Invalid Date:', dob);
+        return '';  // Return empty if invalid date
+    }
+    
+    let age = today.getFullYear() - dobDate.getFullYear();
+    const monthDiff = today.getMonth() - dobDate.getMonth();
+
+    // Adjust the age if the current month is before the birth month, or it's the birth month but the current date is before the birth date
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
         age--;
     }
