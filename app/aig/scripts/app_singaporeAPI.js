@@ -459,28 +459,7 @@ async function fetchPayment(requestBody) {
     document.body.classList.remove('loading');
   }
 }
-
-function fetchTokenAiG() {
-  fetch('../scripts/get_aig_token.php', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  })
-    .then(response => {
-
-      return response.json()
-    })
-    .then(data => {
-      if (data && data.current_token) {
-        token = data?.current_token || data?.default_token
-
-      } else {
-        console.error('No valid token found in the response:', data);
-      }
-    })
-    .catch(error => console.error('Error fetching token:', error));
-}
 document.addEventListener("DOMContentLoaded", function () {
-  fetchTokenAiG()
+  token = localStorage.getItem('accessToken')
+  console.log("token:", token)
 })
