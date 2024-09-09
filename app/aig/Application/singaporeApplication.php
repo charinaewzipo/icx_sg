@@ -359,8 +359,8 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
       <!--Form Individual PolicyHolder Info -->
       <fieldset id="form-content">
         <br>
-        <h1 style="padding-left:0.5em">Individual PolicyHolder Info</h1><br>
-        <legend>PolicyHolder Info</legend>
+        <h1 style="padding-left:0.5em">Individual Policy Holder Info</h1><br>
+        <legend>Policy Holder info</legend>
 
         <table id="table-form" hidden>
           <tr>
@@ -404,7 +404,7 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
               </td>
               <td>&nbsp;</td>
 
-              <td>Fullname : <span style="color:red">*</span></td>
+              <td>Full Name : <span style="color:red">*</span></td>
               <td><input type="text" name="firstName" maxlength="100" size="30" required /></td>
               <td><input type="text" name="lastName" maxlength="60" size="30" hidden/></td>
             </tr>

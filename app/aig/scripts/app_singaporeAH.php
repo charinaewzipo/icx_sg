@@ -11,10 +11,10 @@
                 </td>
             </tr>
             <tr>
-                <td>Insured Firstname: <span style="color:red">*</span></td>
+                <td>Insured First Name: <span style="color:red">*</span></td>
                 <td><input type="text" name="insured_ah_insuredFirstName_${index}" maxlength="60" required /></td>
                 <th style="width:50px">&nbsp;</th>
-                <td>Insured Lastname:</td>
+                <td>Insured Last Name:</td>
                 <td><input type="text" name="insured_ah_insuredLastName_${index}" maxlength="60" /></td>
             </tr>
             <tr>
@@ -128,7 +128,7 @@ where name='PA Occupation'";
                     </select>
                 </td>
                 <th style="width:50px">&nbsp;</th>
-                <td>Relation To Policyholder:<span style="color:red">*</span></td>
+                <td>Relation To Policy Holder:<span style="color:red">*</span></td>
                 <td>
                     <select name="insured_ah_relationToPolicyholder_${index}" required>
                         <option value=""> <-- Please select an option --></option>
