@@ -15,9 +15,9 @@
 			{ title: 'Product',data: "camp", width: "25%" },
 			{ title: 'Sale Date',data: "saledt", width: "10%" },
 			{ title: 'App Status',data: "appsts", width: "10%" },
-			{ title: 'Owner',data: "owner" , width: "10%"},
-			{ title: 'QC Name',data: "qc_name" , width: "10%"},
-			{ title: 'QA Name',data: "qa_name" , width: "10%"},
+			// { title: 'Owner',data: "owner" , width: "10%"},
+			// { title: 'QC Name',data: "qc_name" , width: "10%"},
+			// { title: 'QA Name',data: "qa_name" , width: "10%"},
 			{ 'data': null, title: 'Action', wrap: true, width: "10%", orderable: false, "render": function (data) { 
 					let linkProduct = 'app/aig/Application/check_app.php' ;
 					let linkQaForm = 'app/aig/Application/check_qa.php' ;

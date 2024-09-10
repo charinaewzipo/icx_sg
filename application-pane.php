@@ -93,9 +93,13 @@
  						 <span style="font-size:15px; line-height:30px;color:#666">App Status  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </span>
              <select style="width:250px; height:30px;" name="search_sts">
         			  <option value="">ALL</option>
-        			  <option value="Follow-doc" >Follow-doc</option>
+        			  <option value="Open">Open</option>
+        			  <option value="Pending">Pending</option>
+        			  <option value="Escalation">Escalation</option>
+        			  <option value="Closed">Closed</option>
+        			  <!-- <option value="Follow-doc" >Follow-doc</option>
 					  <option value="Submit">Submit</option>
-					  <option value="Re-submit">Re-submit</option>
+					  <option value="Re-submit">Re-submit</option> -->
 <?php
  	session_start();
 	$lv = $_SESSION["pfile"]["lv"];
