@@ -538,8 +538,8 @@ const setInsuredPerson = (insuredData) => {
     ).value = personInfo.relationToPolicyholder || "";
     section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value =
       personInfo.insuredCampaignCode || "";
-    section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value =
-      personInfo.natureOfBusiness || "";
+    // section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value =
+    //   personInfo.natureOfBusiness || "";
 
 
     const populatePlanAndCovers = (planInfo, section, index) => {

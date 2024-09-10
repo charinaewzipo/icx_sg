@@ -79,13 +79,15 @@ require("./getToken.php");
   #insured-list-ah hr:last-child {
     display: none;
   }
-  .draft-button{
+
+  .draft-button {
     background-color: #fff !important;
-    color:#52525e !important; 
+    color: #52525e !important;
     border: 1px solid #52525e !important;
-    &:hover{
-      background-color: #52525e!important;
-      color:#fff !important;
+
+    &:hover {
+      background-color: #52525e !important;
+      color: #fff !important;
     }
   }
 </style>
@@ -118,39 +120,37 @@ require("./getToken.php");
     console.log("campaignID:", campaignID)
   </script>
   <script>
-
-    
     var datepickerOptions = {
       yearRange: "c-80:c+20",
       changeMonth: true,
       changeYear: true,
       dateFormat: 'mm/dd/yy',
-    showAnim: "slideDown"
-};
+      showAnim: "slideDown"
+    };
     $(function() {
       $("#datepicker").datepicker($.extend({}, datepickerOptions, {
-    maxDate: new Date(),
-    onSelect: function(dateText) {
-      const age = calculateAge(dateText);
-      $("#agePolicyHolder").val(age);
-    }
-}));
+        maxDate: new Date(),
+        onSelect: function(dateText) {
+          const age = calculateAge(dateText);
+          $("#agePolicyHolder").val(age);
+        }
+      }));
 
-$("#datepicker2").datepicker($.extend({}, datepickerOptions, {
-    maxDate: new Date()
-}));
+      $("#datepicker2").datepicker($.extend({}, datepickerOptions, {
+        maxDate: new Date()
+      }));
 
-$("#datepicker3").datepicker(datepickerOptions);
+      $("#datepicker3").datepicker(datepickerOptions);
 
-$("#datepicker4").datepicker(datepickerOptions);
+      $("#datepicker4").datepicker(datepickerOptions);
 
-$("#datepicker5").datepicker($.extend({}, datepickerOptions, {
-    minDate: new Date()
-}));
+      $("#datepicker5").datepicker($.extend({}, datepickerOptions, {
+        minDate: new Date()
+      }));
 
-$("#datepicker6").datepicker($.extend({}, datepickerOptions, {
-    minDate: new Date()
-}));
+      $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
+        minDate: new Date()
+      }));
       $('input[name="payment_expiryDate"]').datepicker($.extend({}, {
         yearRange: "c-1:c+10",
         changeMonth: true,
@@ -163,19 +163,19 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
       //insured person date
       for (var i = 1; i <= 10; i++) {
         $("#datepicker-" + i).datepicker({
-    yearRange: "c-80:c+20",
-    maxDate: new Date(),
-    dateFormat: 'mm/dd/yy',
-    changeMonth: true,
-    changeYear: true,
-    showAnim: "slideDown",
-    onSelect: function(dateText) {
-        const age = calculateAge(dateText);
+          yearRange: "c-80:c+20",
+          maxDate: new Date(),
+          dateFormat: 'mm/dd/yy',
+          changeMonth: true,
+          changeYear: true,
+          showAnim: "slideDown",
+          onSelect: function(dateText) {
+            const age = calculateAge(dateText);
 
-        $(`#ageInsuredPerson_${i}`).val(age);
-    }
-});
-}
+            $(`#ageInsuredPerson_${i}`).val(age);
+          }
+        });
+      }
     });
 
     $body = $("body");
@@ -206,7 +206,7 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
     <div id="header"> </div>
 
     <div id="header-select-type">
-      <p class="selectable" data-type=<?php echo $formType ?>><?php echo $formType === 'ah'?"A&H":strtoupper($formType) ?></p>
+      <p class="selectable" data-type=<?php echo $formType ?>><?php echo $formType === 'ah' ? "A&H" : strtoupper($formType) ?></p>
       <!-- <p class="selectable" data-type="home">HOME</p>
         <p class="selectable" data-type="auto">AUTO</p>
         <p class="selectable" data-type="ah">A&H</p> -->
@@ -222,16 +222,16 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
 
       <!--Form PolicyDetail -->
       <div id="confirmQuoteContainer">
-        
+
         <fieldset id="form-content">
           <legend>Product Detail</legend>
           <table id="table-form">
-          <tr>
+            <tr>
               <td>
                 <p style="white-space:nowrap;">Product Name : <span style="color:red">*</span></p>
               </td>
               <td>
-                <select name="select-product" id="select-product"  required>
+                <select name="select-product" id="select-product" required>
                   <option value="">
                     <-- Please select an product -->
                   </option>
@@ -262,7 +262,7 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
             </tr>
             <tr>
               <td id="policyid-text">PolicyId:</td>
-            <td id="policyid-display"><input type="text" id="policyid-input"  style="display: inline-block; width:216px;" readonly/></td>
+              <td id="policyid-display"><input type="text" id="policyid-input" style="display: inline-block; width:216px;" readonly /></td>
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <td style="white-space:nowrap;">Policy Expiry Date: <span style="color:red">*</span></td>
@@ -420,7 +420,7 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
 
               <td>Full Name : <span style="color:red">*</span></td>
               <td><input type="text" name="firstName" maxlength="100" size="30" required /></td>
-              <td><input type="text" name="lastName" maxlength="60" size="30" hidden/></td>
+              <td><input type="text" name="lastName" maxlength="60" size="30" hidden /></td>
             </tr>
             <!-- <tr>
              
@@ -477,10 +477,10 @@ $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
                 <input type="text" id="datepicker" name="dateOfBirth" maxlength="10" required>
               </td>
               <th>&nbsp;</th>
-              <td>Age :</td>   
+              <td>Age :</td>
               <td>
-    <input type="text" id="agePolicyHolder" name="agePolicyHolder" maxlength="4"  readonly style="max-width:50px">  years old
-  </td>
+                <input type="text" id="agePolicyHolder" name="agePolicyHolder" maxlength="4" readonly style="max-width:50px"> years old
+              </td>
             </tr>
             <tr>
               <td style="white-space:nowrap">Marital Status : <span style="color:red">*</span> </td>
@@ -955,11 +955,11 @@ where name='Nature of Business'";
               <td style="float: inline-start;">Insuring With COE : </td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input"  name="insured_auto_vehicle_insuringWithCOE" value="2" checked>
+                  <input type="radio" class="form-check-input" name="insured_auto_vehicle_insuringWithCOE" value="2" checked>
                   <label class="form-check-label" for="Yes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input"  name="insured_auto_vehicle_insuringWithCOE" value="1">
+                  <input type="radio" class="form-check-input" name="insured_auto_vehicle_insuringWithCOE" value="1">
                   <label class="form-check-label" for="No">No</label>
                 </div>
               </td>
@@ -990,11 +990,11 @@ where name='Nature of Business'";
               <td style="float: inline-start;">Off Peak Car : </td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input"  name="insured_auto_vehicle_offPeakCar" value="2" checked>
+                  <input type="radio" class="form-check-input" name="insured_auto_vehicle_offPeakCar" value="2" checked>
                   <label class="form-check-label" for="Yes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input"  name="insured_auto_vehicle_offPeakCar" value="1">
+                  <input type="radio" class="form-check-input" name="insured_auto_vehicle_offPeakCar" value="1">
                   <label class="form-check-label" for="No">No</label>
                 </div>
               </td>
@@ -1443,8 +1443,8 @@ where name='Occupation'";
       <div id="payment-container" hidden>
         <fieldset id="form-content">
           <legend>Payment</legend>
-         
-      
+
+
           <!-- <h1 style="padding-left:0.5em">Additional</h1> -->
           <table id="table-form">
             <tr>
@@ -1507,7 +1507,7 @@ where name='Occupation'";
 
             </tr>
             <tr>
-              <td>Security Code : <span style="color:red">*</span> </td>
+              <td>CVV : <span style="color:red">*</span> </td>
               <td>
                 <input type="text" name="payment_securityCode" id="securityCode" maxlength="10" size="10" required />
               </td>
@@ -1535,8 +1535,8 @@ where name='Occupation'";
       <div style="display: flex; justify-content: center;padding:1em 0px; gap:10px">
         <input type="hidden" name="action" id="formAction" value="">
 
-        <button type="button" class="button draft-button" id="btnDraftForm"  onclick="handleClickDraftButton()">Save</button>
-        <button type="button" class="button draft-button" id="btnSaveDraftForm"  onclick="handleClickSaveDraftButton()" hidden>Save</button>
+        <button type="button" class="button draft-button" id="btnDraftForm" onclick="handleClickDraftButton()">Save</button>
+        <button type="button" class="button draft-button" id="btnSaveDraftForm" onclick="handleClickSaveDraftButton()" hidden>Save</button>
         <button type="button" class="button edit" id="btnEditForm" onclick="handleEditQuote()" hidden>Edit</button>
         <button type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->

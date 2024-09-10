@@ -170,12 +170,6 @@ function handleForm() {
     campaignCode: formData.get("campaignCode"),
   };
   if (formType === "auto") {
-    // policyDetail.ncdInfo = {
-    //   ncdLevel: 0,
-    //   previousInsurer: "NCD0033",
-    //   previousPolicyNo: "prev123",
-    //   noClaimExperienceOther: "",
-    // };
     policyDetail.ncdInfo = {};
     policyDetail.ncdInfo.ncdLevel = Number(formData.get("Ncd_Level"));
     policyDetail.ncdInfo.previousInsurer = formData.get(

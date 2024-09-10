@@ -26,30 +26,6 @@
         });
       });
     },
-    getDraftDataWithId: function (draftid) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: url,
-          type: "POST",
-          contentType: "application/json",
-          data: JSON.stringify({
-            action: "getDraftDataWithId",
-            draftid: draftid
-          }),
-          dataType: "text",
-          success: function (response) {
-            try {
-              const cleanedResponse = response.trim();
-              const jsonResponse = JSON.parse(cleanedResponse);
-              resolve(jsonResponse);
-            } catch (error) {
-              console.error("Error parsing JSON:", error);
-              reject(error);
-            }
-          },
-        });
-      });
-    },
     getPaymentLogWithId: function (policyid) {
       return new Promise((resolve, reject) => {
         $.ajax({
@@ -58,30 +34,6 @@
           contentType: "application/json",
           data: JSON.stringify({
             action: "getPaymentLogWithId",
-            policyid: policyid
-          }),
-          dataType: "text",
-          success: function (response) {
-            try {
-              const cleanedResponse = response.trim();
-              const jsonResponse = JSON.parse(cleanedResponse);
-              resolve(jsonResponse);
-            } catch (error) {
-              console.error("Error parsing JSON:", error);
-              reject(error);
-            }
-          },
-        });
-      });
-    },
-    getPolicyCreateOrNot: function (policyid) {
-      return new Promise((resolve, reject) => {
-        $.ajax({
-          url: url,
-          type: "POST",
-          contentType: "application/json",
-          data: JSON.stringify({
-            action: "getPolicyCreateOrNot",
             policyid: policyid
           }),
           dataType: "text",
@@ -120,27 +72,6 @@
         }
       });
     },
-    insertPolicyData: function (policyid, policyNo) {
-      $.ajax({
-        url: url,
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({
-          action: "insertPolicy",
-          policyid: policyid,
-          policyNo: policyNo
-        }),
-        dataType: "json",
-        success: function (response) {
-          console.log("Insert Response:", response);
-          // Handle the response data here
-        },
-        error: function (xhr, status, error) {
-          console.error("AJAX Error:", error);
-          // Handle the error here
-        }
-      });
-    },
     updatePolicyNo: function (policyid, policyNo) {
       $.ajax({
         url: url,
@@ -162,28 +93,7 @@
         }
       });
     },
-    insertDraftQuoteData: function (formData) {
-      $.ajax({
-        url: url,
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({
-          action: "insertDraftQuoteData",
-          formData: formData,
-          type: selectedType
-        }),
-        dataType: "text",
-        success: function (response) {
-          console.log("Insert Response:", response);
-          // Handle the response data here
-          // window.location.reload();
-        },
-        error: function (xhr, status, error) {
-          console.error("AJAX Error:", error);
-          // Handle the error here
-        }
-      });
-    },
+
     updateQuoteData: function (formData, response, id) {
       $.ajax({
         url: url,
