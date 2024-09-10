@@ -50,7 +50,7 @@
         });
       });
     },
-    insertQuotationData: function (formData, response) {
+    insertQuotationData: function (formData, response, campaignDetails) {
       $.ajax({
         url: url,
         type: "POST",
@@ -59,7 +59,8 @@
           action: "insertQuotation",
           formData: formData,
           response: response,
-          type: selectedType
+          type: selectedType,
+          campaignDetails: campaignDetails
         }),
         dataType: "text",
         success: function (response) {

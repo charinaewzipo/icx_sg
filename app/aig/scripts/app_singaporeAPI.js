@@ -104,7 +104,7 @@ async function fetchQuotation(requestBody) {
         window.alert(data?.statusMessage || "Successfully!");
         window.location.reload();
       } else {
-        await jQuery.agent.insertQuotationData(requestBody, data);
+        await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
         window.alert(data?.statusMessage || "Successfully!");
         window.location.reload();
       }

@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
 const handleClickDraftButton = async () => {
   console.log("handleClickDraft")
   const requestBody = handleForm();
-  await jQuery.agent.insertQuotationData(requestBody, null);
+  await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails);
 }
 const handleClickSaveDraftButton = () => {
   console.log("handleClickSaveDraft")

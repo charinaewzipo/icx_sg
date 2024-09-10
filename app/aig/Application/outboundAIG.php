@@ -1,5 +1,4 @@
 <?php
-session_start();
 include "../../../dbconn.php";
 include "../../../util.php";
 include "../../../license.php";
@@ -93,7 +92,7 @@ function DBGetPaymentLogWithId($policyId)
     // Close the database connection
     $dbconn->dbconn->close();
 }
-function DBInsertQuotationData($formData, $response, $type)
+function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -103,6 +102,7 @@ function DBInsertQuotationData($formData, $response, $type)
         exit();
     }
 
+    // Extract data from formData and response
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $productId = isset($formData['productId']) ? (int)$formData['productId'] : 0;
     $type = isset($type) ? $type : '';
@@ -115,9 +115,9 @@ function DBInsertQuotationData($formData, $response, $type)
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
-    $quoteLapseDate = isset($response['quoteLapseDate'])
-        ? transformDate($response['quoteLapseDate'])
-        : null;
+    $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDate($response['quoteLapseDate']) : null;
+
+    // Handle JSON fields
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
@@ -127,15 +127,22 @@ function DBInsertQuotationData($formData, $response, $type)
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
 
-    // Initialize the SQL query with update_date
+    // Extract details from campaignDetails
+    $agent_id = isset($campaignDetails["agent_id"]) ? (int)$campaignDetails["agent_id"] : null;
+    $campaign_id = isset($campaignDetails["campaign_id"]) ? (int)$campaignDetails["campaign_id"] : null;
+    $import_id = isset($campaignDetails["import_id"]) ? (int)$campaignDetails["import_id"] : null;
+    $calllist_id = isset($campaignDetails["calllist_id"]) ? (int)$campaignDetails["calllist_id"] : null;
+
+    // SQL query with `update_date` set to `NOW()`
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
-        quoteLapseDate, remarksC, update_date
+        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date,incident_status
     ) VALUES (
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate', '$policyExpDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
-        '$insuredList', '$quoteNo', '$premiumPayable', '$quoteLapseDate', '$remarksC', NOW()
+        '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id, 
+        $campaign_id, $import_id, $calllist_id, NOW(),'Open'
     )";
 
     // Execute query
@@ -148,6 +155,7 @@ function DBInsertQuotationData($formData, $response, $type)
         echo json_encode(array("result" => "success", "message" => "Data inserted successfully"));
     }
 }
+
 
 
 function DBUpdateQuoteData($formData, $response, $type, $id)
@@ -375,8 +383,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($data['action'] === 'insertQuotation') {
             $formData = isset($data['formData']) ? $data['formData'] : array();
             $response = isset($data['response']) ? $data['response'] : array();
+            $campaignDetails = isset($data['campaignDetails']) ? $data['campaignDetails'] : array();
             $type = isset($data['type']) ? $data['type'] : "";
-            DBInsertQuotationData($formData, $response, $type);
+            DBInsertQuotationData($formData, $response, $type, $campaignDetails);
         } elseif ($data['action'] === 'updateQuoteData') {
             $formData = isset($data['formData']) ? $data['formData'] : array();
             $response = isset($data['response']) ? $data['response'] : array();

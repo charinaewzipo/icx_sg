@@ -1,4 +1,5 @@
 let selectedType = null;
+let campaignDetails = null;
 const getTypeSelectForm = () => {
   const selectedItems = document.getElementsByClassName("selectable selected");
   if (selectedItems.length > 0) {
@@ -596,9 +597,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(queryString);
   selectedType = urlParams.get("formType");
   handleTypeConfirmQuote();
-
+  getCampaignDetails()
 
 });
+const getCampaignDetails = () => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const campaign_id = urlParams.get("campaign_id");
+  const agent_id = urlParams.get("agent_id");
+  const import_id = urlParams.get("import_id");
+  const calllist_id = urlParams.get("calllist_id");
+  campaignDetails = {
+    campaign_id,
+    agent_id,
+    import_id,
+    calllist_id
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
