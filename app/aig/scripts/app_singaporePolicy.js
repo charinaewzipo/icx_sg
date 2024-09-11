@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (id) {
+    
     async function handleQuotation(id) {
       try {
         const response = await jQuery.agent.getQuotationWithId(id);
@@ -96,7 +97,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const policyId = response?.data?.policyId;
         const policyNo = response?.data?.policyNo;
         console.log("policyNo:", policyNo)
-
+        const Amount = document.querySelector('input[name="payment_amount"]');
+  Amount.value = `${response?.data?.premiumPayable}`;
         if (policyId && !policyNo) {
           configureCreatePolicyState();
         } else if (policyNo) {
@@ -205,6 +207,7 @@ function extractQuotationData(data) {
   }
 }
 function populatePaymentForm(paymentData) {
+  console.log("paymentData:", paymentData)
   // Payment Mode
   const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
   paymentModeSelect.value = paymentData.payment_mode;

@@ -23,11 +23,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 })
 const handleClickDraftButton = async () => {
-  console.log("handleClickDraft")
+  console.log("handleClickDraft");
   const requestBody = handleForm();
-  await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails);
-  window.location.href = "/application.php";
-}
+  try {
+    const responseId = await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails);
+    let currentUrl = window.location.href;
+
+    const updatedUrl = currentUrl.includes("?")
+      ? `${currentUrl}&id=${responseId}` // If there are already query parameters
+      : `${currentUrl}?id=${responseId}`; // If there are no query parameters
+    window.location.href = updatedUrl;
+  } catch (error) {
+    console.error("Error while inserting quotation:", error);
+  }
+};
+
+
 const handleClickSaveDraftButton = () => {
   console.log("handleClickSaveDraft")
   const requestBody = handleForm();

@@ -137,7 +137,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
-        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date,incident_status
+        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status
     ) VALUES (
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate', '$policyExpDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
@@ -152,9 +152,12 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         $error = mysqli_error($dbconn->dbconn);
         echo json_encode(array("result" => "error", "message" => "Data insertion failed: $error"));
     } else {
-        echo json_encode(array("result" => "success", "message" => "Data inserted successfully"));
+        // Get the last inserted ID
+        $lastInsertedId = mysqli_insert_id($dbconn->dbconn);
+        echo json_encode(array("result" => "success", "message" => "Data inserted successfully", "id" => $lastInsertedId));
     }
 }
+
 
 
 
