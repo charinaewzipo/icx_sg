@@ -115,10 +115,7 @@ require("./getToken.php");
   <script src="../scripts/app_singaporeForm.js"></script>
   <script src="../scripts/app_singaporeDraft.js"></script>
 
-  <script>
-    const campaignID = <?php echo json_encode($_GET["campaign_id"]); ?>;
-    console.log("campaignID:", campaignID)
-  </script>
+
   <script>
     var datepickerOptions = {
       yearRange: "c-80:c+20",
@@ -231,40 +228,57 @@ require("./getToken.php");
                 <p style="white-space:nowrap;">Product Name : <span style="color:red">*</span></p>
               </td>
               <td>
-                <select name="select-product" id="select-product" required>
-                  <option value="">
-                    <-- Please select an product -->
-                  </option>
-                  <?php
-                  if ($formType === 'ah') {
-                    $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
-                    // $strSQL = "SELECT * FROM t_aig_sg_product ";
-                  } else {
-                    $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
-                  }
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["product_id"]; ?>">
-                      <?php echo $objResuut["product_name"]; ?>
+    <select name="select-product" id="select-product" required onchange="handleProductChange(this)">
+    <option value="">
+                      <-- Please select an option -->
                     </option>
-                  <?php
-                  }
-                  ?>
+        <?php
+        if ($formType === 'ah') {
+            $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
+        } else {
+            $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
+        }
 
-                </select>
+        $strSQL .= " and campaign_id = '$campaign_id'";
+
+        $objQuery = mysqli_query($Conn, $strSQL);
+
+        while ($objResuut = mysqli_fetch_array($objQuery)) {
+            $data[] = $objResuut;
+        ?>
+            <option value="<?php echo $objResuut["product_id"]; ?>">
+                <?php echo $objResuut["product_name"]; ?>
+            </option>
+        <?php
+        }
+        ?>
+    </select>
+</td>
+
+              <th></th>
+              <td style="white-space:nowrap; ">Campaign Name:</td>
+              <td> <?php
+                    $strSQL = "SELECT * FROM t_campaign WHERE campaign_id = '$campaign_id'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResult = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResult;
+                    ?>
+                  <input type="text" id="product-<?php echo $objResult['campaign_id']; ?>" value="<?php echo $objResult['campaign_name']; ?>">
+
+                <?php
+                    }
+                ?>
               </td>
-              <td style="white-space:nowrap; ">Campaign Code:</td>
               <td>
-                <input type="text" id="campaign-code" name="campaignCode" style="max-width: 130px;" value='<?php echo $campaign_id; ?>' readonly>
+                <input hidden type="text" id="campaign-code" name="campaignCode" style="max-width: 130px;" value='<?php echo $campaign_id; ?>' readonly>
               </td>
             </tr>
+            <tr id="policyid-display"><td id="policyid-text">Policy/Quote No:</td>
+            <td ><input type="text" id="policyid-input" style="display: inline-block; width:216px;" readonly /></td></tr>
             <tr>
-              <td id="policyid-text">Policy/Quote No:</td>
-              <td id="policyid-display"><input type="text" id="policyid-input" style="display: inline-block; width:216px;" readonly /></td>
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
+              <th></th>
               <td style="white-space:nowrap;">Policy Expiry Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" required style="max-width: 130px;"></td>
             </tr>
@@ -1447,36 +1461,36 @@ where name='Occupation'";
 
           <!-- <h1 style="padding-left:0.5em">Additional</h1> -->
           <table id="table-form">
-          
-<tr>
-    <td style="float:inline-start">Payment Frequency: <span style="color:red">*</span></td>
-    <td>
-        <div class="form-check">
-            <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" checked>
-            <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
-        </div>
-        <div class="form-check">
-            <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2" onchange="handlePaymentFrequencyChange(this)">
-            <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
-        </div>
-    </td>
-</tr>
 
-<tr>
-    <td>Payment Mode: <span style="color:red">*</span></td>
-    <td>
-        <select name="Payment_Mode" id="paymentModeSelect" required onchange="handlePaymentModeChange(this)">
-            <option value=""> <-- Please select an option --> </option>
-            <option value="1001">Credit Card Lump sum</option>
-            <option value="124">Recurring Credit Card</option>
-        </select>
-    </td>
-</tr>
+            <tr>
+              <td style="float:inline-start">Payment Frequency: <span style="color:red">*</span></td>
+              <td>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" checked>
+                  <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2" onchange="handlePaymentFrequencyChange(this)">
+                  <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Payment Mode: <span style="color:red">*</span></td>
+              <td>
+                <select name="Payment_Mode" id="paymentModeSelect" required onchange="handlePaymentModeChange(this)">
+                  <option value=""> <-- Please select an option --> </option>
+                  <option value="1001">Credit Card Lump sum</option>
+                  <option value="124">Recurring Credit Card</option>
+                </select>
+              </td>
+            </tr>
             <tr>
               <td>Card Type : <span style="color:red">*</span> </td>
               <td>
                 <select name="Payment_CardType" id="Payment_CardType" required>
-                  <option value="" > <-- Please select an option --> </option>
+                  <option value=""> <-- Please select an option --> </option>
                   <option value="1" hidden>Credit Card Lump Sum VISA</option>
                   <option value="2" hidden>Credit Card Lump Sum MASTER</option>
                   <!-- <option value="3">Credit Card IPP UOB 6 months</option>

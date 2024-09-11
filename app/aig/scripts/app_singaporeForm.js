@@ -543,13 +543,13 @@ const setInsuredPerson = (insuredData) => {
 
 
     const populatePlanAndCovers = (planInfo, section, index) => {
+      console.log("planInfo:", planInfo)
       const planSelect = section.querySelector('[name^="planId"]');
       planSelect.innerHTML = ""; // Clear existing options
       const defaultOption = document.createElement("option");
       defaultOption.value = planInfo.planId;
       defaultOption.textContent = planInfo.planDescription || "<-- Please select an option -->";
-      defaultOption.setAttribute("data-desc", planInfo.planDescription);
-      defaultOption.setAttribute("data-poi", planInfo.planPoi);
+     
       planSelect.appendChild(defaultOption);
 
       const coverList = section.querySelector(".planCoverList");
@@ -566,9 +566,7 @@ const setInsuredPerson = (insuredData) => {
         coverOption.setAttribute("data-name", cover.name);
         coverOption.setAttribute("data-netpremium", cover.limitAmount);
         coverOption.textContent = cover.name == null ? "<-- Please select an option -->" : cover.name;
-        // if (coverIndex === 0) {
-        //   coverOption.selected = true; 
-        // }
+
         coverList.appendChild(coverOption);
 
 

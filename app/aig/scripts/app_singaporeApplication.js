@@ -155,13 +155,13 @@ function handleForm() {
   const customerType = getTypeCustomerType();
   const formData = new FormData(document.getElementById("application"));
   let insuredList = [];
-  ////////////////handlePocicyDetail form
+  
   const policyDetail = {
     policyId: policyid ? policyid : "",
     productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: "0002466000",
-    propDate: new Date(),
+    propDate: transformDate(new Date()),
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
@@ -467,8 +467,7 @@ const handleValidateForm = () => {
 
       const requestBody = handleForm();
       console.log("requestBody", requestBody)
-      console.log("responsePayment", responsePayment);
-      console.log("quotationData", quotationData)
+
       if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         const paymentDetails = [
           {
@@ -645,6 +644,20 @@ const formatDateToISO = (dateStr) => {
   const dateISO = new Date(`${datePart}T${timePart}Z`).toISOString();
   return dateISO.split('.')[0] + 'Z';
 };
-const transformDate = (dateString) => {
-  return new Date(dateString).toISOString();
+const transformDate = (isoDateString) => {
+  return new Date(isoDateString).toISOString();
+  // const date = new Date(isoDateString);
+    
+  //   // Extract the date components in UTC
+  //   const year = date.getUTCFullYear();
+  //   const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+  //   const day = date.getUTCDate().toString().padStart(2, '0');
+    
+  //   // Set time to midnight in UTC
+  //   const hours = '00';
+  //   const minutes = '00';
+  //   const seconds = '00';
+
+  //   // Return formatted string
+  //   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
