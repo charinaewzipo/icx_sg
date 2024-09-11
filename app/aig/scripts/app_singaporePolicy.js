@@ -232,5 +232,7 @@ function populatePaymentForm(paymentData) {
 
   // Security Code
   const securityCodeInput = document.querySelector('input[name="payment_securityCode"]');
-  securityCodeInput.value = paymentData.card_security_code;
+  securityCodeInput.value = "XXX";
+  const Amount = document.querySelector('input[name="payment_amount"]');
+  Amount.value = `${paymentData.order_amount}(${paymentData.order_currency})`;
 }

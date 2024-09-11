@@ -1512,6 +1512,12 @@ where name='Occupation'";
                 <input type="text" name="payment_securityCode" id="securityCode" maxlength="10" size="10" required />
               </td>
             </tr>
+            <tr>
+              <td>Amount : </td>
+              <td>
+                <input type="text" name="payment_amount" id="payment_amount" maxlength="10" size="10" />
+              </td>
+            </tr>
           </table>
           <br>
           <div class="table">
