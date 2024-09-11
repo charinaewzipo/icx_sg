@@ -199,7 +199,7 @@ require("./getToken.php");
   $calllist_id = $_GET["calllist_id"];
   $agent_id = $_GET["agent_id"];
   $import_id = $_GET["import_id"];
-  $lv = $_SESSION["pfile"]["lv"];
+  // $lv = $_SESSION["pfile"]["lv"];
   ?>
 
   <div id="content">
@@ -1476,19 +1476,19 @@ where name='Occupation'";
               <td>Card Type : <span style="color:red">*</span> </td>
               <td>
                 <select name="Payment_CardType" id="Payment_CardType" required>
-                  <option value=""> <-- Please select an option --> </option>
-                  <!-- <option value="1">Credit Card Lump Sum VISA</option>
-                  <option value="2">Credit Card Lump Sum MASTER</option>
-                  <option value="3">Credit Card IPP UOB 6 months</option>
+                  <option value="" > <-- Please select an option --> </option>
+                  <option value="1" hidden>Credit Card Lump Sum VISA</option>
+                  <option value="2" hidden>Credit Card Lump Sum MASTER</option>
+                  <!-- <option value="3">Credit Card IPP UOB 6 months</option>
                   <option value="4">Credit Card IPP UOB 12 months</option>
                   <option value="5">Credit Card IPP UOB 24 months</option>
                   <option value="6">Credit Card IPP DBS 6 months</option>
                   <option value="7">Credit Card IPP DBS 12 months</option>
-                  <option value="8">Credit Card IPP DBS 24 months</option>
-                  <option value="9">Recurring Credit Card VISA</option>
-                  <option value="10">Recurring Credit Card Master</option>
-                  <option value="23">Credit Card Lump Sum Amex</option>
-                  <option value="26">Recurring Credit Card Amex</option> -->
+                  <option value="8">Credit Card IPP DBS 24 months</option> -->
+                  <option value="9" hidden>Recurring Credit Card VISA</option>
+                  <option value="10" hidden>Recurring Credit Card Master</option>
+                  <option value="23" hidden>Credit Card Lump Sum Amex</option>
+                  <!-- <option value="26">Recurring Credit Card Amex</option> -->
                 </select>
               </td>
             </tr>
