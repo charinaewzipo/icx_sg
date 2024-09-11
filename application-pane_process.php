@@ -115,7 +115,10 @@
        app.agent_id, app.calllist_id, app.policyNo, app.policy_create_date, app.quote_create_date, 
        app.update_date, app.campaign_id, app.import_id, tasp.product_name
 FROM t_aig_app app 
-LEFT JOIN t_aig_sg_product tasp ON app.productId = tasp.product_id";
+LEFT JOIN t_aig_sg_product tasp ON app.productId = tasp.product_id
+LEFT JOIN t_agents  agent ON app.agent_id = agent.agent_id
+LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id
+";
 	//if level is agent where current agent id
 
 
