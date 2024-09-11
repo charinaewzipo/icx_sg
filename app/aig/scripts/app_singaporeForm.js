@@ -510,8 +510,8 @@ const setInsuredPerson = (insuredData) => {
     const planInfo = personInfo.planInfo;
     section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
       personInfo.insuredFirstName || "";
-    section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
-      personInfo.insuredLastName || "";
+    // section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
+    //   personInfo.insuredLastName || "";
     section.querySelector('[name^="insured_ah_insuredResidentStatus_"]').value =
       personInfo.insuredResidentStatus || "";
     section.querySelector('[name^="insured_ah_insuredIdType_"]').value =

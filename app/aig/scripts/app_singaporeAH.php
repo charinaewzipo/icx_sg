@@ -10,11 +10,10 @@
                 </td>
             </tr>
             <tr>
-                <td>Insured First Name: <span style="color:red">*</span></td>
+                <td>Insured Full Name: <span style="color:red">*</span></td>
                 <td><input type="text" name="insured_ah_insuredFirstName_${index}" maxlength="60" required /></td>
                 <th style="width:50px">&nbsp;</th>
-                <td>Insured Last Name:</td>
-                <td><input type="text" name="insured_ah_insuredLastName_${index}" maxlength="60" /></td>
+                
             </tr>
             <tr>
                 <td>Insured Resident Status: <span style="color:red">*</span></td>
@@ -687,8 +686,9 @@ where name='PH Relation'";
             const personInfo = {
 
                 insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '',
-                insuredLastName: section.querySelector('[name^="insured_ah_insuredLastName_"]').value || '',
-                insuredFullName: (section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '') + ' ' + (section.querySelector('[name^="insured_ah_insuredLastName_"]').value || ''),
+                // insuredLastName: section.querySelector('[name^="insured_ah_insuredLastName_"]').value || '',
+                insuredFullName: (section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || ''),
+                // insuredFullName: (section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '') + ' ' + (section.querySelector('[name^="insured_ah_insuredLastName_"]').value || ''),
                 insuredResidentStatus: section.querySelector('[name^="insured_ah_insuredResidentStatus_"]').value || '',
                 insuredIdType: section.querySelector('[name^="insured_ah_insuredIdType_"]').value || '',
                 insuredIdNumber: section.querySelector('[name^="insured_ah_insuredIdNumber_"]').value || '',
