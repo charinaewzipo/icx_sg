@@ -190,7 +190,17 @@ where name='PH Relation'";
                 <th style="width:50px"></th>
                 <td style="white-space: nowrap;">Plan Poi :</td>
                 <td colspan="2">
-                    <input type="text" id="planPoiSelect${index}" name="planPoi${index}" readonly>
+                <select id="planPoiSelect${index}" name="planPoi${index}">
+                <option value="">
+        <-- Please select an option -->
+    </option>
+     <option value="1">
+       1
+    </option>
+     <option value="12">
+       12
+    </option>
+                </select>
                 </td>
             </tr>
             <tr>
@@ -199,20 +209,16 @@ where name='PH Relation'";
             </tr>
             <tbody id="coverListBody${index}">
                 <tr class="cover-row">
-                    <td style="padding:0 30px">Cover Name: <span style="color:red">*</span> </td>
+                    <td style="padding:0 30px">Cover Name: </td>
                     <td>
-                        <select name="plan_cover_list_${index}[]" class="planCoverList" style="max-width: 216px;" required>
+                        <select name="plan_cover_list_${index}[]" class="planCoverList" style="max-width: 216px;" >
                             <option value="">
                                 <-- Please select an option -->
                             </option>
                         </select>
                     </td>
                 <td></td>
-                <td>Limit Amount:</td>
-                <td>
-                <input type="text" class="planCoverLimitAmount${index}" id="planCoverLimitAmount${index}" readonly>
-                  
-                </td>
+                
                  
           
             </tbody>
@@ -222,9 +228,7 @@ where name='PH Relation'";
                 <td></td>
                 <td></td>
                 <td></td>
-                <td style="float:inline-end">
-                    <button type="button" class="button add-cover" onclick="addCoverRowIndex(${index})" style="margin: 5px 0;">Add Cover</button>
-                </td>
+               
             </tr>
         </tbody>
     </table>
@@ -269,7 +273,7 @@ where name='PH Relation'";
 
                     if (selectedOption) {
                         const netPremium = selectedOption.getAttribute('data-netpremium');
-                        limitInput.value = netPremium ? netPremium : '';
+                        // limitInput.value = netPremium ? netPremium : '';
                     }
                 });
             })
@@ -461,7 +465,7 @@ where name='PH Relation'";
             newRow.classList.add("cover-row");
 
             newRow.innerHTML = `
-        <td style="padding:0 30px">Cover Name: <span style="color:red">*</span> </td>
+        <td style="padding:0 30px">Cover Name: </td>
         <td>
             <select name="plan_cover_list_${index}[]" class="planCoverList" style="max-width: 216px;" >
                 <option value="">
@@ -577,9 +581,9 @@ where name='PH Relation'";
             newRow.classList.add('cover-row');
 
             newRow.innerHTML = `
-        <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
+        <td style="padding:0px 30px">Cover Name:  </td>
         <td>
-            <select name="plan_cover_list_${index}[]" class="planCoverList" required style="max-width: 216px; pointer-events: none; background-color: rgb(233, 236, 239); color: rgb(108, 117, 125);>
+            <select name="plan_cover_list_${index}[]" class="planCoverList"  style="max-width: 216px; pointer-events: none; background-color: rgb(233, 236, 239); color: rgb(108, 117, 125);>
                 <!-- Options will be populated by JavaScript -->
             </select>
         </td>
@@ -627,7 +631,7 @@ where name='PH Relation'";
         for (const planId in planList) {
             if (planList.hasOwnProperty(planId)) {
                 const plan = planList[planId];
-                planListOptions += `<option value="${planId}" data-plan-id=${plan.planId} data-plan-description="${plan.planDescription}">${plan.planDescription} (${plan.planPoi})</option>`;
+                planListOptions += `<option value="${planId}" data-plan-id=${plan.planId} data-plan-description="${plan.planDescription}">${plan.planDescription}</option>`;
             }
         }
 
@@ -848,7 +852,7 @@ where name='PH Relation'";
         data.forEach(plan => {
             const option = document.createElement('option');
             option.value = plan.plan_id;
-            option.textContent = `${plan.plan_desc} (${plan.plan_poi})`;
+            option.textContent = `${plan.plan_desc}`;
             option.setAttribute('data-poi', plan.plan_poi);
             option.setAttribute('data-desc', plan.plan_desc);
 

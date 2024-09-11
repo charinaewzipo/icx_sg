@@ -20,9 +20,9 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
 
   $SQL = "";
   if ($id) {
-    $SQL = "select id,AppStatus,campaign_id from t_aig_app where id = '$id'";
+    $SQL = "select id,incident_status,campaign_id,calllist_id,import_id,agent_id from t_aig_app where id = '$id'";
   } else {
-    $SQL = "select id,AppStatus,campaign_id from t_aig_app where campaign_id = '$campaign_id' and  calllist_id = '$calllist_id' and import_id = '$import_id' limit 1 ";
+    $SQL = "select id,incident_status,campaign_id from t_aig_app where campaign_id = '$campaign_id' and  calllist_id = '$calllist_id' and import_id = '$import_id' limit 1 ";
   }
   wlog($SQL);
   $result = mysqli_query($Conn, $SQL) or die("ไม่สามารถเรียกดูข้อมูลได้");
@@ -32,7 +32,11 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
   while ($row = mysqli_fetch_array($result)) {
     $tmp_campid=$row["campaign_id"];
     $app_id = $row["id"];
-    $AppStatus = $row["AppStatus"];
+    $AppStatus = $row["incident_status"];
+    $campaign_id = $row["campaign_id"];
+    $import_id = $row["import_id"];
+    $agent_id = $row["agent_id"];
+    $calllist_id = $row["calllist_id"];
     $campaign_id = ($tmp_campid)?$tmp_campid:$campaign_id;
   }
 
@@ -53,19 +57,19 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
       $newapp = "newApplication.php";
   }
 
-  if ($chk > 0) {
-    //echo  $SQL;
-    if ((in_array($AppStatus,["Follow-doc","Follow Doc","QC_Reject","Reconfirm-App","Reconfirm"]) && $lv==1) || $lv>1) {
-      echo "<script>window.location='$app?id=$app_id';</script>";
-    } else {
-      echo "<script>alert('ไม่มีสิทธิ์แก้ไข App นี้แล้วจ้า')</script>";
-    }
+  echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id&id=$id&formType=ah';</script>";
+  // if ($chk > 0) {
+  //   //echo  $SQL;
+  //   if ((in_array($AppStatus,["Follow-doc","Follow Doc","QC_Reject","Reconfirm-App","Reconfirm"]) && $lv==1) || $lv>1) {
+  //     echo "<script>window.location='$app?id=$app_id';</script>";
+  //   } else {
+  //     echo "<script>alert('ไม่มีสิทธิ์แก้ไข App นี้แล้วจ้า')</script>";
+  //   }
 
-  } else {
+  // } else {
 
-    echo "<script>window.location='$newapp?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id';</script>";
 
-  }
+  // }
 }
 
 ?>

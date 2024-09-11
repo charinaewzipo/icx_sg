@@ -45,7 +45,11 @@ if (isset($_POST['plan_id']) && isset($_POST['plan_poi']) && isset($_POST['insur
     }
 
     // Use the determined age range in the SQL query
-    $strSQL = "SELECT * from t_aig_sg_plan where id =85";
+    $strSQL = "SELECT id, age_group, plan_type, net_premium 
+               FROM t_aig_sg_plan 
+               WHERE plan_id='$plan_id' 
+                 AND age_group='$ageRange' 
+                 AND plan_poi='$plan_poi'";
     $objQuery = mysqli_query($Conn, $strSQL);
 
     $options = "<option value=''> <-- Please select an option --></option>";

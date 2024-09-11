@@ -21,13 +21,13 @@
 			{ 'data': null, title: 'Action', wrap: true, width: "10%", orderable: false, "render": function (data) { 
 					let linkProduct = 'app/aig/Application/check_app.php' ;
 					let linkQaForm = 'app/aig/Application/check_qa.php' ;
-					let buttonhtml = "<a style='border-radius:4px; margin:0 10px; background-color:#2196f3' class='btn btn-primary btn-sm' href='"+linkProduct+"?id="+data.id+"' target='_blank'>Open App</a>" +
-									" <a  style='border-radius:4px;' class='btn btn-danger  btn-sm'  href='"+linkQaForm +"?app_id="+data.id+"&campaign_id="+data.camp_id+"' target='_blank'>QA</a>";
+					let buttonhtml = "<a style='border-radius:4px; margin:0 10px; background-color:#2196f3' class='btn btn-primary btn-sm' href='"+linkProduct+"?id="+data.id+"' target='_blank'>Open App</a>" 
+									// " <a  style='border-radius:4px;' class='btn btn-danger  btn-sm'  href='"+linkQaForm +"?app_id="+data.id+"&campaign_id="+data.camp_id+"' target='_blank'>QA</a>";
 					return buttonhtml; 
 				} 
 			}
 		],
-		order: [[0, 'asc']]
+		order: [[0, 'desc']]
 	});
 	$( table.table().header() ).find('tr')
     .addClass( 'primary' );

@@ -26,6 +26,7 @@ const handleClickDraftButton = async () => {
   console.log("handleClickDraft")
   const requestBody = handleForm();
   await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails);
+  window.location.href = "/application.php";
 }
 const handleClickSaveDraftButton = () => {
   console.log("handleClickSaveDraft")
