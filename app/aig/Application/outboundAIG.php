@@ -294,7 +294,6 @@ function DBInsertPaymentLog($request, $response, $policyid, $objectPayment)
     $card_number = isset($response['sourceOfFunds']['provided']['card']['number']) ? ($response['sourceOfFunds']['provided']['card']['number']) : '';
     $card_expiry_month = isset($request['sourceOfFunds']['provided']['card']['expiry']['month']) ? $request['sourceOfFunds']['provided']['card']['expiry']['month'] : '';
     $card_expiry_year = isset($request['sourceOfFunds']['provided']['card']['expiry']['year']) ? $request['sourceOfFunds']['provided']['card']['expiry']['year'] : '';
-    $card_security_code = isset($request['sourceOfFunds']['provided']['card']['securityCode']) ? $request['sourceOfFunds']['provided']['card']['securityCode'] : '';
     $merchant = isset($response['merchant']) ? $response['merchant'] : '';
     $result = isset($response['result']) ? $response['result'] : '';
     $time_of_lastupdate = isset($response['timeOfLastUpdate']) ? $response['timeOfLastUpdate'] : '';
@@ -323,15 +322,15 @@ function DBInsertPaymentLog($request, $response, $policyid, $objectPayment)
 
     // SQL query to insert data into the database
     $sql = "INSERT INTO t_aig_sg_payment_log 
-                (batch_no, order_no, payment_mode, card_type, card_expiry_month, card_expiry_year, payment_date, payment_frequency, order_amount, card_number, order_currency, source_of_funds_type, merchant, result, time_of_lastupdate, time_of_record, response_json, request_json, policyId, card_security_code) 
+                (batch_no, order_no, payment_mode, card_type, card_expiry_month, card_expiry_year, payment_date, payment_frequency, order_amount, card_number, order_currency, source_of_funds_type, merchant, result, time_of_lastupdate, time_of_record, response_json, request_json, policyId) 
             VALUES 
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     // Use prepared statements to avoid SQL injection
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind parameters
         $stmt->bind_param(
-            "ssssssssssssssssssss",
+            "sssssssssssssssssss",
             $batch_no,
             $order_no,
             $payment_mode,
@@ -350,8 +349,7 @@ function DBInsertPaymentLog($request, $response, $policyid, $objectPayment)
             $time_of_record,
             $response_json,
             $request_json,
-            $policyid,
-            $card_security_code
+            $policyid
         );
 
         // Execute the statement

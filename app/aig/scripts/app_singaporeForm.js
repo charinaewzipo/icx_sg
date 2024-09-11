@@ -536,8 +536,8 @@ const setInsuredPerson = (insuredData) => {
     section.querySelector(
       '[name^="insured_ah_relationToPolicyholder_"]'
     ).value = personInfo.relationToPolicyholder || "";
-    section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value =
-      personInfo.insuredCampaignCode || "";
+    // section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value =
+    //   personInfo.insuredCampaignCode || "";
     // section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value =
     //   personInfo.natureOfBusiness || "";
 
@@ -651,7 +651,7 @@ const setDefaultValueForm = (dbData) => {
   const insuredData = JSON.parse(dbData.insuredList);
 
   document.querySelector('select[name="select-product"]').value = dbData?.productId || "";
-  document.querySelector('input[id="policyid-input"]').value = dbData?.policyId || "";
+  document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther || "";

@@ -261,7 +261,7 @@ require("./getToken.php");
               </td>
             </tr>
             <tr>
-              <td id="policyid-text">PolicyId:</td>
+              <td id="policyid-text">Policy/Quote No:</td>
               <td id="policyid-display"><input type="text" id="policyid-input" style="display: inline-block; width:216px;" readonly /></td>
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
@@ -1506,16 +1506,16 @@ where name='Occupation'";
               </td>
 
             </tr>
-            <tr>
+            <!-- <tr>
               <td>CVV : <span style="color:red">*</span> </td>
               <td>
                 <input type="text" name="payment_securityCode" id="securityCode" maxlength="10" size="10" required />
               </td>
-            </tr>
+            </tr> -->
             <tr>
               <td>Amount : </td>
               <td>
-                <input type="text" name="payment_amount" id="payment_amount" maxlength="10" size="10" />
+                <input type="text" name="payment_amount" id="payment_amount" maxlength="10" size="10" readonly />
               </td>
             </tr>
           </table>

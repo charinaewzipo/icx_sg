@@ -39,7 +39,7 @@
                   </select>
                 </td>
                 <th style="width:50px">&nbsp;</th>
-                <td>Insured Type: <span style="color:red">*</span></td>
+                <td>Insured ID Type: <span style="color:red">*</span></td>
                 <td>
                     <select name="insured_ah_insuredIdType_${index}" required>
                         <option value=""> <-- Please select an option --></option>
@@ -157,10 +157,7 @@ where name='PH Relation'";
                 
             </tr>
             <tr>
-            <td>Insured Campaign Code: <span style="color:red">*</span></td>
-                <td><input type="text" name="insured_ah_insuredCampaignCode_${index}" maxlength="60" required /></td>
-                
-              
+                         
                 <th style="width:50px">&nbsp;</th>
                 <td>
                     <button type="button" class="button seePlan" id="btnPaymentOnline${index}" onclick="fetchPlanData(${index})">See plan</button>
@@ -684,7 +681,11 @@ where name='PH Relation'";
                 }
             });
 
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const campaign_id = urlParams.get("campaign_id");
             const personInfo = {
+
                 insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '',
                 insuredLastName: section.querySelector('[name^="insured_ah_insuredLastName_"]').value || '',
                 insuredFullName: (section.querySelector('[name^="insured_ah_insuredFirstName_"]').value || '') + ' ' + (section.querySelector('[name^="insured_ah_insuredLastName_"]').value || ''),
@@ -695,7 +696,8 @@ where name='PH Relation'";
                 insuredDateOfBirth: section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value ? transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value) : '',
                 insuredMaritalStatus: section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value || '',
                 insuredOccupation: section.querySelector('[name^="insured_ah_insuredOccupation_"]').value || '',
-                insuredCampaignCode: section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value || '',
+                insuredCampaignCode: campaign_id || '',
+                // insuredCampaignCode: section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value || '',
                 relationToPolicyholder: section.querySelector('[name^="insured_ah_relationToPolicyholder_"]').value || '',
                 // natureOfBusiness: section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value || '',
                 planInfo: {

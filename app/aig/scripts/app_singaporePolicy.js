@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const policyNo = response?.data?.policyNo;
         console.log("policyNo:", policyNo)
         const Amount = document.querySelector('input[name="payment_amount"]');
-  Amount.value = `${response?.data?.premiumPayable}`;
+  Amount.value = `${response?.data?.premiumPayable}(SGD)`;
         if (policyId && !policyNo) {
           configureCreatePolicyState();
         } else if (policyNo) {
@@ -234,8 +234,8 @@ function populatePaymentForm(paymentData) {
   expiryDateInput.value = `${paymentData.card_expiry_month}/${paymentData.card_expiry_year.slice(-2)}`; // Format as MM/YY
 
   // Security Code
-  const securityCodeInput = document.querySelector('input[name="payment_securityCode"]');
-  securityCodeInput.value = "XXX";
+  // const securityCodeInput = document.querySelector('input[name="payment_securityCode"]');
+  // securityCodeInput.value = "XXX";
   const Amount = document.querySelector('input[name="payment_amount"]');
   Amount.value = `${paymentData.order_amount}(${paymentData.order_currency})`;
 }

@@ -545,8 +545,8 @@ document.addEventListener('DOMContentLoaded', function () {
             expiry: {
               month: expMonth,
               year: expYear
-            },
-            securityCode: Number(formData['payment_securityCode'])
+            }
+            // securityCode: Number(formData['payment_securityCode'])
           }
         }
       }
@@ -559,9 +559,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardType = document.querySelector('select[name="Payment_CardType"]').value;
     const cardNumber = document.querySelector('input[name="payment_cardNumber"]').value;
     const expiryDate = document.querySelector('input[name="payment_expiryDate"]').value;
-    const securityCode = document.querySelector('input[name="payment_securityCode"]').value;
+    // const securityCode = document.querySelector('input[name="payment_securityCode"]').value;
 
-    if (!paymentMode || !paymentFrequency || !cardType || !cardNumber || !expiryDate || !securityCode) {
+    if (!paymentMode || !paymentFrequency || !cardType || !cardNumber || !expiryDate ) {
       window.alert('Please fill out all required fields.');
       return false;
     }
