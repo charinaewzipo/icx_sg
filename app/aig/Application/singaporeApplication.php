@@ -1447,37 +1447,37 @@ where name='Occupation'";
 
           <!-- <h1 style="padding-left:0.5em">Additional</h1> -->
           <table id="table-form">
-            <tr>
-              <td>Payment Mode : <span style="color:red">*</span> </td>
-              <td>
-                <select name="Payment_Mode" required>
-                  <option value=""> <-- Please select an option --> </option>
-                  <option value="1001">Credit Card Lump sum</option>
-                  <option value="122">Credit Card IPP</option>
-                  <option value="124">Recurring Credit Card</option>
-                  <option value="209">PayNow</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td style="float:inline-start">Payment Frequency : <span style="color:red">*</span></td>
-              <td>
-                <div class="form-check">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" checked>
-                  <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
-                </div>
-                <div class="form-check">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2">
-                  <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
-                </div>
-              </td>
-            </tr>
+          
+<tr>
+    <td style="float:inline-start">Payment Frequency: <span style="color:red">*</span></td>
+    <td>
+        <div class="form-check">
+            <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" checked>
+            <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
+        </div>
+        <div class="form-check">
+            <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2" onchange="handlePaymentFrequencyChange(this)">
+            <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
+        </div>
+    </td>
+</tr>
+
+<tr>
+    <td>Payment Mode: <span style="color:red">*</span></td>
+    <td>
+        <select name="Payment_Mode" id="paymentModeSelect" required onchange="handlePaymentModeChange(this)">
+            <option value=""> <-- Please select an option --> </option>
+            <option value="1001">Credit Card Lump sum</option>
+            <option value="124">Recurring Credit Card</option>
+        </select>
+    </td>
+</tr>
             <tr>
               <td>Card Type : <span style="color:red">*</span> </td>
               <td>
-                <select name="Payment_CardType" required>
+                <select name="Payment_CardType" id="Payment_CardType" required>
                   <option value=""> <-- Please select an option --> </option>
-                  <option value="1">Credit Card Lump Sum VISA</option>
+                  <!-- <option value="1">Credit Card Lump Sum VISA</option>
                   <option value="2">Credit Card Lump Sum MASTER</option>
                   <option value="3">Credit Card IPP UOB 6 months</option>
                   <option value="4">Credit Card IPP UOB 12 months</option>
@@ -1488,7 +1488,7 @@ where name='Occupation'";
                   <option value="9">Recurring Credit Card VISA</option>
                   <option value="10">Recurring Credit Card Master</option>
                   <option value="23">Credit Card Lump Sum Amex</option>
-                  <option value="26">Recurring Credit Card Amex</option>
+                  <option value="26">Recurring Credit Card Amex</option> -->
                 </select>
               </td>
             </tr>

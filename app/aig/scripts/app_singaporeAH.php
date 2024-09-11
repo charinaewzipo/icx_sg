@@ -325,12 +325,12 @@ where name='PH Relation'";
 
         fetchCampaignDetail()
         addPlanInfoSections(2);
-
         attachPlanSelectEventListeners()
         setTimeout(() => {
             // attachCoverSelectEventListeners()
         }, 2000)
-
+        
+       
 
 
 
@@ -861,4 +861,50 @@ where name='PH Relation'";
             selectElement.appendChild(option);
         });
     }
+    function handlePaymentFrequencyChange(radio) {
+    const paymentFrequency = radio.value;
+    const paymentMode = document.querySelector('select[name="Payment_Mode"]').value;
+    fetchPaymentOption(paymentMode, paymentFrequency);
+}
+
+function handlePaymentModeChange(select) {
+    const paymentMode = select.value;
+    const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked').value;
+    fetchPaymentOption(paymentMode, paymentFrequency);
+}
+
+function fetchPaymentOption(paymentMode, paymentFrequency) {
+    console.log("paymentFrequency:", paymentFrequency)
+    console.log("paymentMode:", paymentMode)
+    // Ensure both paymentMode and paymentFrequency are selected
+    if (!paymentMode || !paymentFrequency) return;
+
+    const url = `../scripts/get_payment_option.php?payment_mode=${paymentMode}&payment_frequency=${paymentFrequency}`;
+    document.body.classList.add('loading');
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const cardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
+
+            // Clear existing options
+            cardTypeSelect.innerHTML = '';
+
+            // Populate the Payment Card Type dropdown
+            data.forEach(item => {
+                const cardOption = document.createElement('option');
+                cardOption.value = item.id;
+                cardOption.textContent = item.payment_mode_card_name;
+                cardTypeSelect.appendChild(cardOption);
+            });
+            console.log("data:", data)
+        })
+        .catch(error => {
+            console.error('Error fetching payment data:', error);
+        })
+        .finally(() => {
+            document.body.classList.remove('loading');
+        });
+}
+
 </script>
