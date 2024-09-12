@@ -1,9 +1,13 @@
 <?php
 //Database
-$GLOBALS["db_server"] = "localhost";
-$GLOBALS["db_database"] = "icx_sg";
-$GLOBALS["db_user"] = "root";
-$GLOBALS["db_password"] = "";
+// $GLOBALS["db_server"] = "localhost";
+// $GLOBALS["db_database"] = "icx_sg";
+// $GLOBALS["db_user"] = "root";
+// $GLOBALS["db_password"] = "";
+$GLOBALS["db_server"] = "icxpoc-db2.clce66q2ulno.ap-southeast-1.rds.amazonaws.com";
+$GLOBALS["db_database"] = "tubtim20240906";
+$GLOBALS["db_user"] = "arkuser";
+$GLOBALS["db_password"] = '$ep2@24ICX';
 // $GLOBALS["db_server"] = "192.168.50.2";
 // $GLOBALS["db_database"] = "tubtim";
 // $GLOBALS["db_user"] = "tubtim";

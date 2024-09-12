@@ -1,9 +1,9 @@
 <?php
 //config Server
-$ServerName = "localhost";
-$DatabaseName = "icx_sg";
-$User = "root";
-$Password = "";
+$ServerName = "icxpoc-db2.clce66q2ulno.ap-southeast-1.rds.amazonaws.com";
+$DatabaseName = "tubtim20240906";
+$User = "arkuser";
+$Password = '$ep2@24ICX';
 
 $ServerName2 = "192.168.50.2";
 $DatabaseName2 = "tubtim";
