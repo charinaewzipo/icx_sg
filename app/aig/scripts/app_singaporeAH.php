@@ -168,20 +168,6 @@ where name='PH Relation'";
     <option value="">
         <-- Please select an option -->
     </option>
-<option value="1838000060" hidden>Standard - Basic</option>
-    <option value="1838000061" hidden>Standard - Comprehensive</option>
-    <option value="1838000062" hidden>Preferred - Basic</option>
-    <option value="1838000063" hidden>Preferred - Comprehensive</option>
-    <option value="1838000064" hidden>Deluxe - Basic</option>
-    <option value="1838000065" hidden>Deluxe - Comprehensive</option>
-    <option value="1838000066" hidden>Prestige - Basic</option>
-    <option value="1838000067" hidden>Prestige - Comprehensive</option>
-    <option value="1839000100" hidden>Personal Accident Direct</option>
-    <option value="1838000103" hidden>Basic</option>
-    <option value="1838000104" hidden>Comprehensive</option>
-    <option value="1762000023" hidden>Plan 1</option>
-    <option value="1762000025" hidden>Plan 2</option>
-    <option value="1762000027" hidden>Plan 3</option>
 </select>
 
                 </td>
@@ -221,13 +207,7 @@ where name='PH Relation'";
           
             </tbody>
                  </tr>
-                <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-               
-            </tr>
+                
         </tbody>
     </table>
     <hr style="margin:10px 0px">
@@ -575,7 +555,7 @@ where name='PH Relation'";
                 // Handle no plans case
                 if (data.length === 0) {
                     const option = document.createElement('option');
-                    option.textContent = 'No plans available';
+                    option.textContent = 'No covers available';
                     option.disabled = true;
                     plan_cover_list_.appendChild(option);
                     return;

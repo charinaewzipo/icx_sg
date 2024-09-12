@@ -114,6 +114,7 @@ require("./getToken.php");
   <script src="../scripts/app_singaporePolicy.js"></script>
   <script src="../scripts/app_singaporeForm.js"></script>
   <script src="../scripts/app_singaporeDraft.js"></script>
+  <script src="../scripts/app_singaporePayment.js"></script>
 
 
   <script>
@@ -263,7 +264,7 @@ require("./getToken.php");
                     while ($objResult = mysqli_fetch_array($objQuery)) {
                       $data[] = $objResult;
                     ?>
-                  <input type="text" id="product-<?php echo $objResult['campaign_id']; ?>" value="<?php echo $objResult['campaign_name']; ?>">
+                  <input type="text" id="product-<?php echo $objResult['campaign_id']; ?>" value="<?php echo $objResult['campaign_name']; ?>" readonly>
 
                 <?php
                     }
