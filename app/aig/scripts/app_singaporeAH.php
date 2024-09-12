@@ -75,7 +75,7 @@
             </tr>
             <tr>
                 <td>Insured ID Number: <span style="color:red">*</span></td>
-                <td><input type="text" name="insured_ah_insuredIdNumber_${index}" maxlength="60" required /></td>
+                <td><input type="text" name="insured_ah_insuredIdNumber_${index}" maxlength="20" required /></td>
                 <th style="width:50px">&nbsp;</th>
                 <td>Insured Marital Status: <span style="color:red">*</span></td>
                 <td>
@@ -240,6 +240,10 @@ where name='PH Relation'";
         for (let i = 1; i <= count; i++) {
             initializeDatepicker(i);
         }
+        for (let i = 1; i <= count; i++) {
+            attachIdNumberValidation(i)
+        }
+        
     }
 
     function initializeDatepicker(index) {
@@ -437,46 +441,7 @@ where name='PH Relation'";
         });
     }
 
-    function handlePaymentFrequencyChange(radio) {
-        const paymentFrequency = radio.value;
-        const paymentMode = document.querySelector('select[name="Payment_Mode"]').value;
-        fetchPaymentOption(paymentMode, paymentFrequency);
-    }
-
-    function handlePaymentModeChange(select) {
-        const paymentMode = select.value;
-        const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked').value;
-        fetchPaymentOption(paymentMode, paymentFrequency);
-    }
-
-    function fetchPaymentOption(paymentMode, paymentFrequency) {
-        if (!paymentMode || !paymentFrequency) return;
-
-        const url = `../scripts/get_payment_option.php?payment_mode=${paymentMode}&payment_frequency=${paymentFrequency}`;
-        document.body.classList.add('loading');
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const cardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
-
-                cardTypeSelect.innerHTML = '';
-
-                data.forEach(item => {
-                    const cardOption = document.createElement('option');
-                    cardOption.value = item.id;
-                    cardOption.textContent = item.payment_mode_card_name;
-                    cardTypeSelect.appendChild(cardOption);
-                });
-                console.log("data:", data)
-            })
-            .catch(error => {
-                console.error('Error fetching payment data:', error);
-            })
-            .finally(() => {
-                document.body.classList.remove('loading');
-            });
-    }
+    
 
     function handleProductChange(selectElement) {
         const selectedProductId = selectElement.value;
@@ -576,6 +541,44 @@ where name='PH Relation'";
                 document.body.classList.remove('loading');
             });
     }
+
+
+    function validateIdNumber(index) {
+        console.log("validateIdNumber",index)
+    const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
+    const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
+
+    if (!idTypeSelect || !idNumberInput) return; // Ensure the elements exist
+
+    const idType = idTypeSelect.value;
+    const idNumber = idNumberInput.value;
+
+    // Regular expression for the pattern: letter-7 digits-letter
+    const idPattern = /^[A-Za-z]\d{7}[A-Za-z]$/;
+
+    if (idType === '9' || idType === '10' || idType === '6') { // NRIC, FIN, or Birth Certificate
+        if (!idPattern.test(idNumber)) {
+            console.log("invalid id number")
+            idNumberInput.setCustomValidity("Invalid format. ID should be in the format: letter-7 digits-letter.");
+        } else {
+            idNumberInput.setCustomValidity(""); // Clear custom error if valid
+        }
+    } else {
+        idNumberInput.setCustomValidity(""); // Clear custom error for other types
+    }
+    idNumberInput.reportValidity();
+}
+
+// Function to attach event listeners dynamically
+function attachIdNumberValidation(index) {
+    const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
+    const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
+
+    if (idTypeSelect && idNumberInput) {
+        idTypeSelect.addEventListener('change', () => validateIdNumber(index));
+        idNumberInput.addEventListener('input', () => validateIdNumber(index));
+    }
+}
 
     document.addEventListener('DOMContentLoaded', () => {
         const queryString = window.location.search;
