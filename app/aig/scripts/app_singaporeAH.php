@@ -185,7 +185,7 @@
                     <tr class="cover-row">
                         <td style="padding:0 30px">Cover Name: </td>
                         <td>
-                            <select name="plan_cover_list_${index}[]" id="plan_cover_list_${index}" class="planCoverList" style="max-width: 216px;" ${isRequired ? 'required' : ''}>
+                            <select name="plan_cover_list_${index}[]" id="plan_cover_list_${index}" class="planCoverList" style="max-width: 216px;">
                                 <option value="">
                                     <-- Please select an option -->
                                 </option>

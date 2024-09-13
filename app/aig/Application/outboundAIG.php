@@ -112,13 +112,12 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
 
     $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
-    $policyExpDate = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : isoToDateTime("2039-12-13T00:00:00Z");    
-    
+    $policyExpDate = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : isoToDateTime("2039-12-13T00:00:00Z");
 
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
-    $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDate($response['quoteLapseDate']) : null;
+    $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
 
     // Handle JSON fields
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
@@ -136,17 +135,29 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $import_id = isset($campaignDetails["import_id"]) ? (int)$campaignDetails["import_id"] : null;
     $calllist_id = isset($campaignDetails["calllist_id"]) ? (int)$campaignDetails["calllist_id"] : null;
 
-    // SQL query with `update_date` set to `NOW()`
+    // SQL query with dynamic quote_create_date
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
-        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status
-    ) VALUES (
+        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status";
+
+    // Add quote_create_date field if response is not empty
+    if (!empty($response)) {
+        $sql .= ", quote_create_date";
+    }
+
+    $sql .= ") VALUES (
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate', '$policyExpDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
-        '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id, 
-        $campaign_id, $import_id, $calllist_id, NOW(),'Open'
-    )";
+        '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
+        $campaign_id, $import_id, $calllist_id, NOW(), 'Open'";
+
+    // Add NOW() for quote_create_date if response is not empty
+    if (!empty($response)) {
+        $sql .= ", NOW()";
+    }
+
+    $sql .= ")";
 
     // Execute query
     $result = $dbconn->executeUpdate($sql);
@@ -160,6 +171,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         echo json_encode(array("result" => "success", "message" => "Data inserted successfully", "id" => $lastInsertedId));
     }
 }
+
 
 
 
@@ -200,7 +212,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
-    $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDate($response['quoteLapseDate']) : null;
+    $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
 
     // Escape the strings for safe query execution
     $ncdInfo = mysqli_real_escape_string($dbconn->dbconn, $ncdInfo);
@@ -425,23 +437,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(array("result" => "error", "message" => "Invalid request method"));
 }
-function transformDate($dateString)
-{
-    $dateParts = explode('/', $dateString);
+function transformDateQuote($dateString) {
+    // Create a DateTime object from the input string (assuming the format is DD/MM/YYYY)
+    $dateObject = DateTime::createFromFormat('d/m/Y', $dateString);
 
-    if (count($dateParts) === 3) {
-        // Reformat to YYYY-MM-DD
-        $formattedDate = "{$dateParts[2]}-{$dateParts[1]}-{$dateParts[0]}";
-
-        // Create a DateTime object with the formatted date
-        $date = new DateTime($formattedDate);
-
-        // Return the date in ISO 8601 format
-        return $date->format(DateTime::ISO8601);
-    } else {
-        throw new Exception("Invalid date format: $dateString");
+    // If the DateTime object is created successfully, format it to the required format
+    if ($dateObject) {
+        // Format it to "YYYY-MM-DD 00:00:00"
+        return $dateObject->format('Y-m-d') . ' 00:00:00';
     }
+
+    // Return null if the date format is invalid
+    return null;
 }
+
+
 function maskCardNumber($card_number)
 {
     if (strlen($card_number) > 6) {
