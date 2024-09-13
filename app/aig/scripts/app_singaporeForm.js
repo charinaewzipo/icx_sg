@@ -549,7 +549,7 @@ const setInsuredPerson = (insuredData) => {
       const defaultOption = document.createElement("option");
       defaultOption.value = planInfo.planId;
       defaultOption.textContent = planInfo.planDescription || "<-- Please select an option -->";
-     
+
       planSelect.appendChild(defaultOption);
 
       const coverList = section.querySelector(".planCoverList");
@@ -884,3 +884,40 @@ const setInsuredVehicleList = (insuredData) => {
 
 
 };
+function validateCustomerIdNumber() {
+  const idTypeSelect = document.querySelector(`select[name="customerIdType"]`);
+  const idNumberInput = document.querySelector(`input[name="customerIdNo"]`);
+
+  if (!idTypeSelect || !idNumberInput) return; // Ensure the elements exist
+
+  const idType = idTypeSelect.value;
+  const idNumber = idNumberInput.value;
+
+  // Regular expression for the pattern: letter-7 digits-letter
+  const idPattern = /^[A-Za-z]\d{7}[A-Za-z]$/;
+
+  if (idType === '9' || idType === '10' || idType === '6') { // NRIC, FIN, or Birth Certificate
+    if (!idPattern.test(idNumber)) {
+      idNumberInput.setCustomValidity("Invalid format. ID should be in the format: letter-7 digits-letter.");
+    } else {
+      idNumberInput.setCustomValidity("");
+    }
+  } else {
+    idNumberInput.setCustomValidity("");
+  }
+  idNumberInput.reportValidity();
+}
+
+// Attach event listeners for customer's ID
+function attachCustomerIdValidation() {
+  const idTypeSelect = document.querySelector(`select[name="customerIdType"]`);
+  const idNumberInput = document.querySelector(`input[name="customerIdNo"]`);
+
+  if (idTypeSelect && idNumberInput) {
+    idTypeSelect.addEventListener('change', validateCustomerIdNumber);
+    idNumberInput.addEventListener('input', validateCustomerIdNumber);
+  }
+}
+document.addEventListener("DOMContentLoaded", () => {
+  attachCustomerIdValidation()
+})

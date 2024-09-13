@@ -211,7 +211,7 @@
             initializeDatepicker(i);
         }
         for (let i = 1; i <= count; i++) {
-            attachIdNumberValidation(i)
+            attachInsuredIdValidation(i)
         }
 
     }
@@ -515,41 +515,41 @@
     }
 
 
-    function validateIdNumber(index) {
-        const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
-        const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
+    function validateInsuredIdNumber(index) {
+    const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
+    const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
 
-        if (!idTypeSelect || !idNumberInput) return; // Ensure the elements exist
+    if (!idTypeSelect || !idNumberInput) return; // Ensure the elements exist
 
-        const idType = idTypeSelect.value;
-        const idNumber = idNumberInput.value;
+    const idType = idTypeSelect.value;
+    const idNumber = idNumberInput.value;
 
-        // Regular expression for the pattern: letter-7 digits-letter
-        const idPattern = /^[A-Za-z]\d{7}[A-Za-z]$/;
+    // Regular expression for the pattern: letter-7 digits-letter
+    const idPattern = /^[A-Za-z]\d{7}[A-Za-z]$/;
 
-        if (idType === '9' || idType === '10' || idType === '6') { // NRIC, FIN, or Birth Certificate
-            if (!idPattern.test(idNumber)) {
-                console.log("invalid id number")
-                idNumberInput.setCustomValidity("Invalid format. ID should be in the format: letter-7 digits-letter.");
-            } else {
-                idNumberInput.setCustomValidity(""); // Clear custom error if valid
-            }
+    if (idType === '9' || idType === '10' || idType === '6') { // NRIC, FIN, or Birth Certificate
+        if (!idPattern.test(idNumber)) {
+            console.log("Invalid ID number");
+            idNumberInput.setCustomValidity("Invalid format. ID should be in the format: letter-7 digits-letter.");
         } else {
-            idNumberInput.setCustomValidity(""); // Clear custom error for other types
+            idNumberInput.setCustomValidity(""); // Clear custom error if valid
         }
-        idNumberInput.reportValidity();
+    } else {
+        idNumberInput.setCustomValidity(""); // Clear custom error for other types
     }
+    idNumberInput.reportValidity();
+}
 
-    // Function to attach event listeners dynamically
-    function attachIdNumberValidation(index) {
-        const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
-        const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
+// Attach event listeners dynamically for insured's ID
+function attachInsuredIdValidation(index) {
+    const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
+    const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
 
-        if (idTypeSelect && idNumberInput) {
-            idTypeSelect.addEventListener('change', () => validateIdNumber(index));
-            idNumberInput.addEventListener('input', () => validateIdNumber(index));
-        }
+    if (idTypeSelect && idNumberInput) {
+        idTypeSelect.addEventListener('change', () => validateInsuredIdNumber(index));
+        idNumberInput.addEventListener('input', () => validateInsuredIdNumber(index));
     }
+}
 
     document.addEventListener('DOMContentLoaded', () => {
         const queryString = window.location.search;

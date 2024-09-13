@@ -149,9 +149,9 @@ error_reporting(E_ALL);
         minDate: new Date()
       }));
 
-      $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
-        minDate: new Date()
-      }));
+      // $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
+      //   minDate: new Date()
+      // }));
       $('input[name="payment_expiryDate"]').datepicker($.extend({}, {
         yearRange: "c-1:c+10",
         changeMonth: true,
@@ -297,8 +297,8 @@ error_reporting(E_ALL);
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <th></th>
-              <td style="white-space:nowrap;">Policy Expiry Date: <span style="color:red">*</span></td>
-              <td><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" required style="max-width: 130px;"></td>
+              <td style="white-space:nowrap;" id="policy-expiry-label">Policy Expiry Date: </td>
+              <td><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10"  style="max-width: 130px; background-color:#e9ecef; border:1px solid rgb(118, 118, 118)" readonly ></td>
             </tr>
             <tr id="remark-c-contanier">
               <td>RemarksC: </td>
