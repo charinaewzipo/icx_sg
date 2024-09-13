@@ -315,11 +315,12 @@ const manualSetDefaultValueForm = () => {
   }
 };
 const manualSetDefaultValueFormCallingList = (data) => {
+console.log("data FormCallingList:", data)
 
   // document.querySelector('select[name="courtesyTitle"]').value = "Mr"; // Assuming title from data is "Mr"
   // document.querySelector('select[name="select-product"]').value = data.udf2;
   document.querySelector('input[name="firstName"]').value = data.name;
-  document.querySelector('input[name="dateOfBirth"]').value = data.dob;
+  document.querySelector('input[name="dateOfBirth"]').value = data.dob?isoToFormattedDate(data.dob):"";
   const dob = data.dob;
   if (dob) {
     const age = calculateAge(dob);
@@ -520,11 +521,9 @@ const setInsuredPerson = (insuredData) => {
       personInfo.insuredIdNumber || "";
     section.querySelector('[name^="insured_ah_insuredGender_"]').value =
       personInfo.insuredGender || "";
-    section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =
-      personInfo.insuredDateOfBirth.split(
-        "T"
-      )[0] || "";
-    const dob = personInfo.insuredDateOfBirth;
+      const dob = personInfo.insuredDateOfBirth;
+    section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =  
+    dob ? isoToFormattedDate(dob):""
     if (dob) {
       const age = calculateAge(dob);
       section.querySelector('[name^="ageInsuredPerson_"]').value = age;
@@ -673,11 +672,10 @@ const setDefaultValueForm = (dbData) => {
     individualPolicyHolderInfo.individualPolicyHolderInfo.nationality;
   document.querySelector('select[name="gender"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.gender;
-  document.querySelector('input[name="dateOfBirth"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth.split(
-      "T"
-    )[0];
-  const dob = individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth;
+
+    const dob = individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth;
+  document.querySelector('input[name="dateOfBirth"]').value = dob? isoToFormattedDate(dob):null
+
   if (dob) {
     const age = calculateAge(dob);
     document.getElementById('agePolicyHolder').value = age;
@@ -700,10 +698,11 @@ const setDefaultValueForm = (dbData) => {
     individualPolicyHolderInfo.contactInfo.buildingName;
   document.querySelector('input[name="postCode"]').value =
     individualPolicyHolderInfo.contactInfo.postCode;
-  document.querySelector('input[name="PolicyEffectiveDate"]').value =
-    dbData.policyEffDate.split(" ")[0];
-  document.querySelector('input[name="PolicyExpiryDate"]').value =
-    dbData.policyExpDate.split(" ")[0];
+  document.querySelector('input[name="PolicyEffectiveDate"]').value =dbData.policyEffDate?
+  isoToFormattedDate(dbData.policyEffDate):""
+
+  document.querySelector('input[name="PolicyExpiryDate"]').value =dbData.policyExpDate?
+    isoToFormattedDate( dbData.policyExpDate):""
   document.querySelector('input[name="campaignCode"]').value =
     dbData.campaignCode;
 

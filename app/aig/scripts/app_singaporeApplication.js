@@ -156,6 +156,7 @@ function handleForm() {
   const formData = new FormData(document.getElementById("application"));
   let insuredList = [];
   
+  
   const policyDetail = {
     policyId: policyid ? policyid : "",
     productId: formData.get("select-product"),
@@ -644,20 +645,15 @@ const formatDateToISO = (dateStr) => {
   const dateISO = new Date(`${datePart}T${timePart}Z`).toISOString();
   return dateISO.split('.')[0] + 'Z';
 };
-const transformDate = (isoDateString) => {
-  return new Date(isoDateString).toISOString();
-  // const date = new Date(isoDateString);
-    
-  //   // Extract the date components in UTC
-  //   const year = date.getUTCFullYear();
-  //   const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-  //   const day = date.getUTCDate().toString().padStart(2, '0');
-    
-  //   // Set time to midnight in UTC
-  //   const hours = '00';
-  //   const minutes = '00';
-  //   const seconds = '00';
-
-  //   // Return formatted string
-  //   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+function isoToFormattedDate(isoDateStr) {
+  const date = new Date(isoDateStr);
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+//datetoISO
+const transformDate = (dateString) => {
+  const date = moment.parseZone(dateString); // Keeps the original timezone information
+  return date.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 };

@@ -109,9 +109,12 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $remarksC = isset($formData['remarksC']) ? $formData['remarksC'] : '';
     $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
-    $propDate = isset($formData['propDate']) ? $formData['propDate'] : null;
-    $policyEffDate = isset($formData['policyEffDate']) ? $formData['policyEffDate'] : null;
-    $policyExpDate = isset($formData['policyExpDate']) ? $formData['policyExpDate'] : null;
+
+    $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
+    $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
+    $policyExpDate = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : isoToDateTime("2039-12-13T00:00:00Z");    
+    
+
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
@@ -182,9 +185,12 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $remarksC = isset($formData['remarksC']) ? $formData['remarksC'] : '';
     $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
-    $propDate = isset($formData['propDate']) ? $formData['propDate'] : null;
-    $policyEffDate = isset($formData['policyEffDate']) ? $formData['policyEffDate'] : null;
-    $policyExpDate = isset($formData['policyExpDate']) ? $formData['policyExpDate'] : null;
+
+    //ISO to YYYY-MM-DD HH:MM:SS
+    $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
+    $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
+    $policyExpDate = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : isoToDateTime("2039-12-13T00:00:00Z");    
+    
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
@@ -300,7 +306,7 @@ function DBInsertPaymentLog($request, $response, $policyid, $objectPayment)
     $time_of_record = isset($response['timeOfRecord']) ? $response['timeOfRecord'] : '';
 
     // New fields
-    $batch_no = isset($response['transaction']['acquirer']['batch']) ? 'IP' . $response['transaction']['acquirer']['batch'] : '';
+    $batch_no = isset($response['transaction']['acquirer']['batch']) ? 'IP' . formatBatchNo($response['transaction']['acquirer']['batch']) : '';
     $order_no = isset($response['order']['id']) ? $response['order']['id'] : '';
     $payment_mode = isset($objectPayment['paymentMode']) ? (int)$objectPayment['paymentMode'] : 0;
     $card_type = isset($objectPayment['cardType']) ? $objectPayment['cardType'] : '';
@@ -458,8 +464,25 @@ function generateUUIDv4()
     // Convert the binary data into a hexadecimal format
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
+function formatBatchNo($dateStr) {
+    
+        $year = substr($dateStr, 0, 4);
+        $month = substr($dateStr, 4, 2);
+        $day = substr($dateStr, 6, 2);
 
-
+   
+        return $day . $month . $year;
+   
+}
+function isoToDateTime($isoDateStr) {
+    try {
+        $date = new DateTime($isoDateStr);
+        return $date->format('Y-m-d H:i:s');
+    } catch (Exception $e) {
+        // Handle the exception or return a default value
+        return null; // or a default date/time like '1970-01-01 00:00:00'
+    }
+}
 
 ob_end_flush();
 exit();
