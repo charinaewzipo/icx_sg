@@ -657,3 +657,11 @@ const transformDate = (dateString) => {
   const date = moment.parseZone(dateString); // Keeps the original timezone information
   return date.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 };
+const handlePaymentGateway = () => {
+  if(quotationData?.premiumPayable){
+    const url = `payment.php?amount=${quotationData?.premiumPayable}`;
+    window.open(url, 'childWindow', 'width=600,height=480');
+  }else{
+    console.log("no price",quotationData?.premiumPayable)
+  }
+};

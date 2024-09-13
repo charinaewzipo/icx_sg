@@ -465,14 +465,10 @@ function generateUUIDv4()
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
 function formatBatchNo($dateStr) {
-    
         $year = substr($dateStr, 0, 4);
         $month = substr($dateStr, 4, 2);
         $day = substr($dateStr, 6, 2);
-
-   
         return $day . $month . $year;
-   
 }
 function isoToDateTime($isoDateStr) {
     try {

@@ -1561,8 +1561,9 @@ where name='Occupation'";
               <div class="table-row" style="padding:10px 0px;">
                 <div class="table-data">Online Payment Gateway </div>
                 <div class="table-data">
-                  <button type="button" class="button payment" id="btnPayment">Payment</button>
+                  <button type="button" class="button payment" id="btnPayment" >Payment</button>
                 </div>
+                <button type="button" onclick="handlePaymentGateway()">Payment</button>
               </div>
             </div>
           </div>
