@@ -5,6 +5,9 @@ require_once("../../function/currentDateTime.inc");
 require_once("../../function/StartConnect.inc");
 require("../scripts/app_singaporeAH.php");
 require("./getToken.php");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -192,13 +195,27 @@ require("./getToken.php");
 <body>
   <div class="modal"></div>
   <?php
-  $formType = $_GET["formType"];
-  $campaign_id = $_GET["campaign_id"];
-  $calllist_id = $_GET["calllist_id"];
-  $agent_id = $_GET["agent_id"];
-  $import_id = $_GET["import_id"];
-  // $lv = $_SESSION["pfile"]["lv"];
-  ?>
+
+
+  try {
+    $campaign_id = isset($_GET['campaign_id']) ? (int)$_GET['campaign_id'] : 0;
+    $calllist_id = isset($_GET['calllist_id']) ? (int)$_GET['calllist_id'] : 0;
+    $agent_id = isset($_GET['agent_id']) ? (int)$_GET['agent_id'] : 0;
+    $import_id = isset($_GET['import_id']) ? (int)$_GET['import_id'] : 0;
+    $formType = isset($_GET['formType']) ? $_GET['formType'] : '';
+
+    if ($campaign_id <= 0 || $calllist_id <= 0 || $agent_id <= 0 || $import_id <= 0 || empty($formType)) {
+        throw new Exception("Invalid parameters");
+    }
+
+
+} catch (Exception $e) {
+    echo json_encode(array("result" => "error", "message" => $e->getMessage()));
+    http_response_code(500); // Set HTTP status code to 500
+}
+?>
+
+  
 
   <div id="content">
     <div id="header"> </div>

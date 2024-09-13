@@ -1,234 +1,204 @@
 <script>
-    function createListAhSection(index) {
-        return `
-    <table id="table-form-${index}" class="table-ah" name="table-form-${index}">
-        	<tbody>
-            <tr>
-                <td colspan="6">
-                    <h2>Person ${index}</h2>
-                </td>
-            </tr>
-            <tr>
-                <td>Insured Full Name: <span style="color:red">*</span></td>
-                <td><input type="text" name="insured_ah_insuredFirstName_${index}" maxlength="60" required /></td>
-                <th style="width:50px">&nbsp;</th>
-                <td>Insured Gender: <span style="color:red">*</span></td>
-                <td>
-                    <select name="insured_ah_insuredGender_${index}" required>
-                        <option value=""> <-- Please select an option --></option>
-                      <?php
-                        $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredGender'";
-                        $objQuery = mysqli_query($Conn, $strSQL);
-                        while ($objResuut = mysqli_fetch_array($objQuery)) {
-                            $data[] = $objResuut;
-                        ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                        }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Insured Resident Status: <span style="color:red">*</span></td>
-                <td>
-                   <select name="insured_ah_insuredResidentStatus_${index}" required>
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                    <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredResidentStatus'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                        $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                    }
-                    ?>
-
-                  </select>
-                </td>
-                <th style="width:50px">&nbsp;</th>
-                <td>Insured ID Type: <span style="color:red">*</span></td>
-                <td>
-                    <select name="insured_ah_insuredIdType_${index}" required>
-                        <option value=""> <-- Please select an option --></option>
-                       <?php
-                        $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredIdType'";
-                        $objQuery = mysqli_query($Conn, $strSQL);
-                        while ($objResuut = mysqli_fetch_array($objQuery)) {
-                            $data[] = $objResuut;
-                        ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                        }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Insured ID Number: <span style="color:red">*</span></td>
-                <td><input type="text" name="insured_ah_insuredIdNumber_${index}" maxlength="20" required /></td>
-                <th style="width:50px">&nbsp;</th>
-                <td>Insured Marital Status: <span style="color:red">*</span></td>
-                <td>
-                    <select name="insured_ah_insuredMaritalStatus_${index}" required>
-                        <option value=""> <-- Please select an option --></option>
-                        <?php
-                        $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredMaritalStatus'";
-                        $objQuery = mysqli_query($Conn, $strSQL);
-                        while ($objResuut = mysqli_fetch_array($objQuery)) {
-                            $data[] = $objResuut;
-                        ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                        }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Insured Date Of Birth: <span style="color:red">*</span></td>
-                <td><input type="text" id="datepicker-${index}" name="insured_ah_insuredDateOfBirth_${index}" maxlength="60" required /></td>
-                <th style="width:50px">&nbsp;</th>
-               <td>Age :</td>   
-              <td>
-                <input type="text" id="ageInsuredPerson_${index}" name="ageInsuredPerson_${index}" maxlength="4" readonly  style="max-width:50px">  years old
-              </td>
-            </tr>
-            <tr>
-                <td>Insured Occupation: <span style="color:red">*</span></td>
-                <td>
-                    <select name="insured_ah_insuredOccupation_${index}" required>
-                        <option value=""> <-- Please select an option --></option>
-                        <?php
-                        $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
-where name='PA Occupation'";
-                        $objQuery = mysqli_query($Conn, $strSQL);
-                        while ($objResuut = mysqli_fetch_array($objQuery)) {
-                            $data[] = $objResuut;
-                        ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                        }
-
-                    ?>
-                    </select>
-                </td>
-                <th style="width:50px">&nbsp;</th>
-                <td>Relation To Policy Holder:<span style="color:red">*</span></td>
-                <td>
-                    <select name="insured_ah_relationToPolicyholder_${index}" required>
-                        <option value=""> <-- Please select an option --></option>
-                 <?php
-                    $strSQL = "SELECT name, id, description
-FROM tubtim.t_aig_sg_lov 
-where name='PH Relation'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                        $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                    }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-           
-           
-        </tbody>
-        
-      
-        <tbody>
-          <tr>
-              <td>
-                <h1>Plan Info</h1>
-              </td>
-            </tr>
-       
-            <tr>
-                <td style="white-space:nowrap">Plan Id : <span style="color:red">*</span> </td>
-                <td>
-                   <select id="planSelect${index}" name="planId${index}" required >
-    <option value="">
-        <-- Please select an option -->
-    </option>
-</select>
-
-                </td>
-                <th style="width:50px"></th>
-                <td style="white-space: nowrap;">Plan Poi :</td>
-                <td colspan="2">
-                <select id="planPoiSelect${index}" name="planPoi${index}">
-                <option value="">
-        <-- Please select an option -->
-    </option>
-     <option value="1">
-       1
-    </option>
-     <option value="12">
-       12
-    </option>
-                </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Cover List</td>
-                <td></td>
-            </tr>
-            <tbody id="coverListBody${index}">
-                <tr class="cover-row">
-                    <td style="padding:0 30px">Cover Name: </td>
+   function createListAhSection(index) {
+    const isRequired = index === 1; // Set to `true` if you want `required` only for index 1, otherwise `false`
+    return `
+        <table id="table-form-${index}" class="table-ah" name="table-form-${index}">
+            <tbody>
+                <tr>
+                    <td colspan="6">
+                        <h2>Person ${index}</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Insured Full Name: <span style="color:red">*</span></td>
+                    <td><input type="text" name="insured_ah_insuredFirstName_${index}" maxlength="60" ${isRequired ? 'required' : ''} /></td>
+                    <th style="width:50px">&nbsp;</th>
+                    <td>Insured Gender: <span style="color:red">*</span></td>
                     <td>
-                        <select name="plan_cover_list_${index}[]" id="plan_cover_list_${index}" class="planCoverList" style="max-width: 216px;" >
+                        <select name="insured_ah_insuredGender_${index}" ${isRequired ? 'required' : ''}>
+                            <option value=""> <-- Please select an option --></option>
+                            <?php
+                                $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredGender'";
+                                $objQuery = mysqli_query($Conn, $strSQL);
+                                while ($objResuut = mysqli_fetch_array($objQuery)) {
+                                    $data[] = $objResuut;
+                            ?>
+                            <option value="<?php echo $objResuut["id"]; ?>">
+                                <?php echo $objResuut["description"]; ?>
+                            </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Insured Resident Status: <span style="color:red">*</span></td>
+                    <td>
+                        <select name="insured_ah_insuredResidentStatus_${index}" ${isRequired ? 'required' : ''}>
+                            <option value="">
+                                <-- Please select an option -->
+                            </option>
+                            <?php
+                                $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredResidentStatus'";
+                                $objQuery = mysqli_query($Conn, $strSQL);
+                                while ($objResuut = mysqli_fetch_array($objQuery)) {
+                                    $data[] = $objResuut;
+                            ?>
+                            <option value="<?php echo $objResuut["id"]; ?>">
+                                <?php echo $objResuut["description"]; ?>
+                            </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </td>
+                    <th style="width:50px">&nbsp;</th>
+                    <td>Insured ID Type: <span style="color:red">*</span></td>
+                    <td>
+                        <select name="insured_ah_insuredIdType_${index}" ${isRequired ? 'required' : ''}>
+                            <option value=""> <-- Please select an option --></option>
+                            <?php
+                                $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredIdType'";
+                                $objQuery = mysqli_query($Conn, $strSQL);
+                                while ($objResuut = mysqli_fetch_array($objQuery)) {
+                                    $data[] = $objResuut;
+                            ?>
+                            <option value="<?php echo $objResuut["id"]; ?>">
+                                <?php echo $objResuut["description"]; ?>
+                            </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Insured ID Number: <span style="color:red">*</span></td>
+                    <td><input type="text" name="insured_ah_insuredIdNumber_${index}" maxlength="20" ${isRequired ? 'required' : ''} /></td>
+                    <th style="width:50px">&nbsp;</th>
+                    <td>Insured Marital Status: <span style="color:red">*</span></td>
+                    <td>
+                        <select name="insured_ah_insuredMaritalStatus_${index}" ${isRequired ? 'required' : ''}>
+                            <option value=""> <-- Please select an option --></option>
+                            <?php
+                                $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredMaritalStatus'";
+                                $objQuery = mysqli_query($Conn, $strSQL);
+                                while ($objResuut = mysqli_fetch_array($objQuery)) {
+                                    $data[] = $objResuut;
+                            ?>
+                            <option value="<?php echo $objResuut["id"]; ?>">
+                                <?php echo $objResuut["description"]; ?>
+                            </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Insured Date Of Birth: <span style="color:red">*</span></td>
+                    <td><input type="text" id="datepicker-${index}" name="insured_ah_insuredDateOfBirth_${index}" maxlength="60" ${isRequired ? 'required' : ''} /></td>
+                    <th style="width:50px">&nbsp;</th>
+                    <td>Age :</td>   
+                    <td>
+                        <input type="text" id="ageInsuredPerson_${index}" name="ageInsuredPerson_${index}" maxlength="4" readonly  style="max-width:50px">  years old
+                    </td>
+                </tr>
+                <tr>
+                    <td>Insured Occupation: <span style="color:red">*</span></td>
+                    <td>
+                        <select name="insured_ah_insuredOccupation_${index}" ${isRequired ? 'required' : ''}>
+                            <option value=""> <-- Please select an option --></option>
+                            <?php
+                                $strSQL = "SELECT name, id, description
+                                FROM t_aig_sg_lov 
+                                where name='PA Occupation'";
+                                $objQuery = mysqli_query($Conn, $strSQL);
+                                while ($objResuut = mysqli_fetch_array($objQuery)) {
+                                    $data[] = $objResuut;
+                            ?>
+                            <option value="<?php echo $objResuut["id"]; ?>">
+                                <?php echo $objResuut["description"]; ?>
+                            </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </td>
+                    <th style="width:50px">&nbsp;</th>
+                    <td>Relation To Policy Holder:<span style="color:red">*</span></td>
+                    <td>
+                        <select name="insured_ah_relationToPolicyholder_${index}" ${isRequired ? 'required' : ''}>
+                            <option value=""> <-- Please select an option --></option>
+                            <?php
+                                $strSQL = "SELECT name, id, description
+                                FROM t_aig_sg_lov 
+                                where name='PH Relation'";
+                                $objQuery = mysqli_query($Conn, $strSQL);
+                                while ($objResuut = mysqli_fetch_array($objQuery)) {
+                                    $data[] = $objResuut;
+                            ?>
+                            <option value="<?php echo $objResuut["id"]; ?>">
+                                <?php echo $objResuut["description"]; ?>
+                            </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+            
+            <tbody>
+                <tr>
+                    <td>
+                        <h1>Plan Info</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="white-space:nowrap">Plan Id : <span style="color:red">*</span> </td>
+                    <td>
+                        <select id="planSelect${index}" name="planId${index}" ${isRequired ? 'required' : ''}>
                             <option value="">
                                 <-- Please select an option -->
                             </option>
                         </select>
                     </td>
-                <td></td>
-                
-                 
-          
+                    <th style="width:50px"></th>
+                    <td style="white-space: nowrap;">Plan Poi :  <span style="color:red">*</span></td>
+                    <td colspan="2">
+                        <select id="planPoiSelect${index}" name="planPoi${index}" ${isRequired ? 'required' : ''}>
+                            <option value="">
+                                <-- Please select an option -->
+                            </option>
+                            <option value="1">1</option>
+                            <option value="12">12</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cover List</td>
+                    <td></td>
+                </tr>
+                <tbody id="coverListBody${index}">
+                    <tr class="cover-row">
+                        <td style="padding:0 30px">Cover Name: </td>
+                        <td>
+                            <select name="plan_cover_list_${index}[]" id="plan_cover_list_${index}" class="planCoverList" style="max-width: 216px;" ${isRequired ? 'required' : ''}>
+                                <option value="">
+                                    <-- Please select an option -->
+                                </option>
+                            </select>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
             </tbody>
-                 </tr>
-                
-        </tbody>
-    </table>
-    <hr style="margin:10px 0px">
+        </table>
+        <hr style="margin:10px 0px">
     `;
-    }
-
-    function handlePlanChange(selectElement, index) {
-        const selectedOption = selectElement.options[selectElement.selectedIndex];
-        const planPoi = selectedOption.getAttribute('data-poi');
-        const planId = selectElement.value;
-        const insuredDob = document.getElementById(`datepicker-${index}`).value;
-        if (planPoi) {
-            document.getElementById(`planPoiSelect${index}`).value = planPoi;
-        }
-        if (planId) {
-            fetchCoverList(planId, planPoi, insuredDob, index);
-        }
-    }
-
-
-   
+}
 
     function addPlanInfoSections(count) {
         const insuredContainer = document.getElementById('insured-list-ah');
@@ -243,7 +213,7 @@ where name='PH Relation'";
         for (let i = 1; i <= count; i++) {
             attachIdNumberValidation(i)
         }
-        
+
     }
 
     function initializeDatepicker(index) {
@@ -307,7 +277,7 @@ where name='PH Relation'";
                 insuredDateOfBirth: section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value ? transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value) : '',
                 insuredMaritalStatus: section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value || '',
                 insuredOccupation: section.querySelector('[name^="insured_ah_insuredOccupation_"]').value || '',
-                insuredCampaignCode: campaign_id || '',
+                insuredCampaignCode: document.querySelector('select[name="select-product"]').value,
                 // insuredCampaignCode: section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value || '',
                 relationToPolicyholder: section.querySelector('[name^="insured_ah_relationToPolicyholder_"]').value || '',
                 // natureOfBusiness: section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value || '',
@@ -367,6 +337,7 @@ where name='PH Relation'";
             planPoiInput.value = '';
         }
     }
+
     function fetchCallingList() {
         document.body.classList.add('loading');
         const callListId = <?php echo json_encode($_GET["calllist_id"]); ?>;
@@ -441,7 +412,7 @@ where name='PH Relation'";
         });
     }
 
-    
+
 
     function handleProductChange(selectElement) {
         const selectedProductId = selectElement.value;
@@ -459,9 +430,9 @@ where name='PH Relation'";
         document.body.classList.add('loading');
 
         fetch(url)
-            .then(response => response.json()) 
+            .then(response => response.json())
             .then(data => {
-                const planSelect = document.getElementById('planSelect' + index); 
+                const planSelect = document.getElementById('planSelect' + index);
 
                 // Debugging
                 console.log('Element:', planSelect);
@@ -496,6 +467,7 @@ where name='PH Relation'";
                 document.body.classList.remove('loading');
             });
     }
+
     function populateCovers(productId, index) {
         if (!productId) return;
 
@@ -503,9 +475,9 @@ where name='PH Relation'";
         document.body.classList.add('loading');
 
         fetch(url)
-            .then(response => response.json()) 
+            .then(response => response.json())
             .then(data => {
-                const plan_cover_list_ = document.getElementById('plan_cover_list_' + index); 
+                const plan_cover_list_ = document.getElementById('plan_cover_list_' + index);
 
                 // Debugging
                 console.log('Element:', plan_cover_list_);
@@ -529,8 +501,8 @@ where name='PH Relation'";
                 // Populate the dropdown with new options
                 data.forEach(cover => {
                     const option = document.createElement('option');
-                    option.value = cover.cover_id; 
-                    option.textContent = cover.cover_name; 
+                    option.value = cover.cover_id;
+                    option.textContent = cover.cover_name;
                     option.setAttribute('data-cover-code', cover.cover_code);
                     option.setAttribute('data-cover-name', cover.cover_name);
                     plan_cover_list_.appendChild(option);
@@ -544,41 +516,40 @@ where name='PH Relation'";
 
 
     function validateIdNumber(index) {
-        console.log("validateIdNumber",index)
-    const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
-    const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
+        const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
+        const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
 
-    if (!idTypeSelect || !idNumberInput) return; // Ensure the elements exist
+        if (!idTypeSelect || !idNumberInput) return; // Ensure the elements exist
 
-    const idType = idTypeSelect.value;
-    const idNumber = idNumberInput.value;
+        const idType = idTypeSelect.value;
+        const idNumber = idNumberInput.value;
 
-    // Regular expression for the pattern: letter-7 digits-letter
-    const idPattern = /^[A-Za-z]\d{7}[A-Za-z]$/;
+        // Regular expression for the pattern: letter-7 digits-letter
+        const idPattern = /^[A-Za-z]\d{7}[A-Za-z]$/;
 
-    if (idType === '9' || idType === '10' || idType === '6') { // NRIC, FIN, or Birth Certificate
-        if (!idPattern.test(idNumber)) {
-            console.log("invalid id number")
-            idNumberInput.setCustomValidity("Invalid format. ID should be in the format: letter-7 digits-letter.");
+        if (idType === '9' || idType === '10' || idType === '6') { // NRIC, FIN, or Birth Certificate
+            if (!idPattern.test(idNumber)) {
+                console.log("invalid id number")
+                idNumberInput.setCustomValidity("Invalid format. ID should be in the format: letter-7 digits-letter.");
+            } else {
+                idNumberInput.setCustomValidity(""); // Clear custom error if valid
+            }
         } else {
-            idNumberInput.setCustomValidity(""); // Clear custom error if valid
+            idNumberInput.setCustomValidity(""); // Clear custom error for other types
         }
-    } else {
-        idNumberInput.setCustomValidity(""); // Clear custom error for other types
+        idNumberInput.reportValidity();
     }
-    idNumberInput.reportValidity();
-}
 
-// Function to attach event listeners dynamically
-function attachIdNumberValidation(index) {
-    const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
-    const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
+    // Function to attach event listeners dynamically
+    function attachIdNumberValidation(index) {
+        const idTypeSelect = document.querySelector(`select[name="insured_ah_insuredIdType_${index}"]`);
+        const idNumberInput = document.querySelector(`input[name="insured_ah_insuredIdNumber_${index}"]`);
 
-    if (idTypeSelect && idNumberInput) {
-        idTypeSelect.addEventListener('change', () => validateIdNumber(index));
-        idNumberInput.addEventListener('input', () => validateIdNumber(index));
+        if (idTypeSelect && idNumberInput) {
+            idTypeSelect.addEventListener('change', () => validateIdNumber(index));
+            idNumberInput.addEventListener('input', () => validateIdNumber(index));
+        }
     }
-}
 
     document.addEventListener('DOMContentLoaded', () => {
         const queryString = window.location.search;
