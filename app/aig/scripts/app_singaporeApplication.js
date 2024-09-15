@@ -665,3 +665,10 @@ const handlePaymentGateway = () => {
     console.log("no price",quotationData?.premiumPayable)
   }
 };
+function showAlert(message) {
+  alert(message);
+  setTimeout(()=>{
+    window.location.reload();
+
+  },2000)
+}
