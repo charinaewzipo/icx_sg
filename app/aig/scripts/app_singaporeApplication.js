@@ -1,5 +1,6 @@
 let selectedType = null;
 let campaignDetails = null;
+let productDetail=null;
 const getTypeSelectForm = () => {
   const selectedItems = document.getElementsByClassName("selectable selected");
   if (selectedItems.length > 0) {
@@ -657,6 +658,31 @@ const transformDate = (dateString) => {
   const date = moment.parseZone(dateString); // Keeps the original timezone information
   return date.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 };
+const displayDateInsured = (dateText, index) => {
+  const { age, days } = calculateAge(dateText);
+  if(!productDetail){
+    alert("Please select a product")
+    $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+      $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+    return;
+  }
+  if (age < productDetail?.min_age) {
+      alert(`Please enter a date of birth that is more than ${productDetail?.min_age} years ago.`);
+      // Reset the datepicker value
+      $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+      $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+  }else if (age > productDetail.max_age) {
+    alert(`Please enter a date of birth that is less than ${productDetail.max_age} years ago.`);
+    // Reset the datepicker value
+    $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+    $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+  }
+
+  else {
+      // If age is valid, set the age value
+      $(`#ageInsuredPerson_${index}`).val(age);
+  }
+};
 const handlePaymentGateway = () => {
   if(quotationData?.premiumPayable){
     const url = `payment.php?amount=${quotationData?.premiumPayable}`;
@@ -671,4 +697,34 @@ function showAlert(message) {
     window.location.reload();
 
   },2000)
+}
+
+function handleAddChildButtonVisibility(productDetail) {
+  const addButton = document.getElementById('add-insured-child');
+  if (productDetail?.max_age_child) {
+    addButton.style.display = 'block'; 
+  } else {
+    addButton.style.display = 'none';
+  }
+}
+function getProductDetail(productId) {
+  if (!productId) return;
+
+  const url = `../scripts/get_product.php?product_id=${productId}`;
+  document.body.classList.add('loading');
+
+  fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if(data.length>0){
+
+          productDetail=data[0]
+          handleAddChildButtonVisibility(data[0])
+          console.log("data:", data)
+        }
+      })
+      .catch(error => console.error('Error fetching plans:', error))
+      .finally(() => {
+          document.body.classList.remove('loading');
+      });
 }

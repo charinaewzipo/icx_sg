@@ -132,7 +132,7 @@ error_reporting(E_ALL);
       $("#datepicker").datepicker($.extend({}, datepickerOptions, {
         maxDate: new Date(),
         onSelect: function(dateText) {
-          const age = calculateAge(dateText);
+          const { age, days } = calculateAge(dateText);
           $("#agePolicyHolder").val(age);
         }
       }));
@@ -161,22 +161,7 @@ error_reporting(E_ALL);
       }));
 
 
-      //insured person date
-      for (var i = 1; i <= 10; i++) {
-        $("#datepicker-" + i).datepicker({
-          yearRange: "c-80:c+20",
-          maxDate: new Date(),
-          dateFormat: 'mm/dd/yy',
-          changeMonth: true,
-          changeYear: true,
-          showAnim: "slideDown",
-          onSelect: function(dateText) {
-            const age = calculateAge(dateText);
-
-            $(`#ageInsuredPerson_${i}`).val(age);
-          }
-        });
-      }
+    
     });
 
     $body = $("body");
@@ -619,7 +604,7 @@ where name='Occupation'";
 
             <tr>
               <td>
-                <h1>Contact Info</h1>
+                <h1>Mailing Address</h1>
               </td>
             </tr>
             <tr>
@@ -1395,7 +1380,7 @@ where name='Occupation'";
         <div id="insured-list-ah">
 
         </div>
-
+        <button id="add-insured-child" class="button payment" style="float: right; display:none" type="button">Add Child</button>
 
         <!--Form Insured List Plan info -->
         <div class="table" id="plan-info-container-main">
@@ -1563,7 +1548,7 @@ where name='Occupation'";
                 <div class="table-data">
                   <button type="button" class="button payment" id="btnPayment" >Payment</button>
                 </div>
-                <button type="button" onclick="handlePaymentGateway()">Payment</button>
+                <!-- <button type="button" onclick="handlePaymentGateway()">Payment</button> -->
               </div>
             </div>
           </div>

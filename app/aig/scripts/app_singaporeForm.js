@@ -323,7 +323,7 @@ console.log("data FormCallingList:", data)
   document.querySelector('input[name="dateOfBirth"]').value = data.dob?isoToFormattedDate(data.dob):"";
   const dob = data.dob;
   if (dob) {
-    const age = calculateAge(dob);
+    const {age} = calculateAge(dob);
     document.getElementById('agePolicyHolder').value = age;
   }
   document.querySelector('input[name="customerIdNo"]').value = data.passport_no; // Assuming using passport_no as customerIdNo
@@ -525,7 +525,7 @@ const setInsuredPerson = (insuredData) => {
     section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =  
     dob ? isoToFormattedDate(dob):""
     if (dob) {
-      const age = calculateAge(dob);
+      const {age} = calculateAge(dob);
       section.querySelector('[name^="ageInsuredPerson_"]').value = age;
     }
     section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value =
@@ -677,7 +677,7 @@ const setDefaultValueForm = (dbData) => {
   document.querySelector('input[name="dateOfBirth"]').value = dob? isoToFormattedDate(dob):null
 
   if (dob) {
-    const age = calculateAge(dob);
+    const {age} = calculateAge(dob);
     document.getElementById('agePolicyHolder').value = age;
   }
   document.querySelector('select[name="maritalStatus"]').value =
