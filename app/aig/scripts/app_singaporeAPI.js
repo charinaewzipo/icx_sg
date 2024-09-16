@@ -3,7 +3,7 @@ let responsePayment = null;
 let quotationData = null;
 let selectProduct = null;
 let calllistDetail = null;
-let token = null;
+var token = null;
 
 
 function fetchPremiumAH(requestBody, index) {
