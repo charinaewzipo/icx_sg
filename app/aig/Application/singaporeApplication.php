@@ -1432,7 +1432,7 @@ where name='Occupation'";
               </td>
             </tr>
             <tr>
-              <td style="white-space:nowrap">Plan Id : <span style="color:red">*</span> </td>
+              <td style="white-space:nowrap">Plan Name : <span style="color:red">*</span> </td>
               <td>
                 <select id="planSelect" name="planId" required>
                   <option value="">

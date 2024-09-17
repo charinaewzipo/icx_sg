@@ -174,7 +174,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="white-space:nowrap">Plan Id : ${showAsterisk}</td>
+                    <td style="white-space:nowrap">Plan Name : ${showAsterisk}</td>
                     <td>
                         <select id="planSelect${index}" name="planId${index}" ${index===1 ? 'required' : ''}>
                             <option value="">
@@ -262,7 +262,7 @@
             <tbody style="display:none">
                
                 <tr>
-                    <td style="white-space:nowrap">Plan Id: <span style="color:red">*</span></td>
+                    <td style="white-space:nowrap">Plan Name: <span style="color:red">*</span></td>
                     <td>
                         <select id="planSelect${index}" name="planId${index}" required>
                             <option value="">
