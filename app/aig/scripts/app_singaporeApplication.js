@@ -153,11 +153,7 @@ function handleForm() {
   const customerType = getTypeCustomerType();
   const formData = new FormData(document.getElementById("application"));
   let insuredList = [];
-  const paymentObject = {
-    paymentmode: Number(formData.get('Payment_Mode')),
-    paymentfrequency: Number(formData.get('Payment_Frequency')),
-  }
-  console.log("paymentObject:", paymentObject)
+
 
   const policyDetail = {
     policyId: policyid ? policyid : "",
@@ -169,6 +165,10 @@ function handleForm() {
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
     campaignCode: formData.get("campaignCode"),
+    paymentmode: Number(formData.get('Payment_Mode')),
+    paymentfrequency: Number(formData.get('Payment_Frequency')),
+    efulfillmentFlag: Number(formData.get('Email_Fulfillment_Flag')),
+
   };
   if (formType === "auto") {
     policyDetail.ncdInfo = {};
@@ -189,7 +189,6 @@ function handleForm() {
   ////////////////handlePolicyholder form
 
   const fullName = formData.get("firstName");
-  // const fullName = formData.get("firstName") + " " + formData.get("lastName");
   policyHolderInfo = {
     customerType: formData.get("customerType"),
     individualPolicyHolderInfo: {
@@ -231,12 +230,12 @@ function handleForm() {
       emailId: formData.get("emailId"),
       mobileNo: formData.get("mobileNo"),
     },
-    organizationPolicyHolderInfo: {
-      natureOfBusiness: formData.get("natureOfBusiness"),
-      companyName: formData.get("companyName"),
-      companyRegNo: formData.get("companyRegNo"),
-      companyRegDate: formData.get("companyRegDate"),
-    },
+    // organizationPolicyHolderInfo: {
+    //   natureOfBusiness: formData.get("natureOfBusiness"),
+    //   companyName: formData.get("companyName"),
+    //   companyRegNo: formData.get("companyRegNo"),
+    //   companyRegDate: formData.get("companyRegDate"),
+    // },
   };
   if (formType === "auto") {
     policyHolderInfo.individualPolicyHolderInfo.isPolicyHolderDriving =
@@ -353,7 +352,6 @@ function handleForm() {
     insuredList = collectFormData()
 
     const fullForm = {
-      ...paymentObject,
       ...policyDetail,
       policyHolderInfo,
       insuredList,

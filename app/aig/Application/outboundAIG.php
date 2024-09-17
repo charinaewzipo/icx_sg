@@ -114,6 +114,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
 
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
+    $efulfillmentFlag = isset($formData['efulfillmentFlag']) ? $formData['efulfillmentFlag'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
     $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
@@ -146,7 +147,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
-        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status,payment_frequency,payment_mode,fullname,dob";
+        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status,payment_frequency,payment_mode,fullname,dob,email_fullfillment";
 
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
@@ -157,7 +158,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate',  '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
-        $campaign_id, $import_id, $calllist_id, NOW(), 'Open',$payment_frequency,$payment_mode,'$full_name','$date_of_birth'";
+        $campaign_id, $import_id, $calllist_id, NOW(), 'Open',$payment_frequency,$payment_mode,'$full_name','$date_of_birth','$efulfillmentFlag'";
 
     // Add NOW() for quote_create_date if response is not empty
     if (!empty($response)) {
@@ -217,6 +218,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     // Response data
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
+    $efulfillmentFlag = isset($formData['efulfillmentFlag']) ? $formData['efulfillmentFlag'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
     $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
 
@@ -253,7 +255,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
         payment_frequency = '$payment_frequency', 
         payment_mode = '$payment_mode',            
         fullname = '$full_name',                  
-        dob = '$date_of_birth',          
+        dob = '$date_of_birth',
+        email_fullfillment = '$efulfillmentFlag',          
         update_date = NOW()";
 
     // Add quote_create_date if response is not null

@@ -678,6 +678,15 @@ document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mo
     paymentFrequencyMonthly.checked = true;
   }
 
+  const emailFulfillmentYes = document.querySelector('#emailFulfillmentYes');
+  const emailFulfillmentNo = document.querySelector('#emailFulfillmentNo');
+  
+  if (dbData?.email_fullfillment === "1") {
+    emailFulfillmentYes.checked = true;
+  } else if (dbData?.email_fullfillment === "2") {
+    emailFulfillmentNo.checked = true;
+  }
+
   document.querySelector('select[name="courtesyTitle"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.courtesyTitle;
   document.querySelector('input[name="firstName"]').value =

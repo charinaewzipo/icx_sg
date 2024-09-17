@@ -415,7 +415,7 @@ error_reporting(E_ALL);
             <tr>
               <td>Payment Mode: <span style="color:red">*</span></td>
               <td>
-                <select name="Payment_Mode" id="paymentModeSelect" required onchange="handlePaymentModeChange(this)">
+                <select name="Payment_Mode" id="paymentModeSelect"  onchange="handlePaymentModeChange(this)" required>
                   <option value=""> <-- Please select an option --> </option>
                   <option value="1001">Credit Card Lump sum</option>
                   <option value="124">Recurring Credit Card</option>
@@ -641,6 +641,18 @@ where name='Occupation'";
             <tr>
               <td>Email : <span style="color:red">*</span></td>
               <td><input type="text" name="emailId" maxlength="60" size="30" required /></td>
+              <th></th>
+              <td style="float:inline-start">Email Fulfillment Flag: <span style="color:red">*</span></td>
+              <td>
+    <div class="form-check">
+      <input type="radio" class="form-check-input" id="emailFulfillmentYes" name="Email_Fulfillment_Flag" value="1"  checked>
+      <label class="form-check-label" for="emailFulfillmentYes">Yes</label>
+    </div>
+    <div class="form-check">
+      <input type="radio" class="form-check-input" id="emailFulfillmentNo" name="Email_Fulfillment_Flag" value="2" >
+      <label class="form-check-label" for="emailFulfillmentNo">No</label>
+    </div>
+  </td>
             </tr>
 
             <tr>
@@ -1512,7 +1524,7 @@ where name='Occupation'";
                 <div class="table-data">Online Payment Gateway </div>
                 <div class="table-data">
                   <!-- <button type="button" class="button payment" id="btnPayment">Payment</button> -->
-                  <button type="button" class="button payment" id="btnPayment" onclick="handlePaymentGateway()">Payment</button>
+                  <button type="button" class="button payment" id="btnPayment" onclick="handlePaymentGateway()" >Payment</button>
                 </div>
                 <!-- <button type="button" onclick="handlePaymentGateway()">Payment</button> -->
               </div>
