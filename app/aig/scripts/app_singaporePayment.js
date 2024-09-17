@@ -3,10 +3,7 @@ function handlePaymentFrequencyChange(radio) {
 
   const paymentFrequency = radio.value;
   const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
-  // const paymentCardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
-
-  paymentModeSelect.value = ""; // Reset the dropdown
-  // paymentCardTypeSelect.value="";
+  paymentModeSelect.value = ""; 
   const options = paymentModeSelect.options;
 
   for (let i = 0; i < options.length; i++) {
@@ -19,9 +16,23 @@ function handlePaymentFrequencyChange(radio) {
       option.hidden = false;
     }
   }
-
+  setPlanPoiValue(paymentFrequency);
   const paymentMode = paymentModeSelect.value;
   // fetchPaymentOption(paymentMode, paymentFrequency);
+}
+function setPlanPoiValue(paymentFrequency) {
+  const planPoi = document.querySelector('select[name="planPoi1"]');
+
+  // Set different values for planPoi based on the payment frequency
+  if (paymentFrequency === '1') { // Annual
+    planPoi.value = "12"; // Replace with actual value for annual
+  } else if (paymentFrequency === '2') { // Monthly
+    planPoi.value = "1"; // Replace with actual value for monthly
+  } else {
+    planPoi.value = ""; // Default empty value
+  }
+
+  console.log("planPoi value set to:", planPoi.value);
 }
 
 function handlePaymentModeChange(select) {
