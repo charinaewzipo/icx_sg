@@ -294,7 +294,7 @@ error_reporting(E_ALL);
 <tr id="remark-c-container">
   <td style="float: inline-start;padding-right: 84px;">RemarksC:</td>
   <td style="white-space:nowrap;">
-    <textarea name="RemarkCInput" rows="3" cols="30" maxlength="2000"></textarea>
+    <textarea name="RemarkCInput" id="RemarkCInput" rows="3" cols="30" maxlength="2000"></textarea>
   </td>
 </tr>
 </table>
@@ -1578,7 +1578,7 @@ where name='Occupation'";
 
         <button type="button" class="button draft-button" id="btnDraftForm" onclick="handleClickDraftButton()">Save</button>
         <button type="button" class="button draft-button" id="btnSaveDraftForm" onclick="handleClickSaveDraftButton()" hidden>Save</button>
-        <button hidden type="button" class="button edit" id="btnEditForm" onclick="handleEditQuote()" hidden>Edit</button>
+        <!-- <button hidden type="button" class="button edit" id="btnEditForm" onclick="handleEditQuote()" hidden>Edit</button> -->
         <button type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->

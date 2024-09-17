@@ -20,6 +20,11 @@ const hideFormData = (elements) => {
       element.style.pointerEvents = "none";
       element.style.backgroundColor = "#e9ecef";
       element.style.color = "#6c757d";
+    } else if (tagName === "textarea") {
+      // Style and disable textarea elements
+      element.disabled = true;
+      element.style.backgroundColor = "#e9ecef";
+      element.style.border = "1px solid rgb(118, 118, 118)";
     } else if (tagName === "button") {
       // Disable button elements
       element.disabled = true;
@@ -28,6 +33,7 @@ const hideFormData = (elements) => {
     }
   });
 };
+
 
 const unhideFormData = (elements) => {
   elements.forEach((element) => {
@@ -62,11 +68,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(queryString);
   const paymentContainer = document.getElementById("payment-container");
   const paymentContainerAmount = document.getElementById("payment-container-amount");
+  const remarkCTextArea = document.getElementById("RemarkCInput");
   const policyidText = document.getElementById("policyid-text");
   const policyInput = document.getElementById('policyid-input');
   const policyDisplay = document.getElementById('policyid-display');
   const btnDraftForm = document.getElementById('btnDraftForm');
-  const btnEditForm = document.getElementById('btnEditForm');
+  // const btnEditForm = document.getElementById('btnEditForm');
   const btnSaveForm = document.getElementById('btnSaveForm');
   const btnSaveDraftForm = document.getElementById('btnSaveDraftForm');
   id = urlParams.get("id");
@@ -78,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     policyidText.style.display = "none"
     policyDisplay.style.display = "none";
-    btnEditForm.style.display = "none";
+    // btnEditForm.style.display = "none";
 
   }
 
@@ -132,23 +139,24 @@ document.addEventListener("DOMContentLoaded", function () {
       btnSaveForm.textContent = "Create Policy";
       btnSaveForm.title = "Please make the payment";
       btnDraftForm.style.display = "none";
-
+      remarkCTextArea.disabled=true;
       paymentContainer.removeAttribute("hidden");
       paymentContainerAmount.removeAttribute("hidden");
 
       const formElements = document.querySelectorAll(
-        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnSaveForm):not(#btnEditForm)"
+        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnSaveForm)"
       );
 
       hideFormData(formElements);
     }
-
+    
     function hideAllFormElements() {
       const formElements = document.querySelectorAll("input, select, button");
       hideFormData(formElements);
 
       btnSaveDraftForm.style.display = "none";
       btnSaveForm.style.display = "none";
+      remarkCTextArea.disabled=true;
     }
 
     function handlePaymentResponse(paymentResponse) {
@@ -158,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Payment not successful
         btnSaveForm.disabled = true;
         btnSaveForm.style.opacity = "0.65";
-        btnEditForm.style.display = "block";
+        // btnEditForm.style.display = "block";
       } else {
         // Payment successful
         console.log("paymentResponse:", paymentResponse)
@@ -167,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
           "input, select, button:not(#btnSaveForm)"
         );
         hideFormData(formElements);
-        btnEditForm.style.display = "none";
+        // btnEditForm.style.display = "none";
       }
     }
 
