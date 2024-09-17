@@ -299,7 +299,6 @@ const manualSetDefaultValueForm = () => {
     individualPolicyHolderInfo.contactInfo.postCode;
   document.querySelector('input[name="PolicyEffectiveDate"]').value =
     "08/30/2024";
-  document.querySelector('input[name="PolicyExpiryDate"]').value = "12/31/2024";
   document.querySelector('input[name="campaignCode"]').value = "";
 
   // Set radio buttons for 'isPolicyHolderDriving'
@@ -332,7 +331,6 @@ console.log("data FormCallingList:", data)
   document.querySelector('input[name="postCode"]').value = data.home_post_cd;
   // document.querySelector('input[name="PolicyEffectiveDate"]').value = "10/30/2024";
   // document.querySelector('input[name="PolicyEffectiveDate"]').value = data.udf19;
-  // document.querySelector('input[name="PolicyExpiryDate"]').value = data.udf20;
   // document.querySelector('input[name="campaignCode"]').value = data.udf12 || ""; // Campaign code
 
   // Assuming these are required fields; update as needed
@@ -665,7 +663,8 @@ const setDefaultValueForm = async(dbData) => {
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther || "";
-  document.querySelector('input[name="RemarkCInput"]').value = dbData?.remarksC || ""
+    document.querySelector('textarea[name="RemarkCInput"]').value = dbData?.remarksC || "";
+
   // Set Individual Policy Holder Info fields
 
 document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mode||"";
@@ -727,8 +726,7 @@ document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mo
   document.querySelector('input[name="PolicyEffectiveDate"]').value =dbData.policyEffDate?
   isoToFormattedDate(dbData.policyEffDate):""
 
-  document.querySelector('input[name="PolicyExpiryDate"]').value =dbData.policyExpDate?
-    isoToFormattedDate( dbData.policyExpDate):""
+
   document.querySelector('input[name="campaignCode"]').value =
     dbData.campaignCode;
 

@@ -185,9 +185,7 @@ const handleRequestBody = () => {
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
-    policyExpDate: formData.get("PolicyExpiryDate")
-      ? transformDate(formData.get("PolicyExpiryDate"))
-      : "",
+ 
 
     insuredList: [
       {
@@ -333,7 +331,6 @@ const handleRequiredField = () => {
   const requiredFieldsTypeHome = [
     "select-product",
     "PolicyEffectiveDate",
-    "PolicyExpiryDate",
     "insured_home_ownerOccupiedType",
   ];
   const requiredFieldsTypeAuto = [

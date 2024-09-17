@@ -65,8 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const policyidText = document.getElementById("policyid-text");
   const policyInput = document.getElementById('policyid-input');
   const policyDisplay = document.getElementById('policyid-display');
-  const policyExpiryLabel = document.getElementById('policy-expiry-label');
-  const policyExpiryInput = document.getElementById('datepicker6');
   const btnDraftForm = document.getElementById('btnDraftForm');
   const btnEditForm = document.getElementById('btnEditForm');
   const btnSaveForm = document.getElementById('btnSaveForm');
@@ -81,8 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
     policyidText.style.display = "none"
     policyDisplay.style.display = "none";
     btnEditForm.style.display = "none";
-    policyExpiryLabel.style.display = "none";
-    policyExpiryInput.style.display = "none";
 
   }
 

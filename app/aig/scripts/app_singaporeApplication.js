@@ -42,7 +42,6 @@ const handleSelectType = () => {
 };
 const handleTypeConfirmQuote = () => {
   const ncdinfoContainer = document.getElementById("ncd-info-container");
-  const remarkC = document.getElementById("remark-c-contanier");
   const insuredListHome = document.getElementById("insured-list-home");
   const insuredListAuto = document.getElementById("insured-list-auto");
   const insuredListAh = document.getElementById("insured-list-ah");
@@ -55,7 +54,6 @@ const handleTypeConfirmQuote = () => {
   );
   const planInfoContainer = document.getElementById("plan-info-container-main");
   ncdinfoContainer.style.display = "none";
-  remarkC.style.display = "none";
   insuredListHome.style.display = "none";
   insuredListAuto.style.display = "none";
   insuredListAh.style.display = "none";
@@ -95,7 +93,6 @@ const handleTypeConfirmQuote = () => {
     insuredListAuto.style.display = "block";
   } else if (selectedType === "ah") {
     insuredListAh.style.display = "block";
-    remarkC.style.display = "table-row";
     planInfoContainer.style.display = "none"
   }
 };
@@ -170,9 +167,6 @@ function handleForm() {
     propDate: transformDate(new Date()),
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
-      : "",
-    policyExpDate: formData.get("PolicyExpiryDate")
-      ? transformDate(formData.get("PolicyExpiryDate"))
       : "",
     campaignCode: formData.get("campaignCode"),
   };
