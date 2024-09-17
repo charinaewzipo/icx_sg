@@ -13,7 +13,6 @@ error_reporting(E_ALL);
 <html xmlns="http://www.w3.org/1999/xhtml">
 <style>
   #ncd-info-container,
-  #remark-c-contanier,
   #remark-c-input,
   #insured-list-home,
   #isPolicyHolderDrivingRow,
@@ -285,19 +284,20 @@ error_reporting(E_ALL);
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <th></th>
-              <td style="white-space:nowrap;" id="policy-expiry-label">Policy Expiry Date: </td>
-              <td><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" style="max-width: 130px; background-color:#e9ecef; border:1px solid rgb(118, 118, 118)" readonly></td>
             </tr>
 
 
-
-            <tr id="remark-c-contanier">
-              <td>RemarksC: </td>
-              <td style="white-space:nowrap;">
-                <input type="text" name="RemarkCInput" value="" ?>
-              </td>
-            </tr>
+               
           </table>
+          <table  id="table-form">
+
+<tr id="remark-c-container">
+  <td style="float: inline-start;padding-right: 84px;">RemarksC:</td>
+  <td style="white-space:nowrap;">
+    <textarea name="RemarkCInput" rows="3" cols="30" maxlength="2000"></textarea>
+  </td>
+</tr>
+</table>
           <div class="table" id="ncd-info-container">
             <table id="table-form">
               <tr>
@@ -1578,7 +1578,7 @@ where name='Occupation'";
 
         <button type="button" class="button draft-button" id="btnDraftForm" onclick="handleClickDraftButton()">Save</button>
         <button type="button" class="button draft-button" id="btnSaveDraftForm" onclick="handleClickSaveDraftButton()" hidden>Save</button>
-        <button type="button" class="button edit" id="btnEditForm" onclick="handleEditQuote()" hidden>Edit</button>
+        <button hidden type="button" class="button edit" id="btnEditForm" onclick="handleEditQuote()" hidden>Edit</button>
         <button type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->

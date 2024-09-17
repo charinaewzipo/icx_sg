@@ -112,7 +112,6 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
 
     $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
-    $policyExpDate = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : isoToDateTime("2039-12-13T00:00:00Z");
 
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
@@ -146,7 +145,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     // SQL query with dynamic quote_create_date
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
-        policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
+        campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
         quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status,payment_frequency,payment_mode,fullname,dob";
 
     // Add quote_create_date field if response is not empty
@@ -156,7 +155,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
 
     $sql .= ") VALUES (
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
-        '$policyEffDate', '$policyExpDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
+        '$policyEffDate',  '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
         $campaign_id, $import_id, $calllist_id, NOW(), 'Open',$payment_frequency,$payment_mode,'$full_name','$date_of_birth'";
 
@@ -209,7 +208,6 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     //ISO to YYYY-MM-DD HH:MM:SS
     $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
-    $policyExpDate = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : isoToDateTime("2039-12-13T00:00:00Z");
 
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
@@ -243,7 +241,6 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
         producerCode = '$producerCode',
         propDate = '$propDate',
         policyEffDate = " . ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ",
-        policyExpDate = '$policyExpDate',
         campaignCode = '$campaignCode',
         ncdInfo = '$ncdInfo',
         policyHolderInfo = '$policyHolderInfo',
