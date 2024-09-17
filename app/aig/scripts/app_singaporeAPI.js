@@ -104,15 +104,21 @@ async function fetchQuotation(requestBody) {
         window.alert(data?.statusMessage || "Successfully!");
         window.location.reload();
       } else {
-        const responseId =  await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
+        const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
         window.alert(data?.statusMessage || "Successfully!");
-        
-        let currentUrl = window.location.href;
 
-        const updatedUrl = currentUrl.includes("?")
-          ? `${currentUrl}&id=${responseId}` // If there are already query parameters
-          : `${currentUrl}?id=${responseId}`; // If there are no query parameters
-        window.location.href = updatedUrl;
+        let currentUrl = window.location.href;
+        const url = new URL(currentUrl);
+
+        if (url.searchParams.has('id')) {
+
+          url.searchParams.set('id', responseId);
+        } else {
+
+          url.searchParams.append('id', responseId);
+        }
+
+        window.location.href = url.toString();
       }
     } else {
       window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);

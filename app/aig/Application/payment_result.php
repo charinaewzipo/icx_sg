@@ -12,8 +12,18 @@
     <p id="countdown">Closing in 5 seconds...</p>
 
     <?php
+    session_start();
+    if (isset($_SESSION['payment_data'])) {
+        $payment_data = $_SESSION['payment_data'];
+        echo "<pre>";
+        print_r($payment_data);
+        echo "</pre>";
+    } else {
+        echo "No payment data found.";
+    }
     $resultIndicator = $_GET['resultIndicator'];
     $sessionVersion = $_GET['sessionVersion'];
+    unset($_SESSION['payment_data']);
     ?>
 
     <script>
@@ -33,17 +43,17 @@
         }
 
         // นับถอยหลัง 5 วินาที
-        let countdown = 5;
-        const countdownElement = document.getElementById('countdown');
+        // let countdown = 5;
+        // const countdownElement = document.getElementById('countdown');
 
-        const timer = setInterval(() => {
-            countdown--;
-            countdownElement.innerText = `Closing in ${countdown} seconds...`;
-            if (countdown <= 0) {
-                clearInterval(timer);
-                sendMessageToParent(); 
-            }
-        }, 1000); 
+        // const timer = setInterval(() => {
+        //     countdown--;
+        //     countdownElement.innerText = `Closing in ${countdown} seconds...`;
+        //     if (countdown <= 0) {
+        //         clearInterval(timer);
+        //         sendMessageToParent(); 
+        //     }
+        // }, 1000); 
     </script>
 </body>
 </html>

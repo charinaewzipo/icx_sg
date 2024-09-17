@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const paymentContainer = document.getElementById("payment-container");
+  const paymentContainerAmount = document.getElementById("payment-container-amount");
   const policyidText = document.getElementById("policyid-text");
   const policyInput = document.getElementById('policyid-input');
   const policyDisplay = document.getElementById('policyid-display');
@@ -82,11 +83,11 @@ document.addEventListener("DOMContentLoaded", function () {
     btnEditForm.style.display = "none";
     policyExpiryLabel.style.display = "none";
     policyExpiryInput.style.display = "none";
-    
+
   }
 
   if (id) {
-    
+
     async function handleQuotation(id) {
       try {
         const response = await jQuery.agent.getQuotationWithId(id);
@@ -103,7 +104,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const policyNo = response?.data?.policyNo;
         console.log("policyNo:", policyNo)
         const Amount = document.querySelector('input[name="payment_amount"]');
-  Amount.value = `${response?.data?.premiumPayable}(SGD)`;
+        if (Amount) {
+
+          Amount.value = `${response?.data?.premiumPayable}(SGD)`;
+        }
         if (policyId && !policyNo) {
           configureCreatePolicyState();
         } else if (policyNo) {
@@ -119,7 +123,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-        // Ensure payment container fields aren't marked as required
         paymentContainer.querySelectorAll("input, select").forEach((field) => {
           field.removeAttribute("required");
         });
@@ -135,10 +138,12 @@ document.addEventListener("DOMContentLoaded", function () {
       btnDraftForm.style.display = "none";
 
       paymentContainer.removeAttribute("hidden");
+      paymentContainerAmount.removeAttribute("hidden");
 
       const formElements = document.querySelectorAll(
-        "input:not(#payment-container input), select:not(#payment-container select), button:not(#payment-container button):not(#btnSaveForm):not(#btnEditForm)"
+        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnSaveForm):not(#btnEditForm)"
       );
+
       hideFormData(formElements);
     }
 

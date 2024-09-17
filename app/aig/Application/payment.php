@@ -1,3 +1,5 @@
+
+
 <script src="https://ap-gateway.mastercard.com/static/checkout/checkout.min.js"
         data-error="errorCallback"         
         data-cancel="cancelCallback"
@@ -6,8 +8,9 @@
 </script>
 
 <?php
-
-$url = 'https://ap-gateway.mastercard.com/api/rest/version/llaatteesstt/merchant/TEST97498471/session';
+session_start();
+$merchant = "TEST97498471";
+$url = `https://ap-gateway.mastercard.com/api/rest/version/llaatteesstt/merchant/$merchant/session`;
 $username = 'merchant.TEST97498471';
 $password = '8fb334a463b16d4e4d19e3f7639edfd4';
 
@@ -53,7 +56,7 @@ curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
 $response = curl_exec($ch);
-
+$_SESSION['payment_data'] = $data;
 if (curl_errno($ch)) {
     echo 'Error: ' . curl_error($ch);
 } else {
@@ -61,7 +64,7 @@ if (curl_errno($ch)) {
     $payment_session = $data['session']['id'];
     echo "<script>
                 var payment_session = '$payment_session';
-                localStorage.setItem('paymentSession', payment_session);
+                localStorage.setItem('dataPayment', data_payment);
         </script>";
     echo '<script type="text/javascript">
             function errorCallback(error) {
@@ -78,6 +81,8 @@ if (curl_errno($ch)) {
     echo '<script>
             document.getElementById("btnPayment").click();
         </script>';
+        echo json_encode($data);
+    
 }
 
 curl_close($ch);

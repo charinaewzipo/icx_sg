@@ -642,18 +642,43 @@ const setDefaultPlanInfo = (insuredData, id = null) => {
 };
 
 
-const setDefaultValueForm = (dbData) => {
+const setDefaultValueForm = async(dbData) => {
+  console.log("dbData:", dbData)
   const ncdInfo = JSON.parse(dbData.ncdInfo);
   const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
   const insuredData = JSON.parse(dbData.insuredList);
 
   document.querySelector('select[name="select-product"]').value = dbData?.productId || "";
+  const responseProduct= await getProductDetail(dbData?.productId)
+  if (responseProduct) {
+    const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
+    console.log("planSelectElements")
+    planSelectElements.forEach((selectElement, index) => {
+      console.log("do")
+      populatePlans(responseProduct.product_id, index + 1);
+      populateCovers(responseProduct.product_id, index + 1);
+    });
+  } else {
+    console.warn('responseProduct is undefined or does not contain a valid product_id.');
+  }
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo.noClaimExperienceOther || "";
   document.querySelector('input[name="RemarkCInput"]').value = dbData?.remarksC || ""
   // Set Individual Policy Holder Info fields
+
+document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mode||"";
+
+  // Payment Frequency
+  const paymentFrequencyAnnual = document.querySelector('#paymentFrequencyAnnual');
+  const paymentFrequencyMonthly = document.querySelector('#paymentFrequencyMonthly');
+  if (dbData?.payment_frequency === 1) {
+    paymentFrequencyAnnual.checked = true;
+  } else if (dbData?.payment_frequency === 2) {
+    paymentFrequencyMonthly.checked = true;
+  }
+
   document.querySelector('select[name="courtesyTitle"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.courtesyTitle;
   document.querySelector('input[name="firstName"]').value =
@@ -662,6 +687,7 @@ const setDefaultValueForm = (dbData) => {
   //   individualPolicyHolderInfo.individualPolicyHolderInfo.fullName.split(
   //     " "
   //   )[1];
+
   document.querySelector('select[name="residentStatus"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.residentStatus;
   document.querySelector('select[name="customerIdType"]').value =

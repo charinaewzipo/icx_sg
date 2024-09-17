@@ -28,11 +28,17 @@ const handleClickDraftButton = async () => {
   try {
     const responseId = await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails);
     let currentUrl = window.location.href;
-
-    const updatedUrl = currentUrl.includes("?")
-      ? `${currentUrl}&id=${responseId}` // If there are already query parameters
-      : `${currentUrl}?id=${responseId}`; // If there are no query parameters
-    window.location.href = updatedUrl;
+    const url = new URL(currentUrl); 
+    
+    if (url.searchParams.has('id')) {
+    
+      url.searchParams.set('id', responseId);
+    } else {
+    
+      url.searchParams.append('id', responseId);
+    }
+    
+    window.location.href = url.toString(); 
   } catch (error) {
     console.error("Error while inserting quotation:", error);
   }

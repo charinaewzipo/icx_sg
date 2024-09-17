@@ -1,6 +1,6 @@
 let selectedType = null;
 let campaignDetails = null;
-let productDetail=null;
+let productDetail = null;
 const getTypeSelectForm = () => {
   const selectedItems = document.getElementsByClassName("selectable selected");
   if (selectedItems.length > 0) {
@@ -156,8 +156,12 @@ function handleForm() {
   const customerType = getTypeCustomerType();
   const formData = new FormData(document.getElementById("application"));
   let insuredList = [];
-  
-  
+  const paymentObject = {
+    paymentmode: Number(formData.get('Payment_Mode')),
+    paymentfrequency: Number(formData.get('Payment_Frequency')),
+  }
+  console.log("paymentObject:", paymentObject)
+
   const policyDetail = {
     policyId: policyid ? policyid : "",
     productId: formData.get("select-product"),
@@ -353,7 +357,9 @@ function handleForm() {
     };
   } else if (formType === "ah") {
     insuredList = collectFormData()
+
     const fullForm = {
+      ...paymentObject,
       ...policyDetail,
       policyHolderInfo,
       insuredList,
@@ -369,9 +375,11 @@ function handleForm() {
 
   insuredList.push(insuredObject);
   const fullForm = {
+
     ...policyDetail,
     policyHolderInfo,
     insuredList,
+    ...paymentDetail
   };
   return fullForm;
 }
@@ -554,38 +562,38 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  function validateFields() {
-    const paymentMode = document.querySelector('select[name="Payment_Mode"]').value;
-    const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked');
-    const cardType = document.querySelector('select[name="Payment_CardType"]').value;
-    const cardNumber = document.querySelector('input[name="payment_cardNumber"]').value;
-    const expiryDate = document.querySelector('input[name="payment_expiryDate"]').value;
-    // const securityCode = document.querySelector('input[name="payment_securityCode"]').value;
+  // function validateFields() {
+  //   const paymentMode = document.querySelector('select[name="Payment_Mode"]').value;
+  //   const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked');
+  //   const cardType = document.querySelector('select[name="Payment_CardType"]').value;
+  //   const cardNumber = document.querySelector('input[name="payment_cardNumber"]').value;
+  //   const expiryDate = document.querySelector('input[name="payment_expiryDate"]').value;
+  //   // const securityCode = document.querySelector('input[name="payment_securityCode"]').value;
 
-    if (!paymentMode || !paymentFrequency || !cardType || !cardNumber || !expiryDate ) {
-      window.alert('Please fill out all required fields.');
-      return false;
-    }
+  //   if (!paymentMode || !paymentFrequency || !cardType || !cardNumber || !expiryDate ) {
+  //     window.alert('Please fill out all required fields.');
+  //     return false;
+  //   }
 
-    return true;
-  }
-  if (submitButton) {
-    submitButton.addEventListener('click', async function () {
-      paymentContainer.removeAttribute('hidden');
-      if (validateFields()) {
-        const requestBody = getFormDataPayment();
-        try {
-          await fetchPayment(requestBody);
-        } catch (error) {
-          console.error("Failed to fetch payment data:", error);
-          window.alert("Failed to fetch payment data. Please try again.");
-        }
-      }
+  //   return true;
+  // }
+  // if (submitButton) {
+  //   submitButton.addEventListener('click', async function () {
+  //     paymentContainer.removeAttribute('hidden');
+  //     if (validateFields()) {
+  //       const requestBody = getFormDataPayment();
+  //       try {
+  //         await fetchPayment(requestBody);
+  //       } catch (error) {
+  //         console.error("Failed to fetch payment data:", error);
+  //         window.alert("Failed to fetch payment data. Please try again.");
+  //       }
+  //     }
 
-    });
-  } else {
-    console.error('The submit button was not found');
-  }
+  //   });
+  // } else {
+  //   console.error('The submit button was not found');
+  // }
 
 
 });
@@ -660,18 +668,18 @@ const transformDate = (dateString) => {
 };
 const displayDateInsured = (dateText, index) => {
   const { age, days } = calculateAge(dateText);
-  if(!productDetail){
+  if (!productDetail) {
     alert("Please select a product")
     $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-      $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+    $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
     return;
   }
   if (age < productDetail?.min_age) {
-      alert(`Please enter a date of birth that is more than ${productDetail?.min_age} years ago.`);
-      // Reset the datepicker value
-      $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-      $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-  }else if (age > productDetail.max_age) {
+    alert(`Please enter a date of birth that is more than ${productDetail?.min_age} years ago.`);
+    // Reset the datepicker value
+    $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+    $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+  } else if (age > productDetail?.max_age) {
     alert(`Please enter a date of birth that is less than ${productDetail.max_age} years ago.`);
     // Reset the datepicker value
     $(`#datepicker-${index}`).val(''); // Clear the datepicker input
@@ -679,52 +687,40 @@ const displayDateInsured = (dateText, index) => {
   }
 
   else {
-      // If age is valid, set the age value
-      $(`#ageInsuredPerson_${index}`).val(age);
+    // If age is valid, set the age value
+    $(`#ageInsuredPerson_${index}`).val(age);
   }
 };
-const handlePaymentGateway = () => {
-  if(quotationData?.premiumPayable){
-    const url = `payment.php?amount=${quotationData?.premiumPayable}`;
-    window.open(url, 'childWindow', 'width=600,height=480');
-  }else{
-    console.log("no price",quotationData?.premiumPayable)
-  }
-};
-function showAlert(message) {
-  alert(message);
-  setTimeout(()=>{
-    window.location.reload();
 
-  },2000)
-}
 
 function handleAddChildButtonVisibility(productDetail) {
   const addButton = document.getElementById('add-insured-child');
   if (productDetail?.max_age_child) {
-    addButton.style.display = 'block'; 
+    addButton.style.display = 'block';
   } else {
     addButton.style.display = 'none';
   }
 }
-function getProductDetail(productId) {
+async function getProductDetail(productId) {
+  console.log("productId:", productId)
   if (!productId) return;
 
   const url = `../scripts/get_product.php?product_id=${productId}`;
   document.body.classList.add('loading');
 
   fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if(data.length>0){
-
-          productDetail=data[0]
-          handleAddChildButtonVisibility(data[0])
-          console.log("data:", data)
-        }
-      })
-      .catch(error => console.error('Error fetching plans:', error))
-      .finally(() => {
-          document.body.classList.remove('loading');
-      });
+    .then(response => response.json())
+    .then(data => {
+      if (data.length > 0) {
+        productDetail = data[0];
+        handleAddChildButtonVisibility(productDetail); // Process product details
+        return productDetail;
+      } else {
+        console.warn("No product data found");
+      }
+    })
+    .catch(error => console.error('Error fetching plans:', error))
+    .finally(() => {
+      document.body.classList.remove('loading');
+    });
 }

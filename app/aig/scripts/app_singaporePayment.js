@@ -3,10 +3,10 @@ function handlePaymentFrequencyChange(radio) {
 
   const paymentFrequency = radio.value;
   const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
-  const paymentCardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
-  
+  // const paymentCardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
+
   paymentModeSelect.value = ""; // Reset the dropdown
-  paymentCardTypeSelect.value="";
+  // paymentCardTypeSelect.value="";
   const options = paymentModeSelect.options;
 
   for (let i = 0; i < options.length; i++) {
@@ -14,21 +14,20 @@ function handlePaymentFrequencyChange(radio) {
 
     // If payment frequency is 2 and payment mode is '1001'
     if (paymentFrequency === '2' && option.value === '1001') {
-      option.hidden = true; // Hide option 1001
+      option.hidden = true;
     } else {
-      option.hidden = false; // Otherwise, show all other options
+      option.hidden = false;
     }
   }
 
-  // Optionally call your existing function to fetch payment options again
   const paymentMode = paymentModeSelect.value;
-  fetchPaymentOption(paymentMode, paymentFrequency);
+  // fetchPaymentOption(paymentMode, paymentFrequency);
 }
 
 function handlePaymentModeChange(select) {
   const paymentMode = select.value;
   const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked').value;
-  fetchPaymentOption(paymentMode, paymentFrequency)
+  // fetchPaymentOption(paymentMode, paymentFrequency)
 
 }
 
@@ -39,26 +38,42 @@ function fetchPaymentOption(paymentMode, paymentFrequency) {
   document.body.classList.add('loading');
 
   fetch(url)
-      .then(response => response.json())
-      .then(data => {
-          const cardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
+    .then(response => response.json())
+    .then(data => {
+      const cardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
 
-          cardTypeSelect.innerHTML = `   <option value="">
+      cardTypeSelect.innerHTML = `   <option value="">
                       <-- Please select an option -->
                     </option>`;
 
-          data.forEach(item => {
-              const cardOption = document.createElement('option');
-              cardOption.value = item.id;
-              cardOption.textContent = item.payment_mode_card_name;
-              cardTypeSelect.appendChild(cardOption);
-          });
-          console.log("data:", data)
-      })
-      .catch(error => {
-          console.error('Error fetching payment data:', error);
-      })
-      .finally(() => {
-          document.body.classList.remove('loading');
+      data.forEach(item => {
+        const cardOption = document.createElement('option');
+        cardOption.value = item.id;
+        cardOption.textContent = item.payment_mode_card_name;
+        cardTypeSelect.appendChild(cardOption);
       });
+      console.log("data:", data)
+    })
+    .catch(error => {
+      console.error('Error fetching payment data:', error);
+    })
+    .finally(() => {
+      document.body.classList.remove('loading');
+    });
+}
+const handlePaymentGateway = () => {
+  if (quotationData?.premiumPayable) {
+    const url = `payment.php?amount=${quotationData?.premiumPayable}`;
+    window.open(url, 'childWindow', 'width=600,height=480');
+  } else {
+    console.log("no price", quotationData?.premiumPayable)
+  }
+};
+function showAlert(message) {
+  alert(message);
+
+  setTimeout(() => {
+    window.location.reload();
+
+  }, 5000)
 }

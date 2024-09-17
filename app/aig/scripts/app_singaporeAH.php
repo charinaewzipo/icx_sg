@@ -330,7 +330,7 @@
             changeYear: true,
             showAnim: "slideDown",
             onSelect: function(dateText) {
-                displayDateInsured(dateText,index)
+                displayDateInsured(dateText, index)
             }
         });
     }
@@ -341,7 +341,6 @@
         const formSections = document.querySelectorAll('table[id^="table-form-"]');
 
         formSections.forEach((section) => {
-            console.log("section:", section)
             const planSelect = section.querySelector('[name^="planId"]');
             const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
             // const planId = selectedOption ? selectedOption.getAttribute('data-plan-id') || '' : '';
@@ -409,33 +408,39 @@
 
 
     function calculateAge(dob) {
-    const dobDate = new Date(dob);
-    const today = new Date();
+        const dobDate = new Date(dob);
+        const today = new Date();
 
-    if (isNaN(dobDate.getTime())) {
-        console.error('Invalid Date:', dob);
-        return { age: '', days: '' }; // Return empty if invalid date
+        if (isNaN(dobDate.getTime())) {
+            console.error('Invalid Date:', dob);
+            return {
+                age: '',
+                days: ''
+            }; // Return empty if invalid date
+        }
+
+        let age = today.getFullYear() - dobDate.getFullYear();
+        let days = Math.floor((today - dobDate) / (1000 * 60 * 60 * 24)); // Total days difference
+
+        const monthDiff = today.getMonth() - dobDate.getMonth();
+
+        // Adjust the age if the current month is before the birth month, or it's the birth month but the current date is before the birth date
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
+            age--;
+        }
+
+        // Adjust the days to consider the exact age in days
+        const lastBirthday = new Date(today.getFullYear(), dobDate.getMonth(), dobDate.getDate());
+        if (lastBirthday > today) {
+            lastBirthday.setFullYear(lastBirthday.getFullYear() - 1);
+        }
+        days = Math.floor((today - lastBirthday) / (1000 * 60 * 60 * 24));
+
+        return {
+            age,
+            days
+        };
     }
-
-    let age = today.getFullYear() - dobDate.getFullYear();
-    let days = Math.floor((today - dobDate) / (1000 * 60 * 60 * 24)); // Total days difference
-
-    const monthDiff = today.getMonth() - dobDate.getMonth();
-
-    // Adjust the age if the current month is before the birth month, or it's the birth month but the current date is before the birth date
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
-        age--;
-    }
-
-    // Adjust the days to consider the exact age in days
-    const lastBirthday = new Date(today.getFullYear(), dobDate.getMonth(), dobDate.getDate());
-    if (lastBirthday > today) {
-        lastBirthday.setFullYear(lastBirthday.getFullYear() - 1);
-    }
-    days = Math.floor((today - lastBirthday) / (1000 * 60 * 60 * 24));
-
-    return { age, days };
-}
 
     function resetPlanData(index) {
         const planDropdown = document.querySelector(`select[name="plan_cover_list_${index}[]"]`);
@@ -470,7 +475,7 @@
             .then(response => response.text())
             .then(data => {
                 const result = JSON.parse(data)
-                if (Array.isArray(result) && result.length > 0 && id === null) {
+                if (Array.isArray(result) && result.length > 0 && !id) {
                     manualSetDefaultValueFormCallingList(result[0]);
                 }
             })
@@ -669,81 +674,82 @@
     }
 
     function setPlanPoiFromIndexOne() {
-    const planPoiSelects = document.querySelectorAll('[id^="planPoiSelect"]'); 
-    const planPoiSelect1 = document.querySelector('#planPoiSelect1');
+        const planPoiSelects = document.querySelectorAll('[id^="planPoiSelect"]');
+        const planPoiSelect1 = document.querySelector('#planPoiSelect1');
 
-    if (planPoiSelect1) {
-        planPoiSelect1.addEventListener('change', (event) => {
-            const planPoiValue = event.target.value;
+        if (planPoiSelect1) {
+            planPoiSelect1.addEventListener('change', (event) => {
+                const planPoiValue = event.target.value;
 
-            planPoiSelects.forEach((select, index) => {
-                if (index > 0) { 
-                    select.value = planPoiValue; 
-                }
+                planPoiSelects.forEach((select, index) => {
+                    if (index > 0) {
+                        select.value = planPoiValue;
+                    }
+                });
             });
-        });
-    }
-}
-function setPlanFromIndexOne() {
-    const planSelects = document.querySelectorAll('[id^="planSelect"]'); 
-    const planSelect1 = document.querySelector('#planSelect1');
-
-    if (planSelect1) {
-        planSelect1.addEventListener('change', (event) => {
-            const planValue = event.target.value;
-            console.log("planValue:", planValue);
-
-            planSelects.forEach((select, index) => {
-                if (index > 0) { 
-                    select.value = planValue;
-                }
-            });
-        });
-    }
-}
-
-//child start at index=3
-let indexCounter = 3;
-
-
-function addChildInsured() {
-  const addButton = document.getElementById('add-insured-child');
-  addButton.addEventListener('click', () => {
-    const insuredContainer = document.getElementById('insured-list-ah');
-    if (indexCounter <= 7) {
-      const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
-      planSelectElements.forEach((selectElement, index) => {
-        populatePlans(select_product, indexCounter);
-        populateCovers(select_product, indexCounter);
-      });
-      const currentIndex = indexCounter;
-
-      insuredContainer.insertAdjacentHTML('beforeend', createListAhSectionChild(currentIndex));
-
-      indexCounter++;
-
-      $("#datepicker-" + currentIndex).datepicker({
-        yearRange: "c-80:c+20",
-        maxDate: new Date(),
-        dateFormat: 'mm/dd/yy',
-        changeMonth: true,
-        changeYear: true,
-        showAnim: "slideDown",
-        onSelect: function(dateText) {
-          console.log("currentIndex:", currentIndex);
-          displayDateInsuredChild(dateText, currentIndex);
         }
-      });
-
-      setPlanPoiFromIndexOne();
-      setPlanFromIndexOne();
-
-      if (indexCounter > 7) {
-        addButton.style.display = 'none';
-      }
     }
-  });
-}
+
+    function setPlanFromIndexOne() {
+        const planSelects = document.querySelectorAll('[id^="planSelect"]');
+        const planSelect1 = document.querySelector('#planSelect1');
+
+        if (planSelect1) {
+            planSelect1.addEventListener('change', (event) => {
+                const planValue = event.target.value;
+                console.log("planValue:", planValue);
+
+                planSelects.forEach((select, index) => {
+                    if (index > 0) {
+                        select.value = planValue;
+                    }
+                });
+            });
+        }
+    }
+
+    //child start at index=3
+    let indexCounter = 3;
+
+
+    function addChildInsured() {
+        const addButton = document.getElementById('add-insured-child');
+        addButton.addEventListener('click', () => {
+            const insuredContainer = document.getElementById('insured-list-ah');
+            if (indexCounter <= 7) {
+                const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
+                planSelectElements.forEach((selectElement, index) => {
+                    populatePlans(select_product, indexCounter);
+                    populateCovers(select_product, indexCounter);
+                });
+                const currentIndex = indexCounter;
+
+                insuredContainer.insertAdjacentHTML('beforeend', createListAhSectionChild(currentIndex));
+
+                indexCounter++;
+
+                $("#datepicker-" + currentIndex).datepicker({
+                    yearRange: "c-80:c+20",
+                    maxDate: new Date(),
+                    dateFormat: 'mm/dd/yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showAnim: "slideDown",
+                    onSelect: function(dateText) {
+                        console.log("currentIndex:", currentIndex);
+                        displayDateInsuredChild(dateText, currentIndex);
+                    }
+                });
+
+                setPlanPoiFromIndexOne();
+                setPlanFromIndexOne();
+
+                if (indexCounter > 7) {
+                    addButton.style.display = 'none';
+                }
+            }
+        });
+    }
 
 
 
@@ -768,36 +774,39 @@ function addChildInsured() {
 
 
     const displayDateInsuredChild = (dateText, index) => {
-  const { age, days } = calculateAge(dateText);
-  console.log("days:", days);
-  console.log("index", index);
+        const {
+            age,
+            days
+        } = calculateAge(dateText);
+        console.log("days:", days);
+        console.log("index", index);
 
-  if (!productDetail) {
-    alert("Please select a product");
-    $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-    $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-    return;
-  }
+        if (!productDetail) {
+            alert("Please select a product");
+            $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+            $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+            return;
+        }
 
-  // Handle minimum age (0 years old and more than 16 days)
-  if (age === 0 && days < 16) {
-    alert(`Child must be at least 16 days old.`);
-    $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-    $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-    return;
-  }
+        // Handle minimum age (0 years old and more than 16 days)
+        if (age === 0 && days < 16) {
+            alert(`Child must be at least 16 days old.`);
+            $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+            $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+            return;
+        }
 
-  // Handle maximum age (25 years old)
-  if (age > productDetail?.max_age_child) {
-    alert(`Child must be less than or equal to ${productDetail?.max_age_child} years old.`);
-    $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-    $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-    return;
-  }
+        // Handle maximum age (25 years old)
+        if (age > productDetail?.max_age_child) {
+            alert(`Child must be less than or equal to ${productDetail?.max_age_child} years old.`);
+            $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+            $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+            return;
+        }
 
-  // If age and days are valid, set the age value
-  $(`#ageInsuredPerson_${index}`).val(`${days} day - ${age} years old`);
-};
+        // If age and days are valid, set the age value
+        $(`#ageInsuredPerson_${index}`).val(`${days} day - ${age} years old`);
+    };
 
     document.addEventListener('DOMContentLoaded', () => {
         const queryString = window.location.search;

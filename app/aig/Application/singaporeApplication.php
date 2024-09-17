@@ -132,7 +132,10 @@ error_reporting(E_ALL);
       $("#datepicker").datepicker($.extend({}, datepickerOptions, {
         maxDate: new Date(),
         onSelect: function(dateText) {
-          const { age, days } = calculateAge(dateText);
+          const {
+            age,
+            days
+          } = calculateAge(dateText);
           $("#agePolicyHolder").val(age);
         }
       }));
@@ -161,7 +164,7 @@ error_reporting(E_ALL);
       }));
 
 
-    
+
     });
 
     $body = $("body");
@@ -190,17 +193,15 @@ error_reporting(E_ALL);
     $formType = isset($_GET['formType']) ? $_GET['formType'] : '';
 
     if ($campaign_id <= 0 || $calllist_id <= 0 || $agent_id <= 0 || $import_id <= 0 || empty($formType)) {
-        throw new Exception("Invalid parameters");
+      throw new Exception("Invalid parameters");
     }
-
-
-} catch (Exception $e) {
+  } catch (Exception $e) {
     echo json_encode(array("result" => "error", "message" => $e->getMessage()));
     http_response_code(500); // Set HTTP status code to 500
-}
-?>
+  }
+  ?>
 
-  
+
 
   <div id="content">
     <div id="header"> </div>
@@ -231,32 +232,32 @@ error_reporting(E_ALL);
                 <p style="white-space:nowrap;">Product Name : <span style="color:red">*</span></p>
               </td>
               <td>
-    <select name="select-product" id="select-product" required onchange="handleProductChange(this)">
-    <option value="">
-                      <-- Please select an option -->
+                <select name="select-product" id="select-product" required onchange="handleProductChange(this)">
+                  <option value="">
+                    <-- Please select an option -->
+                  </option>
+                  <?php
+                  if ($formType === 'ah') {
+                    $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
+                  } else {
+                    $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
+                  }
+
+                  $strSQL .= " and campaign_id = '$campaign_id'";
+
+                  $objQuery = mysqli_query($Conn, $strSQL);
+
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["product_id"]; ?>">
+                      <?php echo $objResuut["product_name"]; ?>
                     </option>
-        <?php
-        if ($formType === 'ah') {
-            $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = 'A&H'";
-        } else {
-            $strSQL = "SELECT * FROM t_aig_sg_product WHERE product_group = '$formType'";
-        }
-
-        $strSQL .= " and campaign_id = '$campaign_id'";
-
-        $objQuery = mysqli_query($Conn, $strSQL);
-
-        while ($objResuut = mysqli_fetch_array($objQuery)) {
-            $data[] = $objResuut;
-        ?>
-            <option value="<?php echo $objResuut["product_id"]; ?>">
-                <?php echo $objResuut["product_name"]; ?>
-            </option>
-        <?php
-        }
-        ?>
-    </select>
-</td>
+                  <?php
+                  }
+                  ?>
+                </select>
+              </td>
 
               <th></th>
               <td style="white-space:nowrap; ">Campaign Name:</td>
@@ -276,15 +277,20 @@ error_reporting(E_ALL);
                 <input hidden type="text" id="campaign-code" name="campaignCode" style="max-width: 130px;" value='<?php echo $campaign_id; ?>' readonly>
               </td>
             </tr>
-            <tr id="policyid-display"><td id="policyid-text">Policy/Quote No:</td>
-            <td ><input type="text" id="policyid-input" style="display: inline-block; width:216px;" readonly /></td></tr>
+            <tr id="policyid-display">
+              <td id="policyid-text">Policy/Quote No:</td>
+              <td><input type="text" id="policyid-input" style="display: inline-block; width:216px;" readonly /></td>
+            </tr>
             <tr>
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <th></th>
               <td style="white-space:nowrap;" id="policy-expiry-label">Policy Expiry Date: </td>
-              <td><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10"  style="max-width: 130px; background-color:#e9ecef; border:1px solid rgb(118, 118, 118)" readonly ></td>
+              <td><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" style="max-width: 130px; background-color:#e9ecef; border:1px solid rgb(118, 118, 118)" readonly></td>
             </tr>
+
+
+
             <tr id="remark-c-contanier">
               <td>RemarksC: </td>
               <td style="white-space:nowrap;">
@@ -384,7 +390,42 @@ error_reporting(E_ALL);
 
         </fieldset>
       </div>
+      <div id="payment-container">
+        <fieldset id="form-content">
+          <legend>Payment</legend>
 
+
+          <!-- <h1 style="padding-left:0.5em">Additional</h1> -->
+          <table id="table-form">
+
+            <tr>
+              <td style="float:inline-start">Payment Frequency: <span style="color:red">*</span></td>
+              <td>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" checked>
+                  <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2" onchange="handlePaymentFrequencyChange(this)">
+                  <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Payment Mode: <span style="color:red">*</span></td>
+              <td>
+                <select name="Payment_Mode" id="paymentModeSelect" required onchange="handlePaymentModeChange(this)">
+                  <option value=""> <-- Please select an option --> </option>
+                  <option value="1001">Credit Card Lump sum</option>
+                  <option value="124">Recurring Credit Card</option>
+                </select>
+              </td>
+            </tr>
+
+          </table>
+        </fieldset>
+      </div>
 
 
       <!--Form Individual PolicyHolder Info -->
@@ -1457,86 +1498,10 @@ where name='Occupation'";
 
       </fieldset>
 
-      <div id="payment-container" hidden>
+      <div id="payment-container-amount" hidden>
         <fieldset id="form-content">
-          <legend>Payment</legend>
+          <!-- <legend>Payment</legend> -->
 
-
-          <!-- <h1 style="padding-left:0.5em">Additional</h1> -->
-          <table id="table-form">
-
-            <tr>
-              <td style="float:inline-start">Payment Frequency: <span style="color:red">*</span></td>
-              <td>
-                <div class="form-check">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" checked>
-                  <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
-                </div>
-                <div class="form-check">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2" onchange="handlePaymentFrequencyChange(this)">
-                  <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Payment Mode: <span style="color:red">*</span></td>
-              <td>
-                <select name="Payment_Mode" id="paymentModeSelect" required onchange="handlePaymentModeChange(this)">
-                  <option value=""> <-- Please select an option --> </option>
-                  <option value="1001">Credit Card Lump sum</option>
-                  <option value="124">Recurring Credit Card</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Card Type : <span style="color:red">*</span> </td>
-              <td>
-                <select name="Payment_CardType" id="Payment_CardType" required>
-                  <option value=""> <-- Please select an option --> </option>
-                  <option value="1" hidden>Credit Card Lump Sum VISA</option>
-                  <option value="2" hidden>Credit Card Lump Sum MASTER</option>
-                  <!-- <option value="3">Credit Card IPP UOB 6 months</option>
-                  <option value="4">Credit Card IPP UOB 12 months</option>
-                  <option value="5">Credit Card IPP UOB 24 months</option>
-                  <option value="6">Credit Card IPP DBS 6 months</option>
-                  <option value="7">Credit Card IPP DBS 12 months</option>
-                  <option value="8">Credit Card IPP DBS 24 months</option> -->
-                  <option value="9" hidden>Recurring Credit Card VISA</option>
-                  <option value="10" hidden>Recurring Credit Card Master</option>
-                  <option value="23" hidden>Credit Card Lump Sum Amex</option>
-                  <!-- <option value="26">Recurring Credit Card Amex</option> -->
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Card Number : <span style="color:red">*</span> </td>
-              <td>
-                <input type="text" name="payment_cardNumber" maxlength="60" required />
-              </td>
-            </tr>
-            <tr>
-              <td>Expiry Date : <span style="color:red">*</span> </td>
-              <td>
-
-                <input type="text" name="payment_expiryDate" id="expiryDate" maxlength="5" size="5" placeholder="MM/YY" required />
-              </td>
-
-            </tr>
-            <!-- <tr>
-              <td>CVV : <span style="color:red">*</span> </td>
-              <td>
-                <input type="text" name="payment_securityCode" id="securityCode" maxlength="10" size="10" required />
-              </td>
-            </tr> -->
-            <tr>
-              <td>Amount : </td>
-              <td>
-                <input type="text" name="payment_amount" id="payment_amount" maxlength="10" size="10" readonly />
-              </td>
-            </tr>
-          </table>
-          <br>
           <div class="table">
             <div class="table-header">
               <div class="header__item">Payment Type</div>
@@ -1546,12 +1511,64 @@ where name='Occupation'";
               <div class="table-row" style="padding:10px 0px;">
                 <div class="table-data">Online Payment Gateway </div>
                 <div class="table-data">
-                  <button type="button" class="button payment" id="btnPayment" >Payment</button>
+                  <!-- <button type="button" class="button payment" id="btnPayment">Payment</button> -->
+                  <button type="button" class="button payment" id="btnPayment" onclick="handlePaymentGateway()">Payment</button>
                 </div>
                 <!-- <button type="button" onclick="handlePaymentGateway()">Payment</button> -->
               </div>
             </div>
           </div>
+          <!-- <h1 style="padding-left:0.5em">Additional</h1> -->
+          <table id="table-form">
+            <!-- <tr>
+              <td>Card Type : <span style="color:red">*</span> </td>
+              <td>
+                <select name="Payment_CardType" id="Payment_CardType" >
+                  <option value="1" hidden>Credit Card Lump Sum VISA</option>
+                  <option value="2" hidden>Credit Card Lump Sum MASTER</option>
+                  <option value="3">Credit Card IPP UOB 6 months</option>
+                  <option value="4">Credit Card IPP UOB 12 months</option>
+                  <option value="5">Credit Card IPP UOB 24 months</option>
+                  <option value="6">Credit Card IPP DBS 6 months</option>
+                  <option value="7">Credit Card IPP DBS 12 months</option>
+                  <option value="8">Credit Card IPP DBS 24 months</option>
+                  <option value="9" hidden>Recurring Credit Card VISA</option>
+                  <option value="10" hidden>Recurring Credit Card Master</option>
+                  <option value="23" hidden>Credit Card Lump Sum Amex</option>
+                  <option value="26">Recurring Credit Card Amex</option>
+                </select>
+              </td>
+            </tr> -->
+            <!-- <tr>
+              <td>Card Number : <span style="color:red">*</span> </td>
+              <td>
+                <input type="text" name="payment_cardNumber" maxlength="60"  />
+              </td>
+            </tr>
+            <tr>
+              <td>Expiry Date : <span style="color:red">*</span> </td>
+              <td>
+
+                <input type="text" name="payment_expiryDate" id="expiryDate" maxlength="5" size="5" placeholder="MM/YY"  />
+              </td>
+
+            </tr> -->
+            <!-- <tr>
+              <td>CVV : <span style="color:red">*</span> </td>
+              <td>
+                <input type="text" name="payment_securityCode" id="securityCode" maxlength="10" size="10" required />
+              </td>
+            </tr> -->
+            <tr>
+              <th></th>
+              <td>Amount : </td>
+              <td>
+                <input type="text" name="payment_amount" id="payment_amount" maxlength="10" size="10" readonly />
+              </td>
+            </tr>
+          </table>
+          <br>
+
         </fieldset>
       </div>
 

@@ -135,11 +135,19 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $import_id = isset($campaignDetails["import_id"]) ? (int)$campaignDetails["import_id"] : null;
     $calllist_id = isset($campaignDetails["calllist_id"]) ? (int)$campaignDetails["calllist_id"] : null;
 
+    $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
+    $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
+
+    $payment_mode = isset($formData['paymentmode']) ? $formData['paymentmode'] : 0;
+    $payment_frequency = isset($formData['paymentfrequency']) ? $formData['paymentfrequency'] : 1;
+    $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
+    $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
+
     // SQL query with dynamic quote_create_date
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         policyExpDate, campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
-        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status";
+        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status,payment_frequency,payment_mode,fullname,dob";
 
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
@@ -150,7 +158,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate', '$policyExpDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
-        $campaign_id, $import_id, $calllist_id, NOW(), 'Open'";
+        $campaign_id, $import_id, $calllist_id, NOW(), 'Open',$payment_frequency,$payment_mode,'$full_name','$date_of_birth'";
 
     // Add NOW() for quote_create_date if response is not empty
     if (!empty($response)) {
@@ -201,8 +209,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     //ISO to YYYY-MM-DD HH:MM:SS
     $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
-    $policyExpDate = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : isoToDateTime("2039-12-13T00:00:00Z");    
-    
+    $policyExpDate = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : isoToDateTime("2039-12-13T00:00:00Z");
+
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
@@ -219,6 +227,13 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
 
+    $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
+    $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
+
+    $payment_mode = isset($formData['paymentmode']) ? $formData['paymentmode'] : 0;
+    $payment_frequency = isset($formData['paymentfrequency']) ? $formData['paymentfrequency'] : 1;
+    $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
+    $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
     // Initialize the SQL query
     $sql = "UPDATE t_aig_app
     SET 
@@ -238,7 +253,11 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
         quoteNo = '$quoteNo',
         premiumPayable = '$premiumPayable',
         quoteLapseDate = " . ($quoteLapseDate === null ? 'NULL' : "'$quoteLapseDate'") . ",
-        update_date = NOW()"; // Add this line to update the update_date field
+        payment_frequency = '$payment_frequency', 
+        payment_mode = '$payment_mode',            
+        fullname = '$full_name',                  
+        dob = '$date_of_birth',          
+        update_date = NOW()";
 
     // Add quote_create_date if response is not null
     if (!empty($response)) {
@@ -387,7 +406,98 @@ function DBInsertPaymentLog($request, $response, $policyid, $objectPayment)
     $dbconn->dbconn->close();
 }
 
+function DBInsertPaymentGatewayLog($response, $policyid)
+{
+    // Create database connection
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
 
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    // Extract data from request and response
+    $order_amount = isset($request['order']['amount']) ? $request['order']['amount'] : 0.00;
+    $order_currency = isset($request['order']['currency']) ? $request['order']['currency'] : '';
+    $source_of_funds_type = isset($request['sourceOfFunds']['type']) ? $request['sourceOfFunds']['type'] : '';
+    $card_number = isset($response['sourceOfFunds']['provided']['card']['number']) ? ($response['sourceOfFunds']['provided']['card']['number']) : '';
+    $card_expiry_month = isset($request['sourceOfFunds']['provided']['card']['expiry']['month']) ? $request['sourceOfFunds']['provided']['card']['expiry']['month'] : '';
+    $card_expiry_year = isset($request['sourceOfFunds']['provided']['card']['expiry']['year']) ? $request['sourceOfFunds']['provided']['card']['expiry']['year'] : '';
+    $merchant = isset($response['merchant']) ? $response['merchant'] : '';
+    $result = isset($response['result']) ? $response['result'] : '';
+    $time_of_lastupdate = isset($response['timeOfLastUpdate']) ? $response['timeOfLastUpdate'] : '';
+    $time_of_record = isset($response['timeOfRecord']) ? $response['timeOfRecord'] : '';
+
+    // New fields
+    $batch_no = isset($response['transaction']['acquirer']['batch']) ? 'IP' . formatBatchNo($response['transaction']['acquirer']['batch']) : '';
+    $order_no = isset($response['order']['id']) ? $response['order']['id'] : '';
+    $payment_mode = isset($objectPayment['paymentMode']) ? (int)$objectPayment['paymentMode'] : 0;
+    $card_type = isset($objectPayment['cardType']) ? $objectPayment['cardType'] : '';
+    $payment_frequency = isset($objectPayment['paymentFrequency']) ? (int)$objectPayment['paymentFrequency'] : 0;
+    $payment_date = isset($response['order']['creationTime']) ? $response['order']['creationTime'] : '';
+
+    // Encode the response and request arrays as JSON strings
+
+    if (isset($request['sourceOfFunds']['provided']['card']['number'])) {
+        // You can either remove the card number or mask it
+        $request['sourceOfFunds']['provided']['card']['number'] = maskCardNumber($request['sourceOfFunds']['provided']['card']['number']);
+    }
+
+    $response_json = isset($response) ? json_encode($response) : '{}';
+    $response_json = mysqli_real_escape_string($dbconn->dbconn, $response_json);
+
+    $request_json = isset($request) ? json_encode($request) : '{}';
+    $request_json = mysqli_real_escape_string($dbconn->dbconn, $request_json);
+
+    // SQL query to insert data into the database
+    $sql = "INSERT INTO t_aig_sg_payment_log 
+                (batch_no, order_no, payment_mode, card_type, card_expiry_month, card_expiry_year, payment_date, payment_frequency, order_amount, card_number, order_currency, source_of_funds_type, merchant, result, time_of_lastupdate, time_of_record, response_json, request_json, policyId) 
+            VALUES 
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    // Use prepared statements to avoid SQL injection
+    if ($stmt = $dbconn->dbconn->prepare($sql)) {
+        // Bind parameters
+        $stmt->bind_param(
+            "sssssssssssssssssss",
+            $batch_no,
+            $order_no,
+            $payment_mode,
+            $card_type,
+            $card_expiry_month,
+            $card_expiry_year,
+            $payment_date,
+            $payment_frequency,
+            $order_amount,
+            $card_number,
+            $order_currency,
+            $source_of_funds_type,
+            $merchant,
+            $result,
+            $time_of_lastupdate,
+            $time_of_record,
+            $response_json,
+            $request_json,
+            $policyid
+        );
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            echo json_encode(array("result" => "success", "message" => "Data inserted successfully"));
+        } else {
+            echo json_encode(array("result" => "error", "message" => "Data insertion failed: " . $stmt->error));
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement"));
+    }
+
+    // Close the database connection
+    $dbconn->dbconn->close();
+}
 
 
 
@@ -428,6 +538,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $objectPayment = isset($data['objectPayment']) ? $data['objectPayment'] : array();
             DBInsertPaymentLog($request, $response, $policyid, $objectPayment);
+            $response = isset($data['response']) ? $data['response'] : array();
+            $policyid = isset($data['policyid']) ? $data['policyid'] : "";
+            DBInsertPaymentLog($request, $response, $policyid, $objectPayment);
         } else {
             echo json_encode(array("result" => "error", "message" => "Invalid action"));
         }
@@ -437,7 +550,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(array("result" => "error", "message" => "Invalid request method"));
 }
-function transformDateQuote($dateString) {
+function transformDateQuote($dateString)
+{
     // Create a DateTime object from the input string (assuming the format is DD/MM/YYYY)
     $dateObject = DateTime::createFromFormat('d/m/Y', $dateString);
 
@@ -474,13 +588,15 @@ function generateUUIDv4()
     // Convert the binary data into a hexadecimal format
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
-function formatBatchNo($dateStr) {
-        $year = substr($dateStr, 0, 4);
-        $month = substr($dateStr, 4, 2);
-        $day = substr($dateStr, 6, 2);
-        return $day . $month . $year;
+function formatBatchNo($dateStr)
+{
+    $year = substr($dateStr, 0, 4);
+    $month = substr($dateStr, 4, 2);
+    $day = substr($dateStr, 6, 2);
+    return $day . $month . $year;
 }
-function isoToDateTime($isoDateStr) {
+function isoToDateTime($isoDateStr)
+{
     try {
         $date = new DateTime($isoDateStr);
         return $date->format('Y-m-d H:i:s');
