@@ -9,9 +9,8 @@ window.onload = function () {
     showForm(defaultShowForm)
   }
   const defaultRadio = document.querySelector('input[name="Payment_Frequency"][value="2"]');
-  if (defaultRadio) {
-
-    handlePaymentFrequencyChange(defaultRadio); // Trigger the function for default radio
+  if(!id&&defaultRadio){
+      handlePaymentFrequencyChange(defaultRadio); // Trigger the function for default radio
   }
 };
 
@@ -673,6 +672,7 @@ const transformDate = (dateString) => {
 };
 const displayDateInsured = (dateText, index) => {
   const { age, days } = calculateAge(dateText);
+  console.log("productDetail:", productDetail)
   if (!productDetail) {
     alert("Please select a product")
     $(`#datepicker-${index}`).val(''); // Clear the datepicker input
@@ -718,9 +718,9 @@ async function getProductDetail(productId) {
     const data = await response.json();
 
     if (data.length > 0) {
-      const productDetail = data[0];
-      handleAddChildButtonVisibility(productDetail); // Process product details
-      return productDetail;
+      productDetail = data[0];
+      handleAddChildButtonVisibility( data[0]); // Process product details
+      return  data[0];
     } else {
       console.warn("No product data found");
       return null; // Ensure a return value is provided even when no data is found
