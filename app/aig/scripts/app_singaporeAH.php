@@ -361,7 +361,7 @@
 
 
 
-    function addPlanInfoSections(count) {
+    async function addInsuredSections(count) {
         const insuredContainer = document.getElementById('insured-list-ah');
         insuredContainer.innerHTML = '';
         for (let i = 1; i <= count; i++) {
@@ -374,11 +374,6 @@
         for (let i = 1; i <= count; i++) {
             attachInsuredIdValidation(i)
         }
-        for (let i = 1; i <= count; i++) {
-            setRelationToPolicyholder(i)
-        }
-        
-
     }
 
     function initializeDatepicker(index) {
@@ -395,16 +390,6 @@
         });
     }
 
-    function setRelationToPolicyholder(index) {
-    // console.log("index:", index)
-    // const selectElement = document.getElementById(`insured_ah_relationToPolicyholder_${index}`);
-
-    // if (index === 1) {
-    //     selectElement.value = "1"; 
-    // } else if (index === 2) {
-    //     selectElement.value = "3";
-    // }
-}
     function collectFormData() {
     const insuredList = [];
     const formSections = document.querySelectorAll('table[id^="table-form-"]');
@@ -617,6 +602,16 @@
         console.log("handleProductChange:")
         const selectedProductId = selectElement.value;
         select_product = selectedProductId
+        const responseProduct = await getProductDetail(selectedProductId);
+
+        if(responseProduct){
+            await addInsuredSections(responseProduct?.number_of_person_insured||1)
+            
+            const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
+            if(!id){
+      handlePaymentFrequencyChange(defaultRadio); 
+  }
+        }
         const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
     planSelectElements.forEach((selectElement, index) => {
         if (index === 0) { // Populate only the first one (index 0)
@@ -624,13 +619,11 @@
             populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
         }
     });
-        const responseProduct = await getProductDetail(selectedProductId);
         if (!id) {
             setDefaultRemarksC(responseProduct)
-
         }
-        if(responseProduct)
-        addPlanInfoSections(responseProduct?.number_of_person_insured||1)
+      
+     
     }
 
     function populatePlans(productId, index) {
@@ -899,7 +892,7 @@
         }
         fetchCampaignDetail()
 
-        addPlanInfoSections(2)
+        addInsuredSections(2)
         addChildInsured()
         deleteChildInsured()
         setPlanPoiFromIndexOne()
