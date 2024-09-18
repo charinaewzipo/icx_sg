@@ -652,18 +652,6 @@ const setDefaultValueForm = async(dbData) => {
   const insuredData = JSON.parse(dbData.insuredList);
 
   document.querySelector('select[name="select-product"]').value = dbData?.productId || "";
-  const responseProduct= await getProductDetail(dbData?.productId)
-  if (responseProduct) {
-    const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
-    console.log("planSelectElements")
-    planSelectElements.forEach((selectElement, index) => {
-      console.log("do")
-      populatePlans(responseProduct.product_id, index + 1);
-      populateCovers(responseProduct.product_id, index + 1);
-    });
-  } else {
-    console.warn('responseProduct is undefined or does not contain a valid product_id.');
-  }
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =

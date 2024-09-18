@@ -64,8 +64,12 @@ function fetchPaymentOption(paymentMode, paymentFrequency) {
     });
 }
 const handlePaymentGateway = () => {
+  console.log("quotationData:", quotationData)
+
+  isRecurring = quotationData?.payment_mode===124 ? 1:0;
+  
   if (quotationData?.premiumPayable) {
-    const url = `payment.php?amount=${quotationData?.premiumPayable}`;
+    const url = `payment.php?amount=${quotationData?.premiumPayable}&is_recurring=${isRecurring}&policyId=${quotationData?.policyId}`;
     window.open(url, 'childWindow', 'width=600,height=480');
   } else {
     console.log("no price", quotationData?.premiumPayable)

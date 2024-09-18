@@ -415,7 +415,7 @@ error_reporting(E_ALL);
             <tr>
               <td>Payment Mode: <span style="color:red">*</span></td>
               <td>
-                <select name="Payment_Mode" id="paymentModeSelect"  onchange="handlePaymentModeChange(this)" required>
+                <select name="Payment_Mode" id="paymentModeSelect"  required>
                   <option value=""> <-- Please select an option --> </option>
                   <option value="1001">Credit Card Lump sum</option>
                   <option value="124">Recurring Credit Card</option>
