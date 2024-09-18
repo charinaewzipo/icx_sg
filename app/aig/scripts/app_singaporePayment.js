@@ -5,20 +5,17 @@ function handlePaymentFrequencyChange(radio) {
   const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
   paymentModeSelect.value = ""; 
   const options = paymentModeSelect.options;
-
   for (let i = 0; i < options.length; i++) {
     const option = options[i];
 
-    // If payment frequency is 2 and payment mode is '1001'
     if (paymentFrequency === '2' && option.value === '1001') {
       option.hidden = true;
     } else {
       option.hidden = false;
     }
   }
-  setPlanPoiValue(paymentFrequency);
-  const paymentMode = paymentModeSelect.value;
-  // fetchPaymentOption(paymentMode, paymentFrequency);
+
+    setPlanPoiValue(paymentFrequency);
 }
 function setPlanPoiValue(paymentFrequency) {
   const planPoi = document.querySelector('select[name="planPoi1"]');
@@ -34,12 +31,6 @@ function setPlanPoiValue(paymentFrequency) {
   console.log("planPoi value set to:", planPoi.value);
 }
 
-function handlePaymentModeChange(select) {
-  const paymentMode = select.value;
-  const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked').value;
-  // fetchPaymentOption(paymentMode, paymentFrequency)
-
-}
 
 function fetchPaymentOption(paymentMode, paymentFrequency) {
   if (!paymentMode || !paymentFrequency) return;
