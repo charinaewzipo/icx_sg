@@ -69,7 +69,7 @@ const handlePaymentGateway = () => {
   isRecurring = quotationData?.payment_mode===124 ? 1:0;
   
   if (quotationData?.premiumPayable) {
-    const url = `payment.php?amount=${quotationData?.premiumPayable}&is_recurring=${isRecurring}&policyId=${quotationData?.policyId}`;
+    const url = `payment.php?amount=${quotationData?.premiumPayable}&is_recurring=${isRecurring}&quoteNo=${quotationData?.quoteNo}`;
     window.open(url, 'childWindow', 'width=600,height=480');
   } else {
     console.log("no price", quotationData?.premiumPayable)
@@ -77,9 +77,7 @@ const handlePaymentGateway = () => {
 };
 function showAlert(message) {
   alert(message);
-
-  setTimeout(() => {
+  setTimeout(()=>{
     window.location.reload();
-
-  }, 5000)
+  },2000)
 }

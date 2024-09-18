@@ -115,9 +115,9 @@ document.addEventListener("DOMContentLoaded", function () {
           hideAllFormElements();
         }
 
-        if (policyId) {
+        if (policyId&&quotationData?.quoteNo) {
           try {
-            const paymentResponse = await jQuery.agent.getPaymentLogWithId(policyId);
+            const paymentResponse = await jQuery.agent.getPaymentLogWithId(quotationData?.quoteNo);
             handlePaymentResponse(paymentResponse);
             responsePayment = paymentResponse?.data;
           } catch (error) {

@@ -84,7 +84,10 @@
 
     echo "<script>
             window.open('', '_self');
+             if (window.opener && !window.opener.closed) {
             window.close(); 
+            window.opener.showAlert('Payment completed successfully!');
+        }
         </script>";
 ?>
 
@@ -100,6 +103,8 @@
             document.getElementById('paymentToken').value = paymentToken || '';
             
         };
+     
+
     </script>
 
 </body>

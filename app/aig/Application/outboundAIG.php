@@ -51,7 +51,7 @@ function DBGetQuoteDetailsWithId($id)
     $dbconn->dbconn->close();
 }
 
-function DBGetPaymentLogWithId($policyId)
+function DBGetPaymentLogWithId($quoteNo)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -63,11 +63,11 @@ function DBGetPaymentLogWithId($policyId)
 
     // Prepare the SQL query to select data by policyId
     $sql = "SELECT * FROM t_aig_sg_payment_log
-            WHERE policyId = ? and result='SUCCESS'";
+            WHERE quote_no = ? and result='SUCCESS'";
 
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind the policyId parameter
-        $stmt->bind_param("i", $policyId);
+        $stmt->bind_param("i", $quoteNo);
 
         // Execute the statement
         $stmt->execute();
@@ -525,8 +525,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = isset($data['id']) ? $data['id'] : 0;
             DBGetQuoteDetailsWithId($id);
         } elseif ($data['action'] === 'getPaymentLogWithId') {
-            $policyid = isset($data['policyid']) ? $data['policyid'] : 0;
-            DBGetPaymentLogWithId($policyid);
+            $quoteNo = isset($data['quoteNo']) ? $data['quoteNo'] : 0;
+            DBGetPaymentLogWithId($quoteNo);
         } elseif ($data['action'] === 'updatePolicyNo') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";

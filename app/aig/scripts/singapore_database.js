@@ -26,7 +26,7 @@
         });
       });
     },
-    getPaymentLogWithId: function (policyid) {
+    getPaymentLogWithId: function (quoteNo) {
       return new Promise((resolve, reject) => {
         $.ajax({
           url: url,
@@ -34,7 +34,7 @@
           contentType: "application/json",
           data: JSON.stringify({
             action: "getPaymentLogWithId",
-            policyid: policyid
+            quoteNo: quoteNo
           }),
           dataType: "text",
           success: function (response) {
