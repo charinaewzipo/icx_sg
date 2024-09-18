@@ -316,8 +316,6 @@ const manualSetDefaultValueForm = () => {
 const manualSetDefaultValueFormCallingList = (data) => {
 console.log("data FormCallingList:", data)
   
-//setPlanPoi default monthly
-  setPlanPoiValue("2")
   // document.querySelector('select[name="courtesyTitle"]').value = "Mr"; // Assuming title from data is "Mr"
   // document.querySelector('select[name="select-product"]').value = data.udf2;
   document.querySelector('input[name="firstName"]').value = data.name;

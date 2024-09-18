@@ -1,6 +1,21 @@
 let selectedType = null;
 let campaignDetails = null;
 let productDetail = null;
+
+
+window.onload = function () {
+  const defaultShowForm = (document.querySelector('input[name="customerType"]:checked'));
+  if(defaultShowForm){
+    showForm(defaultShowForm)
+  }
+  const defaultRadio = document.querySelector('input[name="Payment_Frequency"][value="2"]');
+  if (defaultRadio) {
+
+    handlePaymentFrequencyChange(defaultRadio); // Trigger the function for default radio
+  }
+};
+
+
 const getTypeSelectForm = () => {
   const selectedItems = document.getElementsByClassName("selectable selected");
   if (selectedItems.length > 0) {
@@ -590,9 +605,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 //initial
-window.onload = function () {
-  showForm(document.querySelector('input[name="customerType"]:checked'));
-};
+
 document.addEventListener("DOMContentLoaded", () => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);

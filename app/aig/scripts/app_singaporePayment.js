@@ -17,6 +17,7 @@ function handlePaymentFrequencyChange(radio) {
 
     setPlanPoiValue(paymentFrequency);
 }
+
 function setPlanPoiValue(paymentFrequency) {
   const planPoi = document.querySelector('select[name="planPoi1"]');
 
