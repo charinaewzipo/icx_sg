@@ -646,12 +646,17 @@ const setDefaultPlanInfo = (insuredData, id = null) => {
 
 
 const setDefaultValueForm = async(dbData) => {
+ 
   console.log("dbData:", dbData)
   const ncdInfo = JSON.parse(dbData.ncdInfo);
   const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
   const insuredData = JSON.parse(dbData.insuredList);
 
   document.querySelector('select[name="select-product"]').value = dbData?.productId || "";
+  if(!dbData?.quoteNo){
+    console.log("fetchhhh")
+    document.querySelector('select[name="select-product"]').value ="";
+  }
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =

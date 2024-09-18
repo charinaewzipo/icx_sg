@@ -1,5 +1,6 @@
 <script>
     let select_product = null
+
     function createListAhSection(index) {
         const isRequired = index === 1; // Set to `true` if you want `required` only for index 1, otherwise `false`
         const showAsterisk = index === 1 ? '<span style="color:red">*</span>' : ''; // Only show the asterisk for index 1
@@ -391,70 +392,72 @@
     }
 
     function collectFormData() {
-    const insuredList = [];
-    const formSections = document.querySelectorAll('table[id^="table-form-"]');
-    let tempPlan={}
-    formSections.forEach((section, index) => {
-        console.log("index:", index)
-        const planSelect = section.querySelector('[name^="planId"]');
-        const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
-        const planId = selectedOption ? selectedOption.value || '' : '';
-        const planDescription = selectedOption ? selectedOption.getAttribute('data-desc') || '' : '';
+        const insuredList = [];
+        const formSections = document.querySelectorAll('table[id^="table-form-"]');
+        let tempPlan = {}
+        formSections.forEach((section, index) => {
+            console.log("index:", index)
+            const planSelect = section.querySelector('[name^="planId"]');
+            const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
+            const planId = selectedOption ? selectedOption.value || '' : '';
+            const planDescription = selectedOption ? selectedOption.getAttribute('data-desc') || '' : '';
 
 
-        const planInfo = {
-            planId: planId,
-            planDescription: planDescription,
-            planPoi: section.querySelector('[name^="planPoi"]')?.value || ''
-        };
+            const planInfo = {
+                planId: planId,
+                planDescription: planDescription,
+                planPoi: section.querySelector('[name^="planPoi"]')?.value || ''
+            };
 
-        const covers = [];
-        const coverRows = section.querySelectorAll('.planCoverList');
-        coverRows.forEach((coverSelect) => {
-            const selectedOption = coverSelect.querySelector('option:checked');
-            if (selectedOption) {
-                covers.push({
-                    id: selectedOption.value || '',
-                    code: selectedOption.getAttribute('data-cover-code') || null,
-                    name: selectedOption.getAttribute('data-cover-name') || null,
-                });
+            const covers = [];
+            const coverRows = section.querySelectorAll('.planCoverList');
+            coverRows.forEach((coverSelect) => {
+                const selectedOption = coverSelect.querySelector('option:checked');
+                if (selectedOption) {
+                    covers.push({
+                        id: selectedOption.value || '',
+                        code: selectedOption.getAttribute('data-cover-code') || null,
+                        name: selectedOption.getAttribute('data-cover-name') || null,
+                    });
+                }
+            });
+            if (index == 0) {
+                tempPlan = {
+                    ...planInfo,
+                    covers: covers
+                }
             }
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const campaign_id = urlParams.get("campaign_id");
+            const personInfo = {
+                insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '',
+                insuredFullName: (section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || ''),
+                insuredResidentStatus: section.querySelector('[name^="insured_ah_insuredResidentStatus_"]')?.value || '',
+                insuredIdType: section.querySelector('[name^="insured_ah_insuredIdType_"]')?.value || '',
+                insuredIdNumber: section.querySelector('[name^="insured_ah_insuredIdNumber_"]')?.value || '',
+                insuredGender: section.querySelector('[name^="insured_ah_insuredGender_"]')?.value || '',
+                insuredDateOfBirth: section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value ?
+                    transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value) : '',
+                insuredMaritalStatus: section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]')?.value || '',
+                insuredOccupation: section.querySelector('[name^="insured_ah_insuredOccupation_"]')?.value || '',
+                insuredCampaignCode: document.querySelector('select[name="select-product"]')?.value || '',
+                relationToPolicyholder: section.querySelector('[name^="insured_ah_relationToPolicyholder_"]')?.value || '',
+                planInfo: {
+                    ...tempPlan
+                }
+            };
+
+            const insuredData = {
+                personInfo: personInfo
+            };
+
+            insuredList.push(insuredData);
         });
-        if(index==0){
-            tempPlan={
-                ...planInfo,
-                covers: covers
-            }
-        }
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const campaign_id = urlParams.get("campaign_id");
-        const personInfo = {
-            insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '',
-            insuredFullName: (section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || ''),
-            insuredResidentStatus: section.querySelector('[name^="insured_ah_insuredResidentStatus_"]')?.value || '',
-            insuredIdType: section.querySelector('[name^="insured_ah_insuredIdType_"]')?.value || '',
-            insuredIdNumber: section.querySelector('[name^="insured_ah_insuredIdNumber_"]')?.value || '',
-            insuredGender: section.querySelector('[name^="insured_ah_insuredGender_"]')?.value || '',
-            insuredDateOfBirth: section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value ?
-                transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value) : '',
-            insuredMaritalStatus: section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]')?.value || '',
-            insuredOccupation: section.querySelector('[name^="insured_ah_insuredOccupation_"]')?.value || '',
-            insuredCampaignCode: document.querySelector('select[name="select-product"]')?.value || '',
-            relationToPolicyholder: section.querySelector('[name^="insured_ah_relationToPolicyholder_"]')?.value || '',
-            planInfo:{...tempPlan}
-        };
 
-        const insuredData = {
-            personInfo: personInfo
-        };
-
-        insuredList.push(insuredData);
-    });
-
-    console.log("insuredList",insuredList)
-    return insuredList;
-}
+        console.log("insuredList", insuredList)
+        return insuredList;
+    }
 
 
 
@@ -582,35 +585,33 @@
             selectElement.appendChild(option);
         });
     }
-
-
-
     async function handleProductChange(selectElement) {
         console.log("handleProductChange:")
         const selectedProductId = selectElement.value;
         select_product = selectedProductId
         const responseProduct = await getProductDetail(selectedProductId);
 
-        if(responseProduct){
-            await addInsuredSections(responseProduct?.number_of_person_insured||1)
+        if (responseProduct) {
+            await addInsuredSections(responseProduct?.number_of_person_insured || 1)
             
+            //handle ProductId setValue from API but not change PlanPoi
             const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
-            if(!id){
-      handlePaymentFrequencyChange(defaultRadio); 
-  }
+            if (!id || !quotationData?.quoteNo) {
+                handlePaymentFrequencyChange(defaultRadio);
+            }
         }
         const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
-    planSelectElements.forEach((selectElement, index) => {
-        if (index === 0) { // Populate only the first one (index 0)
-            populatePlans(selectedProductId, index + 1);  // Adjust index to be 1-based if needed
-            populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
-        }
-    });
+        planSelectElements.forEach((selectElement, index) => {
+            if (index === 0) { // Populate only the first one (index 0)
+                populatePlans(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+                populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+            }
+        });
         if (!id) {
             setDefaultRemarksC(responseProduct)
         }
-      
-     
+
+
     }
 
     function populatePlans(productId, index) {
@@ -625,7 +626,6 @@
                 const planSelect = document.getElementById('planSelect' + index);
 
                 // Debugging
-                console.log('Element:', planSelect);
                 if (!planSelect) {
                     console.error(`No element found with ID: planSelect${index}`);
                     return;
@@ -670,7 +670,6 @@
                 const plan_cover_list_ = document.getElementById('plan_cover_list_' + index);
 
                 // Debugging
-                console.log('Element:', plan_cover_list_);
                 if (!plan_cover_list_) {
                     console.error(`No element found with ID: plan_cover_list_${index}`);
                     return;
@@ -778,12 +777,13 @@
 
     //child start at index=3
     let indexCounter = 3
+
     function addChildInsured() {
         const addButton = document.getElementById('add-insured-child');
         addButton.addEventListener('click', () => {
             const insuredContainer = document.getElementById('insured-list-ah');
             if (indexCounter <= 7) {
-             
+
                 const currentIndex = indexCounter;
 
                 insuredContainer.insertAdjacentHTML('beforeend', createListAhSectionChild(currentIndex));
