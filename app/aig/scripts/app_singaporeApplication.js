@@ -694,25 +694,28 @@ function handleAddChildButtonVisibility(productDetail) {
   }
 }
 async function getProductDetail(productId) {
-  console.log("productId:", productId)
+  console.log("productId:", productId);
   if (!productId) return;
 
   const url = `../scripts/get_product.php?product_id=${productId}`;
   document.body.classList.add('loading');
 
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      if (data.length > 0) {
-        productDetail = data[0];
-        handleAddChildButtonVisibility(productDetail); // Process product details
-        return productDetail;
-      } else {
-        console.warn("No product data found");
-      }
-    })
-    .catch(error => console.error('Error fetching plans:', error))
-    .finally(() => {
-      document.body.classList.remove('loading');
-    });
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.length > 0) {
+      const productDetail = data[0];
+      handleAddChildButtonVisibility(productDetail); // Process product details
+      return productDetail;
+    } else {
+      console.warn("No product data found");
+      return null; // Ensure a return value is provided even when no data is found
+    }
+  } catch (error) {
+    console.error('Error fetching product details:', error);
+    return null; // Return null in case of error
+  } finally {
+    document.body.classList.remove('loading');
+  }
 }

@@ -80,13 +80,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //หากไม่มีpolicy หรืออยู่step create quote
   if (!id) {
-    // paymentContainer.querySelectorAll("input, select").forEach((field) => {
-    //   field.removeAttribute("required");
-    // });
     policyidText.style.display = "none"
     policyDisplay.style.display = "none";
     // btnEditForm.style.display = "none";
-
   }
 
   if (id) {

@@ -23,13 +23,12 @@ function handlePaymentFrequencyChange(radio) {
 function setPlanPoiValue(paymentFrequency) {
   const planPoi = document.querySelector('select[name="planPoi1"]');
 
-  // Set different values for planPoi based on the payment frequency
   if (paymentFrequency === '1') { // Annual
-    planPoi.value = "12"; // Replace with actual value for annual
+    planPoi.value = "12"; 
   } else if (paymentFrequency === '2') { // Monthly
-    planPoi.value = "1"; // Replace with actual value for monthly
+    planPoi.value = "1"; 
   } else {
-    planPoi.value = ""; // Default empty value
+    planPoi.value = ""; 
   }
 
   console.log("planPoi value set to:", planPoi.value);

@@ -8,7 +8,7 @@
         const planPoiSection = `
     <td style="white-space: nowrap; ${index === 2 ? 'display: none;' : ''}" >Plan Poi : ${showAsterisk}</td>
     <td colspan="2">
-        <select id="planPoiSelect${index}" name="planPoi${index}" ${isRequired ? 'required' : ''} ${index === 2 ? 'style="display: none;"' : ''}>
+        <select id="planPoiSelect${index}" readonly name="planPoi${index}" ${isRequired ? 'required' : ''} ${index === 2 ? 'style="display: none;"' : ''}>
             <option value="">
                 <-- Please select an option -->
             </option>
@@ -534,7 +534,8 @@
 
 
 
-    function handleProductChange(selectElement) {
+    async function handleProductChange(selectElement) {
+        console.log("handleProductChange:")
         const selectedProductId = selectElement.value;
         select_product = selectedProductId
         const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
@@ -542,7 +543,11 @@
             populatePlans(selectedProductId, index + 1);
             populateCovers(selectedProductId, index + 1);
         });
-        getProductDetail(selectedProductId);
+        const responseProduct=await getProductDetail(selectedProductId);
+        if(!id){
+    setDefaultRemarksC(responseProduct)
+            
+        }
     }
 
     function populatePlans(productId, index) {

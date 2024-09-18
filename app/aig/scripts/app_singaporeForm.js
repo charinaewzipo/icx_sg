@@ -342,7 +342,12 @@ console.log("data FormCallingList:", data)
   document.querySelector('select[name="nationality"]').value = data.nationality || "";
   // document.querySelector('select[name="occupation"]').value = data.udf9 || ""; // Assuming occupation from udf9
 };
-
+const setDefaultRemarksC=(productDetail)=>{
+  if(productDetail){
+    document.querySelector('textarea[name="RemarkCInput"]').value=productDetail?.remarks_c ||""
+  }
+  
+}
 const manualSetInsuredVehicleList = () => {
   const insuredData = [
     {

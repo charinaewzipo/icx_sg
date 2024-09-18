@@ -402,11 +402,11 @@ error_reporting(E_ALL);
               <td style="float:inline-start">Payment Frequency: <span style="color:red">*</span></td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" checked>
+                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" >
                   <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2" onchange="handlePaymentFrequencyChange(this)">
+                  <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2" onchange="handlePaymentFrequencyChange(this)" checked>
                   <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
                 </div>
               </td>
@@ -1455,7 +1455,7 @@ where name='Occupation'";
               <th></th>
               <td style="white-space: nowrap;">Plan Poi :</td>
               <td colspan="2">
-                <input type="text" id="planPoiSelect" name="planPoi" readonly>
+                <input type="text" id="planPoiSelect" name="planPoi" disabled>
               </td>
             </tr>
             <tr>
