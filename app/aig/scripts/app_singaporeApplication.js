@@ -8,10 +8,7 @@ window.onload = function () {
   if(defaultShowForm){
     showForm(defaultShowForm)
   }
-  const defaultRadio = document.querySelector('input[name="Payment_Frequency"][value="2"]');
-  if(!id&&defaultRadio){
-      handlePaymentFrequencyChange(defaultRadio); // Trigger the function for default radio
-  }
+
 };
 
 
@@ -489,18 +486,21 @@ const handleValidateForm = () => {
           {
             batchNo: responsePayment.batch_no,
             orderNo: responsePayment.order_no,
-            paymentMode: responsePayment.payment_mode,
+            paymentMode: quotationData.payment_mode,
             merchantId: responsePayment.merchant,
             cardType: responsePayment.card_type,
             cardExpiryMonth: responsePayment.card_expiry_month,
             cardExpiryYear: responsePayment.card_expiry_year,
-            paymentDate: new Date(responsePayment.payment_date).toISOString(),
-            paymentFrequency: responsePayment.payment_frequency,
+            paymentDate: new Date(responsePayment.time_of_lastupdate).toISOString(),
+            paymentFrequency: quotationData.payment_frequency,
             paymentAmount: responsePayment.order_amount,
             cardNumber: responsePayment.card_number,
-            currency: responsePayment.order_currency
+            currency: responsePayment.order_currency,
+            cardTokenNo:responsePayment?.payment_token_id||""
           },
         ];
+        console.log("paymentDetails:", paymentDetails[0])
+        console.log("quotationData:", quotationData)
 
         const policyRequestBody = removeKeysFromQuotationData(quotationData)
         const body = { ...policyRequestBody, paymentDetails };

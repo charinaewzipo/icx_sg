@@ -393,29 +393,14 @@
     function collectFormData() {
     const insuredList = [];
     const formSections = document.querySelectorAll('table[id^="table-form-"]');
-
+    let tempPlan={}
     formSections.forEach((section, index) => {
-        if (index === 1) {
-            const firstName = section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '';
-            const residentStatus = section.querySelector('[name^="insured_ah_insuredResidentStatus_"]')?.value || '';
-            const idType = section.querySelector('[name^="insured_ah_insuredIdType_"]')?.value || '';
-            const idNumber = section.querySelector('[name^="insured_ah_insuredIdNumber_"]')?.value || '';
-            const gender = section.querySelector('[name^="insured_ah_insuredGender_"]')?.value || '';
-            const dateOfBirth = section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value || '';
-            const maritalStatus = section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]')?.value || '';
-            const occupation = section.querySelector('[name^="insured_ah_insuredOccupation_"]')?.value || '';
-            const relationToPolicyholder = section.querySelector('[name^="insured_ah_relationToPolicyholder_"]')?.value || '';
-
-            // Skip if all fields are filled in
-            if (firstName && residentStatus && idType && idNumber && gender && dateOfBirth && maritalStatus && occupation && relationToPolicyholder) {
-                return; // Skip this section
-            }
-        }
-
+        console.log("index:", index)
         const planSelect = section.querySelector('[name^="planId"]');
         const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
         const planId = selectedOption ? selectedOption.value || '' : '';
         const planDescription = selectedOption ? selectedOption.getAttribute('data-desc') || '' : '';
+
 
         const planInfo = {
             planId: planId,
@@ -435,7 +420,12 @@
                 });
             }
         });
-
+        if(index==0){
+            tempPlan={
+                ...planInfo,
+                covers: covers
+            }
+        }
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const campaign_id = urlParams.get("campaign_id");
@@ -452,10 +442,7 @@
             insuredOccupation: section.querySelector('[name^="insured_ah_insuredOccupation_"]')?.value || '',
             insuredCampaignCode: document.querySelector('select[name="select-product"]')?.value || '',
             relationToPolicyholder: section.querySelector('[name^="insured_ah_relationToPolicyholder_"]')?.value || '',
-            planInfo: {
-                ...planInfo,
-                covers: covers
-            }
+            planInfo:{...tempPlan}
         };
 
         const insuredData = {

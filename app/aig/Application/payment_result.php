@@ -83,11 +83,11 @@
 	mysqli_query($Conn, $SQL);
 
     echo "<script>
-            window.open('', '_self');
-             if (window.opener && !window.opener.closed) {
-            window.close(); 
-            window.opener.showAlert('Payment completed successfully!');
-        }
+             window.open('', '_self');
+    if (window.opener && !window.opener.closed) {
+        window.opener.showAlert('Payment completed successfully!');
+        window.close(); 
+    }
         </script>";
 ?>
 

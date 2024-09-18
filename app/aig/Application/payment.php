@@ -23,7 +23,7 @@ $returnUrl = "$protocol$host/app/aig/Application/payment_result.php?is_recurring
 
 $now = new DateTime();
 $orderId = $now->format('Y.m.d.H.i.s.').sprintf('%03d', $now->format('u') / 1000);
-
+$batchNo = 'IP' . date('dmY');
 $url_create_session = "https://ap-gateway.mastercard.com/api/rest/version/llaatteesstt/merchant/$merchant/session";
 $data_create_session = [
     "apiOperation" => "INITIATE_CHECKOUT",
@@ -58,7 +58,7 @@ if($response_create_session != "{}"){
     $payment_session = $data['session']['id'];
     $payment_result_indicator = $data['successIndicator'];
 
-    $SQL = "INSERT INTO t_aig_sg_payment_log (order_amount,order_currency,result,time_of_record,payment_session_id,payment_order_id,payment_result_indicator,payment_is_recurring,merchant,quote_no) VALUES ('$amount','SGD','CREATE',NOW(),'$payment_session','$orderId','$payment_result_indicator','$is_recurring','$merchant','$quoteNo')" ;
+    $SQL = "INSERT INTO t_aig_sg_payment_log (order_amount,order_currency,result,time_of_record,payment_session_id,payment_order_id,payment_result_indicator,payment_is_recurring,merchant,quote_no,batch_no) VALUES ('$amount','SGD','CREATE',NOW(),'$payment_session','$orderId','$payment_result_indicator','$is_recurring','$merchant','$quoteNo','$batchNo')" ;
 	mysqli_query($Conn, $SQL);
 
     echo "<script>

@@ -241,7 +241,7 @@ where name='PA Nature of Business'";
     `;
     }
 
-    function addPlanInfoSections(count) {
+    function addInsuredSections(count) {
         const insuredContainer = document.getElementById('insured-list-ah');
         insuredContainer.innerHTML = '';
         for (let i = 1; i <= count; i++) {
@@ -252,7 +252,7 @@ where name='PA Nature of Business'";
 
     // Add 3 Plan Info sections when the page loads
     document.addEventListener('DOMContentLoaded', () => {
-        addPlanInfoSections(2);
+        addInsuredSections(2);
         attachPlanSelectEventListeners()
         setTimeout(() => {
 
