@@ -1551,20 +1551,20 @@ where name='Occupation'";
                 </select>
               </td>
             </tr> -->
-            <!-- <tr>
+            <tr id="card-number-container" >
               <td>Card Number : <span style="color:red">*</span> </td>
               <td>
-                <input type="text" name="payment_cardNumber" maxlength="60"  />
+                <input type="text" name="payment_cardNumber" maxlength="60"  disabled/>
               </td>
             </tr>
-            <tr>
+            <tr id="card-expiry-container">
               <td>Expiry Date : <span style="color:red">*</span> </td>
               <td>
 
-                <input type="text" name="payment_expiryDate" id="expiryDate" maxlength="5" size="5" placeholder="MM/YY"  />
+                <input type="text" name="payment_expiryDate" id="expiryDate" maxlength="5" size="5" placeholder="MM/YY" disabled />
               </td>
 
-            </tr> -->
+            </tr>
             <!-- <tr>
               <td>CVV : <span style="color:red">*</span> </td>
               <td>
@@ -1572,7 +1572,6 @@ where name='Occupation'";
               </td>
             </tr> -->
             <tr>
-              <th></th>
               <td>Amount : </td>
               <td>
                 <input type="text" name="payment_amount" id="payment_amount" maxlength="10" size="10" readonly />

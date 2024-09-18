@@ -116,10 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (policyId) {
-          const paymentResponse = await jQuery.agent.getPaymentLogWithId(policyId);
-          handlePaymentResponse(paymentResponse);
-          responsePayment = paymentResponse?.data;
-
+          try {
+            const paymentResponse = await jQuery.agent.getPaymentLogWithId(policyId);
+            handlePaymentResponse(paymentResponse);
+            responsePayment = paymentResponse?.data;
+          } catch (error) {
+            console.log("error:", error)
+          }
+         
         }
 
         paymentContainer.querySelectorAll("input, select").forEach((field) => {
@@ -156,6 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handlePaymentResponse(paymentResponse) {
+      console.log("paymentResponse:", paymentResponse)
       btnSaveDraftForm.style.display = "none";
 
       if (paymentResponse?.data?.result !== "SUCCESS") {
@@ -219,21 +224,21 @@ function extractQuotationData(data) {
 function populatePaymentForm(paymentData) {
   console.log("paymentData:", paymentData)
   // Payment Mode
-  const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
-  paymentModeSelect.value = paymentData.payment_mode;
+  // const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
+  // paymentModeSelect.value = paymentData.payment_mode;
 
   // Payment Frequency
-  const paymentFrequencyAnnual = document.querySelector('#paymentFrequencyAnnual');
-  const paymentFrequencyMonthly = document.querySelector('#paymentFrequencyMonthly');
-  if (paymentData.payment_frequency === 1) {
-    paymentFrequencyAnnual.checked = true;
-  } else if (paymentData.payment_frequency === 2) {
-    paymentFrequencyMonthly.checked = true;
-  }
+  // const paymentFrequencyAnnual = document.querySelector('#paymentFrequencyAnnual');
+  // const paymentFrequencyMonthly = document.querySelector('#paymentFrequencyMonthly');
+  // if (paymentData.payment_frequency === 1) {
+  //   paymentFrequencyAnnual.checked = true;
+  // } else if (paymentData.payment_frequency === 2) {
+  //   paymentFrequencyMonthly.checked = true;
+  // }
 
   // Card Type
-  const cardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
-  cardTypeSelect.value = paymentData.card_type;
+  // const cardTypeSelect = document.querySelector('select[name="Payment_CardType"]');
+  // cardTypeSelect.value = paymentData.card_type;
 
   // Card Number
   const cardNumberInput = document.querySelector('input[name="payment_cardNumber"]');
