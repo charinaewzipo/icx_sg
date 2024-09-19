@@ -138,8 +138,15 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
     $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
 
-    $payment_mode = isset($formData['paymentmode']) ? $formData['paymentmode'] : 0;
-    $payment_frequency = isset($formData['paymentfrequency']) ? $formData['paymentfrequency'] : 1;
+    $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
+
+    if (!empty($paymentDetails) && is_array($paymentDetails)) {
+        $payment_mode = isset($paymentDetails[0]['paymentmode']) ? $paymentDetails[0]['paymentmode'] : null;
+        $payment_frequency = isset($paymentDetails[0]['paymentfrequency']) ? $paymentDetails[0]['paymentfrequency'] : null;
+    } else {
+        $payment_mode = null;
+        $payment_frequency = null;
+    }
     $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
 
@@ -230,8 +237,15 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
     $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
 
-    $payment_mode = isset($formData['paymentmode']) ? $formData['paymentmode'] : 0;
-    $payment_frequency = isset($formData['paymentfrequency']) ? $formData['paymentfrequency'] : 1;
+    $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
+
+    if (!empty($paymentDetails) && is_array($paymentDetails)) {
+        $payment_mode = isset($paymentDetails[0]['paymentmode']) ? $paymentDetails[0]['paymentmode'] : null;
+        $payment_frequency = isset($paymentDetails[0]['paymentfrequency']) ? $paymentDetails[0]['paymentfrequency'] : null;
+    } else {
+        $payment_mode = null;
+        $payment_frequency = null;
+    }
     $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
     // Initialize the SQL query

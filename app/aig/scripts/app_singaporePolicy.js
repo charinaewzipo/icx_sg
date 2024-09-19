@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const policyInput = document.getElementById('policyid-input');
   const policyDisplay = document.getElementById('policyid-display');
   const btnDraftForm = document.getElementById('btnDraftForm');
-  // const btnEditForm = document.getElementById('btnEditForm');
+  const btnEditForm = document.getElementById('btnEditForm');
   const btnSaveForm = document.getElementById('btnSaveForm');
   const btnSaveDraftForm = document.getElementById('btnSaveDraftForm');
   id = urlParams.get("id");
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!id) {
     policyidText.style.display = "none"
     policyDisplay.style.display = "none";
-    // btnEditForm.style.display = "none";
+    btnEditForm.style.display = "none";
   }
 
   if (id) {
@@ -95,6 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         console.log("Response:", response);
+
         setDefaultValueForm(response?.data);
         const extractData = extractQuotationData(response?.data);
         quotationData = extractData;
@@ -138,13 +139,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function configureCreatePolicyState() {
       btnSaveForm.textContent = "Create Policy";
       btnSaveForm.title = "Please make the payment";
-      btnDraftForm.style.display = "none";
+      btnDraftForm.disabled=false
       remarkCTextArea.disabled=true;
       paymentContainer.removeAttribute("hidden");
       paymentContainerAmount.removeAttribute("hidden");
 
       const formElements = document.querySelectorAll(
-        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnSaveForm)"
+        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnEditForm):not(#btnSaveForm)"
       );
 
       hideFormData(formElements);
@@ -167,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Payment not successful
         btnSaveForm.disabled = true;
         btnSaveForm.style.opacity = "0.65";
-        // btnEditForm.style.display = "block";
+        btnEditForm.style.display = "block";
       } else {
         // Payment successful
         console.log("paymentResponse:", paymentResponse)
@@ -176,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
           "input, select, button:not(#btnSaveForm)"
         );
         hideFormData(formElements);
-        // btnEditForm.style.display = "none";
+        btnEditForm.style.display = "none";
       }
     }
 

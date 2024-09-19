@@ -50,16 +50,16 @@ const handleClickSaveDraftButton = () => {
   const requestBody = handleForm();
   jQuery.agent.updateQuoteData(requestBody, null, id);
 }
-// const handleEditQuote = () => {
-//   const btnEditForm = document.getElementById('btnEditForm');
-//   console.log("Edit")
-//   if (!isEditing) {
-//     const formElements = document.querySelectorAll("input, select, button:not(#btnSaveForm)");
-//     unhideFormData(formElements);
-//     btnEditForm.textContent = "Save"
-//     isEditing = true;
-//   } else {
-//     window.alert("Fetch Recalculate Quote")
-//     window.location.reload();
-//   }
-// }
+const handleEditQuote = () => {
+  const btnEditForm = document.getElementById('btnEditForm');
+  console.log("Edit")
+  if (!isEditing) {
+    const formElements = document.querySelectorAll("input, select, button:not(#btnSaveForm)");
+    unhideFormData(formElements);
+    btnEditForm.textContent = "Save"
+    isEditing = true;
+  } else {
+    window.alert("Fetch Recalculate Quote")
+    window.location.reload();
+  }
+}

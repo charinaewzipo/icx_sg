@@ -174,6 +174,35 @@ async function fetchPolicy(requestBody) {
   }
 }
 
+async function fetchRetrieveQuote(requestBody) {
+  console.log("Fetching Policy data...");
+  document.body.classList.add('loading');
+  const apiUrl =
+    "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/retrieve-quote";
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+
+    const data = await response.json();
+    console.log("data", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching quotation data:", error);
+    // Optionally, you can alert the user about the error
+    window.alert("Failed to fetch quotation data. Please try again.");
+    throw error; // Re-throw the error to be caught by the caller
+  } finally {
+    document.body.classList.remove('loading');
+  }
+}
 const handleRequestBody = () => {
   const formData = new FormData(document.getElementById("application"));
   const requestBodyHome = {

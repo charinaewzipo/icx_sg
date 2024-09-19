@@ -592,7 +592,7 @@
         const responseProduct = await getProductDetail(selectedProductId);
 
         if (responseProduct) {
-            await addInsuredSections(responseProduct?.number_of_person_insured || 1)
+            await addInsuredSections(responseProduct?.number_of_person_insured || 2)
             
             //handle ProductId setValue from API but not change PlanPoi
             const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');

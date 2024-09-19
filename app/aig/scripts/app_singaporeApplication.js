@@ -176,10 +176,7 @@ function handleForm() {
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
     campaignCode: formData.get("campaignCode"),
-    paymentmode: Number(formData.get('Payment_Mode')),
-    paymentfrequency: Number(formData.get('Payment_Frequency')),
     efulfillmentFlag: Number(formData.get('Email_Fulfillment_Flag')),
-
   };
   if (formType === "auto") {
     policyDetail.ncdInfo = {};
@@ -362,10 +359,13 @@ function handleForm() {
   } else if (formType === "ah") {
     insuredList = collectFormData()
 
+    const paymentDetails =[{paymentmode: Number(formData.get('Payment_Mode')),
+      paymentfrequency: Number(formData.get('Payment_Frequency')),}]
     const fullForm = {
       ...policyDetail,
       policyHolderInfo,
       insuredList,
+      paymentDetails
     };
     return fullForm
   }
@@ -503,9 +503,24 @@ const handleValidateForm = () => {
         console.log("quotationData:", quotationData)
 
         const policyRequestBody = removeKeysFromQuotationData(quotationData)
+        console.log("policyRequestBody:", policyRequestBody)
         const body = { ...policyRequestBody, paymentDetails };
-        await fetchPolicy(body);
-        console.log("fetch policy")
+        const objectRetrieve={
+          "channelType":"10",
+          "idNo" : quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.customerIdNo,
+          "policyNo" : quotationData?.quoteNo
+        }
+        console.log("objectRetrieve:", objectRetrieve)
+       const responseRetrieve= await fetchRetrieveQuote(objectRetrieve)
+       console.log("responseRetrieve:", responseRetrieve)
+       if(!responseRetrieve){
+        alert("Quote Retrieval List Operation fail")
+       }else{
+         if(responseRetrieve?.statusCode=="P00"){
+          //  await fetchPolicy(body);
+           console.log("fetch policy")
+          }
+        }
       } else {
         await fetchQuotation(requestBody);
         console.log("fetch quotation")
@@ -638,7 +653,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 const removeKeysFromQuotationData = (data) => {
-  const keysToRemove = ['quoteLapseDate', 'quoteNo', 'type', 'premiumPayable', 'id', 'propDate'];
+  const keysToRemove = ['quoteLapseDate',  'type', 'premiumPayable',
+     'id', 'propDate','plan_poi','agent_id','calllist_id','campaignCode','campaign_id','dob'
+    ,'fullname','import_id','incident_status','lastname','policyNo','policy_create_date'];
 
   keysToRemove.forEach(key => {
     delete data[key];

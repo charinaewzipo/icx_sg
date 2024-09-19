@@ -84,11 +84,13 @@
 
     echo "<script>
              window.open('', '_self');
+             window.close(); 
     if (window.opener && !window.opener.closed) {
         window.opener.showAlert('Payment completed successfully!');
         window.close(); 
     }
         </script>";
+        
 ?>
 
     <script>
