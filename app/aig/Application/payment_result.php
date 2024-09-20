@@ -6,7 +6,7 @@
     <title>Payment Result Page</title>
 </head>
 <body>
-    <p id="countdown">Closing in 3 seconds...</p>
+    <p id="countdown" hidden>Closing in 3 seconds...</p>
     <input type="hidden" name="paymentSession" id="paymentSession"><br>
     <input type="hidden" name="resultIndicator" id="resultIndicator"><br>
     <input type="hidden" name="sessionVersion" id="sessionVersion"><br>
@@ -82,14 +82,7 @@
             WHERE id='$payment_id' " ;
 	mysqli_query($Conn, $SQL);
 
-    echo "<script>
-             window.open('', '_self');
-             window.close(); 
-    if (window.opener && !window.opener.closed) {
-        window.opener.showAlert('Payment completed successfully!');
-        window.close(); 
-    }
-        </script>";
+
         
 ?>
 
@@ -98,15 +91,20 @@
             var paymentSession = localStorage.getItem('paymentSession');
             var paymentOrderId = localStorage.getItem('paymentOrderId');
             var paymentToken = localStorage.getItem('paymentToken');
+
+            // Set the values to the respective input fields
             document.getElementById('paymentSession').value = paymentSession || '';
             document.getElementById('resultIndicator').value = "<?php echo $resultIndicator; ?>";
             document.getElementById('sessionVersion').value = "<?php echo $sessionVersion; ?>";
             document.getElementById('paymentOrderId').value = paymentOrderId || '';
             document.getElementById('paymentToken').value = paymentToken || '';
             
-        };
-     
-
+            // Check if the window was opened by a script and close it
+            if (window.opener && !window.opener.closed) {
+                window.opener.showAlert('Payment completed successfully!');
+                window.close();
+            }
+    };
     </script>
 
 </body>
