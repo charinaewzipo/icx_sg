@@ -360,8 +360,8 @@ function handleForm() {
     insuredList = collectFormData()
 
     const paymentDetails = [{
-      paymentmode: Number(formData.get('Payment_Mode')),
-      paymentfrequency: Number(formData.get('Payment_Frequency')),
+      paymentMode: Number(formData.get('Payment_Mode')),
+      paymentFrequency: Number(formData.get('Payment_Frequency')),
     }]
     const fullForm = {
       ...policyDetail,

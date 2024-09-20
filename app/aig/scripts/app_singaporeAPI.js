@@ -102,7 +102,11 @@ async function fetchQuotation(requestBody) {
       if (id) {
         await jQuery.agent.updateQuoteData(requestBody, data, id);
         window.alert(data?.statusMessage || "Successfully!");
-        window.location.reload();
+        if (!url.searchParams.has('is_firsttime')) {
+          url.searchParams.append('is_firsttime', '1');
+        }
+        window.location.href = url.toString();
+        // window.location.reload();
       } else {
         const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
         window.alert(data?.statusMessage || "Successfully!");
@@ -117,7 +121,9 @@ async function fetchQuotation(requestBody) {
 
           url.searchParams.append('id', responseId);
         }
-
+        if (!url.searchParams.has('is_firsttime')) {
+          url.searchParams.append('is_firsttime', '1');
+        }
         window.location.href = url.toString();
       }
     } else {

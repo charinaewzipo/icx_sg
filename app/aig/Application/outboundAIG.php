@@ -141,8 +141,8 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
 
     if (!empty($paymentDetails) && is_array($paymentDetails)) {
-        $payment_mode = isset($paymentDetails[0]['paymentmode']) ? $paymentDetails[0]['paymentmode'] : null;
-        $payment_frequency = isset($paymentDetails[0]['paymentfrequency']) ? $paymentDetails[0]['paymentfrequency'] : null;
+        $payment_mode = isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
+        $payment_frequency = isset($paymentDetails[0]['paymentFrequency']) ? $paymentDetails[0]['paymentFrequency'] : null;
     } else {
         $payment_mode = null;
         $payment_frequency = null;
@@ -240,8 +240,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
 
     if (!empty($paymentDetails) && is_array($paymentDetails)) {
-        $payment_mode = isset($paymentDetails[0]['paymentmode']) ? $paymentDetails[0]['paymentmode'] : null;
-        $payment_frequency = isset($paymentDetails[0]['paymentfrequency']) ? $paymentDetails[0]['paymentfrequency'] : null;
+        $payment_mode = isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
+        $payment_frequency = isset($paymentDetails[0]['paymentFrequency']) ? $paymentDetails[0]['paymentFrequency'] : null;
     } else {
         $payment_mode = null;
         $payment_frequency = null;

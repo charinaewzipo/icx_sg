@@ -294,7 +294,7 @@ error_reporting(E_ALL);
 <tr id="remark-c-container">
   <td style="float: inline-start;padding-right: 84px;">RemarksC:</td>
   <td style="white-space:nowrap;">
-    <textarea name="RemarkCInput" id="RemarkCInput" rows="3" cols="30" maxlength="2000"></textarea>
+    <textarea name="RemarkCInput" id="RemarkCInput" rows="4" cols="50" maxlength="2000"></textarea>
   </td>
 </tr>
 </table>
@@ -1524,7 +1524,7 @@ where name='Occupation'";
                 <div class="table-data">Online Payment Gateway </div>
                 <div class="table-data">
                   <!-- <button type="button" class="button payment" id="btnPayment">Payment</button> -->
-                  <button type="button" class="button payment" id="btnPayment" onclick="handlePaymentGateway()" >Payment</button>
+                  <button type="button" class="button payment" id="btnPayment" onclick="handleRetrieveQuote()" >Payment</button>
                 </div>
                 <!-- <button type="button" onclick="handlePaymentGateway()">Payment</button> -->
               </div>

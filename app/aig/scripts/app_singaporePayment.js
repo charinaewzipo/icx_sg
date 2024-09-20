@@ -63,47 +63,58 @@ function fetchPaymentOption(paymentMode, paymentFrequency) {
       document.body.classList.remove('loading');
     });
 }
-const handlePaymentGateway = async () => {
-  //retrieve Quote 
+const handleRetrieveQuote = async () => {
   const objectRetrieve = {
     "channelType": "10",
     "idNo": quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.customerIdNo,
     "policyNo": quotationData?.quoteNo
-  }
-  const responseRetrieve = await fetchRetrieveQuote(objectRetrieve)
-  console.log("responseRetrieve:", responseRetrieve)
-  console.log("quotationData:", quotationData)
-  if (!responseRetrieve) {
-    alert("Quote Retrieval List Operation failed");
-    setTimeout(() => {
-      window.reload()
-    }, 2000)
-  } else if (responseRetrieve?.statusCode === "P00") {
+  };
 
-    const responseRetrievePlanId = responseRetrieve?.quoteList[0]?.Policy?.insuredList[0]?.planList[0]?.planId
-    const quotePlanId = quotationData?.insuredList[0]?.personInfo?.planInfo?.planId;
-    if (
-      parseFloat(responseRetrieve?.quoteList[0]?.Policy?.premiumPayable) ===
-      parseFloat(quotationData?.premiumPayable) &&
-      responseRetrieve?.quoteList[0]?.Policy?.productId === quotationData?.productId
-      && parseInt(responseRetrievePlanId) === parseInt(quotePlanId)
-    ) {
-      //same plan and amount
-      isRecurring = quotationData?.payment_mode === 124 ? 1 : 0;
-      if (quotationData?.premiumPayable) {
-        const url = `payment.php?amount=${quotationData?.premiumPayable}&is_recurring=${isRecurring}&quoteNo=${quotationData?.quoteNo}`;
-        window.open(url, 'childWindow', 'width=600,height=480');
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let is_firsttime = url.searchParams.get('is_firsttime');
+  console.log("is_firsttime:", is_firsttime)
+
+  if (is_firsttime === "1") {
+    handlePaymentGateway();
+  } else {
+    const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
+    console.log("responseRetrieve:", responseRetrieve);
+    console.log("quotationData:", quotationData);
+
+    if (!responseRetrieve) {
+      alert("Quote Retrieval List Operation failed");
+    } else if (responseRetrieve?.statusCode === "P00") {
+      const responseRetrievePlanId = responseRetrieve?.quoteList[0]?.Policy?.insuredList[0]?.planList[0]?.planId;
+      const quotePlanId = quotationData?.insuredList[0]?.personInfo?.planInfo?.planId;
+
+      if (
+        parseFloat(responseRetrieve?.quoteList[0]?.Policy?.premiumPayable) === parseFloat(quotationData?.premiumPayable) &&
+        responseRetrieve?.quoteList[0]?.Policy?.productId === quotationData?.productId &&
+        parseInt(responseRetrievePlanId) === parseInt(quotePlanId)
+      ) {
+        // Same plan and amount
+        handlePaymentGateway();
       } else {
-        console.log("no price", quotationData?.premiumPayable)
+        alert("Product is not available. Please do a recalculation of the quote.");
       }
-    } else {
-      alert("Product is not available. Please do a recalculation of the quote.")
     }
-
   }
-
-
 };
+
+const handlePaymentGateway = async () => {
+  // Retrieve Quote
+  const isRecurring = quotationData?.payment_mode === 124 ? 1 : 0;
+
+  if (quotationData?.premiumPayable) {
+    const url = `payment.php?amount=${quotationData?.premiumPayable}&is_recurring=${isRecurring}&quoteNo=${quotationData?.quoteNo}`;
+    window.open(url, 'childWindow', 'width=600,height=480');
+  } else {
+    console.log("No price", quotationData?.premiumPayable);
+  }
+};
+
+
 function showAlert(message) {
   alert(message);
   setTimeout(() => {
