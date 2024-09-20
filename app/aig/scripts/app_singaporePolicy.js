@@ -2,7 +2,7 @@ let policyid = null
 let statusPayment = null;
 const hideFormData = (elements) => {
   //disabled datepicker
-  disableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4","#datepicker5","#datepicker-1","#datepicker-2","#datepicker-3","#datepicker-4","#datepicker-5","#datepicker-6"]);
+  disableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4", "#datepicker5", "#datepicker-1", "#datepicker-2", "#datepicker-3", "#datepicker-4", "#datepicker-5", "#datepicker-6"]);
 
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
@@ -39,7 +39,7 @@ const hideFormData = (elements) => {
 const disableDatepickers = (selectors) => {
   console.log("selectors:", selectors)
   selectors.forEach((selector) => {
-      $(selector).datepicker("disable");
+    $(selector).datepicker("disable");
   });
 };
 const enableDatepickers = (selectors) => {
@@ -51,9 +51,9 @@ const enableDatepickers = (selectors) => {
 
 
 const unhideFormData = (elements) => {
-  enableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4","#datepicker5","#datepicker-1","#datepicker-2","#datepicker-3","#datepicker-4","#datepicker-5","#datepicker-6"]);
+  enableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4", "#datepicker5", "#datepicker-1", "#datepicker-2", "#datepicker-3", "#datepicker-4", "#datepicker-5", "#datepicker-6"]);
   const remarkCTextArea = document.getElementById("RemarkCInput");
-  remarkCTextArea.disabled=false;
+  remarkCTextArea.disabled = false;
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
 
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
           hideAllFormElements();
         }
 
-        if (policyId&&quotationData?.quoteNo) {
+        if (policyId && quotationData?.quoteNo) {
           try {
             const paymentResponse = await jQuery.agent.getPaymentLogWithId(quotationData?.quoteNo);
             handlePaymentResponse(paymentResponse);
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
           } catch (error) {
             console.log("error:", error)
           }
-         
+
         }
 
         paymentContainer.querySelectorAll("input, select").forEach((field) => {
@@ -160,8 +160,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function configureCreatePolicyState() {
       btnSaveForm.textContent = "Create Policy";
       btnSaveForm.title = "Please make the payment";
-      btnDraftForm.disabled=false
-      remarkCTextArea.disabled=true;
+      btnDraftForm.disabled = false
+      remarkCTextArea.disabled = true;
       paymentContainer.removeAttribute("hidden");
       paymentContainerAmount.removeAttribute("hidden");
 
@@ -172,14 +172,14 @@ document.addEventListener("DOMContentLoaded", function () {
       hideFormData(formElements);
 
     }
-    
+
     function hideAllFormElements() {
       const formElements = document.querySelectorAll("input, select, button");
       hideFormData(formElements);
 
       btnSaveDraftForm.style.display = "none";
       btnSaveForm.style.display = "none";
-      remarkCTextArea.disabled=true;
+      remarkCTextArea.disabled = true;
     }
 
     function handlePaymentResponse(paymentResponse) {
@@ -194,6 +194,11 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         // Payment successful
         console.log("paymentResponse:", paymentResponse)
+        const cardNumberContainer = document.getElementById('card-number-container');
+        const cardExpiryContainer = document.getElementById('card-expiry-container');
+
+        cardNumberContainer.hidden = false;
+        cardExpiryContainer.hidden = false;
         populatePaymentForm(paymentResponse?.data)
         const formElements = document.querySelectorAll(
           "input, select, button:not(#btnSaveForm)"

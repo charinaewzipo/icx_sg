@@ -1551,13 +1551,13 @@ where name='Occupation'";
                 </select>
               </td>
             </tr> -->
-            <tr id="card-number-container" >
+            <tr id="card-number-container" hidden >
               <td>Card Number : <span style="color:red">*</span> </td>
               <td>
                 <input type="text" name="payment_cardNumber" maxlength="60"  disabled/>
               </td>
             </tr>
-            <tr id="card-expiry-container">
+            <tr id="card-expiry-container" hidden>
               <td>Expiry Date : <span style="color:red">*</span> </td>
               <td>
 
