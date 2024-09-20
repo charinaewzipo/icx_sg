@@ -137,7 +137,7 @@ FROM t_aig_app app
 LEFT JOIN t_aig_sg_product tasp ON app.productId = tasp.product_id
 LEFT JOIN t_agents  agent ON app.agent_id = agent.agent_id
 LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id 
-WHERE 1 GROUP BY app.id
+WHERE 1 
 ";
 	//if level is agent where current agent id
 
@@ -177,9 +177,9 @@ WHERE 1 GROUP BY app.id
 			 }
 			 //check level
   			*/
-	if ($tmp['search_cust'] != "") {
-		$condition = $condition . " AND app.fullname LIKE '%" . trim($tmp['search_cust']) . "%' ";
-	}
+				if ($tmp['search_cust'] != "") {
+					$condition .= " AND app.fullname LIKE '%" . trim($tmp['search_cust']) . "%' ";
+			}
 	// if ($tmp['search_agent'] != "") {
 	// 	$condition = $condition . " AND app.agent_id = " . dbformat($tmp['search_agent']) . " ";
 	// }
@@ -194,8 +194,8 @@ WHERE 1 GROUP BY app.id
 	}
 
 
-	$sql = $sql . $condition;
-	$sql .=  " ORDER BY app.propDate DESC ";
+	$sql .= $condition;
+	$sql .=  "GROUP BY app.id ORDER BY app.propDate DESC ";
 	//  " LIMIT ".$page." , ".$pagelength;
 
 	wlog('[application-pane_process][query] query : ' . $sql);
