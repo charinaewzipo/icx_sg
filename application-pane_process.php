@@ -126,8 +126,7 @@ GROUP BY app.id, app.policyId, app.productId, app.distributionChannel, app.produ
          app.type_vouncher, app.vouncher_value, app.incident_status, app.dont_call_ind, app.dont_SMS_ind, 
          app.dont_email_ind, app.dont_Mail_ind, app.agent_id, app.calllist_id, app.policyNo, 
          app.policy_create_date, app.quote_create_date, app.update_date, app.campaign_id, app.import_id
-ORDER BY app.propDate DESC;
-
+ORDER BY app.propDate DESC
 ";
 	//if level is agent where current agent id
 
