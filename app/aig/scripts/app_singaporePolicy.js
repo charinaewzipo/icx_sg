@@ -1,6 +1,9 @@
 let policyid = null
 let statusPayment = null;
 const hideFormData = (elements) => {
+  //disabled datepicker
+  disableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4","#datepicker5","#datepicker-1","#datepicker-2","#datepicker-3","#datepicker-4","#datepicker-5","#datepicker-6"]);
+
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
 
@@ -39,9 +42,18 @@ const disableDatepickers = (selectors) => {
       $(selector).datepicker("disable");
   });
 };
+const enableDatepickers = (selectors) => {
+  console.log("Enabling datepickers for selectors:", selectors);
+  selectors.forEach((selector) => {
+    $(selector).datepicker("enable");
+  });
+};
 
 
 const unhideFormData = (elements) => {
+  enableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4","#datepicker5","#datepicker-1","#datepicker-2","#datepicker-3","#datepicker-4","#datepicker-5","#datepicker-6"]);
+  const remarkCTextArea = document.getElementById("RemarkCInput");
+  remarkCTextArea.disabled=false;
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
 
@@ -83,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnSaveForm = document.getElementById('btnSaveForm');
   const btnSaveDraftForm = document.getElementById('btnSaveDraftForm');
 
-disableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4","#datepicker5","#datepicker-1","#datepicker-2","#datepicker-3","#datepicker-4","#datepicker-5",,"#datepicker-6"]);
 
   id = urlParams.get("id");
 
@@ -159,6 +170,7 @@ disableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4
       );
 
       hideFormData(formElements);
+
     }
     
     function hideAllFormElements() {
