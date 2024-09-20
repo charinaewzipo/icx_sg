@@ -108,7 +108,7 @@
 		$page =  (intval($_POST['page']) - 1) * $pagelength;
 	}
 
-	$sql = "SELECT app.id, app.policyId, app.productId, app.distributionChannel, app.producerCode, app.propDate, app.policyEffDate, 
+	$sql = "SELECT  DISTINCT app.id, app.policyId, app.productId, app.distributionChannel, app.producerCode, app.propDate, app.policyEffDate, 
        app.policyExpDate, app.campaignCode, app.ncdInfo, app.policyHolderInfo, app.insuredList, app.quoteNo, 
        app.premiumPayable, app.quoteLapseDate, app.type, app.remarksC, app.type_vouncher, app.vouncher_value, 
        app.incident_status, app.dont_call_ind, app.dont_SMS_ind, app.dont_email_ind, app.dont_Mail_ind, 
@@ -157,9 +157,9 @@ LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id
 			 }
 			 //check level
   			*/
-	// if ($tmp['search_cust'] != "") {
-	// 	$condition = $condition . " AND ( Firstname LIKE '" . trim($tmp['search_cust']) . "%' OR Lastname LIKE '" . trim($tmp['search_cust']) . "%'  )";
-	// }
+	if ($tmp['search_cust'] != "") {
+		$condition = $condition . " AND app.fullname LIKE '%" . trim($tmp['search_cust']) . "%' ";
+	}
 	// if ($tmp['search_agent'] != "") {
 	// 	$condition = $condition . " AND app.agent_id = " . dbformat($tmp['search_agent']) . " ";
 	// }
