@@ -207,128 +207,114 @@
     }
 
     function createListAhSectionChild(index, data) {
-  const firstName = data?.insuredFirstName || '';
-  const lastName = data?.insuredLastName || '';
-  const gender = data?.insuredGender || '';
-  const idType = data?.insuredIdType || '';
-  const idNumber = data?.insuredIdNumber || '';
-  const occupation = data?.insuredOccupation || '';
-  const dob = data?.insuredDateOfBirth ? isoToFormattedDate(data.insuredDateOfBirth) : '';
-  const age = data?.age || '';
+    const firstName = data?.insuredFirstName || '';
+    const lastName = data?.insuredLastName || '';
+    const gender = data?.insuredGender || '';
+    const idType = data?.insuredIdType || '';
+    const idNumber = data?.insuredIdNumber || '';
+    const occupation = data?.insuredOccupation || '';
+    const dob = data?.insuredDateOfBirth ? isoToFormattedDate(data.insuredDateOfBirth) : '';
+    const age = data?.age || '';
 
-  return `
+    return `
     <table id="table-form-${index}" class="table-ah" name="table-form-${index}">
-      <tbody>
-        <tr>
-          <td colspan="6">
-            <h2>Child ${index-2}</h2>
-          </td>
-        </tr>
-        <tr>
-          <td>Insured Full Name: <span style="color:red">*</span></td>
-          <td><input type="text" name="insured_ah_insuredFirstName_${index}" maxlength="60" value="${firstName}" required /></td>
-          <th style="width:50px">&nbsp;</th>
-          <td>Insured Gender: <span style="color:red">*</span></td>
-          <td>
-            <select name="insured_ah_insuredGender_${index}" required>
-              <option value=""> <-- Please select an option --></option>
-              <!-- Populate options dynamically from PHP -->
-              <?php
-              $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredGender'";
-              $objQuery = mysqli_query($Conn, $strSQL);
-              while ($objResuut = mysqli_fetch_array($objQuery)) {
-                $selected = ($objResuut["id"] === "${gender}") ? 'selected' : '';
-              ?>
-              <option value="<?php echo $objResuut["id"]; ?>" <?php echo $selected; ?>>
-                <?php echo $objResuut["description"]; ?>
-              </option>
-              <?php
-              }
-              ?>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>Insured ID Type:<span style="color:red">*</span></td>
-          <td>
-            <select name="insured_ah_insuredIdType_${index}" required>
-              <option value=""> <-- Please select an option --></option>
-              <!-- Populate options dynamically from PHP -->
-              <?php
-              $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredIdType'";
-              $objQuery = mysqli_query($Conn, $strSQL);
-              while ($objResuut = mysqli_fetch_array($objQuery)) {
-                $selected = ($objResuut["id"] === "${idType}") ? 'selected' : '';
-              ?>
-              <option value="<?php echo $objResuut["id"]; ?>" <?php echo $selected; ?>>
-                <?php echo $objResuut["description"]; ?>
-              </option>
-              <?php
-              }
-              ?>
-            </select>
-          </td>
-          <th></th>
-          <td>Insured ID Number: <span style="color:red">*</span></td>
-          <td><input type="text" name="insured_ah_insuredIdNumber_${index}" maxlength="20" value="${idNumber}" required /></td>
-        </tr>
-        <tr>
-          <td>Insured Occupation: <span style="color:red">*</span></td>
-          <td>
-            <select name="insured_ah_insuredOccupation_${index}" required>
-              <option value=""> <-- Please select an option --></option>
-              <!-- Populate options dynamically from PHP -->
-              <?php
-              $strSQL = "SELECT name, id, description FROM t_aig_sg_lov where name='PA Occupation'";
-              $objQuery = mysqli_query($Conn, $strSQL);
-              while ($objResuut = mysqli_fetch_array($objQuery)) {
-                $selected = ($objResuut["id"] === "${occupation}") ? 'selected' : '';
-              ?>
-              <option value="<?php echo $objResuut["id"]; ?>" <?php echo $selected; ?>>
-                <?php echo $objResuut["description"]; ?>
-              </option>
-              <?php
-              }
-              ?>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>Insured Date Of Birth: <span style="color:red">*</span></td>
-          <td><input type="text" id="datepicker-${index}" name="insured_ah_insuredDateOfBirth_${index}" maxlength="60" value="${dob}" required /></td>
-          <th style="width:50px">&nbsp;</th>
-          <td>Age :</td>
-          <td>
-            <input type="text" id="ageInsuredPerson_${index}" name="ageInsuredPerson_${index}" maxlength="10" value="${age}" readonly>
-          </td>
-          <td style="padding-left:50px">
-            <button type="button" class="delete-child draft-button" data-index="${index}" style="float:right; padding:5px;cursor:pointer;border-radius:5px">Delete</button>
-          </td>
-        </tr>
-        <tr style="display:none">
-          <td>Relation To Policy Holder: <span style="color:red">*</span></td>
-          <td>
-            <select name="insured_ah_relationToPolicyholder_${index}" required>
-              <option value=""> <-- Please select an option --></option>
-              <!-- Populate options dynamically from PHP -->
-              <?php
-              $strSQL = "SELECT name, id, description FROM t_aig_sg_lov WHERE name='PH Relation' AND id=2";
-              $objQuery = mysqli_query($Conn, $strSQL);
-              while ($objResult = mysqli_fetch_array($objQuery)) {
-                $isSelected = ($objResult["id"] == 2) ? 'selected' : '';
-              ?>
-              <option value="<?php echo $objResult["id"]; ?>" <?php echo $isSelected; ?>>
-                <?php echo $objResult["description"]; ?>
-              </option>
-              <?php
-              }
-              ?>
-            </select>
-          </td>
-        </tr>
-      </tbody>
+        <tbody>
+            <tr>
+                <td colspan="6">
+                    <h2>Child ${index-2}</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>Insured Full Name: <span style="color:red">*</span></td>
+                <td><input type="text" name="insured_ah_insuredFirstName_${index}" maxlength="60" value="${firstName}" required /></td>
+                <th style="width:50px">&nbsp;</th>
+                <td>Insured Gender: <span style="color:red">*</span></td>
+                <td>
+                    <select id="genderDropdown_${index}" name="insured_ah_insuredGender_${index}" required>
+                        <option value=""> <-- Please select an option --></option>
+                        <?php
+                        // Gender options
+                        $strSQL = "SELECT * FROM t_aig_sg_lov WHERE name = 'insuredGender'";
+                        $objQuery = mysqli_query($Conn, $strSQL);
+                        while ($objResult = mysqli_fetch_array($objQuery)) {
+                            $selected = ($objResult["id"] == "${gender}") ? 'selected' : '';
+                            echo "<option value='" . $objResult["id"] . "' $selected>" . $objResult["description"] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Insured ID Type:<span style="color:red">*</span></td>
+                <td>
+                    <select id="idTypeDropdown_${index}" name="insured_ah_insuredIdType_${index}" required>
+                        <option value=""> <-- Please select an option --></option>
+                        <?php
+                        // ID Type options
+                        $strSQL = "SELECT * FROM t_aig_sg_lov WHERE name = 'insuredIdType'";
+                        $objQuery = mysqli_query($Conn, $strSQL);
+                        while ($objResult = mysqli_fetch_array($objQuery)) {
+                            $selected = ($objResult["id"] == "${idType}") ? 'selected' : '';
+                            echo "<option value='" . $objResult["id"] . "' $selected>" . $objResult["description"] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+                <th></th>
+                <td>Insured ID Number: <span style="color:red">*</span></td>
+                <td><input type="text" name="insured_ah_insuredIdNumber_${index}" maxlength="20" value="${idNumber}" required /></td>
+            </tr>
+            <tr>
+                <td>Insured Occupation: <span style="color:red">*</span></td>
+                <td>
+                    <select id="occupationDropdown_${index}" name="insured_ah_insuredOccupation_${index}" required>
+                        <option value=""> <-- Please select an option --></option>
+                        
+                        <?php
+                        // Occupation options
+                        $strSQL = "SELECT name, id, description FROM t_aig_sg_lov WHERE name='PA Occupation'";
+                        $objQuery = mysqli_query($Conn, $strSQL);
+                        while ($objResult = mysqli_fetch_array($objQuery)) {
+                            $selected = ($objResult["id"] == "${occupation}") ? 'selected' : '';
+                            echo "<option value='" . $objResult["id"] . "' $selected>" . $objResult["description"] . "</option>";
+                        }
+                        ?>
+                        
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Insured Date Of Birth: <span style="color:red">*</span></td>
+                <td><input type="text" id="datepicker-${index}" name="insured_ah_insuredDateOfBirth_${index}" maxlength="60" value="${dob}" required /></td>
+                <th style="width:50px">&nbsp;</th>
+                <td>Age :</td>
+                <td>
+                    <input type="text" id="ageInsuredPerson_${index}" name="ageInsuredPerson_${index}" maxlength="10" value="${age}" readonly>
+                </td>
+                <td style="padding-left:50px">
+                    <button type="button" class="delete-child draft-button" data-index="${index}" style="float:right; padding:5px;cursor:pointer;border-radius:5px">Delete</button>
+                </td>
+            </tr>
+            <tr style="display:none">
+                <td>Relation To Policy Holder: <span style="color:red">*</span></td>
+                <td>
+                    <select name="insured_ah_relationToPolicyholder_${index}" required>
+                        <option value=""> <-- Please select an option --></option>
+                        <?php
+                        // Relation to policy holder, fixed value
+                        $strSQL = "SELECT name, id, description FROM t_aig_sg_lov WHERE name='PH Relation' AND id=2";
+                        $objQuery = mysqli_query($Conn, $strSQL);
+                        while ($objResult = mysqli_fetch_array($objQuery)) {
+                            $isSelected = ($objResult["id"] == 2) ? 'selected' : '';
+                            echo "<option value='" . $objResult["id"] . "' $isSelected>" . $objResult["description"] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+        </tbody>
     </table>
-  `;
+    `;
 }
 
 
@@ -364,98 +350,98 @@
     }
 
     function collectFormData() {
-    const insuredList = [];
-    const formSections = document.querySelectorAll('table[id^="table-form-"]');
-    let tempPlan = {};
+        const insuredList = [];
+        const formSections = document.querySelectorAll('table[id^="table-form-"]');
+        let tempPlan = {};
 
-    formSections.forEach((section, index) => {
-        console.log("index:", index);
+        formSections.forEach((section, index) => {
+            console.log("index:", index);
 
-        // Validate certain fields if index === 1
-        if (index === 1) {
-            const insuredFirstName = section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '';
-            const insuredFullName = section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '';
-            const insuredResidentStatus = section.querySelector('[name^="insured_ah_insuredResidentStatus_"]')?.value || '';
-            const insuredIdType = section.querySelector('[name^="insured_ah_insuredIdType_"]')?.value || '';
-            const insuredIdNumber = section.querySelector('[name^="insured_ah_insuredIdNumber_"]')?.value || '';
-            const insuredGender = section.querySelector('[name^="insured_ah_insuredGender_"]')?.value || '';
-            const insuredDateOfBirth = section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value ?
-                transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value) : '';
-            const insuredMaritalStatus = section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]')?.value || '';
-            const insuredOccupation = section.querySelector('[name^="insured_ah_insuredOccupation_"]')?.value || '';
+            // Validate certain fields if index === 1
+            if (index === 1) {
+                const insuredFirstName = section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '';
+                const insuredFullName = section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '';
+                const insuredResidentStatus = section.querySelector('[name^="insured_ah_insuredResidentStatus_"]')?.value || '';
+                const insuredIdType = section.querySelector('[name^="insured_ah_insuredIdType_"]')?.value || '';
+                const insuredIdNumber = section.querySelector('[name^="insured_ah_insuredIdNumber_"]')?.value || '';
+                const insuredGender = section.querySelector('[name^="insured_ah_insuredGender_"]')?.value || '';
+                const insuredDateOfBirth = section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value ?
+                    transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value) : '';
+                const insuredMaritalStatus = section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]')?.value || '';
+                const insuredOccupation = section.querySelector('[name^="insured_ah_insuredOccupation_"]')?.value || '';
 
-            // Check if any of these values are missing
-            if (!insuredFirstName || !insuredFullName || !insuredResidentStatus || !insuredIdType || 
-                !insuredIdNumber || !insuredGender || !insuredDateOfBirth || !insuredMaritalStatus || !insuredOccupation) {
-                console.log("Skipping section at index 1 due to missing information.");
-                return;  // Skip the rest of the iteration if required fields are missing
+                // Check if any of these values are missing
+                if (!insuredFirstName || !insuredFullName || !insuredResidentStatus || !insuredIdType ||
+                    !insuredIdNumber || !insuredGender || !insuredDateOfBirth || !insuredMaritalStatus || !insuredOccupation) {
+                    console.log("Skipping section at index 1 due to missing information.");
+                    return; // Skip the rest of the iteration if required fields are missing
+                }
             }
-        }
 
-        const planSelect = section.querySelector('[name^="planId"]');
-        const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
-        const planId = selectedOption ? selectedOption.value || '' : '';
-        const planDescription = selectedOption ? selectedOption.getAttribute('data-desc') || '' : '';
+            const planSelect = section.querySelector('[name^="planId"]');
+            const selectedOption = planSelect ? planSelect.options[planSelect.selectedIndex] : null;
+            const planId = selectedOption ? selectedOption.value || '' : '';
+            const planDescription = selectedOption ? selectedOption.getAttribute('data-desc') || '' : '';
 
-        const planInfo = {
-            planId: planId,
-            planDescription: planDescription,
-            planPoi: section.querySelector('[name^="planPoi"]')?.value || ''
-        };
+            const planInfo = {
+                planId: planId,
+                planDescription: planDescription,
+                planPoi: section.querySelector('[name^="planPoi"]')?.value || ''
+            };
 
-        const covers = [];
-        const coverRows = section.querySelectorAll('.planCoverList');
-        coverRows.forEach((coverSelect) => {
-            const selectedOption = coverSelect.querySelector('option:checked');
-            if (selectedOption) {
-                covers.push({
-                    id: selectedOption.value || '',
-                    code: selectedOption.getAttribute('data-cover-code') || null,
-                    name: selectedOption.getAttribute('data-cover-name') || null,
-                });
+            const covers = [];
+            const coverRows = section.querySelectorAll('.planCoverList');
+            coverRows.forEach((coverSelect) => {
+                const selectedOption = coverSelect.querySelector('option:checked');
+                if (selectedOption) {
+                    covers.push({
+                        id: selectedOption.value || '',
+                        code: selectedOption.getAttribute('data-cover-code') || null,
+                        name: selectedOption.getAttribute('data-cover-name') || null,
+                    });
+                }
+            });
+
+            // Save tempPlan from the first section (index 0)
+            if (index === 0) {
+                tempPlan = {
+                    ...planInfo,
+                    covers: covers
+                };
             }
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const campaign_id = urlParams.get("campaign_id");
+
+            const personInfo = {
+                insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '',
+                insuredFullName: section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '',
+                insuredResidentStatus: section.querySelector('[name^="insured_ah_insuredResidentStatus_"]')?.value || '',
+                insuredIdType: section.querySelector('[name^="insured_ah_insuredIdType_"]')?.value || '',
+                insuredIdNumber: section.querySelector('[name^="insured_ah_insuredIdNumber_"]')?.value || '',
+                insuredGender: section.querySelector('[name^="insured_ah_insuredGender_"]')?.value || '',
+                insuredDateOfBirth: section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value ?
+                    transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value) : '',
+                insuredMaritalStatus: section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]')?.value || '',
+                insuredOccupation: section.querySelector('[name^="insured_ah_insuredOccupation_"]')?.value || '',
+                insuredCampaignCode: productDetail?.insure_campaign_code || '',
+                relationToPolicyholder: section.querySelector('[name^="insured_ah_relationToPolicyholder_"]')?.value || '',
+                planInfo: {
+                    ...tempPlan
+                }
+            };
+
+            const insuredData = {
+                personInfo: personInfo
+            };
+
+            insuredList.push(insuredData);
         });
 
-        // Save tempPlan from the first section (index 0)
-        if (index === 0) {
-            tempPlan = {
-                ...planInfo,
-                covers: covers
-            };
-        }
-
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const campaign_id = urlParams.get("campaign_id");
-
-        const personInfo = {
-            insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '',
-            insuredFullName: section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '',
-            insuredResidentStatus: section.querySelector('[name^="insured_ah_insuredResidentStatus_"]')?.value || '',
-            insuredIdType: section.querySelector('[name^="insured_ah_insuredIdType_"]')?.value || '',
-            insuredIdNumber: section.querySelector('[name^="insured_ah_insuredIdNumber_"]')?.value || '',
-            insuredGender: section.querySelector('[name^="insured_ah_insuredGender_"]')?.value || '',
-            insuredDateOfBirth: section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value ?
-                transformDate(section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]')?.value) : '',
-            insuredMaritalStatus: section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]')?.value || '',
-            insuredOccupation: section.querySelector('[name^="insured_ah_insuredOccupation_"]')?.value || '',
-            insuredCampaignCode: productDetail?.insure_campaign_code || '',
-            relationToPolicyholder: section.querySelector('[name^="insured_ah_relationToPolicyholder_"]')?.value || '',
-            planInfo: {
-                ...tempPlan
-            }
-        };
-
-        const insuredData = {
-            personInfo: personInfo
-        };
-
-        insuredList.push(insuredData);
-    });
-
-    console.log("insuredList", insuredList);
-    return insuredList;
-}
+        console.log("insuredList", insuredList);
+        return insuredList;
+    }
 
 
 
@@ -591,7 +577,7 @@
 
         if (responseProduct) {
             await addInsuredSections(responseProduct?.number_of_person_insured || 2)
-            
+
             //handle ProductId setValue from API but not change PlanPoi
             const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
             if (!id || !quotationData?.quoteNo) {
@@ -738,11 +724,11 @@
         }
     }
 
-    
+
 
     //child start at index=3
     let indexCounter = 3
-    
+
     function addChildInsured() {
         const addButton = document.getElementById('add-insured-child');
         addButton.addEventListener('click', () => {
@@ -807,49 +793,52 @@
 
 
     const displayDateInsuredChild = (dateText, index) => {
-    const { age, days } = calculateAge(dateText);
-    console.log("days:", days);
-    console.log("index", index);
+        const {
+            age,
+            days
+        } = calculateAge(dateText);
+        console.log("days:", days);
+        console.log("index", index);
 
-    const occupationValue = document.querySelector(`select[name="insured_ah_insuredOccupation_${index}"]`);
+        const occupationValue = document.querySelector(`select[name="insured_ah_insuredOccupation_${index}"]`);
 
-    if (!productDetail) {
-        alert("Please select a product");
-        $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-        $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-        return;
-    }
-
-    // Handle minimum age (0 years old and more than 15 days)
-    if (age === 0 && days < 15) {
-        alert(`Child must be at least 15 days old.`);
-        $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-        $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-        return;
-    }
-
-    // Check if the occupation indicates a student
-    if (occupationValue && occupationValue.value === '147') {
-        console.log("student");
-        if (age > 25) {
-            alert(`Child must be less than or equal to 25 years old.`);
+        if (!productDetail) {
+            alert("Please select a product");
             $(`#datepicker-${index}`).val(''); // Clear the datepicker input
             $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
             return;
         }
-    }
 
-    // Handle maximum age (based on productDetail)
-    if (age > productDetail?.max_age_child) {
-        alert(`Child must be less than or equal to ${productDetail?.max_age_child} years old.`);
-        $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-        $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-        return;
-    }
+        // Handle minimum age (0 years old and more than 15 days)
+        if (age === 0 && days < 15) {
+            alert(`Child must be at least 15 days old.`);
+            $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+            $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+            return;
+        }
 
-    // If age and days are valid, set the age value
-    $(`#ageInsuredPerson_${index}`).val(`${days} day - ${age} years old`);
-};
+        // Check if the occupation indicates a student
+        if (occupationValue && occupationValue.value === '147') {
+            console.log("student");
+            if (age > 25) {
+                alert(`Child must be less than or equal to 25 years old.`);
+                $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+                $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+                return;
+            }
+        }
+
+        // Handle maximum age (based on productDetail)
+        if (age > productDetail?.max_age_child) {
+            alert(`Child must be less than or equal to ${productDetail?.max_age_child} years old.`);
+            $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+            $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+            return;
+        }
+
+        // If age and days are valid, set the age value
+        $(`#ageInsuredPerson_${index}`).val(`${days} day - ${age} years old`);
+    };
 
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -864,41 +853,50 @@
         addInsuredSections(2)
         addChildInsured()
         deleteChildInsured()
-      
+
 
     });
-    const fillInsuredSectionChild=(insuredData)=>{
+    const fillInsuredSectionChild = (insuredData) => {
         const filterchild = insuredData.filter(i => i?.personInfo?.relationToPolicyholder === "2");
-  let indexCounterChild=3;
-  filterchild.forEach((child, childIndex) => {
-    const currentIndex = indexCounterChild; // Use indexCounterChild for dynamic ID assignment
-  
-    // Dynamically add a new child insured section
-    const insuredContainer = document.getElementById('insured-list-ah');
-    const childSectionHTML = createListAhSectionChild(currentIndex, child.personInfo);
-    insuredContainer.insertAdjacentHTML('beforeend', childSectionHTML);
-  
-    indexCounterChild++; 
-  
-    // Handle datepicker for each new child section
-    $("#datepicker-" + currentIndex).datepicker({
-      yearRange: "c-80:c+20",
-      maxDate: new Date(),
-      dateFormat: 'mm/dd/yy',
-      changeMonth: true,
-      changeYear: true,
-      showAnim: "slideDown",
-      onSelect: function(dateText) {
-        console.log("currentIndex:", currentIndex);
-        displayDateInsuredChild(dateText, currentIndex);
-      }
-    });
-  
-    attachInsuredIdValidation(currentIndex); // Attach validation to the new section
-  
-    if (indexCounterChild > 6) {
-      document.getElementById('add-insured-child').style.display = 'none';
-    }
-  });
+        let indexCounterChild = 3;
+        filterchild.forEach((child, childIndex) => {
+            const currentIndex = indexCounterChild;
+
+
+            const insuredContainer = document.getElementById('insured-list-ah');
+            const childSectionHTML = createListAhSectionChild(currentIndex, child.personInfo);
+            insuredContainer.insertAdjacentHTML('beforeend', childSectionHTML);
+    
+            document.getElementById(`genderDropdown_${currentIndex}`).value = child?.personInfo?.insuredGender;
+            document.getElementById(`idTypeDropdown_${currentIndex}`).value = child?.personInfo?.insuredIdType;
+            document.getElementById(`occupationDropdown_${currentIndex}`).value = child?.personInfo?.insuredOccupation;
+            const {
+            age,
+            days
+        } = calculateAge(child?.personInfo?.insuredDateOfBirth);
+            document.getElementById(`ageInsuredPerson_${currentIndex}`).value = `${days} day - ${age} years old`;
+
+            indexCounterChild++;
+
+            // Handle datepicker for each new child section
+            $("#datepicker-" + currentIndex).datepicker({
+                yearRange: "c-80:c+20",
+                maxDate: new Date(),
+                dateFormat: 'mm/dd/yy',
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "slideDown",
+                onSelect: function(dateText) {
+                    console.log("currentIndex:", currentIndex);
+                    displayDateInsuredChild(dateText, currentIndex);
+                }
+            });
+
+            attachInsuredIdValidation(currentIndex); // Attach validation to the new section
+
+            if (indexCounterChild > 6) {
+                document.getElementById('add-insured-child').style.display = 'none';
+            }
+        });
     }
 </script>
