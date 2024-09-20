@@ -96,33 +96,30 @@ async function fetchQuotation(requestBody) {
 
     const data = await response.json();
     console.log("data", data);
+    let currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+
+    if (url.searchParams.has('is_firsttime')) {
+      url.searchParams.set('is_firsttime', '1');
+    } else {
+      url.searchParams.append('is_firsttime', '1');
+    }
+   
 
     // Alert based on statusCode
     if (data?.statusCode === "S03") {
-      if (id) {
+      
+      if (id != null && id !== "") {
         await jQuery.agent.updateQuoteData(requestBody, data, id);
         window.alert(data?.statusMessage || "Successfully!");
-        if (!url.searchParams.has('is_firsttime')) {
-          url.searchParams.append('is_firsttime', '1');
-        }
         window.location.href = url.toString();
-        // window.location.reload();
       } else {
         const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
         window.alert(data?.statusMessage || "Successfully!");
-
-        let currentUrl = window.location.href;
-        const url = new URL(currentUrl);
-
         if (url.searchParams.has('id')) {
-
           url.searchParams.set('id', responseId);
         } else {
-
           url.searchParams.append('id', responseId);
-        }
-        if (!url.searchParams.has('is_firsttime')) {
-          url.searchParams.append('is_firsttime', '1');
         }
         window.location.href = url.toString();
       }
