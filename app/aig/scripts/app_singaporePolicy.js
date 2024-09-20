@@ -33,6 +33,12 @@ const hideFormData = (elements) => {
     }
   });
 };
+const disableDatepickers = (selectors) => {
+  console.log("selectors:", selectors)
+  selectors.forEach((selector) => {
+      $(selector).datepicker("disable");
+  });
+};
 
 
 const unhideFormData = (elements) => {
@@ -76,6 +82,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnEditForm = document.getElementById('btnEditForm');
   const btnSaveForm = document.getElementById('btnSaveForm');
   const btnSaveDraftForm = document.getElementById('btnSaveDraftForm');
+
+disableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4","#datepicker5","#datepicker-1","#datepicker-2","#datepicker-3","#datepicker-4","#datepicker-5",,"#datepicker-6"]);
+
   id = urlParams.get("id");
 
   //หากไม่มีpolicy หรืออยู่step create quote
@@ -97,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Response:", response);
 
         setDefaultValueForm(response?.data);
-        
+
         const extractData = extractQuotationData(response?.data);
         quotationData = extractData;
         policyid = response?.data?.policyId
