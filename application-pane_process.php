@@ -108,16 +108,26 @@
 		$page =  (intval($_POST['page']) - 1) * $pagelength;
 	}
 
-	$sql = "SELECT  DISTINCT app.id, app.policyId, app.productId, app.distributionChannel, app.producerCode, app.propDate, app.policyEffDate, 
-       app.policyExpDate, app.campaignCode, app.ncdInfo, app.policyHolderInfo, app.insuredList, app.quoteNo, 
-       app.premiumPayable, app.quoteLapseDate, app.type, app.remarksC, app.type_vouncher, app.vouncher_value, 
-       app.incident_status, app.dont_call_ind, app.dont_SMS_ind, app.dont_email_ind, app.dont_Mail_ind, 
-       app.agent_id, app.calllist_id, app.policyNo, app.policy_create_date, app.quote_create_date, 
-       app.update_date, app.campaign_id, app.import_id, tasp.product_name
+	$sql = "SELECT app.id, app.policyId, app.productId, app.distributionChannel, app.producerCode, app.propDate, 
+       app.policyEffDate, app.policyExpDate, app.campaignCode, app.ncdInfo, app.policyHolderInfo, 
+       app.insuredList, app.quoteNo, app.premiumPayable, app.quoteLapseDate, app.type, app.remarksC, 
+       app.type_vouncher, app.vouncher_value, app.incident_status, app.dont_call_ind, app.dont_SMS_ind, 
+       app.dont_email_ind, app.dont_Mail_ind, app.agent_id, app.calllist_id, app.policyNo, 
+       app.policy_create_date, app.quote_create_date, app.update_date, app.campaign_id, app.import_id, 
+       MAX(tasp.product_name) AS product_name
 FROM t_aig_app app 
 LEFT JOIN t_aig_sg_product tasp ON app.productId = tasp.product_id
-LEFT JOIN t_agents  agent ON app.agent_id = agent.agent_id
-LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id
+LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+LEFT OUTER JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id
+WHERE 1=1
+GROUP BY app.id, app.policyId, app.productId, app.distributionChannel, app.producerCode, app.propDate, 
+         app.policyEffDate, app.policyExpDate, app.campaignCode, app.ncdInfo, app.policyHolderInfo, 
+         app.insuredList, app.quoteNo, app.premiumPayable, app.quoteLapseDate, app.type, app.remarksC, 
+         app.type_vouncher, app.vouncher_value, app.incident_status, app.dont_call_ind, app.dont_SMS_ind, 
+         app.dont_email_ind, app.dont_Mail_ind, app.agent_id, app.calllist_id, app.policyNo, 
+         app.policy_create_date, app.quote_create_date, app.update_date, app.campaign_id, app.import_id
+ORDER BY app.propDate DESC;
+
 ";
 	//if level is agent where current agent id
 
