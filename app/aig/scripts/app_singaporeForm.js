@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  
   window.removeCoverRow = function (button) {
     const row = button.closest("tr");
     const coverListBody = document.getElementById("coverListBody");
@@ -505,12 +506,13 @@ const manualSetInsuredVehicleList = () => {
   ).value = driverInfo.claimInfo[0].insuredLiability;
 };
 const setInsuredPerson = (insuredData) => {
-
+ 
   const formSections = document.querySelectorAll('table[id^="table-form-"]');
   formSections.forEach((section, index) => {
     if (index >= insuredData.length) return; // Prevent index out of bounds
     const data = insuredData[index];
     const personInfo = data.personInfo;
+    console.log("personInfo:", personInfo?.relationToPolicyholder)
     const planInfo = personInfo.planInfo;
     section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
       personInfo.insuredFirstName || "";
@@ -580,6 +582,7 @@ const setInsuredPerson = (insuredData) => {
     populatePlanAndCovers(planInfo, section, index);
 
   });
+  fillInsuredSectionChild(insuredData)
 };
 
 const setDefaultPlanInfo = (insuredData, id = null) => {

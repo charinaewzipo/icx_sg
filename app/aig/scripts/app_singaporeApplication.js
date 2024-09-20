@@ -5,7 +5,7 @@ let productDetail = null;
 
 window.onload = function () {
   const defaultShowForm = (document.querySelector('input[name="customerType"]:checked'));
-  if(defaultShowForm){
+  if (defaultShowForm) {
     showForm(defaultShowForm)
   }
 
@@ -359,8 +359,10 @@ function handleForm() {
   } else if (formType === "ah") {
     insuredList = collectFormData()
 
-    const paymentDetails =[{paymentmode: Number(formData.get('Payment_Mode')),
-      paymentfrequency: Number(formData.get('Payment_Frequency')),}]
+    const paymentDetails = [{
+      paymentmode: Number(formData.get('Payment_Mode')),
+      paymentfrequency: Number(formData.get('Payment_Frequency')),
+    }]
     const fullForm = {
       ...policyDetail,
       policyHolderInfo,
@@ -485,10 +487,9 @@ const handleValidateForm = () => {
         const paymentDetails = [
           {
             batchNo: responsePayment.batch_no,
-            orderNo: responsePayment.order_no,
-            paymentMode: quotationData.payment_mode,
+            orderNo: responsePayment.payment_order_id,
+            paymentMode: quotationData?.payment_mode,
             merchantId: responsePayment.merchant,
-            cardType: responsePayment.card_type,
             cardExpiryMonth: responsePayment.card_expiry_month,
             cardExpiryYear: responsePayment.card_expiry_year,
             paymentDate: new Date(responsePayment.time_of_lastupdate).toISOString(),
@@ -496,31 +497,18 @@ const handleValidateForm = () => {
             paymentAmount: responsePayment.order_amount,
             cardNumber: responsePayment.card_number,
             currency: responsePayment.order_currency,
-            cardTokenNo:responsePayment?.payment_token_id||""
+            cardTokenNo: responsePayment?.payment_token_id || ""
           },
         ];
         console.log("paymentDetails:", paymentDetails[0])
         console.log("quotationData:", quotationData)
-
+       
         const policyRequestBody = removeKeysFromQuotationData(quotationData)
         console.log("policyRequestBody:", policyRequestBody)
         const body = { ...policyRequestBody, paymentDetails };
-        const objectRetrieve={
-          "channelType":"10",
-          "idNo" : quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.customerIdNo,
-          "policyNo" : quotationData?.quoteNo
-        }
-        console.log("objectRetrieve:", objectRetrieve)
-       const responseRetrieve= await fetchRetrieveQuote(objectRetrieve)
-       console.log("responseRetrieve:", responseRetrieve)
-       if(!responseRetrieve){
-        alert("Quote Retrieval List Operation fail")
-       }else{
-         if(responseRetrieve?.statusCode=="P00"){
-          //  await fetchPolicy(body);
-           console.log("fetch policy")
-          }
-        }
+        await fetchPolicy(body);
+        console.log("Policy fetch completed");
+       
       } else {
         await fetchQuotation(requestBody);
         console.log("fetch quotation")
@@ -653,9 +641,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 const removeKeysFromQuotationData = (data) => {
-  const keysToRemove = ['quoteLapseDate',  'type', 'premiumPayable',
-     'id', 'propDate','plan_poi','agent_id','calllist_id','campaignCode','campaign_id','dob'
-    ,'fullname','import_id','incident_status','lastname','policyNo','policy_create_date'];
+  const keysToRemove = ['quoteLapseDate', 'quoteNo','type', 'premiumPayable',
+    'id', 'propDate'
+    , 
+    'plan_poi', 'agent_id', 'calllist_id', 'campaignCode', 'campaign_id', 'dob'
+    , 'fullname', 'import_id', 'incident_status', 'lastname', 'policyNo', 'policy_create_date','payment_mode','payment_frequency'
+  ];
 
   keysToRemove.forEach(key => {
     delete data[key];
@@ -736,8 +727,8 @@ async function getProductDetail(productId) {
 
     if (data.length > 0) {
       productDetail = data[0];
-      handleAddChildButtonVisibility( data[0]); // Process product details
-      return  data[0];
+      handleAddChildButtonVisibility(data[0]); // Process product details
+      return data[0];
     } else {
       console.warn("No product data found");
       return null; // Ensure a return value is provided even when no data is found

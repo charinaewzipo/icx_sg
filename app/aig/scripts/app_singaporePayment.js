@@ -63,10 +63,19 @@ function fetchPaymentOption(paymentMode, paymentFrequency) {
       document.body.classList.remove('loading');
     });
 }
-const handlePaymentGateway = () => {
-  console.log("quotationData:", quotationData)
-
-  isRecurring = quotationData?.payment_mode===124 ? 1:0;
+const handlePaymentGateway =async () => {
+  //retrieve Quote 
+  const objectRetrieve = {
+    "channelType": "10",
+    "idNo": quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.customerIdNo,
+    "policyNo": quotationData?.quoteNo
+  }
+  const responseRetrieve = await fetchRetrieveQuote(objectRetrieve)
+  console.log("responseRetrieve:", responseRetrieve)
+  if (!responseRetrieve) {
+    alert("Quote Retrieval List Operation failed");
+  } else if (responseRetrieve?.statusCode === "P00") {
+    isRecurring = quotationData?.payment_mode===124 ? 1:0;
   
   if (quotationData?.premiumPayable) {
     const url = `payment.php?amount=${quotationData?.premiumPayable}&is_recurring=${isRecurring}&quoteNo=${quotationData?.quoteNo}`;
@@ -74,6 +83,9 @@ const handlePaymentGateway = () => {
   } else {
     console.log("no price", quotationData?.premiumPayable)
   }
+  }
+  
+  
 };
 function showAlert(message) {
   alert(message);

@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Response:", response);
 
         setDefaultValueForm(response?.data);
+        
         const extractData = extractQuotationData(response?.data);
         quotationData = extractData;
         policyid = response?.data?.policyId
