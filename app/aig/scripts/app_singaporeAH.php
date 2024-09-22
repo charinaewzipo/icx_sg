@@ -537,12 +537,15 @@
             })
             .then(response => response.text())
             .then(data => {
-                // const result =JSON.parse(data)
+                // campaignDetailsFromAPI=
+                const result =JSON.parse(data)
+                console.log("result:", result)
                 // console.log("selectedType",selectedType)
-                // if (Array.isArray(result) && result.length > 0) {
-                //     // selectedType =result[0].cp_type  // Assuming you want the first item
-                //     console.log("result[0].cp_type:", result[0].cp_type)
-                // } 
+                if (Array.isArray(result) && result.length > 0) {
+                    // selectedType =result[0].cp_type  // Assuming you want the first item
+                campaignDetailsFromAPI=result[0];
+
+                } 
 
                 // console.log("data:", data)
             })

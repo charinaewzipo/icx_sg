@@ -165,17 +165,21 @@ function handleForm() {
   const formData = new FormData(document.getElementById("application"));
   let insuredList = [];
 
-
+console.log("campaignDetails",campaignDetails)
   const policyDetail = {
     policyId: policyid ? policyid : "",
     productId: formData.get("select-product"),
     distributionChannel: 10,
-    producerCode: "0002466000",
-    propDate: transformDate(new Date()),
+    producerCode: productDetail?.producer_code,
+    // producerCode:"0002466000",
+    propDate:formData.get("PolicyEffectiveDate")
+    ? transformDate(formData.get("PolicyEffectiveDate"))
+    : "",
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
-    campaignCode: formData.get("campaignCode"),
+    // campaignCode: campaignDetailsFromAPI?.campaign_uniqueid,
+    campaignCode: "",
     efulfillmentFlag: Number(formData.get('Email_Fulfillment_Flag')),
   };
   if (formType === "auto") {
@@ -487,7 +491,7 @@ const handleValidateForm = () => {
         const paymentDetails = [
           {
             batchNo: responsePayment.batch_no,
-            orderNo: responsePayment.payment_order_id,
+            orderNo: quotationData?.quoteNo,
             paymentMode: quotationData?.payment_mode,
             merchantId: responsePayment.merchant,
             cardExpiryMonth: responsePayment.card_expiry_month,
@@ -495,6 +499,7 @@ const handleValidateForm = () => {
             paymentDate: new Date(responsePayment.time_of_lastupdate).toISOString(),
             paymentFrequency: quotationData.payment_frequency,
             paymentAmount: responsePayment.order_amount,
+            cardType:quotationData?.payment_mode===1001? 2:10,
             cardNumber: responsePayment.card_number,
             currency: responsePayment.order_currency,
             cardTokenNo: responsePayment?.payment_token_id || ""
@@ -504,12 +509,13 @@ const handleValidateForm = () => {
         console.log("quotationData:", quotationData)
        
         const policyRequestBody = removeKeysFromQuotationData(quotationData)
-        console.log("policyRequestBody:", policyRequestBody)
         const body = { ...policyRequestBody, paymentDetails };
+        console.log("body:", body)
         await fetchPolicy(body);
         console.log("Policy fetch completed");
        
       } else {
+        // const requestBodyQuote =removeKeysFromQuotationDataOnCreateQuote(requestBody)
         await fetchQuotation(requestBody);
         console.log("fetch quotation")
 
@@ -639,11 +645,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+const removeKeysFromQuotationDataOnCreateQuote = (data) => {
+  const keysToRemove = ['efulfillmentFlag'];
 
+  keysToRemove.forEach(key => {
+    delete data[key];
+  });
+  return data;
+};
 const removeKeysFromQuotationData = (data) => {
   const keysToRemove = ['quoteLapseDate', 'quoteNo','type', 'premiumPayable',
-    'id', 'propDate'
-    , 
+    'id', 'propDate','type_vouncher','vouncher_value','dont_call_ind','dont_SMS_ind','dont_email_ind','dont_Mail_ind','quote_create_date','update_date'
+    ,'ncdInfo','insuredList','payment_amount','policyExpDate',
     'plan_poi', 'agent_id', 'calllist_id', 'campaignCode', 'campaign_id', 'dob'
     , 'fullname', 'import_id', 'incident_status', 'lastname', 'policyNo', 'policy_create_date','payment_mode','payment_frequency'
   ];

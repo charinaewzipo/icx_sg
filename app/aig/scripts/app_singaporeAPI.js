@@ -3,6 +3,7 @@ let responsePayment = null;
 let quotationData = null;
 let selectProduct = null;
 let calllistDetail = null;
+let campaignDetailsFromAPI=null;
 var token = null;
 
 
@@ -82,7 +83,7 @@ async function fetchQuotation(requestBody) {
   console.log("Fetching Quotation data...");
   const apiUrl =
     "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/confirm-quotation";
-
+    
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -105,7 +106,7 @@ async function fetchQuotation(requestBody) {
       url.searchParams.append('is_firsttime', '1');
     }
    
-
+    requestBody=handleForm()
     // Alert based on statusCode
     if (data?.statusCode === "S03") {
       
