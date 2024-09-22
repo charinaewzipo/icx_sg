@@ -272,7 +272,10 @@
                         
                         <?php
                         // Occupation options
-                        $strSQL = "SELECT name, id, description FROM t_aig_sg_lov WHERE name='PA Occupation'";
+                        $strSQL = "SELECT name, id, description, source
+FROM icx_sg.t_aig_sg_lov 
+WHERE name = 'PA Occupation'
+AND (id = '147' OR id = '323');";
                         $objQuery = mysqli_query($Conn, $strSQL);
                         while ($objResult = mysqli_fetch_array($objQuery)) {
                             $selected = ($objResult["id"] == "${occupation}") ? 'selected' : '';
