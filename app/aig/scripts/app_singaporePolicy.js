@@ -37,7 +37,8 @@ const hideFormData = (elements) => {
     } else if (tagName === "button") {
       // Disable button elements
       element.disabled = true;
-      Object.assign(element.style, commonStyles); // Apply common styles
+      element.style.pointerEvents = "none";
+      element.style.opacity = "0.65"; // Visual indication of being disabled
     }
   });
 };
