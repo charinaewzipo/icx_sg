@@ -273,7 +273,7 @@
                         <?php
                         // Occupation options
                         $strSQL = "SELECT name, id, description, source
-FROM icx_sg.t_aig_sg_lov 
+FROM t_aig_sg_lov 
 WHERE name = 'PA Occupation'
 AND (id = '147' OR id = '323');";
                         $objQuery = mysqli_query($Conn, $strSQL);
