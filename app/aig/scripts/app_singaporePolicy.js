@@ -1,49 +1,54 @@
 let policyid = null
 let statusPayment = null;
 const hideFormData = (elements) => {
-  //disabled datepicker
-  disableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4", "#datepicker5", "#datepicker-1", "#datepicker-2", "#datepicker-3", "#datepicker-4", "#datepicker-5", "#datepicker-6"]);
+  // Disable datepickers
+  disableDatepickers([
+    "#datepicker", "#datepicker2", "#datepicker3", "#datepicker4", "#datepicker5",
+    "#datepicker-1", "#datepicker-2", "#datepicker-3", "#datepicker-4", "#datepicker-5", "#datepicker-6"
+  ]);
 
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
+    const commonStyles = {
+      backgroundColor: "#e9ecef", // Light grey background
+      border: "1px solid rgb(118, 118, 118)", // Light grey border
+      opacity: "0.65" // Visual indication of being disabled
+    };
 
     if (tagName === "input") {
       if (element.type === "radio") {
-        // Style and disable radio buttons
-        element.style.pointerEvents = "none";
-        element.style.opacity = "0.5"; // Visual indication of being disabled
+        // Disable radio buttons
+        element.disabled = true; // Disable the radio button
+        Object.assign(element.style, commonStyles); // Apply common styles
       } else {
-        // Style and disable other input types
+        // Disable other input types
         element.readOnly = true;
-        element.style.backgroundColor = "#e9ecef";
-        element.style.border = "1px solid rgb(118, 118, 118)";
+        Object.assign(element.style, commonStyles); // Apply common styles
       }
     } else if (tagName === "select") {
-      // Style and disable select elements
-      element.style.pointerEvents = "none";
-      element.style.backgroundColor = "#e9ecef";
-      element.style.color = "#6c757d";
+      // Disable select elements
+      Object.assign(element.style, commonStyles); // Apply common styles
+      element.style.pointerEvents = "none"; // Disable interactions
+      element.style.color = "#6c757d"; // Grey out text
     } else if (tagName === "textarea") {
-      // Style and disable textarea elements
+      // Disable textarea elements
       element.disabled = true;
-      element.style.backgroundColor = "#e9ecef";
-      element.style.border = "1px solid rgb(118, 118, 118)";
+      Object.assign(element.style, commonStyles); // Apply common styles
     } else if (tagName === "button") {
       // Disable button elements
       element.disabled = true;
-      element.style.pointerEvents = "none";
-      element.style.opacity = "0.65"; // Visual indication of being disabled
+      Object.assign(element.style, commonStyles); // Apply common styles
     }
   });
 };
+
+
 const disableDatepickers = (selectors) => {
-  console.log("selectors:", selectors)
   selectors.forEach((selector) => {
     $(selector).datepicker("disable");
   });
 };
 const enableDatepickers = (selectors) => {
-  console.log("Enabling datepickers for selectors:", selectors);
   selectors.forEach((selector) => {
     $(selector).datepicker("enable");
   });
@@ -51,36 +56,60 @@ const enableDatepickers = (selectors) => {
 
 
 const unhideFormData = (elements) => {
-  enableDatepickers(["#datepicker", "#datepicker2", "#datepicker3", "#datepicker4", "#datepicker5", "#datepicker-1", "#datepicker-2", "#datepicker-3", "#datepicker-4", "#datepicker-5", "#datepicker-6"]);
+  // Enable datepickers
+  enableDatepickers([
+    "#datepicker", "#datepicker2", "#datepicker3", "#datepicker4", "#datepicker5",
+    "#datepicker-1", "#datepicker-2", "#datepicker-3", "#datepicker-4", "#datepicker-5", "#datepicker-6"
+  ]);
+
+  // Enable specific textarea by ID
   const remarkCTextArea = document.getElementById("RemarkCInput");
-  remarkCTextArea.disabled = false;
+  if (remarkCTextArea) remarkCTextArea.disabled = false;
+
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
 
     if (tagName === "input") {
-      if (element.type === "radio") {
-        // Enable radio buttons
-        element.style.pointerEvents = "";
-        element.style.opacity = ""; // Reset the opacity
-      } else {
-        // Enable other input types
-        element.readOnly = false;
+      if (element.type === "radio" || element.type === "checkbox") {
+        // Enable radio and checkbox elements
+        element.disabled = false; // Ensure radio/checkbox buttons are enabled
+        element.style.pointerEvents = ""; // Reset pointer events
+        element.style.opacity = ""; // Reset opacity
         element.style.backgroundColor = ""; // Reset background color
         element.style.border = ""; // Reset border style
+      } else {
+        // Enable other input types (e.g., text, number, etc.)
+        element.readOnly = false; // Remove read-only restriction
+        element.disabled = false; // Ensure inputs are enabled
+        element.style.backgroundColor = ""; // Reset background color
+        element.style.border = ""; // Reset border style
+        element.style.pointerEvents = "";
+        element.style.color = ""; // Reset text color
+        element.style.opacity = ""; // Reset opacity
       }
     } else if (tagName === "select") {
       // Enable select elements
       element.style.pointerEvents = "";
       element.style.backgroundColor = ""; // Reset background color
       element.style.color = ""; // Reset text color
+      element.style.border = ""; // Reset border
+      element.style.opacity = ""; // Reset opacity
+    } else if (tagName === "textarea") {
+      // Enable textarea elements
+      element.disabled = false; // Enable textarea
+      element.style.backgroundColor = ""; // Reset background color
+      element.style.border = ""; // Reset border style
     } else if (tagName === "button") {
       // Enable button elements
-      element.disabled = false;
-      element.style.pointerEvents = "";
+      element.disabled = false; // Enable buttons
+      element.style.pointerEvents = ""; // Allow interaction
       element.style.opacity = ""; // Reset opacity
     }
   });
 };
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
