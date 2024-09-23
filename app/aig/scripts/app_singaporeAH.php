@@ -416,7 +416,6 @@ AND (id = '147' OR id = '323');";
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const campaign_id = urlParams.get("campaign_id");
-
             const personInfo = {
                 insuredFirstName: section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '',
                 insuredFullName: section.querySelector('[name^="insured_ah_insuredFirstName_"]')?.value || '',
@@ -519,6 +518,7 @@ AND (id = '147' OR id = '323');";
                 if (Array.isArray(result) && result.length > 0 && !id) {
                     manualSetDefaultValueFormCallingList(result[0]);
                 }
+                calllistDetail=result[0]
             })
             .catch(error => console.error('Error fetching cover list:', error))
             .finally(() => {

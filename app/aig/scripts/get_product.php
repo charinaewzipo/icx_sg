@@ -5,10 +5,11 @@ header('Content-Type: application/json; charset=utf-8');
 include("../../function/StartConnect.inc");
 
 $product_id = isset($_GET['product_id']) ? $_GET['product_id'] : '';
+$campaign_id = isset($_GET['campaign_id']) ? $_GET['campaign_id'] : '';
 
 // Your SQL query to fetch payment modes and card types
 $strSQL = "SELECT *
-FROM t_aig_sg_product where product_id ='$product_id' ;";
+FROM t_aig_sg_product where product_id ='$product_id' and campaign_id='$campaign_id' ;";
 
 // wlog($strSQL);
 $objQuery = mysqli_query($Conn, $strSQL);

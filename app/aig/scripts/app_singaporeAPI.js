@@ -507,6 +507,33 @@ async function fetchPayment(requestBody) {
     document.body.classList.remove('loading');
   }
 }
+
+async function getProductDetail(productId) {
+  console.log("productId:", productId);
+  if (!productId) return;
+
+  const url = `../scripts/get_product.php?product_id=${productId}&campaign_id=${campaignDetails?.campaign_id}`;
+  document.body.classList.add('loading');
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.length > 0) {
+      productDetail = data[0];
+      handleAddChildButtonVisibility(data[0]); // Process product details
+      return data[0];
+    } else {
+      console.warn("No product data found");
+      return null; // Ensure a return value is provided even when no data is found
+    }
+  } catch (error) {
+    console.error('Error fetching product details:', error);
+    return null; // Return null in case of error
+  } finally {
+    document.body.classList.remove('loading');
+  }
+}
 document.addEventListener("DOMContentLoaded", function () {
   token = localStorage.getItem('accessToken')
   console.log("token:", token)
