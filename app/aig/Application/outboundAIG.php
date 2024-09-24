@@ -149,13 +149,13 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     }
     $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
-
+    $customer_id = isset($individual_info['customerIdNo']) ? $individual_info['customerIdNo'] : '';
     // SQL query with dynamic quote_create_date
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
-        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status,payment_frequency,payment_mode,fullname,dob,efulfillmentFlag";
-
+        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status,payment_frequency,payment_mode,fullname,dob,efulfillmentFlag,customer_id";
+    
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
         $sql .= ", quote_create_date";
@@ -165,7 +165,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate',  '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
-        $campaign_id, $import_id, $calllist_id, NOW(), 'Open',$payment_frequency,$payment_mode,'$full_name','$date_of_birth','$efulfillmentFlag'";
+        $campaign_id, $import_id, $calllist_id, NOW(), 'Open',$payment_frequency,$payment_mode,'$full_name','$date_of_birth','$efulfillmentFlag','$customer_id'";
 
     // Add NOW() for quote_create_date if response is not empty
     if (!empty($response)) {
@@ -248,6 +248,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     }
     $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
+    $customer_id = isset($individual_info['customerIdNo']) ? $individual_info['customerIdNo'] : '';
     // Initialize the SQL query
     $sql = "UPDATE t_aig_app
     SET 
@@ -270,7 +271,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
         payment_mode = '$payment_mode',            
         fullname = '$full_name',                  
         dob = '$date_of_birth',
-        efulfillmentFlag = '$efulfillmentFlag',          
+        efulfillmentFlag = '$efulfillmentFlag',
+        customer_id='$customer_id',          
         update_date = NOW()";
 
     // Add quote_create_date if response is not null

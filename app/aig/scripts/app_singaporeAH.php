@@ -515,6 +515,7 @@ AND (id = '147' OR id = '323');";
             .then(response => response.text())
             .then(data => {
                 const result = JSON.parse(data)
+                
                 if (Array.isArray(result) && result.length > 0 && !id) {
                     manualSetDefaultValueFormCallingList(result[0]);
                 }
@@ -851,9 +852,7 @@ AND (id = '147' OR id = '323');";
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         checkParamsId = urlParams.get("id");
-        if (!checkParamsId) {
-            fetchCallingList()
-        }
+        fetchCallingList()
         fetchCampaignDetail()
 
         addInsuredSections(2)
