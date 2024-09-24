@@ -1,12 +1,10 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-$token_url = 'https://devauth1.customerpltfm.aig.com/oauth2/ausmgmbyeSo2EHuJs1d6/v1/token';
-$client_id = '0oaftcvxzeeCm0rk11d7';
-$client_secret = '-qe3hBBkSRPNTCmhkGoXVfdD3UH48g2UFH9O9HzdfSDFnL_AVQgWZ1SQu3UkU1K-';
-$scope = 'SGEwayPartners_IR';
+include_once '../../../app/function/settings.php';
 
+$token_url = $GLOBALS['token_url'];
+$client_id = $GLOBALS['client_id'];
+$client_secret = $GLOBALS['client_secret'];
+$scope = $GLOBALS['scope'];
 
 $data = [
     'grant_type' => 'client_credentials',
@@ -34,8 +32,8 @@ if ($err) {
     
     if ($access_token) {
         echo "<script>
-                var tokenAccess = '$access_token';
-                localStorage.setItem('accessToken', tokenAccess);
+                var token = '$access_token';
+                localStorage.setItem('accessToken', token);
             </script>";
     }
 }
