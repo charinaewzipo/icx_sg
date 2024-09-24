@@ -1,4 +1,9 @@
-let planData = null;
+<?php
+// Include the settings file to access global variables
+include_once '../../../app/function/settings.php'; // Update with the correct path to settings.php
+?>
+<script>
+  let planData = null;
 let responsePayment = null;
 let quotationData = null;
 let selectProduct = null;
@@ -9,8 +14,9 @@ var token = null;
 
 function fetchPremiumAH(requestBody, index) {
   document.body.classList.add('loading');
-  const apiUrl =
-    "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
+  const apiUrl = '<?php echo $GLOBALS["aig_api_premium_url"]; ?>';
+  // const apiUrl =
+  //   "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
   fetch(apiUrl, {
     method: "POST",
     headers: {
@@ -44,8 +50,7 @@ function fetchPremiumAH(requestBody, index) {
 }
 function fetchPremium(requestBody) {
   document.body.classList.add('loading');
-  const apiUrl =
-    "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
+  const apiUrl = '<?php echo $GLOBALS["aig_api_premium_url"]; ?>';
   fetch(apiUrl, {
     method: "POST",
     headers: {
@@ -81,8 +86,7 @@ async function fetchQuotation(requestBody) {
 
   document.body.classList.add('loading');
   console.log("Fetching Quotation data...");
-  const apiUrl =
-    "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/confirm-quotation";
+  const apiUrl = '<?php echo $GLOBALS["aig_api_create_quote_url"]; ?>';
     
   try {
     const response = await fetch(apiUrl, {
@@ -140,8 +144,7 @@ async function fetchQuotation(requestBody) {
 async function fetchPolicy(requestBody) {
   console.log("Fetching Policy data...");
   document.body.classList.add('loading');
-  const apiUrl =
-    "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/issue-policy";
+  const apiUrl = '<?php echo $GLOBALS["aig_api_create_policy_url"]; ?>';
 
   try {
     const response = await fetch(apiUrl, {
@@ -181,9 +184,7 @@ async function fetchPolicy(requestBody) {
 async function fetchRetrieveQuote(requestBody) {
   console.log("Fetching Policy data...");
   document.body.classList.add('loading');
-  const apiUrl =
-    "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/retrieve-quote";
-
+  const apiUrl = '<?php echo $GLOBALS["aig_api_retrieve_quote_url"]; ?>';
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -538,3 +539,4 @@ document.addEventListener("DOMContentLoaded", function () {
   token = localStorage.getItem('accessToken')
   console.log("token:", token)
 })
+</script>

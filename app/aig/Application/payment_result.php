@@ -15,10 +15,10 @@
 
 <?php
     require_once("../../function/StartConnect.inc");
-
-    $merchant = 'TEST97498471';
-    $username = "merchant.$merchant";
-    $password = '8fb334a463b16d4e4d19e3f7639edfd4';
+    require_once("../../function/settings.php");
+    $merchant = $GLOBALS['merchant'];
+    $username = $GLOBALS['username'];
+    $password = $GLOBALS['password'];
 
     $resultIndicator = $_GET['resultIndicator'];
     $sessionVersion = $_GET['sessionVersion'];
@@ -33,7 +33,7 @@
         $payment_order_id = $objResult["payment_order_id"];
     }
 
-    $url_get_payment_detail  = "https://ap-gateway.mastercard.com/api/rest/version/llaatteesstt/merchant/$merchant/order/$payment_order_id";
+    $url_get_payment_detail  = $GLOBALS['url_get_payment_detail']. "/order/$payment_order_id";
     $response_get_payment_detail  = callAPI($username, $password, $url_get_payment_detail, "GET", "");
     echo "<script>
             console.log('response_get_payment_detail',$response_get_payment_detail);
@@ -49,7 +49,7 @@
     $payment_token_id = "";
     if($is_recurring == "1"){
         $payment_token_id = str_replace(".", "", $payment_order_id);
-        $url_create_token  = "https://ap-gateway.mastercard.com/api/rest/version/llaatteesstt/merchant/$merchant/token/$payment_token_id";
+        $url_create_token  = $GLOBALS['url_create_token']. "/token/$payment_token_id";
         $data_create_token = [
             "session" => [
                 "id" => $payment_session_id

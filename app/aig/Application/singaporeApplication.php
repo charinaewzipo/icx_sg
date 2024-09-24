@@ -4,6 +4,7 @@ session_start();
 require_once("../../function/currentDateTime.inc");
 require_once("../../function/StartConnect.inc");
 require("../scripts/app_singaporeAH.php");
+require("../scripts/app_singaporeAPI.php");
 require("./getToken.php");
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -111,7 +112,7 @@ error_reporting(E_ALL);
   <script type="text/javascript" src="../scripts/jsvalidateSingapore.js?v=<?= time(); ?>"></script> -->
   <!-- <SCRIPT type="text/javascript" src="js/app.js?v=<?= time(); ?>"></script>  -->
   <script src="../scripts/app_singaporeApplication.js"></script>
-  <script src="../scripts/app_singaporeAPI.js"></script>
+  <!-- <script src="../scripts/app_singaporeAPI.js"></script> -->
   <script src="../scripts/singapore_database.js"></script>
   <script src="../scripts/app_singaporePolicy.js"></script>
   <script src="../scripts/app_singaporeForm.js"></script>

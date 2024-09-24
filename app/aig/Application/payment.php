@@ -7,14 +7,15 @@
 
 <?php
 require_once("../../function/StartConnect.inc");
+require_once("../../function/settings.php");
 
 $amount = $_GET['amount'];
 $is_recurring = $_GET['is_recurring'];
 $quoteNo = $_GET['quoteNo'];
 
-$merchant = 'TEST97498471';
-$username = "merchant.$merchant";
-$password = '8fb334a463b16d4e4d19e3f7639edfd4';
+$merchant = $GLOBALS['merchant'];
+$username = $GLOBALS['username'];
+$password = $GLOBALS['password'];
 
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 $host = $_SERVER['HTTP_HOST'];
@@ -24,7 +25,7 @@ $returnUrl = "$protocol$host/app/aig/Application/payment_result.php?is_recurring
 $now = new DateTime();
 $orderId = $now->format('Y.m.d.H.i.s.').sprintf('%03d', $now->format('u') / 1000);
 $batchNo = 'IP' . date('dmY');
-$url_create_session = "https://ap-gateway.mastercard.com/api/rest/version/llaatteesstt/merchant/$merchant/session";
+$url_create_session = $GLOBALS['url_create_session'];
 $data_create_session = [
     "apiOperation" => "INITIATE_CHECKOUT",
     "checkoutMode" => "WEBSITE",
