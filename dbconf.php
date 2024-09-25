@@ -12,7 +12,7 @@
     $db_username= "arkuser";        //user login
     $db_password= '$ep2@24ICX';               //user password
     $db_name= "tubtim20240906";              //database instant
-   // $db_server_ip = "localhost";     //server_ip
+   //  $db_server_ip = "localhost";     //server_ip
    //  $db_username= "root";        //user login
    //  $db_password= "";               //user password
    //  $db_name= "icx_sg";              //database instant
