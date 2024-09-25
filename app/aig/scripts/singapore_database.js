@@ -113,6 +113,33 @@
       });
     },
 
+    updateRetrieveQuote: function (response, id) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "updateRetrieveQuote",
+          response: response,
+          id: id
+        }),
+        dataType: "text",
+        success: function (response) {
+          try {
+            var jsonResponse = JSON.parse(response.trim());  // Manually parse the JSON and remove extra spaces
+            console.log("Insert Response:", jsonResponse);
+            if (jsonResponse.result === "success") {
+              // window.location.reload();
+            }
+          } catch (e) {
+            console.error("JSON Parsing Error:", e, response);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX Error:", error);
+        }
+      });
+    },
     updateQuoteData: function (formData, response, id) {
       $.ajax({
         url: url,

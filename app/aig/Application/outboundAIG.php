@@ -155,7 +155,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
         quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status,payment_frequency,payment_mode,fullname,dob,efulfillmentFlag,customer_id";
-    
+
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
         $sql .= ", quote_create_date";
@@ -325,6 +325,84 @@ function DBUpdatePolicyNo($policyid, $policyNo)
     }
 
     $dbconn->dbconn->close();
+}
+
+function DBUpdateQuoteRetrieve($response, $id)
+{
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    if (empty($id)) {
+        echo json_encode(array("result" => "error", "message" => "ID is required for updating"));
+        return;
+    }
+
+    // Extract data from response
+    $policyId = isset($response['policyId']) ? $response['policyId'] : '';
+    $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
+    $currency = isset($response['currency']) ? $response['currency'] : '';
+    $productId = isset($response['productId']) ? $response['productId'] : 0;
+    $producerCode = isset($response['producerCode']) ? $response['producerCode'] : '';
+    $propDate = isset($response['propDate']) ? transformDateQuote($response['propDate']) : null;
+    $policyEffDate = isset($response['policyEffDate']) ? transformDateQuote($response['policyEffDate']) : null;
+    $policyExpDate = isset($response['policyExpDate']) ? transformDateQuote($response['policyExpDate']) : null;
+    $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
+    $quoteStatus = isset($response['quoteStatus']) ? $response['quoteStatus'] : null;
+    $quickQuoteFlag = isset($response['quickQuoteFlag']) ? $response['quickQuoteFlag'] : 0;
+
+    // Handle policy holder information
+    $policyHolderInfo = isset($response['policyHolderInfo']) ? json_encode($response['policyHolderInfo']) : '{}';
+    $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
+
+    $individualPolicyHolderInfo = isset($response['policyHolderInfo']['individualPolicyHolderInfo']) ? $response['policyHolderInfo']['individualPolicyHolderInfo'] : [];
+    $fullName = isset($individualPolicyHolderInfo['fullName']) ? $individualPolicyHolderInfo['fullName'] : '';
+    $customerIdNo = isset($individualPolicyHolderInfo['customerIdNo']) ? $individualPolicyHolderInfo['customerIdNo'] : '';
+    $dateOfBirth = isset($individualPolicyHolderInfo['dateOfBirth']) ? transformDateQuote($individualPolicyHolderInfo['dateOfBirth']) : null;
+
+    // Handle insured list information
+    $insuredList = isset($response['insuredList']) ? json_encode($response['insuredList']) : '{}';
+    $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
+
+    // Handle payment details
+    $paymentDetails = isset($response['paymentDetails']) ? $response['paymentDetails'] : [];
+    $paymentMode = !empty($paymentDetails) && isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
+
+    // Prepare SQL statement
+    $sql = "UPDATE t_aig_app
+            SET 
+                policyId = '$policyId',
+                premiumPayable = '$premiumPayable',
+                productId = '$productId',
+                producerCode = '$producerCode',
+                -- propDate = " . ($propDate === null ? 'NULL' : "'$propDate'") . ",
+                -- policyEffDate = " . ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ",
+                -- policyExpDate = " . ($policyExpDate === null ? 'NULL' : "'$policyExpDate'") . ",
+                quoteNo = '$quoteNo',
+                -- quickQuoteFlag = '$quickQuoteFlag',
+                -- policyHolderInfo = '$policyHolderInfo',
+                -- insuredList = '$insuredList',
+                -- fullname = '$fullName',
+                -- customer_id = '$customerIdNo',
+                -- dob = " . ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ",
+                -- payment_mode = '$paymentMode',
+                update_date = NOW()
+            WHERE id = '$id'";
+
+    // Execute the query
+    $result = $dbconn->executeUpdate($sql);
+
+    header('Content-Type: application/json; charset=UTF-8');
+    if (!$result) {
+        $error = mysqli_error($dbconn->dbconn);
+        echo json_encode(array("result" => "error", "message" => "Data update failed: $error"));
+    } else {
+        echo json_encode(array("result" => "success", "message" => "Data updated successfully"));
+    }
 }
 
 
@@ -546,18 +624,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($data['action'] === 'updatePolicyNo') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
-
             DBUpdatePolicyNo($policyid, $policyNo);
         } elseif ($data['action'] === 'insertPaymentLog') {
             $request = isset($data['request']) ? $data['request'] : array();
             $response = isset($data['response']) ? $data['response'] : array();
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $objectPayment = isset($data['objectPayment']) ? $data['objectPayment'] : array();
-            DBInsertPaymentLog($request, $response, $policyid, $objectPayment);
             $response = isset($data['response']) ? $data['response'] : array();
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             DBInsertPaymentLog($request, $response, $policyid, $objectPayment);
-        } else {
+        } elseif ($data['action'] === 'updateRetrieveQuote') {
+            $id = isset($data['id']) ? $data['id'] : 0;
+            $response = isset($data['response']) ? $data['response'] : array();
+            DBUpdateQuoteRetrieve($response, $id);
+        } 
+        
+        else {
             echo json_encode(array("result" => "error", "message" => "Invalid action"));
         }
     } else {

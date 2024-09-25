@@ -81,24 +81,39 @@ const handleRetrieveQuote = async () => {
     const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
     console.log("responseRetrieve:", responseRetrieve);
     console.log("quotationData:", quotationData);
-
+    
     if (!responseRetrieve) {
       alert("Quote Retrieval List Operation failed");
-    } else if (responseRetrieve?.statusCode === "P00") {
-      const responseRetrievePlanId = responseRetrieve?.quoteList[0]?.Policy?.insuredList[0]?.planList[0]?.planId;
-      const quotePlanId = quotationData?.insuredList[0]?.personInfo?.planInfo?.planId;
-
-      if (
-        parseFloat(responseRetrieve?.quoteList[0]?.Policy?.premiumPayable) === parseFloat(quotationData?.premiumPayable) &&
-        responseRetrieve?.quoteList[0]?.Policy?.productId === quotationData?.productId &&
-        parseInt(responseRetrievePlanId) === parseInt(quotePlanId)
-      ) {
-        // Same plan and amount
-        handlePaymentGateway();
-      } else {
-        alert("Product is not available. Please do a recalculation of the quote.");
-      }
+      return;
     }
+    
+    const { statusCode, quoteList } = responseRetrieve;
+    if (statusCode !== "P00") {
+      alert("Quote Retrieval failed. Please try again.");
+      return;
+    }
+    
+    // Extract quote details
+    let data = quoteList?.[0]?.Policy;
+    console.log("data:", data);
+    
+    const responseRetrievePlanId = data?.insuredList?.[0]?.planList?.[0]?.planId;
+    const quotePlanId = quotationData?.insuredList?.[0]?.personInfo?.planInfo?.planId;
+    
+    const isMatchingPlanAndAmount = 
+      parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable) &&
+      parseInt(data?.productId) === parseInt(quotationData?.productId) &&
+      parseInt(responseRetrievePlanId) === parseInt(quotePlanId);
+    
+    if (isMatchingPlanAndAmount) {
+      // Same plan and amount, proceed with updating the quote
+      await jQuery.agent.updateRetrieveQuote(data, id);
+      console.log("Quote successfully updated");
+      handlePaymentGateway();
+    } else {
+      alert("Product is not available. Please do a recalculation of the quote.");
+    }
+    
   }
 };
 
