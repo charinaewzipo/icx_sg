@@ -86,13 +86,25 @@
 															<td colspan="2" style="padding:0px 50px 5px 50px"  ><input type="text" name="cmpName" style="width:100%;" placeholder="required field *"  autocomplete="off"></td>
 														</tr>
 														<tr>
+															<td colspan="2" style="padding:10px 0 5px 50px; color:#666" >&nbsp;Campaign Code 	</td>
+														</tr>
+														<tr>
+															<td colspan="2" style="padding:0px 50px 5px 50px"  ><input type="text" name="cmpCode" style="width:100%;" placeholder="campaign code"  autocomplete="off"></td>
+														</tr>
+														<tr>
 															<td colspan="2" style="padding:10px 0 5px 50px;color:#666" >&nbsp;Campaign Detail 	</td>
 														</tr>
 															<tr>
 															<td colspan="2" style="padding:0px 50px 5px 50px"  ><textarea type="text" name="cmpDetail" style="width:100%; height:100px;"  placeholder="describe about campaign name"></textarea></td>
 														</tr>
 														<tr>
-															<td colspan="2" style="padding:10px 0 0px 50px;color:#666" >&nbsp; <input type="radio" name="cmpExpire" checked value="0"> &nbsp; This campaign has no expiry date.</td>
+															<td colspan="2" style="padding:10px 0 5px 50px;color:#666" >&nbsp;Campaign Category</td>
+														</tr>
+														<tr>
+															<td colspan="2" style="padding:0px 50px 5px 50px"  ><select name="cmpCat"></select></td>
+														</tr>
+														<tr>
+															<td colspan="2" style="padding:10px 0 0px 50px;color:#666" >&nbsp; <input type="radio" name="cmpExpire" value="0"> &nbsp; This campaign has no expiry date.</td>
 														</tr>
 														<tr>
 															<td colspan="2" style="padding:0px 0 5px 50px;color:#666" >&nbsp; <input type="radio" name="cmpExpire" value="1"> &nbsp; This campaign has expiry date. </td>

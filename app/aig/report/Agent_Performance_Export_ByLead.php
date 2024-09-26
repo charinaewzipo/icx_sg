@@ -1,12 +1,10 @@
 <?php
-
-
-ini_set("display_errors", 0);
-
 date_default_timezone_set("Asia/Bangkok");
 
 require_once("../../function/currentDateTime.inc");
 require_once("../../function/StartConnect.inc");
+require_once("../../function/db.php");
+require_once("../../PHPExcel/Classes/PHPExcel.php");
 
 function DateDiff($strDate1, $strDate2)
 {
@@ -35,463 +33,279 @@ function divZero($faf, $div)
     return ($faf / $div);
 }
 
+function executeQuery($Conn, $query)
+{
+    $result = mysqli_query($Conn, $query) or die("ไม่สามารถเรียกดูข้อมูลได้");
+
+    // Clear all result sets
+    while (mysqli_more_results($Conn)) {
+        mysqli_next_result($Conn);
+        if ($tempResult = mysqli_store_result($Conn)) {
+            mysqli_free_result($tempResult);  // Free any remaining results
+        }
+    }
+
+    return $result;
+}
+
 $tmp = json_decode($_POST['data'], true);
 $root = "temp/";
 $start = $tmp["startdate"];
 $end = $tmp["enddate"];
 $campaign_id = $tmp["campaign_id"];
 $campaign_id_lead_list = $tmp["campaign_id_lead_list"];
-$group_id = $tmp["group_id"];
-$team_id = $tmp["team_id"];
+$GroupID = $tmp["group_id"];
+$TeamID = $tmp["team_id"];
 $campaign_id_selected = $tmp["campaign_id_selected"];
 $campaign_id_selected_lead_list = $tmp["campaign_id_selected_lead_list"];
 
-//$start = '01/07/2019';
-//$end = '15/07/2019';
+$LeadID = str_replace(' ', '', $campaign_id_selected_lead_list);
 
-$start_dd = substr($start, 0, 2);    // 16/03/2016
+$start_dd = substr($start, 0, 2);
 $start_mm = substr($start, 3, 2);
 $start_yy = substr($start, 6, 4);
 $startdate = $start_yy . $start_mm . $start_dd;
-$startdate2 = $start_yy . '-' . $start_mm . '-' . $start_dd;
+$DateStart = $start_yy . '-' . $start_mm . '-' . $start_dd;
 
 $end_dd = substr($end, 0, 2);
 $end_mm = substr($end, 3, 2);
 $end_yy = substr($end, 6, 4);
 $enddate =  $end_yy . $end_mm . $end_dd;
-$enddate2 =  $end_yy . '-' . $end_mm . '-' . $end_dd;
-
-//$startdate2 = '2019-07-01';
-//$enddate2 =  '2019-07-16';
+$DateEnd =  $end_yy . '-' . $end_mm . '-' . $end_dd;
 
 $currentdatetime = date("Y") . '-' . date("m") . '-' . date("d") . ' ' . date("H:i:s");
+$currentDate = date("Y") . '-' . date("m") . '-' . date("d");
+$report_date = $DateStart . ' - ' . $DateEnd;
 
-$report_date = $startdate2 . ' - ' . $enddate2;
-
-$campaign_name = "";
-$group_name = "";
-$team_name = "";
-$campaign_name_header = "";
-
-if ($campaign_id) {
-    $SQL_campname = "select campaign_name from t_campaign where campaign_id in ($campaign_id_selected) ";
-    $result = mysqli_query($Conn, $SQL_campname) or die("ไม่สามารถเรียกดูข้อมูลcampaignได้");
-    while ($row = mysqli_fetch_array($result)) {
-        $campaign_name = $row["campaign_name"];
-        $campaign_name_header = $campaign_name_header . "," . $row["campaign_name"] . "|";
-    }
-
-
-
-    $SQL_listname = "SELECT t_import_list.list_name
-    FROM t_import_list
-    JOIN t_campaign_list ON t_campaign_list.import_id = t_import_list.import_id
-    WHERE 
-     t_campaign_list.import_id IN ($campaign_id_selected_lead_list)";
-
-    $resultListName = mysqli_query($Conn, $SQL_listname) or die("ไม่สามารถเรียกดูcampaign2ข้อมูลได้");
-    while ($row = mysqli_fetch_array($resultListName)) {
-        $list_name = $row["list_name"];
-        $campaign_name_header = $campaign_name_header . "," . $row["list_name"];
-    }
-
-    $campaign_name_header = substr($campaign_name_header, 1);
-}
-
-
-
-if ($group_id) {
-    $SQL_groupname = "select group_name from t_group where group_id = '$group_id' ";
-    $result = mysqli_query($Conn, $SQL_groupname) or die("ไม่สามารถเรียกดูข้อมูลgroupได้");
-    while ($row = mysqli_fetch_array($result)) {
-        $group_name = $row["group_name"];
-    }
-}
-if ($team_id) {
-    $SQL_teamname = "select team_name from t_team where team_id = '$team_id' ";
-    $result = mysqli_query($Conn, $SQL_teamname) or die("ไม่สามารถเรียกดูข้อมูลteamได้");
-    while ($row = mysqli_fetch_array($result)) {
-        $team_name = $row["team_name"];
-    }
-}
-
-
-/**
- * PHPExcel
- *
- * Copyright (C) 2006 - 2014 PHPExcel
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * @category   PHPExcel
- * @package    PHPExcel
- * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.8.0, 2014-03-02
- */
-
-/** Error reporting */
-error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-ini_set('display_startup_errors', TRUE);
-
-define('EOL', (PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
-
-
-/** PHPExcel_IOFactory */
-require_once dirname(__FILE__) . '/../../PHPExcel/Classes/PHPExcel/IOFactory.php';
-
-
-
-//echo date('H:i:s') , " Load from Excel5 template" , EOL;
-$objReader = PHPExcel_IOFactory::createReader('Excel5');
-$objPHPExcel = $objReader->load("templates/Agent_Performance_by_lead.xls");
-
-$dif_date = (DateDiff($startdate2, $enddate2)) + 1;
-
-$objPHPExcel->getActiveSheet()->setCellValue('C3', $campaign_name_header);
-$objPHPExcel->getActiveSheet()->setCellValue('C4', $group_name);
-$objPHPExcel->getActiveSheet()->setCellValue('C5', $team_name);
-$objPHPExcel->getActiveSheet()->setCellValue('C6', $currentdatetime);
-$objPHPExcel->getActiveSheet()->setCellValue('C7', $report_date);
-
-
-
-
-$baseRow = 11;
-$row = 0;
-$r = 0;
-$i = 0;
-$strNewDate = $startdate2;
-$endNewDate = $enddate2;
-
-$sum_uesd_accu = 0;
-$sum_contact_call = 0;
-
-$workday = $dif_date;
-
-$CallAttempt = 0;
-
-$sql_condition = ($group_id) ? " and ta.group_id = '$group_id'" : "";
-$sql_condition .= ($team_id) ? " and ta.team_id = '$team_id'" : "";
-
-$current_date = date("Y-m-d");
-if ($current_date == $startdate2 && $current_date == $enddate2) {
-    $table = "t_calllist_agent";
-    $field_date = "last_wrapup_dt";
+if ($currentDate == $DateStart && $currentDate == $DateEnd) {
+    $query = "CALL sp_get_report_agentPerformance_by_import_list_t_agent('$LeadID', '$DateStart', '$DateEnd','$GroupID','$TeamID')";
 } else {
-    $table = "t_calllist_agent_history";
-    $field_date = "history_date";
+    $query = "CALL sp_get_report_agentPerformance_by_import_list_t_agent_history('$LeadID', '$DateStart', '$DateEnd','$GroupID','$TeamID')";
 }
 
+$result = executeQuery($Conn, $query);
+// Load existing Excel template
+$templateFileName = 'templates/Agent_Performance_by_lead.xls'; // Update with the path to your existing Excel template
+$objPHPExcel = PHPExcel_IOFactory::load($templateFileName);
+$file_name = 'report_Agent_Performance_By_Lead-' . $currentDate . '.xls';
 
-$SQL = "
-SELECT agent_id,
-agentname,
-list_name,
-import_id,
-MAX(list_use) AS list_use,
-MAX(list_success) AS list_success,
-MAX(list_unsuccess) AS list_unsuccess,
-MAX(list_followup) AS list_followup,
-MAX(list_callback) AS list_callback,
-MAX(list_nocontact) AS list_nocontact,
-MAX(list_badlist) AS list_badlist,
-MAX(list_donotcall) AS list_donotcall,
-MAX(list_overcall) AS list_overcall,
-MAX(list_new) AS list_new,
-MAX(list_old) AS list_old,
-MAX(list_contact_new) AS list_contact_new,
-MAX(list_contact_old) AS list_contact_old,
-MAX(list_attempt) AS list_attempt 
-FROM
-(
-SELECT (SELECT list_name FROM t_import_list WHERE a.import_id = t_import_list.import_id) AS list_name,(SELECT import_id FROM t_import_list WHERE a.import_id = t_import_list.import_id) AS import_id,agent_id,CONCAT(first_name,' ',last_name) agentname, 
+$genesys_nocontact = 0;
+$genesys_attempt = 0;
+$array_import_ids = [];
+$total_list_use_summary = 0;
+$rowIndex = 11;
+$import_ids = array();
 
-COUNT(DISTINCT (case 
-when last_wrapup_option_id in (0,1,2,3,4,5,6,7,8,9) then calllist_id
-ELSE NULL
-END)) list_use,
-
-COUNT(DISTINCT (case 
-when last_wrapup_option_id in (6,9) then calllist_id
-ELSE NULL
-END)) list_success,
-
-COUNT(DISTINCT (case 
-when last_wrapup_option_id = 7 then calllist_id
-ELSE NULL
-END)) list_unsuccess,
-
-COUNT(DISTINCT (case 
-when last_wrapup_option_id in (2) then calllist_id
-ELSE NULL
-END)) list_followup,
-
-COUNT(DISTINCT (case 
-when last_wrapup_option_id = 1 then calllist_id
-ELSE NULL
-END)) list_callback,
-
-COUNT(DISTINCT (case 
-when last_wrapup_option_id = 8 then calllist_id
-ELSE NULL
-END)) list_nocontact,
-
-COUNT(DISTINCT (case 
-when last_wrapup_option_id = 4 then calllist_id
-ELSE NULL
-END)) list_badlist,
-
-COUNT(DISTINCT (case 
-when last_wrapup_option_id = 3 then calllist_id
-ELSE NULL
-END)) list_donotcall,
-
-COUNT(DISTINCT (case 
-when last_wrapup_option_id in (0,5) then calllist_id
-ELSE NULL
-END)) list_overcall,
-
-COUNT(DISTINCT (case 
-when is_new = 1 then calllist_id
-ELSE NULL
-END)) list_new,
-
-COUNT(DISTINCT (case 
-when is_new = 0 then calllist_id
-ELSE NULL
-END)) list_old,
-
-COUNT(DISTINCT (case 
-when is_new = 1 and last_wrapup_option_id in (0,1,2,3,5,6,7,9) then calllist_id
-ELSE NULL
-END)) list_contact_new,
-
-COUNT(DISTINCT (case 
-when is_new = 0 and last_wrapup_option_id in (0,1,2,3,5,6,7,9) then calllist_id
-ELSE NULL
-END)) list_contact_old,
-
-(
-SELECT COUNT(calllist_id) FROM t_call_trans t where (create_date BETWEEN '$startdate2 00:00:00' and '$enddate2 23:59:59') AND t.agent_id = a.agent_id AND t.import_id in ($campaign_id_selected_lead_list)
-) AS list_attempt
-
-FROM 
-(
-SELECT tc.*,ta.first_name,ta.last_name,
-IF(
-    EXISTS(
-      SELECT 1
-      FROM t_call_trans h
-      WHERE DATE(h.create_date) < DATE(tc.$field_date) AND h.calllist_id = tc.calllist_id
-    ),
-    '0',
-    '1'
- ) AS is_new
-FROM (
-SELECT t1.*
-FROM $table t1
-JOIN (
-    SELECT calllist_id,last_wrapup_option_id,MAX($field_date) AS max_history_date
-    FROM $table WHERE ($field_date BETWEEN '$startdate2 00:00:00' AND '$enddate2 23:59:59') AND campaign_id in ($campaign_id_selected) AND import_id IN ($campaign_id_selected_lead_list) GROUP BY calllist_id
-) t2 ON t1.calllist_id = t2.calllist_id AND t1.$field_date = t2.max_history_date
-) tc LEFT JOIN t_agents ta ON tc.agent_id=ta.agent_id WHERE (tc.$field_date BETWEEN '$startdate2 00:00:00' AND '$enddate2 23:59:59') AND tc.campaign_id in ($campaign_id_selected) $sql_condition
-) a GROUP BY agent_id,import_id
-
-UNION ALL
-
-SELECT (SELECT list_name FROM t_import_list WHERE a.import_id = t_import_list.import_id) AS list_name,(SELECT import_id FROM t_import_list WHERE a.import_id = t_import_list.import_id) AS import_id,a.agent_id, CONCAT(first_name,' ',last_name) AS agentname,
-0 AS list_use,
-0 AS list_success,
-0 AS list_unsuccess,
-0 AS list_followup,
-0 AS list_callback,
-0 AS list_nocontact,
-0 AS list_badlist,
-0 AS list_donotcall,
-0 AS list_overcall,
-0 AS list_new,
-0 AS list_old,
-0 AS list_contact_new,
-0 AS list_contact_old,
-0 AS list_attempt
-FROM t_aig_app a INNER JOIN t_agents ta ON a.agent_id = ta.agent_id
-WHERE (a.create_date BETWEEN '$startdate2 00:00' and '$enddate2 23:59') and import_id in ($campaign_id_selected_lead_list) $sql_condition GROUP BY agent_id,import_id
-) x GROUP BY agent_id,import_id
-";
-$result = mysqli_query($Conn, $SQL) or die("ไม่สามารถเรียกดูข้อมูล main queryได้" . $team_id . $group_id);
-
-$sql_app = " SELECT import_id,agent_id, COUNT(DISTINCT(CASE WHEN AppStatus NOT IN( 'Follow-doc') THEN id ELSE NULL END)) sale_front,
-COUNT(DISTINCT(CASE WHEN AppStatus IN( 'Approve') THEN id ELSE NULL END)) sale_back,
-SUM(CASE WHEN AppStatus NOT IN( 'Follow-doc') AND PAYMENTFREQUENCY IN( 'รายปี') THEN INSTALMENT_PREMIUM ELSE 0 END) premium_year_front,
-SUM(CASE WHEN AppStatus NOT IN( 'Follow-doc') AND PAYMENTFREQUENCY IN( 'รายเดือน') THEN (INSTALMENT_PREMIUM*12) ELSE 0 END) premium_month_front,
-SUM(CASE WHEN AppStatus IN( 'Approve') AND PAYMENTFREQUENCY IN( 'รายปี') THEN INSTALMENT_PREMIUM ELSE 0 END) premium_year_back,
-SUM(CASE WHEN AppStatus IN( 'Approve') AND PAYMENTFREQUENCY IN( 'รายเดือน') THEN (INSTALMENT_PREMIUM*12) ELSE 0 END) premium_month_back
-from t_aig_app where (create_date BETWEEN '$startdate2 00:00' and '$enddate2 23:59') and import_id in ($campaign_id_selected_lead_list)  group by agent_id,import_id";
-
-$result_app =  mysqli_query($Conn, $sql_app) or die("ไม่สามารถเรียกดูข้อมูล app ได้");
-
-
-$sale_value = array();
-
-while ($row = mysqli_fetch_array($result_app)) {
-    $agent_id = $row['agent_id'];
-    $import_id = $row['import_id'];
-
-    // Create a nested array structure
-    $sale_value[$import_id][$agent_id] = $row;
-}
-
-
-
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $result->fetch_assoc()) {
     $import_id = trim($row["import_id"]);
+    if (!in_array($import_id, $import_ids)) {
+        $import_ids[] = $import_id;
+    }
+    $array_import_ids[] = $import_id;
     $list_name = $row["list_name"];
     $agent_id = trim($row["agent_id"]);
     $agentname = trim($row["agentname"]);
-    $list_success = $row["list_success"];
-    $list_unsuccess = $row["list_unsuccess"];
-    $list_followup = $row["list_followup"];
-    $list_callback = $row["list_callback"];
-    $list_nocontact = $row["list_nocontact"];
-    $list_badlist = $row["list_badlist"];
-    $list_donotcall = $row["list_donotcall"];
-    $list_overcall = $row["list_overcall"];
-    $list_new = $row["list_new"];
-    $list_old = $row["list_old"];
-    $list_contact_new = $row["list_contact_new"];
-    $list_contact_old = $row["list_contact_old"];
+
+    $list_new = $row['new_used'];
+    $list_old = $row["old_used"];
+    $new_used_contact = $row['new_used_contact'];
+    $old_used_contact = $row["old_used_contact"];
+
+    $list_contact_total = $new_used_contact + $old_used_contact;
     $list_attempt = $row["list_attempt"];
 
-    $list_total = $list_new + $list_old;
-    $list_contact_total = $list_contact_new + $list_contact_old;
-    $list_other = $list_donotcall + $list_overcall;
+    $saleSubmit = $row["SubmitTarp"];
+    $tarpSubmit = $row["SaleSubmit"];
+    $SaleSubmitPremium = $row["SaleSubmitPremium"];
+    $saleApprove = $row["ApproveTarp"];
+    $ApproveSubmitPremium = $row["ApproveSubmitPremium"];
+    $tarpApprove = $row["ApproveSubmit"];
 
 
-    // sale_app
-    $sale_app_front = (isset($sale_value[$import_id][$agent_id]["sale_front"])) ? $sale_value[$import_id][$agent_id]["sale_front"] : 0;
-    $sale_app_back = (isset($sale_value[$import_id][$agent_id]["sale_back"])) ? $sale_value[$import_id][$agent_id]["sale_back"] : 0;
+    $success = $row["success"];
+    $unsuccess = $row["unsuccess"];
+    $follow_up = $row["follow_up"];
+    $callback = $row["callback"];
+    $other = $row["other"];
+    $not_contact = $row["not_contact"];
+    $not_update = $row["not_update"];
+    $null_list = $row["null_list"];
 
-    // sale_premium_y
-    $sale_premium_front_y = (isset($sale_value[$import_id][$agent_id]["premium_year_front"])) ? $sale_value[$import_id][$agent_id]["premium_year_front"] : 0;
-    $sale_premium_back_y = (isset($sale_value[$import_id][$agent_id]["premium_year_back"])) ? $sale_value[$import_id][$agent_id]["premium_year_back"] : 0;
+    $list_badlist = 0;
 
-    //  sale_premium_M
-    $sale_premium_front_m = (isset($sale_value[$import_id][$agent_id]["premium_month_front"])) ? $sale_value[$import_id][$agent_id]["premium_month_front"] : 0;
-    $sale_premium_back_m = (isset($sale_value[$import_id][$agent_id]["premium_month_back"])) ? $sale_value[$import_id][$agent_id]["premium_month_back"] : 0;
+    // if($campaign_name includes "WC") 
+    if (stripos($list_name, 'WC') !== false) {
+        // Your code here if $campaign_name includes "WC" (case-insensitive)
+        $queryWC = "call sp_get_agent_performance_wc_auto_by_leads($import_id,$agent_id,'$DateStart','$DateEnd') ";
+        // $resultWC = get_data_mysql($queryWC, $server);
+        $resultWC = executeQuery($Conn, $queryWC);
 
+        while ($row = $resultWC->fetch_assoc()) {
+            $list_new = $row['new_used'];
+            $list_old = $row["old_used"];
+            $new_used_contact = $row['new_used_contact'];
+            $old_used_contact = $row["old_used_contact"];
 
+            $list_contact_total = $new_used_contact + $old_used_contact;
+            $list_attempt = $row["list_attempt"];
 
-    $row = $baseRow + 1;
-    $row2 = $row - 1;
-    $r = $r + 1;
+            $list_use = $row["list_use"];
+            $success = $row["success"];
+            $unsuccess = $row["unsuccess"];
+            $follow_up = $row["follow_up"];
+            $callback = $row["callback"];
+            $other = $row["other"];
+            $not_contact = $row["not_contact"];
+            $not_update = $row["not_update"];
+            $null_list = $row["null_list"];
+        }
+        // Free the result set
+        mysqli_free_result($resultWC);
+        // $contactable = $success + $unsucess + $follow_up + $callback + $other;
+    }
 
-    $objPHPExcel->getActiveSheet()->insertNewRowBefore($row, 1);
+    $no_contact = $not_contact +  $not_update + $null_list;
+    $list_total = $success + $unsuccess + $follow_up + $callback + $other + $no_contact;
 
-    $objPHPExcel->getActiveSheet()
-        ->setCellValue('C' . $row2, $list_new)
-        ->setCellValue('D' . $row2, $list_old)
-        ->setCellValue('E' . $row2, $list_total)
-        ->setCellValue('F' . $row2, $list_attempt)
-        ->setCellValue('G' . $row2, $list_contact_new)
-        ->setCellValue('H' . $row2, "=G$row2/E$row2")
-        ->setCellValue('I' . $row2, $list_contact_old)
-        ->setCellValue('J' . $row2, "=I$row2/E$row2")
-        ->setCellValue('K' . $row2, $list_contact_total)
-        ->setCellValue('L' . $row2, "=K$row2/E$row2")
-        ->setCellValue('M' . $row2, "=O$row2/K$row2")
-        ->setCellValue('N' . $row2, "=O$row2/E$row2")
-        ->setCellValue('O' . $row2, $sale_app_front)
-        ->setCellValue('P' . $row2, $sale_premium_front_y)
-        ->setCellValue('Q' . $row2, $sale_premium_front_m)
-        ->setCellValue('R' . $row2, $sale_app_back)
-        ->setCellValue('S' . $row2, $sale_premium_back_y)
-        ->setCellValue('T' . $row2, $sale_premium_back_m)
-        ->setCellValue('U' . $row2, $list_success)
-        ->setCellValue('V' . $row2, "=U$row2/E$row2")
-        ->setCellValue('W' . $row2, $list_unsuccess)
-        ->setCellValue('X' . $row2, "=W$row2/E$row2")
-        ->setCellValue('Y' . $row2, $list_followup)
-        ->setCellValue('Z' . $row2, "=Y$row2/E$row2")
-        ->setCellValue('AA' . $row2, $list_callback)
-        ->setCellValue('AB' . $row2, "=AA$row2/E$row2")
-        ->setCellValue('AC' . $row2, $list_other)
-        ->setCellValue('AD' . $row2, "=AC$row2/E$row2")
-        ->setCellValue('AE' . $row2, $list_nocontact)
-        ->setCellValue('AF' . $row2, "=AE$row2/E$row2")
-        ->setCellValue('AG' . $row2, $list_badlist)
-        ->setCellValue('AH' . $row2, "=AG$row2/E$row2");
+    // Insert Blank Row
+    $objPHPExcel->getActiveSheet()->insertNewRowBefore($rowIndex + 1, 1);
 
-    $objPHPExcel->getActiveSheet()->setCellValue('B' . $row2, $agentname);
-    $objPHPExcel->getActiveSheet()->setCellValue('A' . $row2, $list_name);
+    // Insert Data 
+    $objPHPExcel->getActiveSheet()->setCellValue('A' . $rowIndex, $list_name);
+    $objPHPExcel->getActiveSheet()->setCellValue('B' . $rowIndex, $agentname);
+    $objPHPExcel->getActiveSheet()->setCellValue('C' . $rowIndex, $list_new);
+    $objPHPExcel->getActiveSheet()->setCellValue('D' . $rowIndex, $list_old);
+    $objPHPExcel->getActiveSheet()->setCellValue('E' . $rowIndex, $list_total);
+    $objPHPExcel->getActiveSheet()->setCellValue('F' . $rowIndex, $list_attempt);
+    $objPHPExcel->getActiveSheet()->setCellValue('G' . $rowIndex, $new_used_contact);
+    $objPHPExcel->getActiveSheet()->setCellValue('H' . $rowIndex, "=G$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('I' . $rowIndex, $old_used_contact);
+    $objPHPExcel->getActiveSheet()->setCellValue('J' . $rowIndex, "=I$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('K' . $rowIndex, $list_contact_total);
+    $objPHPExcel->getActiveSheet()->setCellValue('L' . $rowIndex, "=K$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('M' . $rowIndex, "=O$rowIndex/K$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('N' . $rowIndex, "=O$rowIndex/E$rowIndex");
 
-    // Enable text wrapping for the cell test test
+    // saleapp query
+    $objPHPExcel->getActiveSheet()->setCellValue('O' . $rowIndex, $saleSubmit);
+    $objPHPExcel->getActiveSheet()->setCellValue('P' . $rowIndex, $SaleSubmitPremium);
+    $objPHPExcel->getActiveSheet()->setCellValue('Q' . $rowIndex, $tarpSubmit);
+    $objPHPExcel->getActiveSheet()->setCellValue('R' . $rowIndex, $saleApprove);
+    $objPHPExcel->getActiveSheet()->setCellValue('S' . $rowIndex, $ApproveSubmitPremium);
+    $objPHPExcel->getActiveSheet()->setCellValue('T' . $rowIndex, $tarpApprove);
 
-    $objPHPExcel->getActiveSheet()->getStyle('B' . $row2)->getAlignment()->setWrapText(true);
+    $objPHPExcel->getActiveSheet()->setCellValue('U' . $rowIndex,  $success);
+    $objPHPExcel->getActiveSheet()->setCellValue('V' . $rowIndex, "=U$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('W' . $rowIndex, $unsuccess);
+    $objPHPExcel->getActiveSheet()->setCellValue('X' . $rowIndex, "=W$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('Y' . $rowIndex, $follow_up);
+    $objPHPExcel->getActiveSheet()->setCellValue('Z' . $rowIndex, "=Y$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('AA' . $rowIndex, $callback);
+    $objPHPExcel->getActiveSheet()->setCellValue('AB' . $rowIndex, "=AA$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('AC' . $rowIndex, $other);
+    $objPHPExcel->getActiveSheet()->setCellValue('AD' . $rowIndex, "=AC$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('AE' . $rowIndex, $no_contact);
+    $objPHPExcel->getActiveSheet()->setCellValue('AF' . $rowIndex, "=AE$rowIndex/E$rowIndex");
+    $objPHPExcel->getActiveSheet()->setCellValue('AG' . $rowIndex, $list_badlist);
+    $objPHPExcel->getActiveSheet()->setCellValue('AH' . $rowIndex, "=AG$rowIndex/E$rowIndex");
 
-    // Count the number of lines in the content
-    $numberOfLines = substr_count($agentname . "\n" . $list_name, "\n") + 1;
+    $total_list_use_summary = $total_list_use_summary + $list_total;
 
-    // Set a base row height (adjust as needed)
-    $baseRowHeight = 15; // Adjust this value based on your estimation
-
-    // Set a base column width (adjust as needed)
-    $baseColumnWidth = 7; // Adjust this value based on your estimation
-
-    // Calculate the row height based on the number of lines
-    $rowHeight = $baseRowHeight * $numberOfLines;
-
-    // Set the row height
-    $objPHPExcel->getActiveSheet()->getRowDimension($row2)->setRowHeight($rowHeight);
-
-    // Set the column width based on the content length
-    $contentLength = strlen($agentname . $list_name);
-    $calculatedWidth = $contentLength * 1.1; // Adjust the multiplier as needed
-
-    // Set the column width
-    $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth($calculatedWidth);
-
-    // Freeze column B and rows 9 and 10
-    $objPHPExcel->getActiveSheet()->freezePane('C11');
-
-
-    $baseRow = $baseRow + 1;
-    $sum_uesd_accu = 0;
-    $sum_contact_call = 0;
-    $i++;
+    $rowIndex++;
 }
 
+$sqlGetHeader = "call  sp_get_headerReport_campaignPerformance_by_importList('$LeadID','$campaign_id_selected','$DateStart','$DateEnd');";
+// $resultGetHeader = get_data_mysql($sqlGetHeader, $server);
+$resultGetHeader = executeQuery($Conn, $sqlGetHeader);
+while ($rowGetHeader = $resultGetHeader->fetch_assoc()) {
+    $total_uploads = $rowGetHeader["total_uploads"];
+    $dnc_total = $rowGetHeader["dnc_total"];
+    $hot_leads_upload = $rowGetHeader["hot_leads_upload"];
+    $wc_auto_create = $rowGetHeader["wc_auto_create"];
+}
 
+// Free the result set
+mysqli_free_result($resultGetHeader);
+
+$total_list_upload_used = (($total_uploads + ($hot_leads_upload +  $wc_auto_create)) - $dnc_total);
+
+$import_ids_genesys = array_unique($array_import_ids);
+$import_ids_genesys_str = implode(",", $import_ids_genesys);
+$sqlGetCampaingName = "call sp_get_genesys_campaign_name_import_id('$import_ids_genesys_str')";
+// $resultGetCampaingName = get_data_mysql($sqlGetCampaingName, $server);
+$resultGetCampaingName = executeQuery($Conn, $sqlGetCampaingName);
+while ($rowGetCampaingName = $resultGetCampaingName->fetch_assoc()) {
+    $genesys_campaign_name = $rowGetCampaingName["concatenated_names"];
+}
+// Free the result set
+mysqli_free_result($resultGetCampaingName);
+if (empty($genesys_campaign_name)) {
+    $genesys_no_contact = 0;
+    $genesys_attempt = 0;
+} else {
+    $sqlTotalNocontact = "SELECT COUNT(dnis) as genesys_no_contact
+                                        FROM (
+                                    SELECT dnis
+                                    FROM dbo.g_campaign_interaction_detail  
+                                    WHERE [date] BETWEEN '$DateStart 00:00:00' AND '$DateEnd 23:59:59' 
+                                    AND campaign_name IN ('$genesys_campaign_name')
+                                    AND last_wrap_up = 'ININ-OUTBOUND-NO-ANSWER'
+                                    GROUP BY dnis
+                                ) AS grouped_data;";
+    $resultTotalNocontact = get_data_mssql($sqlTotalNocontact);
+    while ($rowTotalNocontact = odbc_fetch_array($resultTotalNocontact)) {
+        $genesys_nocontact = $rowTotalNocontact["genesys_no_contact"];
+    }
+
+    $sqlTotalAttempted = "SELECT COUNT(*) as genesys_attempt
+                      FROM dbo.g_campaign_interaction_detail  
+                      WHERE [date] BETWEEN '$DateStart 00:00:00' AND '$DateEnd 23:59:59' 
+                      AND campaign_name IN ('$genesys_campaign_name');";
+    $resultTotalAttempted = get_data_mssql($sqlTotalAttempted);
+    while ($rowTotalAttempted = odbc_fetch_array($resultTotalAttempted)) {
+        $genesys_attempt = $rowTotalAttempted["genesys_attempt"];
+    }
+}
+
+if ($genesys_nocontact > $total_list_upload_used - $total_list_use_summary) {
+    $genesys_nocontact = $total_list_upload_used - $total_list_use_summary;
+} else {
+    $genesys_nocontact = $genesys_nocontact;
+}
+if ($genesys_nocontact < 0) {
+    $genesys_nocontact = 0;
+}
+
+$objPHPExcel->getActiveSheet()->setCellValue('B' . $rowIndex + 1, 'Genesys Application');
+$objPHPExcel->getActiveSheet()->setCellValue('E' . $rowIndex + 1, $genesys_nocontact);
+$objPHPExcel->getActiveSheet()->setCellValue('F' . $rowIndex + 1, $genesys_attempt);
+$objPHPExcel->getActiveSheet()->setCellValue('AE' . $rowIndex + 1, $genesys_nocontact);
+
+
+$sqlGetHeader = "call  sp_get_headerReport_agentPerformance_by_importList('$LeadID','$GroupID','$TeamID');";
+// $resultGetHeader = get_data_mysql($sqlGetHeader, $server);
+$resultGetHeader = executeQuery($Conn, $sqlGetHeader);
+while ($rowGetHeader = $resultGetHeader->fetch_assoc()) {
+    $campaign_header_name = $rowGetHeader["campaign_name"];
+    $sup_name = $rowGetHeader["sup_name"];
+    $group_name = $rowGetHeader["group_name"];
+}
+
+// Free the result set
+mysqli_free_result($resultGetHeader);
+
+// Close the connection
+mysqli_close($Conn);
+
+$objPHPExcel->getActiveSheet()->setCellValue('C3', $campaign_header_name);
+$objPHPExcel->getActiveSheet()->setCellValue('C4', $group_name);
+$objPHPExcel->getActiveSheet()->setCellValue('C5', $sup_name);
+$objPHPExcel->getActiveSheet()->setCellValue('C6', $currentdatetime);
+$objPHPExcel->getActiveSheet()->setCellValue('C7', $DateStart . ' - ' . $DateEnd);
 
 //echo date('H:i:s') , " Write to Excel5 format" , EOL;
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 $droot = "temp/";
-$fname = "Agent_Performance_By_lead" . $currentdate . ".xls";
-$objWriter->save($droot . $fname);
-//$objWriter->save(str_replace('.php', '.xls', __FILE__));
-
-//echo date('H:i:s') , " File written to " , str_replace('.php', '.xls', pathinfo(__FILE__, PATHINFO_BASENAME)) , EOL;
-
-
-// Echo memory peak usage
-//echo date('H:i:s') , " Peak memory usage: " , (memory_get_peak_usage(true) / 1024 / 1024) , " MB" , EOL;
-
-// Echo done
-//echo date('H:i:s') , " Done writing file" , EOL;
-//echo 'File has been created in ' , getcwd() , EOL;
-
-$result = array("result" => "success", "fname" => $fname);
+$objWriter->save($droot . $file_name);
+$result = array("result" => "success", "fname" => $file_name);
 echo json_encode($result);

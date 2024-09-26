@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Force Close Window</title>
+</head>
+<body>
+    <h1>Click the button to close this window</h1>
+    <button onclick="openWindow()">Open Window</button>
+
+    <script>
+        function openWindow() {
+            window.open('https://localhost/app/aig/Application/payment.php?amount=200&is_recurring=1', 'payment');
+        }
+        function showAlert(message) {
+            alert(message);
+        }
+    </script>
+</body>
+</html>

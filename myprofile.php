@@ -103,10 +103,6 @@ margin: 8px 8px;
 									<tr>
 										<td  style="padding-top:6px;" colspan="2">
 									
-										<!-- 
-											ต้องเป็น ปี เดือน วัน ป่าววะ เลือกปี ถึงจะรู้เดือนว่า ปีนั้น กุมภา มี 29 หรือ 28 วัน 
-												<input type="text" name="umm" placeholder="month"  autocomplete="off" style="width:48%">
-										--> 
 											<input type="hidden" name="umm">
 											<div id="dd" class="drop wrapper-dropdown-5" style="width:48%;display:inline-block" >
 													<span class="span-placeholder">Month</span>

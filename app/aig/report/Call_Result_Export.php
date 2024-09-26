@@ -1,12 +1,11 @@
 <?php
-
-
 ini_set("display_errors", 0);
 
 date_default_timezone_set("Asia/Bangkok");
 
 require_once("../../function/currentDateTime.inc");
 require_once("../../function/StartConnect.inc");
+require_once("../../PHPExcel/Classes/PHPExcel.php");
 
 function DateDiff($strDate1, $strDate2)
 {
@@ -82,15 +81,15 @@ while ($row = mysqli_fetch_array($result)) {
  */
 
 /** Error reporting */
-error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-ini_set('display_startup_errors', TRUE);
+// error_reporting(E_ALL);
+// ini_set('display_errors', TRUE);
+// ini_set('display_startup_errors', TRUE);
 
-define('EOL', (PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
+// define('EOL', (PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
 
 
 /** PHPExcel_IOFactory */
-require_once dirname(__FILE__) . '/../../PHPExcel/Classes/PHPExcel/IOFactory.php';
+// require_once dirname(__FILE__) . '/../../PHPExcel/Classes/PHPExcel/IOFactory.php';
 
 
 
@@ -169,12 +168,11 @@ while ($row = mysqli_fetch_array($result_wrapup)) {
     $lv2desc = $row["lv2desc"];
     $lv3code = $row["lv3code"];
     $lv3desc = $row["lv3desc"];
-    if ($rw==$baseRow) {
+    if ($rw == $baseRow) {
         $AllLV = 'C' . $rw;
         $objPHPExcel->getActiveSheet()->setCellValue('B' . $rw, "Total");
         $objPHPExcel->getActiveSheet()->setCellValue('C' . $rw, $Total);
-        $objPHPExcel->getActiveSheet()->setCellValue('D' . $rw, "=".$AllLV."/".$AllLV);
-
+        $objPHPExcel->getActiveSheet()->setCellValue('D' . $rw, "=" . $AllLV . "/" . $AllLV);
     }
     if ($lv1code && $lv1code !== $curlv1_code) {
         $curlv1_code = $lv1code;
@@ -186,7 +184,7 @@ while ($row = mysqli_fetch_array($result_wrapup)) {
         $objPHPExcel->getActiveSheet()->insertNewRowBefore($rw, 1);
         $objPHPExcel->getActiveSheet()->setCellValue('B' . $rw, "   " . $lv1desc);
         $objPHPExcel->getActiveSheet()->setCellValue('C' . $rw, $sumlv1);
-        $objPHPExcel->getActiveSheet()->setCellValue('D' . $rw, "=".$poslv1."/".$AllLV);
+        $objPHPExcel->getActiveSheet()->setCellValue('D' . $rw, "=" . $poslv1 . "/" . $AllLV);
     }
     if ($lv2code && $lv2code !== $curlv2_code) {
         $curlv2_code = $lv2code;
@@ -198,7 +196,7 @@ while ($row = mysqli_fetch_array($result_wrapup)) {
         $objPHPExcel->getActiveSheet()->insertNewRowBefore($rw, 1);
         $objPHPExcel->getActiveSheet()->setCellValue('B' . $rw, "       " . $lv2desc);
         $objPHPExcel->getActiveSheet()->setCellValue('C' . $rw, $sumlv2);
-        $objPHPExcel->getActiveSheet()->setCellValue('D' . $rw, "=".$poslv2."/".$poslv1);
+        $objPHPExcel->getActiveSheet()->setCellValue('D' . $rw, "=" . $poslv2 . "/" . $poslv1);
     }
     if (!$lv3code)
         continue;
@@ -210,8 +208,7 @@ while ($row = mysqli_fetch_array($result_wrapup)) {
     $objPHPExcel->getActiveSheet()->insertNewRowBefore($rw, 1);
     $objPHPExcel->getActiveSheet()->setCellValue('B' . $rw, "           " . $lv3desc);
     $objPHPExcel->getActiveSheet()->setCellValue('C' . $rw, $sumlv3);
-    $objPHPExcel->getActiveSheet()->setCellValue('D' . $rw, "=".$poslv3."/".$poslv2);
-
+    $objPHPExcel->getActiveSheet()->setCellValue('D' . $rw, "=" . $poslv3 . "/" . $poslv2);
 }
 
 

@@ -571,13 +571,16 @@ function loadpopup_content()
 	$count = 0;
 	$result = $dbconn->executeQuery($sql);
 	while ($rs = mysqli_fetch_array($result)) {
+		//wlog("[call-pane_process][loadpopup_content] cal history sql : " . $rs['create_date']);
 		$tmp3[$count] = array(
-			"cred" => allthaidatetime_short($rs['create_date']),
+			//"cred" => allthaidatetime_short($rs['create_date']),
+			"cred" => nullToEmpty($rs['create_date']),
 			"wup" => wrapupdtl($rs['wrapup_id']),
 			"note" => nullToEmpty($rs['wrapup_note']),
 			//"bill" => nullToEmpty($rs['billsec']) ,
 			//"disp" => nullToEmpty($rs['disposition']) 
 		);
+		wlog("[call-pane_process][loadpopup_content] cal history sql : " . nullToEmpty($rs['create_date']));
 		$count++;
 	}
 
@@ -587,6 +590,7 @@ function loadpopup_content()
 
 	//current campaign list name
 	$sql = "SELECT external_web_url FROM t_campaign WHERE campaign_id = " . dbNumberFormat($tmp['cmpid']) . " ";
+	wlog("[call-pane_process][loadpopup_content] cal external_web_url sql : " . $sql);
 	$count = 0;
 	$result = $dbconn->executeQuery($sql);
 	if ($rs = mysqli_fetch_array($result)) {
@@ -635,9 +639,55 @@ function loadpopup_content()
 		$tmp6 = array("result" => "empty");
 	}
 
+	$sql = "SELECT id,description FROM t_aig_sg_lov WHERE name='typeOfVoucher'";
+	$count = 0;
+	$result = $dbconn->executeQuery($sql);
+	while ($rs = mysqli_fetch_array($result)) {
+		$tmp7[$count] = array(
+			"id" => nullToEmpty($rs['id']),
+			"value" => nullToEmpty($rs['description']),
+		);
+		$count++;
+	}
+	if ($count == 0) {
+		$tmp7 = array("result" => "empty");
+	}
+
+	$sql = "SELECT id,description FROM t_aig_sg_lov WHERE name='voucherValue'";
+	$count = 0;
+	$result = $dbconn->executeQuery($sql);
+	while ($rs = mysqli_fetch_array($result)) {
+		$tmp8[$count] = array(
+			"id" => nullToEmpty($rs['id']),
+			"value" => nullToEmpty($rs['description']),
+		);
+		$count++;
+	}
+	if ($count == 0) {
+		$tmp8 = array("result" => "empty");
+	}
+
+	$sql = "SELECT type_of_vouncher,vouncher_value,dont_call_ind,dont_sms_ind,dont_email_ind,dont_mail_ind FROM t_calllist WHERE calllist_id = ".dbNumberFormat($_POST['listid'])."";
+	$count = 0;
+	$result = $dbconn->executeQuery($sql);
+	while ($rs = mysqli_fetch_array($result)) {
+		$tmp9[$count] = array(
+			"type_of_vouncher" => nullToEmpty($rs['type_of_vouncher']),
+			"vouncher_value" => nullToEmpty($rs['vouncher_value']),
+			"dont_call_ind" => nullToEmpty($rs['dont_call_ind']),
+			"dont_sms_ind" => nullToEmpty($rs['dont_sms_ind']),
+			"dont_email_ind" => nullToEmpty($rs['dont_email_ind']),
+			"dont_mail_ind" => nullToEmpty($rs['dont_mail_ind']),
+		);
+		$count++;
+	}
+	if ($count == 0) {
+		$tmp9 = array("result" => "empty");
+	}
+
 	//campaign data
 	if ($confirm_id)
-		$data = array("calllist" => $tmp1, "wrapuphist" => $tmp2, "listhist" => $tmp3, "script" => $tmp4, "exapp" => $tmp5, "impid" => $tmp6, "confirm_id" => $confirm_id);
+		$data = array("calllist" => $tmp1, "wrapuphist" => $tmp2, "listhist" => $tmp3, "script" => $tmp4, "exapp" => $tmp5, "impid" => $tmp6, "confirm_id" => $confirm_id, "typeOfVoucher" => $tmp7, "voucherValue" => $tmp8, "calllist_data" => $tmp9);
 
 
 	//$data = array("empty");
@@ -815,7 +865,7 @@ function save_wrapup()
 		exit();
 	}
 	$option = null;
-
+	
 	//integration genesys
 	$lastwrapup = null;
 	$genesys_wrapup = null;
@@ -826,8 +876,13 @@ function save_wrapup()
 	$genesysUID = $tmp['genesysid'];
 	$callbackNumbers = $tmp['callbackNumbers'];
 	$schedule_tile = (trim($tmp['schedule_time']) != "") ? date(DATE_ISO8601, strtotime($tmp['schedule_time'])) : "";
-	$gene = new OutboundGenesys();
-	$participants = $gene->getPaticipants($convsersationId);
+	try{
+		$gene = new OutboundGenesys();
+		$participants = $gene->getPaticipants($convsersationId);
+	}
+	catch(Exception $e){
+		wlog("[call-pane_process][save_wrapup] OutboundGenesys error : " . $e);
+	}
 	if ($tmp['wrapup3']) {
 		$lastwrapup = $tmp['wrapup3'];
 	} else if ($tmp['wrapup2']) {
@@ -841,6 +896,7 @@ function save_wrapup()
 	// 	$genesys_wrapup = (!empty($rs['genesys_wrapup_id']))?$rs['genesys_wrapup_id']:null; 
 	// }
 	//auto transfer lead from genesys
+
 	autoTransfer($listid, $tmp['uid'], $tmp['cmpid'], $dbconn);
 
 	//check remove call list  from worklist or not, and option
@@ -1019,6 +1075,25 @@ function save_wrapup()
 
 	wlog("[call-pane_process][save_wrapup] update last wrapup : " . $sql);
 	$dbconn->executeUpdate($sql);
+
+	//Update calllist data
+	$sql = " UPDATE t_calllist SET ".
+		" type_of_vouncher = ".dbformat($tmp['typeOfVoucher'])." ".
+		" ,vouncher_value = ".dbformat($tmp['voucherValue'])." ".
+		" ,dont_call_ind = ".dbformat($tmp['Dont_call_ind'])." ".
+		" ,dont_sms_ind = ".dbformat($tmp['Dont_SMS_ind'])." ".
+		" ,dont_email_ind = ".dbformat($tmp['Dont_email_ind'])." ".
+		" ,dont_mail_ind = ".dbformat($tmp['Dont_Mail_ind'])." ".
+		" WHERE calllist_id = ".dbNumberFormat($tmp['listid'])." ";
+	wlog("[call-pane_process][save_wrapup] update calllist data : " . $sql);
+	$dbconn->executeUpdate($sql);
+
+	//Update Expire Date
+	$sql = " CALL sp_update_expire_day_from_wrapup ($lastwrapup,".dbNumberFormat($tmp['listid']).")";
+	wlog("[call-pane_process][save_wrapup] update expire date : " . $sql);
+	$dbconn->executeUpdate($sql);
+
+
 	/*
 				   //insert call transaction
 				   $sql = " INSERT INTO t_call_trans  ( campaign_id , calllist_id , agent_id ,  uniqueid , wrapup_option_id , wrapup_id , wrapup_note ,  create_date ) VALUES (".
@@ -1085,9 +1160,9 @@ function init()
 		" ,CASE WHEN last_wrapup_option_id  IN ( 2,9 ) THEN calllist_id END AS CNT_FOLLOWUP " .
 		" ,CASE WHEN last_wrapup_option_id = 8 THEN calllist_id END AS CNT_NOCONTACT " .
 		" FROM t_calllist_agent " .
-		" WHERE agent_id = " . dbNumberFormat($tmp['uid']) .
+		" WHERE agent_id = '".dbNumberFormat($tmp['uid'])."'".
 		" AND status = 1 ) a  on ( c.campaign_id = a.campaign_id )" .
-		" left outer JOIN (SELECT agent_id,campaign_id,last_join_date FROM t_agent_join_campaign WHERE agent_id=" . dbNumberFormat($tmp['uid']) . ") j on ( c.campaign_id = j.campaign_id ) " .
+		" left outer JOIN (SELECT agent_id,campaign_id,last_join_date FROM t_agent_join_campaign WHERE agent_id='".dbNumberFormat($tmp['uid'])."') j on ( c.campaign_id = j.campaign_id ) " .
 		" WHERE c.status=2 " .
 		" GROUP BY j.agent_id , c.campaign_id , c.campaign_name , c.campaign_detail , last_join_date";
 
@@ -1968,12 +2043,12 @@ function addCallTrans(){
 		exit();
 	}
 	
-	$sql = "CALL sp_call_trans ('$voice_id',$campaign_id,$agent_id,$calllist_id,null,null,null,null)";
+	$sql = "CALL sp_call_trans ('$voice_id',$campaign_id,$agent_id,$calllist_id,null,null,null,null);";
 	$dbconn->executeUpdate($sql);
 	$dbconn->dbClose();
-	wlog("[call-pane_process][addCallTrans] sql : " . $sql);
+	wlog("[call-pane_process][addCallTrans] request sql : " . $sql);
 	$data = array("result" => "success");
-
+	wlog("[call-pane_process][addCallTrans] response sql : " . $sql);
 	echo json_encode($data);
 }
 

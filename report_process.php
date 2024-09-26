@@ -12,6 +12,9 @@ if (isset($_POST['action'])) {
 		case "getleadbycmp":
 			getLeadListByCampaign();
 			break;
+		case "getListComment":
+			getListComment();
+			break;
 			// ===== TESTING =====
 
 		case "getcmp":
@@ -60,6 +63,38 @@ if (isset($_POST['action'])) {
 			confirm_call_report_export();
 			break;
 	}
+}
+
+function getListComment()
+{
+
+	$dbconn = new dbconn;
+	$res = $dbconn->createConn();
+	if ($res == 404) {
+		$res = array("result" => "error", "message" => "Can't connect to database");
+		echo json_encode($res);
+		exit();
+	}
+
+	$sql = "SELECT distinct list_comment FROM t_import_list til where list_comment  is not null
+order by list_comment  desc";
+	wlog("[report_process][getListComment] sql :  " . $sql);
+
+	$count = 0;
+	$result = $dbconn->executeQuery($sql);
+	while ($rs = mysqli_fetch_array($result)) {
+		$data[$count] = array(
+			"val"  => nullToEmpty($rs['list_comment']),
+		);
+		$count++;
+	}
+
+	if ($count == 0) {
+		$data = array("result" => "empty");
+	}
+
+	$dbconn->dbClose();
+	echo json_encode($data);
 }
 
 function getGroup()

@@ -434,8 +434,6 @@
             $dbconn->dbClose(); 
 		    $res = array("result"=>"success");
 			echo json_encode($res);   
-			
-			
    }
    
    function exapp_delete(){

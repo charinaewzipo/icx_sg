@@ -102,6 +102,7 @@
 			            	$('[name=exapp_url]').val(result.data.exappurl);
 			            	$('[name=exapp_icon]').val(result.data.exappicon);
 			            	$('[name=exapp_sts]').val(result.data.exappsts);
+							$('[name=file_upload]').val('');
 			            	
 			            	
 						}//end success
@@ -114,8 +115,9 @@
 				  $('[name=exapp_campaign]').val('');
 	              $('[name=exapp_name]').val('');
 	              $('[name=exapp_url]').val('');
-	              $('[name=exapp_icon]').val('');
+	              $('[name=exapp_icon]').val('icon-expand-alt');
 	              $('[name=exapp_sts]').val('1');
+				  $('[name=file_upload]').val('');
 	              
 	            	
 	              $('#exapp-main-pane').hide();
@@ -215,7 +217,35 @@
 		  		}
 		  		
 				$.exapp.save();
+
+				var fileInput = $('#file_upload')[0].files[0]; // Get the file
+				if (fileInput) {
+					// Create FormData object to send file data
+					var formData = new FormData();
+					formData.append('file_upload', fileInput);
+		
+					// Send file data to server via AJAX
+					$.ajax({
+						url: 'upload.php',  // Server script to handle upload
+						type: 'POST',
+						data: formData,
+						contentType: false, // Prevent jQuery from automatically processing data
+						processData: false, // Prevent jQuery from automatically converting data
+						success: function(response) {
+							console.log(response); // Optional: Display server response
+						},
+						error: function() {
+							console.log('File upload failed!'); // Handle error
+						}
+					});
+				}
 	   });
+	   $('#file_upload').on('change', function(e) {
+			e.preventDefault();
+			var fileName = $(this).val().split('\\').pop();
+			fileName = "/app/aig/upload/" + fileName;
+			$('[name=exapp_url]').val(fileName);
+		});
 	  
 	  
   });

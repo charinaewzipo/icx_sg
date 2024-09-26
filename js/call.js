@@ -163,7 +163,7 @@
 						$("#time_talk").timer('pause');
 						$("#time_wrap").timer('resume');
 						$.call.phoneStatus(lastinter.state);
-						timerAutoWrapup = setTimeout(autoWrapup, 300000);
+						//timerAutoWrapup = setTimeout(autoWrapup, 300000);
 					} else if (message.data.category == "connect") {
 						voiceid = message.data.interaction.id;
 						$.call.voiceid = voiceid;
@@ -995,7 +995,7 @@
 
 			//animate select campaign
 			$('#smartpanel').slideUp('slow', function () {
-				$('#smartpanel-detail').html('<i class="icon-fire"></i><span style="font-family:roboto; font-size:18px; font-weight:300; margin:5px;">Tubtim </span>');
+				$('#smartpanel-detail').html('<i class="icon-fire"></i><span style="font-family:roboto; font-size:18px; font-weight:300; margin:5px;">ICX </span>');
 				$('#smartpanel').slideDown('slow');
 			});
 
@@ -1421,6 +1421,10 @@
 						$.call.lastInteraction = null;
 						$('[name=lastInteraction]').val('');
 						$('[name=voiceid]').val('');
+
+						$('#makecall').show();
+						$('#hangup').hide();
+
 						$.call.load_dashboard($('[name=cmpid]').val());
 						
 
@@ -1536,7 +1540,7 @@
 							if (appid) {
 								txt += '<a href="' + result.exapp[i].appu + '?id=' + appid + '" style="text-decoration:none;" target="_blank">';
 							} else {
-								txt += '<a href="' + result.exapp[i].appu + '?campaign_id=' + cmpid + '&calllist_id=' + callid + '&agent_id=' + aid + '&import_id=' + imid + '" target="_blank">';
+								txt += '<a href="' + result.exapp[i].appu + '?campaign_id=' + cmpid + '&calllist_id=' + callid + '&agent_id=' + aid + '&import_id=' + imid + '&formType=ah" target="_blank">';
 							}
 							txt += '<span class="' + result.exapp[i].appi + '" style="font-size:26px; color:#666;"></span><span style="font-size:12px; display:block;  color:#666;"> ' + result.exapp[i].appn + '</span></a>' +
 								'</li>';
@@ -1693,7 +1697,33 @@
 						$('#makecall').trigger('click');
 					})
 
+					//typeOfVoucher
+					var option = "<option value=''> &nbsp; </option>";
+					for( i=0 ; i<result.typeOfVoucher.length ; i++){
+					 	option += "<option value='"+ result.typeOfVoucher[i].id +"'>"+ result.typeOfVoucher[i].value +"</option>";									    										    
+					}								
+					$('[name=typeOfVoucher]').text('').append(option);
 
+					//typeOfVoucher
+					var option = "<option value=''> &nbsp; </option>";
+					for( i=0 ; i<result.voucherValue.length ; i++){
+					 	option += "<option value='"+ result.voucherValue[i].id +"'>"+ result.voucherValue[i].value +"</option>";									    										    
+					}								
+					$('[name=voucherValue]').text('').append(option);
+
+					//calllist_data
+					$('[name="Dont_call_ind"]').prop('checked', false);
+					$('[name="Dont_SMS_ind"]').prop('checked', false);
+					$('[name="Dont_email_ind"]').prop('checked', false);
+					$('[name="Dont_Mail_ind"]').prop('checked', false);
+					for( i=0 ; i<result.calllist_data.length ; i++){
+						$('[name=typeOfVoucher]').val(result.calllist_data[i].type_of_vouncher);
+						$('[name=voucherValue]').val(result.calllist_data[i].vouncher_value);
+						$('[name="Dont_call_ind"][value="' + result.calllist_data[i].dont_call_ind + '"]').prop('checked', true);
+						$('[name="Dont_SMS_ind"][value="' + result.calllist_data[i].dont_sms_ind + '"]').prop('checked', true);
+						$('[name="Dont_email_ind"][value="' + result.calllist_data[i].dont_email_ind + '"]').prop('checked', true);
+						$('[name="Dont_Mail_ind"][value="' + result.calllist_data[i].dont_mail_ind + '"]').prop('checked', true);
+					}
 
 					//show history call
 

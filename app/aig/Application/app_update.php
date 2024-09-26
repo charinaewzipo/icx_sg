@@ -297,7 +297,7 @@ if(mysqli_query($Conn, $SQL_YesFile))
 		mysqli_query($Conn, $sql);
 	}
 	
-	// $data = array("result"=>"success","data"=>"Save Complete.", "url"=>"check_app.php?id=$Id");
+	$data = array("result"=>"success","data"=>"Save Complete.", "url"=>"check_app.php?id=$Id");
 
 }
 else

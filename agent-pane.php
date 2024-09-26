@@ -94,28 +94,30 @@
 				</thead>
 				<tbody>
 						<tr>
-							<td style="padding-top:20px; width:40%; text-align:right; vertical-align:middle"><span style="color:#666"> * </span> First Name Enlish: </td>
-							<td style="padding-top:20px; width:60%"> <input type="text" name="fname" autocomplete="off" placeholder="ชื่อจริงภาษาอังกฤษ" ></td>
+							<td style="padding-top:20px; width:40%; text-align:right; vertical-align:middle"><span style="color:#666"> * </span> First Name English: </td>
+							<td style="padding-top:20px; width:60%"> <input type="text" name="fname" autocomplete="off" placeholder="" ></td>
 						</tr>
 						<tr>
-							<td style="text-align:right; vertical-align:middle"><span style="color:#666"> * </span> Last Name Enlish: </td>
-							<td style=""> <input type="text" name="lname"  autocomplete="off" placeholder="นามสกุลภาษาอังกฤษ"></td>
+							<td style="text-align:right; vertical-align:middle"><span style="color:#666"> * </span> Last Name English: </td>
+							<td style=""> <input type="text" name="lname"  autocomplete="off" placeholder=""></td>
 						</tr>
+						<!--
 						<tr>
 							<td style="text-align:right; vertical-align:middle"><span style="color:#666"> * </span> First Name Thai: </td>
-							<td style=""> <input type="text" name="fname_th" autocomplete="off" placeholder="ชื่อจริงภาษาไทย" ></td>
+							<td style=""> <input type="text" name="fname_th" autocomplete="off" placeholder="" ></td>
 						</tr>
 						<tr>
 							<td style="text-align:right; vertical-align:middle"><span style="color:#666"> * </span> Last Name Thai: </td>
-							<td style=""> <input type="text" name="lname_th"  autocomplete="off" placeholder="นามสกุลภาษาไทย"></td>
+							<td style=""> <input type="text" name="lname_th"  autocomplete="off" placeholder=""></td>
 						</tr>
+						-->
 						<tr>
 							<td style="text-align:right; vertical-align:middle"><span style="color:#666"> * </span> Genesys Id: </td>
-							<td style=""> <input type="text" name="genesysid"  autocomplete="off" placeholder="Genesys Id"></td>
+							<td style=""> <input type="text" name="genesysid"  autocomplete="off" placeholder=""></td>
 						</tr>
 						<tr>
 							<td style="text-align:right; vertical-align:middle"> NickName : </td>
-							<td style=""> <input type="text" name="nname"  autocomplete="off" placeholder="ชื่อเล่น"></td>
+							<td style=""> <input type="text" name="nname"  autocomplete="off" placeholder=""></td>
 						</tr>
 						<tr>
 							<td style="text-align:right; vertical-align:middle"> Mobile : </td>
@@ -145,13 +147,13 @@
 						</tr>
 						<tr>
 							<td style="padding-top:20px; text-align:right; vertical-align:middle"><span style="color:#666"> * </span> Login ID : </td>
-							<td style="padding-top:20px; vertical-algin:bottom;"> <input type="text" name="loginid"  autocomplete="off" placeholder="ชื่อสำหรับล็อคอิน">
+							<td style="padding-top:20px; vertical-algin:bottom;"> <input type="text" name="loginid"  autocomplete="off" placeholder="">
 								<span id="err-loginid" style="display:inline-block; text-indent:10px; position:relative; top:5px; color:red"></span>
 							</td>
 						</tr>
 						<tr>
 							<td style=";text-align:right; vertical-align:middle"><span style="color:#666"> * </span> Password : </td>
-							<td style=""> <input type="password" name="passwd"  autocomplete="off" placeholder="รหัสผ่าน"></td>
+							<td style=""> <input type="password" name="passwd"  autocomplete="off" placeholder=""></td>
 						</tr>
 						<tr>
 							<td style="text-align:right; vertical-align:middle"> Retype Password : </td>

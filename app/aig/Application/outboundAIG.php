@@ -118,7 +118,8 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
     $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
-
+    $policyExpDate = isset($response['policyExpDate']) ? transformDateQuote($response['policyExpDate']) : null;
+    
     // Handle JSON fields
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
@@ -147,29 +148,43 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         $payment_mode = null;
         $payment_frequency = null;
     }
+    
     $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
     $customer_id = isset($individual_info['customerIdNo']) ? $individual_info['customerIdNo'] : '';
-    // SQL query with dynamic quote_create_date
+    
+    // Start building the SQL query
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
-        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status,payment_frequency,payment_mode,fullname,dob,efulfillmentFlag,customer_id";
+        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status, 
+        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id";
 
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
         $sql .= ", quote_create_date";
     }
 
+    // Conditionally add policyExpDate if it exists in the response
+    if ($policyExpDate !== null) {
+        $sql .= ", policyExpDate";
+    }
+
     $sql .= ") VALUES (
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
-        '$policyEffDate',  '$campaignCode', '$ncdInfo', '$policyHolderInfo',
+        '$policyEffDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
-        $campaign_id, $import_id, $calllist_id, NOW(), 'Open',$payment_frequency,$payment_mode,'$full_name','$date_of_birth','$efulfillmentFlag','$customer_id'";
+        $campaign_id, $import_id, $calllist_id, NOW(), 'Open', '$payment_frequency', '$payment_mode', 
+        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id'";
 
     // Add NOW() for quote_create_date if response is not empty
     if (!empty($response)) {
         $sql .= ", NOW()";
+    }
+
+    // Add policyExpDate value if it exists
+    if ($policyExpDate !== null) {
+        $sql .= ", '$policyExpDate'";
     }
 
     $sql .= ")";
@@ -186,6 +201,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         echo json_encode(array("result" => "success", "message" => "Data inserted successfully", "id" => $lastInsertedId));
     }
 }
+
 
 
 
@@ -228,6 +244,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $efulfillmentFlag = isset($formData['efulfillmentFlag']) ? $formData['efulfillmentFlag'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
     $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
+    $policyExpDate = isset($response['policyExpDate']) ? transformDateQuote($response['policyExpDate']) : null;
 
     // Escape the strings for safe query execution
     $ncdInfo = mysqli_real_escape_string($dbconn->dbconn, $ncdInfo);
@@ -277,7 +294,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
 
     // Add quote_create_date if response is not null
     if (!empty($response)) {
-        $sql .= ", quote_create_date = NOW()";
+        $sql .= ", quote_create_date = NOW() ,policyExpDate='$policyExpDate'";
     }
 
     // Complete the WHERE clause
@@ -345,14 +362,12 @@ function DBUpdateQuoteRetrieve($response, $id)
     // Extract data from response
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
-    $currency = isset($response['currency']) ? $response['currency'] : '';
     $productId = isset($response['productId']) ? $response['productId'] : 0;
     $producerCode = isset($response['producerCode']) ? $response['producerCode'] : '';
-    $propDate = isset($response['propDate']) ? transformDateQuote($response['propDate']) : null;
-    $policyEffDate = isset($response['policyEffDate']) ? transformDateQuote($response['policyEffDate']) : null;
-    $policyExpDate = isset($response['policyExpDate']) ? transformDateQuote($response['policyExpDate']) : null;
+    $propDate = isset($response['propDate']) ? convertToISO8601($response['propDate']) : null;
+    $policyEffDate = isset($response['policyEffDate']) ? convertToISO8601($response['policyEffDate']) : null;
+    $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
-    $quoteStatus = isset($response['quoteStatus']) ? $response['quoteStatus'] : null;
     $quickQuoteFlag = isset($response['quickQuoteFlag']) ? $response['quickQuoteFlag'] : 0;
 
     // Handle policy holder information
@@ -362,7 +377,7 @@ function DBUpdateQuoteRetrieve($response, $id)
     $individualPolicyHolderInfo = isset($response['policyHolderInfo']['individualPolicyHolderInfo']) ? $response['policyHolderInfo']['individualPolicyHolderInfo'] : [];
     $fullName = isset($individualPolicyHolderInfo['fullName']) ? $individualPolicyHolderInfo['fullName'] : '';
     $customerIdNo = isset($individualPolicyHolderInfo['customerIdNo']) ? $individualPolicyHolderInfo['customerIdNo'] : '';
-    $dateOfBirth = isset($individualPolicyHolderInfo['dateOfBirth']) ? transformDateQuote($individualPolicyHolderInfo['dateOfBirth']) : null;
+    $dateOfBirth = isset($individualPolicyHolderInfo['dateOfBirth']) ? convertToISO8601($individualPolicyHolderInfo['dateOfBirth']) : null;
 
     // Handle insured list information
     $insuredList = isset($response['insuredList']) ? json_encode($response['insuredList']) : '{}';
@@ -379,17 +394,13 @@ function DBUpdateQuoteRetrieve($response, $id)
                 premiumPayable = '$premiumPayable',
                 productId = '$productId',
                 producerCode = '$producerCode',
-                -- propDate = " . ($propDate === null ? 'NULL' : "'$propDate'") . ",
-                -- policyEffDate = " . ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ",
-                -- policyExpDate = " . ($policyExpDate === null ? 'NULL' : "'$policyExpDate'") . ",
+                propDate = " . ($propDate === null ? 'NULL' : "'$propDate'") . ",
+                policyEffDate = " . ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ",
+                policyExpDate = " . ($policyExpDate === null ? 'NULL' : "'$policyExpDate'") . ",
                 quoteNo = '$quoteNo',
-                -- quickQuoteFlag = '$quickQuoteFlag',
-                -- policyHolderInfo = '$policyHolderInfo',
-                -- insuredList = '$insuredList',
-                -- fullname = '$fullName',
-                -- customer_id = '$customerIdNo',
-                -- dob = " . ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ",
-                -- payment_mode = '$paymentMode',
+                fullname = '$fullName',
+                customer_id = '$customerIdNo',
+                dob = " . ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ",
                 update_date = NOW()
             WHERE id = '$id'";
 
@@ -663,7 +674,13 @@ function transformDateQuote($dateString)
     return null;
 }
 
+function convertToISO8601($dateStr) {
+     // Convert the date from DD/MM/YYYY to YYYY-MM-DD
+     $date = DateTime::createFromFormat('d/m/Y', $dateStr);
 
+     // Return the date in 'Y-m-d H:i:s' format with time as 00:00:00
+     return $date ? $date->format('Y-m-d 00:00:00') : null;
+}
 function maskCardNumber($card_number)
 {
     if (strlen($card_number) > 6) {

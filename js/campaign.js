@@ -14,7 +14,6 @@
 				
 					},										
 					'success' : function(data){ 
-									
 			                        var  result =  eval('(' + data + ')'); 
 			                        
 								      //sale script
@@ -30,10 +29,16 @@
 									  option += "<option value='"+ result.app[i].id +"'>"+ result.app[i].value +"</option>";									    										    
 									 }								
 									 $('[name=ncmpApp]').text('').append(option);
+
+									 //campaign category
+									 var option = "<option value=''> &nbsp; </option>";
+									 for( i=0 ; i<result.campaign_type.length ; i++){
+									  option += "<option value='"+ result.campaign_type[i].id +"'>"+ result.campaign_type[i].value +"</option>";									    										    
+									 }								
+									 $('[name=ncmpType]').text('').append(option);
 									
 					}
 			   })//end ajax			
-					
 			
 		},
 	    load: function(){
@@ -105,10 +110,10 @@
 						   //$('#loading').html('').append("<img src='image/ajax-loading.gif'/>");
 						},										
 						'success' : function(data){ 
-							//remove image loading 
-							//$('#loading').html('').append("Project Management Sheet");
-							
-							var  result =  eval('(' + data + ')'); 
+						//remove image loading 
+						//$('#loading').html('').append("Project Management Sheet");
+			
+		                 var  result =  eval('(' + data + ')'); 
 		                 
 		                 //reset current checkbox
 		                 $('[name=confirm_stop_cmp]').attr('checked', false);
@@ -128,6 +133,13 @@
 							 }								
 							 $('[name=cmpApp]').text('').append(option);
 
+							 //select campaign category
+			                 option = "<option value=''> &nbsp; </option>";
+							 for( i=0 ; i<result.cp_type.length ; i++){
+							  option += "<option value='"+result.cp_type[i].id +"'>"+ result.cp_type[i].value +"</option>";									    										    
+							 }								
+							 $('[name=cmpCat]').text('').append(option);
+
 							//select cmptype
 							$("select[name=cmpType]").val(result.data.cmpType);
 							//select cmpStatus
@@ -137,7 +149,11 @@
 		
 			           	  $('[name=cmpid]').val(result.data.cmpid);
 						  $('[name=cmpName]').val(result.data.cmpName);
+						  $('[name=cmpCode]').val(result.data.cmpCode);
 			              $('[name=cmpDetail]').val(result.data.cmpDetail);
+						  $('[name=cmpCat]').val(result.data.cmpCat);
+						  $('[name="cmpExpire"]').prop('checked', false);
+						  $('[name="cmpExpire"][value="' + result.data.cmpExpire + '"]').prop('checked', true);
 			              $('[name=cmpStartDate]').val(result.data.cmpStartDate); 
 			              $('[name=cmpEndDate]').val(result.data.cmpEndDate); 
 			            //   $('[name=cmpStatus]').val(result.data.cmpStatus); 
@@ -591,10 +607,8 @@
 					   //$('#loading').html('').append("<img src='image/ajax-loading.gif'/>");
 					},										
 					'success' : function(data){ 
-				
 						
 	                   var  result =  eval('(' + data + ')');  
-	                   console.log("🚀 ~ result:", result.cmp)
 	                   
 	                   //campaign detail
 	                   $('#cmname').text('').text( result.cmp.cmpname );
@@ -635,7 +649,7 @@
 						  
 					    } 
 	                   
-	                   console.log( "result.length",result.data.length );
+	                   console.log( result.data.length );
 	                   if(  result.data.length  != 0 ){
 	                	    var $tfoot = $('#campaign-list-summary tfoot');
 	                	    $tfoot.find('tr').remove();

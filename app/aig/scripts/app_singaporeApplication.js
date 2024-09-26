@@ -658,7 +658,7 @@ const removeKeysFromQuotationData = (data) => {
     'id', 'propDate','type_vouncher','vouncher_value','dont_call_ind','dont_SMS_ind','dont_email_ind','dont_Mail_ind','quote_create_date','update_date'
     ,'ncdInfo','insuredList','payment_amount','policyExpDate',
     'plan_poi', 'agent_id', 'calllist_id', 'campaignCode', 'campaign_id', 'dob'
-    , 'fullname', 'import_id', 'incident_status', 'lastname', 'policyNo', 'policy_create_date','payment_mode','payment_frequency'
+    , 'fullname', 'import_id', 'incident_status', 'lastname', 'policyNo', 'policy_create_date','payment_mode','payment_frequency','customer_id'
   ];
 
   keysToRemove.forEach(key => {

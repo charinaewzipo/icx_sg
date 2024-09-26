@@ -26,7 +26,7 @@ class OutboundGenesys {
 
     public function __construct(){
         try {
-
+/*
             $this->provider = new \League\OAuth2\Client\Provider\GenericProvider([
                 'clientId'                => trim((getenv("GENE_CLIENTID"))?getenv("GENE_CLIENTID"):GENE_CLIENTID),    // The client ID assigned to you by the provider
                 'clientSecret'            => trim((getenv("GENE_CLIENTSECRET"))?getenv("GENE_CLIENTSECRET"):GENE_CLIENTSECRET),    // The client password assigned to you by the provider
@@ -35,8 +35,40 @@ class OutboundGenesys {
                 'urlAccessToken'          => "https://login.$this->env/oauth/token",
                 'urlResourceOwnerDetails' => 'https://service.example.com/resource'
             ]);
+
             // Try to get an access token using the client credentials grant.
-            $this->accessToken = $this->provider->getAccessToken('client_credentials');
+            //$this->accessToken = $this->provider->getAccessToken('client_credentials');
+*/
+
+            $data = [
+                'grant_type' => 'client_credentials',
+                'client_id' => trim((getenv("GENE_CLIENTID"))?getenv("GENE_CLIENTID"):GENE_CLIENTID),
+                'client_secret' => trim((getenv("GENE_CLIENTSECRET"))?getenv("GENE_CLIENTSECRET"):GENE_CLIENTSECRET)
+            ];
+
+            $ch = curl_init("https://login.$this->env/oauth/token");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+            $response = curl_exec($ch);
+            $err = curl_error($ch);
+
+            curl_close($ch);
+
+            if ($err) {
+                wlog( "[genesys][log] get token err : ".$err );
+            } else {
+                $token_data = json_decode($response, true);
+                $access_token = $token_data['access_token'] ?? null;
+                
+                if ($access_token) {
+                    $this->accessToken = $access_token;
+                }
+            }
+
+            //$this->accessToken = "bRQ2-tM4TRQXawyhu0_cT1jwQ4S_C4GlqkeRu9KVpFYuDtMBRyhJrhqCJOq1qkP7HwuuMWL1TEqSqn4BGGVLOA";
         
         } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
         
@@ -79,6 +111,8 @@ class OutboundGenesys {
             "Content-Type: application/json",
             "authorization: Bearer $this->accessToken"
         ));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
 
         wlog( "[genesys][log]  url : ".$url );
         wlog( "[genesys][log]  data : ".print_r($data,true) );

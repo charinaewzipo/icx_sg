@@ -13,7 +13,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <meta charset="utf-8" />
-<title> Tubtim </title>
+<title> ICX </title>
 <link href="css/ionicons.min.css" rel="stylesheet">
 <link href="css/talkslab.css" rel="stylesheet">
 <link href="css/default.css" rel="stylesheet">

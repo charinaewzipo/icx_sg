@@ -7,7 +7,7 @@ window.Framework = {
             'mypurecloud.com': '',
             'mypurecloud.ie': '',
             'mypurecloud.com.au': '',
-            'mypurecloud.jp': '8ead7ec6-552f-41d0-92e8-8fc04db2fe3e',
+            'mypurecloud.jp': '63825436-f637-49c2-9a27-9e838389e1ed',
             'mypurecloud.de': ''
         },
         customInteractionAttributes: ['PT_URLPop', 'PT_SearchValue', 'PT_TransferContext'],

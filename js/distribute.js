@@ -257,7 +257,7 @@
 								}
 						   }
 							  
-						$('.transferlead').attr('disabled','disabled').text('').text('กำลัง Transfer List... ');
+						$('.transferlead').attr('disabled','disabled').text('').text('Transfering List... ');
 						  var  formtojson =  JSON.stringify( $('form').serializeObject() ); 
 							  $.post(url , { "action" : "lead_transferprocess" , "data": formtojson , "totalagent": totalagent ,  "desc" : d }, function( result ){
 								    var response = eval('('+result+')');  
@@ -778,7 +778,7 @@
 						   
 				  }//end if
 					  
-				$('.transferagent').attr('disabled','disabled').text('').text('กำลัง Transfer List... ');
+				$('.transferagent').attr('disabled','disabled').text('').text('Transfering List... ');
 				  var  formtojson =  JSON.stringify( $('form').serializeObject() ); 
 				  $.post(url , { "action" : "agent_transferprocess" , "data": formtojson , "totalagent": totalagent , "source" : s ,  "desc" : d }, function( result ){
 						    var response = eval('('+result+')');  

@@ -630,7 +630,7 @@ function detail()
 		" , sum( maxtry_cnt ) as maxtry_cnt " .
 		" , sum( sales_cnt ) as sales_cnt " .
 		" from ( " .
-		" select a.campaign_id , campaign_name , a.calllist_id , cl.join_date " .
+		" select a.campaign_id , t.campaign_name , a.calllist_id , cl.join_date " .
 		" ,case when last_wrapup_option_id is null then 1 else 0 end as newlist_cnt " .
 		" ,case when last_wrapup_option_id = 1 then 1 else 0 end as callback_cnt " .
 		" ,case when last_wrapup_option_id = 2 then 1 else 0 end as followup_cnt " .
@@ -1271,7 +1271,7 @@ function mappingfield()
 
 	//  $insert = $insert."excel_dup,calllist_dup ) VALUES (   ";
 
-	//$createtab = $createtab." excel_dup tinyint(1), calllist_dup tinyint(1) ";
+	$createtab = $createtab." first_name varchar(255), last_name varchar(255), tel1 varchar(255), ";
 	$createtab = $createtab . " PRIMARY KEY (`seq`) ";
 	$createtab = $createtab . " ) ";
 
@@ -1279,11 +1279,12 @@ function mappingfield()
 	$dbconn->executeUpdate($createtab);
 
 	//add index to primary key column
+	/*
 	$sql = "CREATE INDEX idx_" . $key . " " .
 		"ON tmp_table" . $key . " (first_name,last_name,tel1) ";
 	wlog("[callList_process][mappingfield] CREATE INDEX on temp_table sql : " . $sql);
 	$dbconn->executeUpdate($sql);
-
+	*/
 	wlog("---- prepare load file ----");
 	wlog("column option : " . $field);
 
@@ -1298,6 +1299,7 @@ function mappingfield()
 
 
 	$filepath = dirname(__FILE__) . '/temp/' . $key . ".csv";
+	$filepath = str_replace('\\', '/', $filepath);
 	$sql = " LOAD DATA LOCAL INFILE '" . $filepath . "' " .
 		" INTO TABLE " . $temptable . " " .
 		" FIELDS TERMINATED BY '" . $delimiter . "' " .
@@ -1938,7 +1940,7 @@ function query()
 		$page =  (intval($_POST['page']) - 1) * $pagelength;
 	}
 
-	$sql = "  SELECT import_id , list_name , list_detail , i.create_date , first_name , last_name , total_records   " .
+	$sql = "  SELECT import_id,list_name,list_detail,i.create_date,first_name,last_name,total_records,i.start_date,i.end_date " .
 		" FROM t_import_list  i LEFT OUTER JOIN t_agents a ON i.create_user = a.agent_id " .
 		" WHERE i.list_name IS NOT NULL AND i.status != 0" .
 		" ORDER BY create_date DESC " .
@@ -1956,6 +1958,8 @@ function query()
 			"cuser"  => nullToEmpty($rs['first_name'] . " " . $rs['last_name']),
 			"total"  => nullToEmpty($rs['total_records']),
 			"incamp" => countCampaign($rs['import_id']),
+			"start_date" => getDateFromDatetime($rs['start_date']),
+			"end_date" => getDateFromDatetime($rs['end_date'])
 		);
 		$count++;
 	}

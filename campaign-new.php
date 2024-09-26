@@ -32,10 +32,22 @@
 																	<td colspan="2" style="padding:0px 50px 5px 50px"  ><input type="text" name="ncmpName" style="width:100%;" placeholder="required field *" autocomplete="off" ></td>
 																</tr>
 																<tr>
+																	<td colspan="2" style="padding:10px 0 5px 50px; color:#666" >Campaign Code</td>
+																</tr>
+																<tr>
+																	<td colspan="2" style="padding:0px 50px 5px 50px"  ><input type="text" name="ncmpCode" style="width:100%;" placeholder="campaign code" autocomplete="off" ></td>
+																</tr>
+																<tr>
 																	<td colspan="2" style="padding:10px 0 5px 50px;color:#666" >&nbsp;Campaign Detail 	</td>
 																</tr>
-																	<tr>
+																<tr>
 																	<td colspan="2" style="padding:0px 50px 5px 50px"  ><textarea type="text" name="ncmpDetail" style="width:100%; height:100px;"  placeholder="describe about campaign name" autocomplete="off" ></textarea></td>
+																</tr>
+																<tr>
+																	<td style="padding:10px 0 5px 50px; color:#666" >Campaign Category</td>
+																</tr>
+																<tr>
+																	<td colspan="2" style="padding:0px 50px 5px 50px"  ><select name="ncmpType"><option></option></select></td>
 																</tr>
 																<tr>
 																	<td colspan="2" style="padding:10px 0 0px 50px;color:#666" ><input type="radio" name="ncmpExpire" checked value="0"> &nbsp; This campaign has no expiry date.</td>

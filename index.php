@@ -12,6 +12,7 @@
 <script type="text/javascript" src="js/stack.time.js"></script> 
 <script type="text/javascript" src="js/jquery.cookie.js"></script> 
 <script type="text/javascript" src="js/index.js"></script> 
+<script type="text/javascript" src="js/getToken.js"></script> 
 <style>
 
 

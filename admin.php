@@ -12,7 +12,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <meta charset="utf-8" />
-<title> Tubtim </title>
+<title> ICX </title>
 <link rel="shortcut icon" type="image/x-icon" href="fonts/fav.ico">
 <link href="css/default.css" rel="stylesheet">
 <style>
@@ -164,7 +164,7 @@
 				<li style="text-align:center; vertical-align:middle;padding-right:2px;"> 	
 					<span style="font-size:21px; display:block; font-weight: 0; font-family: lato; margin-top:-20px;" id="smartpanel">
 						<span id="smartpanel-detail">
-								<i class="icon-fire" ></i> <span style="font-family:roboto; font-size:18px; font-weight:300; margin:5px;">Tubtim </span>				
+								<i class="icon-fire" ></i> <span style="font-family:roboto; font-size:18px; font-weight:300; margin:5px;">ICX </span>				
 						</span>
 					</span>
 		 		</li>
@@ -275,11 +275,11 @@
         </li>
   
      <?php  } ?>
-     
+     <!--
            <li style="height:80px; text-align:center; margin-top:20px; cursor:pointer" id="nav-license">
           		<span style="display:inline-block; color:#aaa;  border-radius:50%; border:2px solid #aaa; margin:8px; width:55px; height:55px; "><span  class="icon-link" style="display:inline-block; position:relative; font-size:30px; margin-top:10px; margin-left:2px;"></span> </span>
         		<span style="display:block; color:#aaa; position:relative; top:-5px; font-family:raleway; font-size:15px;" >License</span>
-        </li>
+        </li>-->
      
      
     </ul>

@@ -359,13 +359,13 @@ if($CountApp == 0){
 			mysqli_query($Conn, $sql_update);
 		}
 
-		// $data = array("result"=>"success","data"=>"Save Complete.", "url"=>"check_app.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id");
+		$data = array("result"=>"success","data"=>"Save Complete.", "url"=>"check_app.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id");
 		// header( "location: check_app.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id" );
 				
 	}else{
 		$data = array("result"=>false,"data"=>"Please contact IT.");
 	}
-	// echo json_encode( $data ); 
+	echo json_encode( $data ); 
 }
 else {
 	$data = array("result"=>false,"data"=>"Already created.");

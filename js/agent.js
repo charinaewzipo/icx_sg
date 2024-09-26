@@ -275,7 +275,7 @@
 			            	$('[name=slicense_code]').val( result.data.slcode);
 			            	$('[name=slicense_name]').val( result.data.slname );
 			            	 
-			            	 $('[name=passwd]').attr('placeholder','รหัสผ่านไม่ถูกแสดงให้เห็น');
+			            	 $('[name=passwd]').attr('placeholder','');
 			            	
 						}//end success
 					});//end ajax 
@@ -305,7 +305,7 @@
 					$('#agent-detail-pane').show();
 					
 				    $('#user-detail-header').text('').text('Create New User');
-				    $('[name=passwd]').attr('placeholder','รหัสผ่าน');
+				    $('[name=passwd]').attr('placeholder','');
 					
 			 },
 			 check:function(){
@@ -438,15 +438,16 @@
 		  	e.preventDefault();
 		  	//check
 		  	if( $('[name=fname]').val() == "" ){
-		  		alert("Please insert First Name Enlish");
+		  		alert("Please insert First Name English");
 		  		$('[name=fname]').focus();
 		  		return;
 		  	}
 			if( $('[name=lname]').val() == "" ){
-				alert("Please insert Last Name Enlish");
+				alert("Please insert Last Name English");
 				$('[name=lname]').focus();
 				return;
 			}
+			/*
 			if( $('[name=fname_th]').val() == "" ){
 				alert("Please insert First Name Thai");
 				$('[name=fname_th]').focus();
@@ -457,6 +458,7 @@
 				$('[name=lname_th]').focus();
 				return;
 			}
+			*/
 			if( $('[name=genesysid]').val() == "" ){
 				alert("Please insert Genesys Id");
 				$('[name=genesysid]').focus();

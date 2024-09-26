@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <meta charset="utf-8" />
-<title> Tubtim </title>
+<title> ICX </title>
 <link rel="shortcut icon" type="image/x-icon" href="fonts/fav.ico">
 <link href="css/default.css" rel="stylesheet">
 <style>

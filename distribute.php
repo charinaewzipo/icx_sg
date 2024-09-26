@@ -12,7 +12,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <meta charset="utf-8" />
-<title>Tubtim</title>
+<title> ICX </title>
 <link rel="shortcut icon" type="image/x-icon" href="fonts/fav.ico">
 <link href="css/default.css" rel="stylesheet">
 
@@ -462,7 +462,7 @@
 				<li style="text-align:center; vertical-align:middle;padding-right:2px;"> 	
 					<span style="font-size:21px; display:block; font-weight: 0; font-family: lato; margin-top:-20px;" id="smartpanel">
 						<span id="smartpanel-detail">
-								<i class="icon-fire" ></i> <span style="font-family:roboto; font-size:18px; font-weight:300; margin:5px;">Tubtim </span>	
+								<i class="icon-fire" ></i> <span style="font-family:roboto; font-size:18px; font-weight:300; margin:5px;">ICX </span>	
 						</span>
 					</span>
 		 		</li>
@@ -533,7 +533,7 @@
 			<hr style="border-bottom: 1px dashed #777777; position:relative; top:-10px"> 
 	
 			<h4 style="font-family:raleway; color:#555;"> Step1 : Select Transfer Type</h4>
-			<p style="margin:0; padding:0;color:#777; line-height:10px; font-size:14px;"> เลือกประเภทของการแจกรายชื่อ </p>
+			<p style="margin:0; padding:0;color:#777; line-height:10px; font-size:14px;">  </p>
 			<div style="float:left;width:50%; border-right:1px dashed #666; text-align:right;">
 				<div style="padding:0 25px">
 						<h2 style="font-family:raleway; color:#666; margin-bottom:0;">Assign List </h2>
@@ -569,7 +569,7 @@
 		 <hr style="border-bottom: 1px dashed #999999; position:relative; "/>
 		 
  			<h4 style="font-family:raleway; color:#666;"> Step 2: Transfer List</h4>
-				<p style="margin:0; padding:0;color:#777; line-height:10px; font-size:14px;"> แจกรายชื่อ </p>
+				<p style="margin:0; padding:0;color:#777; line-height:10px; font-size:14px;">  </p>
 			<br/>
 		
 			<div ></div>
@@ -602,17 +602,17 @@
 											<ul id="transfer-menu" >
 												<li> 
 													<div style="color:#777">Total Selected Lead </div>
-													<div style="color:#777">จำนวนลีสทั้งหมดที่ถูกเลือก</div>
+													<div style="color:#777"></div>
 													<div style="font-size:26px; padding:4px 0; border-bottom:1px solid #666; text-align:right" id="total_trasfer_lead"> 0 </div>
 												</li>
 												<li style="margin-left:30px;"> 
 													<div style="color:#777">Max Transfer Lead Per Agent </div>
-													<div style="color:#777">จำนวนลีสสูงสุดที่สามารถแจกได้</div>
+													<div style="color:#777"></div>
 													<div style="font-size:26px; padding:4px 0; border-bottom:1px solid #666; text-align:right;" id="max_transfer_lead"> 0 </div>
 												</li>
 													<li style="margin-left:40px;"> 
 													<div style="color:#777">Transfer Lead Per Agent </div>
-													<div style="color:#777">จำนวนลีสที่ต้องการแจกต่อคน</div>
+													<div style="color:#777"></div>
 													<div style="font-size:26px; padding:4px 0; border-bottom:1px solid #666;"><input type="text" name="transfer_amount" autocomplete="off" style="text-align:right;"> </div>
 												</li>
 												
@@ -684,7 +684,7 @@
 									<thead>
 										  <tr style="height:80px;">
 										  		<td style="vertical-align:middle; cursor:pointer; vertical-align:bottom;  width:32%;">
-										  		 	<span  id="show_selectall-lead_transfer_toagent" style="display:none"><input type="checkbox" value="all" name="selectalllead_transfer_toagent" style="width:20px;height:20px;"> เลือกทั้งหมด</span>
+										  		 	<span  id="show_selectall-lead_transfer_toagent" style="display:none"><input type="checkbox" value="all" name="selectalllead_transfer_toagent" style="width:20px;height:20px;"> Select All</span>
 										  		</td>
 												<td style="background-color: rgba(1,1,1, 0.05);color:#8bc34a;text-align:center;cursor:pointer; border-radius: 4px; vertical-align:bottom; width:14%;" data-transferid="2" >
 														<i class="icon-circle-arrow-down" style="font-size:30px; position:relative; top:-10px;"></i>
@@ -743,7 +743,7 @@
 										<thead>
 										  <tr style="height:80px;">
 										  		<td style="border-bottom:1px solid #888; margin:4px 1px; padding:4px 1px; vertical-align:middle; cursor:pointer; vertical-align:bottom;  width:32%;">
-										  		 	<span id="show_selectall-fromagent" style="display:none"><input type="checkbox" value="all" name="selectall_fromagent" style="width:20px;height:20px;">เลือกทั้งหมด</span>
+										  		 	<span id="show_selectall-fromagent" style="display:none"><input type="checkbox" value="all" name="selectall_fromagent" style="width:20px;height:20px;"> Select All</span>
 										  		</td>
 												<td style="border-bottom:1px solid #888;margin:4px 1px; padding:4px 1px; color:#aaa;text-align:center;cursor:pointer; border-radius: 4px; vertical-align:bottom; width:14%;" data-transferid="2" >
 														<i class="icon-ok-circle" style="font-size:30px; position:relative; top:-10px;"></i>
@@ -790,7 +790,7 @@
 										<thead>
 											  <tr style="height:80px;">
 											  		<td style="border-bottom:1px solid #888;vertical-align:middle; cursor:pointer; vertical-align:bottom; width:32%;"><!-- 
-											  				 --><span id="show_selectall-toagent" style="display:none"><input type='checkbox' name='selectall_toagent' value='all' style="width:20px;height:20px;"> เลือกทั้งหมด</span> 
+											  				 --><span id="show_selectall-toagent" style="display:none"><input type='checkbox' name='selectall_toagent' value='all' style="width:20px;height:20px;"> Select All</span> 
 											  		</td>
 											  		<td style="border-bottom:1px solid #888;color:#aaa;text-align:center;cursor:pointer; border-radius: 4px; vertical-align:bottom; width:14%;" data-trasnferid="2" class="col2" >
 															<i class="icon-circle-arrow-down" style="font-size:30px; position:relative; top:-10px;"></i>

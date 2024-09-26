@@ -19,7 +19,7 @@
 							<div id="setting-tab1-active" style=" position:absolute; top:10px;right:-18px; font-size:28px; color:#2196f3; z-index:1;" class="icon-play-alt"> </div>
 						</li>
 						<li id="setting-tab2" class="popup-vertical-menu"  style="padding:5px 5px 5px 15px; position:relative; ">
-							<span style="font-size:16px; font-family:raleway; display:block; "> Register Extenral App </span>
+							<span style="font-size:16px; font-family:raleway; display:block; "> Register External App </span>
 							<span style="font-size:12px; font-family:raleway; color:#666;"> Add New Application To Campaign</span>
 							<div id="setting-tab2-active"  style="display:none;  position:absolute; top:10px;right:-18px; font-size:28px; color:#2196f3; z-index:1;" class="icon-play-alt"> </div>
 						</li>
@@ -208,6 +208,7 @@
 												  			<td style="width:25%; text-align:right;vertical-align:middle"> <span style="color:red"> * </span> External Application URL : </td>
 												  			<td style="width:75%"> 
 												  				<input type="text" name="exapp_url" autocomplete="off" > 
+																<input type="file" name="file_upload" id="file_upload">
 												  			</td>
 											  			</tr>
 											  			<tr>

@@ -2,17 +2,17 @@
 <SCRIPT type=text/javascript>
 	function verify() {
 				if ($('[name=campaign_id]').val() == "") {
-					alert("กรุณาเลือก Campaign");
+					alert("Please Select Campaign");
 					$("#campaign_id").focus();
 					return;
 				}
 				if ($('[name=startdate]').val() == "") {
-					alert("กรุณาใส่วันที่เริ่ม");
+					alert("Please Select Date Start");
 					$("#start_date").focus();
 					return;
 				}
 				if ($('[name=enddate]').val() == "") {
-					alert("กรุณาใส่วันที่สิ้นสุด");
+					alert("Please Select Date End");
 					$("#end_date").focus();
 					return;
 				}
@@ -62,7 +62,7 @@
  				<div style="width:35%;float:left; ">
  					 <span style="font-size:15px; line-height:30px; color:#666">Campaign Name &nbsp;&nbsp;: </span> 
  					  &nbsp;<select style="width:250px; height:30px;" name="campaign_id"><option></option></select>
- 					 <!--  <input type="text" name="search_cust" style="width:250px;" autocomplete="off" placeholder="ระบุชื่อลูกค้า"> -->
+ 					 <!--  <input type="text" name="search_cust" style="width:250px;" autocomplete="off" placeholder=""> -->
  				</div>
  					<div style="width:50%;float:right;">
  						<div>&nbsp;</div>
@@ -75,12 +75,12 @@
 	 			</div>
  				<div style="width:35%;float:left;color:#666; font-size:16px;">
  				 	<span style="font-size:15px; line-height:30px;width:118px;display:inline-block;">   Start Date </span> :  
- 					<input type="text" name="startdate"  style="width:250px; " autocomplete="off" placeholder="เลือกวันที่เริ่มสร้าง app" class="text-center calendar_en"> 
+ 					<input type="text" name="startdate"  style="width:250px; " autocomplete="off" placeholder="" class="text-center calendar_en"> 
  				</div>
  					<div style="width:50%;float:right;">
  					<div style="color:#666;">
  						 <span style="font-size:15px; line-height:30px;width:100px;display:inline-block;"> End Date</span> : 
- 						<input type="text" name="enddate"  style="width:250px;" autocomplete="off" placeholder="เลือกวันที่สิ้นสุดการสร้าง app" class="text-center calendar_en"> 
+ 						<input type="text" name="enddate"  style="width:250px;" autocomplete="off" placeholder="" class="text-center calendar_en"> 
  					</div>
  				</div>
  				<div style="clear:both"></div>

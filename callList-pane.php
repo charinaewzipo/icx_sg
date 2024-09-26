@@ -31,8 +31,10 @@
 				<td style="width:5%; text-align:center">#</td>
 				<td style="width:20%; text-align:center"> List Name</td>
 				<td style="width:15%; text-align:center"> Import Date </td>
-				<td style="width:20%; text-align:center"> Import User </td>
-				<td style="width:15%; text-align:center"> Total List </td>
+				<td style="width:10%; text-align:center"> Import User </td>
+				<td style="width:5%; text-align:center"> Total List </td>
+				<td style="width:10%; text-align:center"> Start Date </td>
+				<td style="width:10%; text-align:center"> End Date </td>
 				<td style="width:25%; text-align:center"> Use In Campaign </td>
 			</tr>
 		</thead>
@@ -154,8 +156,6 @@
 
 						</li>
 					</ul>
-					** หากกำหนดสถานะเป็น expire list นั้นจะไม่สามารถทำอะไรได้เลย <br />
-					** Phase ถัดไปสามารถกำหนดวันที่ และเวลาในการหมดอายุ ได้ <br />
 				</div>
 				<!--  end left pane -->
 
@@ -424,19 +424,9 @@
 
 
 			<h2>Call List Maintenance </h2>
-			*** Call list ที่เพิ่มเองจะไม่ถูกนับรวมกับ Call list ที่มีการ import เข้ามา (
-			เฉพาะสำหรับการนำไปออกเป็นรายงาน )
-			page นี้ต้องสามารถ set do not call list ได้ด้วย <br />
-			ต้องสามารถแก้ไข | ค้นหา ชื่อ เบอร์โทร | set do not call list ได้
+			
 
 			<div>
-				<ul>
-					<li> Dynamic search field </li>
-					<li> ถ้า field type เป็น varchar search ได้หมด ok </li>
-					<li> ทำอะไรได้บ้าง | set do not call </li>
-				</ul>
-				Search | set do not call | New | update = | delete => set status to 0
-				<br />
 
 
 

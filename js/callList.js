@@ -141,6 +141,8 @@
 												    		   "<td style='text-align:center;vertical-align:middle'>&nbsp;"+result.imp[i].cdate+"&nbsp;</td>"+
 												    		   "<td style='text-align:center;vertical-align:middle'>&nbsp;"+result.imp[i].cuser+"&nbsp;</td>"+
 												    		   "<td style='text-align:center;vertical-align:middle'>&nbsp;"+result.imp[i].total+"&nbsp;</td>"+
+															   "<td style='text-align:center;vertical-align:middle'>&nbsp;"+result.imp[i].start_date+"&nbsp;</td>"+
+															   "<td style='text-align:center;vertical-align:middle'>&nbsp;"+result.imp[i].end_date+"&nbsp;</td>"+
 															   "<td style='text-align:center;vertical-align:middle;' >&nbsp;"+cmp+" &nbsp;</td></tr>";	 
 											    } //end for
 											 

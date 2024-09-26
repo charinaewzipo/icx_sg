@@ -1,16 +1,15 @@
 <?php
-//config Server
-$ServerName = "icxpoc-db2.clce66q2ulno.ap-southeast-1.rds.amazonaws.com";
-$DatabaseName = "tubtim20240906";
-$User = "arkuser";
-$Password = '$ep2@24ICX';
 
+//Database 
+$ServerName = "195.179.239.102";
+$DatabaseName = "u297918512_icx_sg";
+$User = "u297918512_root";
+$Password = '3Y:zMKKe>8';
 
-
-$ServerName2 = "192.168.50.2";
-$DatabaseName2 = "tubtim";
-$User2 = "tubtim";
-$Password2 = "yOD6M0A0X0gz";
+$ServerName2 = "icxpoc-db2.clce66q2ulno.ap-southeast-1.rds.amazonaws.com";
+$DatabaseName2 = "tubtim20240906";
+$User2 = "arkuser";
+$Password2 = '$ep2@24ICX';
 
 
 $Conn = mysqli_connect($ServerName,$User,$Password) or die ("Error เธ•เธดเธ”เธ•เนเธญเธเธฒเธเธเนเธญเธกเธนเธฅเนเธกเนเนเธ”เน");

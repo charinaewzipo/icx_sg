@@ -76,7 +76,7 @@ echo "<script>var user_lv = $lv;</script>";
     }
 
 
-    $strSQL3 = "SELECT * FROM tubtim.t_aig_app_non_sale WHERE app_id  = '$app_id' ";
+    $strSQL3 = "SELECT * FROM t_aig_app_non_sale WHERE app_id  = '$app_id' ";
     $result3 = mysqli_query($Conn, $strSQL3);
     while ($objResult3 = mysqli_fetch_array($result3)) {
         //$cust_title = $objResult3["TITLE"];

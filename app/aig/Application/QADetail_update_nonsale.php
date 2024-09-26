@@ -137,7 +137,7 @@ WHERE
 	} elseif ($lv == 7) {
 
 		// Check if a record with app_id = $app_id and col_id = 2 exists
-		$checkQuery = "SELECT app_id, col_id FROM tubtim.t_aig_qa_non_sale_answer WHERE app_id = $app_id AND col_id = 2";
+		$checkQuery = "SELECT app_id, col_id FROM t_aig_qa_non_sale_answer WHERE app_id = $app_id AND col_id = 2";
 		$checkResult = mysqli_query($checkQuery, $Conn);
 
 		if (mysqli_num_rows($checkResult) > 0) {
@@ -640,7 +640,7 @@ if (mysqli_query($SQL_YesFile, $Conn)) {
 
 	
 
-// 	if(SELECT app_id ,col_id FROM tubtim.t_aig_qa_non_sale_answer where app_id = $app_id and col_id =2 row > 0)  {
+// 	if(SELECT app_id ,col_id FROM t_aig_qa_non_sale_answer where app_id = $app_id and col_id =2 row > 0)  {
 // 		update 
 // 	}else{
 // 		insert into

@@ -11,7 +11,6 @@ if (isset($_POST['action'])) {
 		case "init":
 			init();
 			break;
-
 		case "query":
 			query();
 			break;
@@ -125,11 +124,27 @@ function init()
 		$tmp2 = array("result" => "empty");
 	}
 
+	$sql = "SELECT id,description FROM t_aig_sg_lov WHERE name='campaignType'";
+	$count = 0;
+	$result = $dbconn->executeQuery($sql);
+	while ($rs = mysqli_fetch_array($result)) {
+
+		$tmp3[$count] = array(
+			"id" => nullToEmpty($rs['id']),
+			"value" => nullToEmpty($rs['description']),
+		);
+		$count++;
+	}
+	if ($count == 0) {
+		$tmp3 = array("result" => "empty");
+	}
+
 	$dbconn->dbClose();
-	$data = array("script" => $tmp1, "app" => $tmp2);
+	$data = array("script" => $tmp1, "app" => $tmp2, "campaign_type" => $tmp3);
 	echo json_encode($data);
 
 }
+
 
 function summary()
 {
@@ -726,7 +741,7 @@ function query()
 		exit();
 	}
 
-	$sql = " SELECT campaign_id,campaign_name,campaign_detail,start_date,end_date,c.status, st.status_detail, st.status_color " .
+	$sql = " SELECT campaign_id,campaign_name,campaign_code,campaign_detail,start_date,end_date,c.status, st.status_detail, st.status_color " .
 		" FROM t_campaign c " .
 		" LEFT OUTER JOIN ts_campaign_status st ON c.status = st.status_id " .
 		" ORDER BY campaign_id ";
@@ -737,6 +752,7 @@ function query()
 		$data[$count] = array(
 			"cmpid" => nullToEmpty($rs['campaign_id']),
 			"cmpName" => nullToEmpty($rs['campaign_name']),
+			"cmpCode" => nullToEmpty($rs['campaign_code']),
 			"cmpDetail" => nullToEmpty($rs['campaign_detail']),
 			"cmpStartDate" => dateDecode($rs['start_date']),
 			"cmpEndDate" => dateDecode($rs['end_date']),
@@ -767,7 +783,7 @@ function detail()
 		exit();
 	}
 
-	$sql = " SELECT campaign_id,campaign_name,campaign_detail,campaign_type, app_id , maximum_call, genesys_queueid, genesys_campaignid , start_date,end_date, c.status, st.status_detail, st.status_color , c.script_id,s.script_detail, " .
+	$sql = " SELECT campaign_id,campaign_name,campaign_code,campaign_detail,cp_type,campaign_type,is_expire, app_id , maximum_call, genesys_queueid, genesys_campaignid , start_date,end_date, c.status, st.status_detail, st.status_color , c.script_id,s.script_detail, " .
 		" a.first_name , a.last_name , c.create_date " .
 		" FROM t_campaign c LEFT OUTER JOIN t_callscript s ON c.script_id = s.script_id " .
 		" LEFT OUTER JOIN ts_campaign_status st ON c.status = st.status_id " .
@@ -781,8 +797,11 @@ function detail()
 		$tmp1 = array(
 			"cmpid" => nullToEmpty($rs['campaign_id']),
 			"cmpName" => nullToEmpty($rs['campaign_name']),
+			"cmpCode" => nullToEmpty($rs['campaign_code']),
 			"cmpDetail" => nullToEmpty($rs['campaign_detail']),
+			"cmpCat" => nullToEmpty($rs['cp_type']),
 			"cmpType" => nullToEmpty($rs['campaign_type']),
+			"cmpExpire" => nullToEmpty($rs['is_expire']),
 			"cmpStartDate" => dateDecode($rs['start_date']),
 			"cmpEndDate" => dateDecode($rs['end_date']),
 			"cmpStatus" => nullToEmpty($rs['status']),
@@ -1010,10 +1029,24 @@ function detail()
 		$tmp5 = array("result" => "empty");
 	}
 
+	$sql = "SELECT id,description FROM t_aig_sg_lov WHERE name='campaignType'";
+	$count = 0;
+	$result = $dbconn->executeQuery($sql);
+	while ($rs = mysqli_fetch_array($result)) {
+
+		$tmp6[$count] = array(
+			"id" => nullToEmpty($rs['id']),
+			"value" => nullToEmpty($rs['description']),
+		);
+		$count++;
+	}
+	if ($count == 0) {
+		$tmp6 = array("result" => "empty");
+	}
 
 
 
-	$data = array("data" => $tmp1, "callscript" => $tmp2, "cmplist" => $tmp3, "listava" => $tmp4, "app" => $tmp5);
+	$data = array("data" => $tmp1, "callscript" => $tmp2, "cmplist" => $tmp3, "listava" => $tmp4, "app" => $tmp5, "cp_type" => $tmp6);
 
 	$dbconn->dbClose();
 	echo json_encode($data);
@@ -1254,10 +1287,12 @@ function create()
 		$uniqueid = uniqid();
 
 		//insert new campaign
-		$sql = " INSERT INTO t_campaign( campaign_uniqueid , campaign_name , campaign_detail, is_expire , start_date,end_date, maximum_call, genesys_queueid, genesys_campaignid,status , script_id, create_user, create_date ) VALUES ( " .
+		$sql = " INSERT INTO t_campaign( campaign_uniqueid, campaign_name, campaign_code, campaign_detail, cp_type, is_expire , start_date,end_date, maximum_call, genesys_queueid, genesys_campaignid,status , script_id, create_user, create_date ) VALUES ( " .
 			" " . dbformat($uniqueid) . " " .
 			"," . dbformat($tmp['ncmpName']) . " " .
+			"," . dbformat($tmp['ncmpCode']) . " " .
 			"," . dbformat($tmp['ncmpDetail']) . " " .
+			"," . dbformat($tmp['ncmpType']) . " " .
 			"," . dbformat($tmp['ncmpExpire']) . " " .
 			"," . dateEncode($tmp['ncmpStartDate']) . " " .
 			"," . dateEncode($tmp['ncmpEndDate']) . " " .
@@ -1297,8 +1332,11 @@ function update()
 	//update   
 	$sql = "UPDATE t_campaign SET " .
 		"campaign_name =" . dbformat($tmp['cmpName']) . "," .
+		"campaign_code =" . dbformat($tmp['cmpCode']) . "," .
 		"campaign_detail =" . dbformat($tmp['cmpDetail']) . "," .
+		"cp_type =" . dbformat($tmp['cmpCat']) . "," .
 		"campaign_type =" . dbformat($tmp['cmpType']) . "," .
+		"is_expire =" . dbformat($tmp['cmpExpire']) . "," .
 		"start_date =" . dateEncode($tmp['cmpStartDate']) . "," .
 		"end_date =" . dateEncode($tmp['cmpEndDate']) . "," .
 		"status =" . dbformat($tmp['cmpStatus']) . "," .

@@ -1,6 +1,7 @@
 <?php
 /** dbconn.php 
-
+     include database config file ( dbconf.php)
+     this class easy for query , insert , update to database
 **/
     include ("dbconf.php");
 	

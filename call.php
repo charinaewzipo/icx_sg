@@ -15,7 +15,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 	<meta charset="utf-8" />
-	<title> Tubtim </title>
+	<title> ICX</title>
 	<link rel="shortcut icon" type="image/x-icon" href="fonts/fav.ico">
 	<link href="css/jquery.tabSlideOut.css" rel="stylesheet">
 	<link href="css/default.css" rel="stylesheet">
@@ -508,7 +508,7 @@ table > tfoot > tr > td{
 							id="smartpanel">
 							<span id="smartpanel-detail">
 								<i class="icon-fire"></i> <span
-									style="font-family:roboto; font-size:18px; font-weight:300; margin:5px;">Tubtim
+									style="font-family:roboto; font-size:18px; font-weight:300; margin:5px;">ICX
 								</span>
 							</span>
 						</span>
@@ -1098,17 +1098,69 @@ table > tfoot > tr > td{
 														</div>
 								  				</td>
 								  			</tr> -->
-														<tr>
-															<td
+														<!--<tr>
+															 <td
 																style="color:#666;vertical-align:middle; text-align:right;">
 																Transfer to survey
-															</td>
+															</td> 
 															<td>
 																<button id="transfer"
 																	style="-moz-border-radius: 50%;-webkit-border-radius: 50%;border-radius: 50%; height:50px; width:50px; background-color:#32c5d2;border:2px solid #32c5d2;">
 																	<span class="ion-ios-arrow-forward"
 																		style="font-size:25px;display:block; color:#fff; position:relative"></span>
 																</button>
+															</td>
+														</tr>-->
+														<tr>
+															<td style="color:#666;vertical-align:middle; text-align:right;">
+																Type of Voucher
+															</td>
+															<td>
+																<select name="typeOfVoucher"></select>
+															</td>
+														</tr>
+														<tr>
+															<td style="color:#666;vertical-align:middle; text-align:right;">
+																Voucher Value
+															</td>
+															<td>
+																<select name="voucherValue"></select>
+															</td>
+														</tr>
+														<tr>
+															<td style="color:#666;vertical-align:middle; text-align:right;">
+																Dont_call_ind
+															</td>
+															<td>
+																<input name="Dont_call_ind" type="radio" value="1"> Yes
+																<input name="Dont_call_ind" type="radio" value="0"> No
+															</td>
+														</tr>
+														<tr>
+															<td style="color:#666;vertical-align:middle; text-align:right;">
+																Dont_SMS_ind
+															</td>
+															<td>
+																<input name="Dont_SMS_ind" type="radio" value="1"> Yes
+																<input name="Dont_SMS_ind" type="radio" value="0"> No
+															</td>
+														</tr>
+														<tr>
+															<td style="color:#666;vertical-align:middle; text-align:right;">
+																Dont_email_ind
+															</td>
+															<td>
+																<input name="Dont_email_ind" type="radio" value="1"> Yes
+																<input name="Dont_email_ind" type="radio" value="0"> No
+															</td>
+														</tr>
+														<tr>
+															<td style="color:#666;vertical-align:middle; text-align:right;">
+																Dont_Mail_ind
+															</td>
+															<td>
+																<input name="Dont_Mail_ind" type="radio" value="1"> Yes
+																<input name="Dont_Mail_ind" type="radio" value="0"> No
 															</td>
 														</tr>
 														<tr>

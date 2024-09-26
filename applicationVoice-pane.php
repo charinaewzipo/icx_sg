@@ -136,7 +136,7 @@ session_start();
 			</div>
 			<div style="width:35%;float:left; ">
 				<span style="font-size:15px; line-height:30px; color:#666">Policy No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </span>
-				<input type="text" name="search_quono" style="width:250px;" autocomplete="off" placeholder="ระบุหมายเลข Quotation">
+				<input type="text" name="search_quono" style="width:250px;" autocomplete="off" placeholder="">
 			</div>
 			<div style="width:50%;float:right;">
 				<div>
@@ -178,12 +178,12 @@ session_start();
 			</div>
 			<div style="width:35%;float:left;color:#666; font-size:16px;">
 				<span style="font-size:15px; line-height:30px;width:118px;display:inline-block;"> Start Date </span> :
-				<input type="text" name="search_cred" style="width:250px; " autocomplete="off" placeholder="เลือกวันที่เริ่มสร้าง app" class="text-center calendar_en">
+				<input type="text" name="search_cred" style="width:250px; " autocomplete="off" placeholder="" class="text-center calendar_en">
 			</div>
 			<div style="width:50%;float:right;">
 				<div style="color:#666;">
 					<span style="font-size:15px; line-height:30px;width:100px;display:inline-block;"> End Date</span> :
-					<input type="text" name="search_endd" style="width:250px;" autocomplete="off" placeholder="เลือกวันที่สิ้นสุดการสร้าง app" class="text-center calendar_en">
+					<input type="text" name="search_endd" style="width:250px;" autocomplete="off" placeholder="" class="text-center calendar_en">
 				</div>
 			</div>
 			<div style="clear:both"></div>
