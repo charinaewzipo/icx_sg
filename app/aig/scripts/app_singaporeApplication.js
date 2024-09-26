@@ -508,10 +508,23 @@ const handleValidateForm = () => {
         console.log("paymentDetails:", paymentDetails[0])
         console.log("quotationData:", quotationData)
        
-        const policyRequestBody = removeKeysFromQuotationData(quotationData)
-        const body = { ...policyRequestBody, paymentDetails };
-        console.log("body:", body)
-        await fetchPolicy(body);
+
+        console.log("quotationData.policyEffDate",quotationData.policyEffDate)
+        const policyRequest ={
+          policyId: quotationData.policyId || "",
+          productId: quotationData.productId || "",
+          distributionChannel: quotationData.distributionChannel || 0,
+          producerCode: quotationData.producerCode || "",
+          policyEffDate: quotationData.policyEffDate ? moment(quotationData.policyEffDate).toISOString() : new Date().toISOString(),
+          policyHolderInfo: quotationData?.policyHolderInfo,
+        
+          remarksC: quotationData.remarksC || "",
+          efulfillmentFlag: quotationData.efulfillmentFlag || "1",
+          paymentDetails
+      };
+        console.log("policyRequest:", policyRequest)
+        
+        await fetchPolicy(policyRequest);
         console.log("Policy fetch completed");
        
       } else {

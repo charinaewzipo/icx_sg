@@ -344,7 +344,7 @@ function DBUpdatePolicyNo($policyid, $policyNo)
     $dbconn->dbconn->close();
 }
 
-function DBUpdateQuoteRetrieve($response, $id)
+function DBUpdateQuoteRetrieve($response, $id,$formatData)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -368,38 +368,44 @@ function DBUpdateQuoteRetrieve($response, $id)
     $policyEffDate = isset($response['policyEffDate']) ? convertToISO8601($response['policyEffDate']) : null;
     $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
-    $quickQuoteFlag = isset($response['quickQuoteFlag']) ? $response['quickQuoteFlag'] : 0;
-
+   
     // Handle policy holder information
-    $policyHolderInfo = isset($response['policyHolderInfo']) ? json_encode($response['policyHolderInfo']) : '{}';
+    $policyHolderInfo = isset($formatData['policyHolderInfo']) ? json_encode($formatData['policyHolderInfo']) : '{}';
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
 
-    $individualPolicyHolderInfo = isset($response['policyHolderInfo']['individualPolicyHolderInfo']) ? $response['policyHolderInfo']['individualPolicyHolderInfo'] : [];
+    $individualPolicyHolderInfo = isset($formatData['policyHolderInfo']['individualPolicyHolderInfo']) ? $formatData['policyHolderInfo']['individualPolicyHolderInfo'] : [];
     $fullName = isset($individualPolicyHolderInfo['fullName']) ? $individualPolicyHolderInfo['fullName'] : '';
     $customerIdNo = isset($individualPolicyHolderInfo['customerIdNo']) ? $individualPolicyHolderInfo['customerIdNo'] : '';
     $dateOfBirth = isset($individualPolicyHolderInfo['dateOfBirth']) ? convertToISO8601($individualPolicyHolderInfo['dateOfBirth']) : null;
 
     // Handle insured list information
-    $insuredList = isset($response['insuredList']) ? json_encode($response['insuredList']) : '{}';
+    $insuredList = isset($formatData['insuredList']) ? json_encode($formatData['insuredList']) : '{}';
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
-
     // Handle payment details
-    $paymentDetails = isset($response['paymentDetails']) ? $response['paymentDetails'] : [];
-    $paymentMode = !empty($paymentDetails) && isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
+    $paymentDetails = isset($formatData['paymentDetails']) ? $formatData['paymentDetails'] : [];
 
-    // Prepare SQL statement
+    // No need for [0] since paymentDetails is not an array of arrays
+    $paymentMode = !empty($paymentDetails) && isset($paymentDetails['paymentMode']) ? $paymentDetails['paymentMode'] : null;
+    $paymentFrequency = !empty($paymentDetails) && isset($paymentDetails['paymentFrequency']) ? $paymentDetails['paymentFrequency'] : null;
+    
+    
+      // Prepare SQL statement
     $sql = "UPDATE t_aig_app
             SET 
                 policyId = '$policyId',
-                premiumPayable = '$premiumPayable',
                 productId = '$productId',
                 producerCode = '$producerCode',
                 propDate = " . ($propDate === null ? 'NULL' : "'$propDate'") . ",
                 policyEffDate = " . ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ",
                 policyExpDate = " . ($policyExpDate === null ? 'NULL' : "'$policyExpDate'") . ",
+                policyHolderInfo = '$policyHolderInfo',
+                insuredList = '$insuredList',
+                premiumPayable = '$premiumPayable',
                 quoteNo = '$quoteNo',
                 fullname = '$fullName',
                 customer_id = '$customerIdNo',
+                payment_mode = '$paymentMode',
+                payment_frequency= '$paymentFrequency',
                 dob = " . ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ",
                 update_date = NOW()
             WHERE id = '$id'";
@@ -647,7 +653,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($data['action'] === 'updateRetrieveQuote') {
             $id = isset($data['id']) ? $data['id'] : 0;
             $response = isset($data['response']) ? $data['response'] : array();
-            DBUpdateQuoteRetrieve($response, $id);
+            $formatData = isset($data['formatData']) ? $data['formatData'] : array();
+            DBUpdateQuoteRetrieve($response, $id,$formatData);
         } 
         
         else {

@@ -27,7 +27,7 @@ $GLOBALS["m_from_name"] = "ARK-SYSTEM";
 //AIG_API
 $GLOBALS["aig_api_premium_url"] = "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
 $GLOBALS["aig_api_create_quote_url"] = "https://uat.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/confirm-quotation";
-$GLOBALS["aig_api_create_policy_url"] = "https://uat.apacnprd.api.aig.com/sg-gateway/eway-rest/issue-Policy";
+$GLOBALS["aig_api_create_policy_url"] = "https://uat.apacnprd.api.aig.com/sg-gateway/eway-rest/issue-policy";
 $GLOBALS["aig_api_retrieve_quote_url"] = "https://uat.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/retrieve-quote";
 $GLOBALS["aig_api_recalculate_quote_url"] = "https://uat.apacnprd.api.aig.com/sg-gateway/eway-rest/reCalculate-Quotation";
 

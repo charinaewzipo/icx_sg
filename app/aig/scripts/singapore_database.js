@@ -113,7 +113,7 @@
       });
     },
 
-    updateRetrieveQuote: function (response, id) {
+    updateRetrieveQuote: function (response, id,formatData) {
       $.ajax({
         url: url,
         type: "POST",
@@ -121,7 +121,8 @@
         data: JSON.stringify({
           action: "updateRetrieveQuote",
           response: response,
-          id: id
+          id: id,
+          formatData:formatData
         }),
         dataType: "text",
         success: function (response) {
