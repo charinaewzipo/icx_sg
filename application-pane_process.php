@@ -129,15 +129,19 @@ function query()
 
 	$sql = "SELECT  DISTINCT app.id, app.policyId, app.productId, app.distributionChannel, app.producerCode, app.propDate, app.policyEffDate, 
        app.policyExpDate, app.campaignCode, app.ncdInfo, app.policyHolderInfo, app.insuredList, app.quoteNo, 
-       app.premiumPayable, app.quoteLapseDate, app.type, app.remarksC, app.type_vouncher, app.vouncher_value, 
-       app.incident_status, app.dont_call_ind, app.dont_SMS_ind, app.dont_email_ind, app.dont_Mail_ind, 
+       app.premiumPayable, app.quoteLapseDate, app.type, app.remarksC,  
        app.agent_id, app.calllist_id, app.policyNo, app.policy_create_date, app.quote_create_date, 
-       app.update_date, app.campaign_id, app.import_id, tasp.product_name
+       app.update_date, app.campaign_id, app.import_id, tasp.product_name,
+        CASE
+        WHEN calllist.incident_status IS NOT NULL THEN calllist.incident_status
+        ELSE 'Open'
+    END AS incident_status
 FROM t_aig_app app 
 LEFT JOIN t_aig_sg_product tasp ON app.productId = tasp.product_id
 LEFT JOIN t_agents  agent ON app.agent_id = agent.agent_id
 LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id 
-WHERE 1 
+left join t_calllist calllist on app.calllist_id = calllist.calllist_id
+WHERE 1=1 
 ";
 	//if level is agent where current agent id
 
@@ -186,9 +190,9 @@ WHERE 1
 	if ($tmp['search_quono'] != "") {
 		$condition = $condition . " AND app.quoteNo LIKE '%" . trim($tmp['search_quono']) . "%' ";
 	}
-	if ($tmp['search_sts'] != "") {
-		$condition = $condition . " AND app.incident_status = " . dbformat($tmp['search_sts']) . " ";
-	}
+// 	if ($tmp['search_sts'] != "") {
+//     $condition .= " AND calllist.incident_status = " . dbformat($tmp['search_sts']) . " ";
+// }
 	if ($tmp['search_cred'] != "" & $tmp['search_endd'] != "") {
 		$condition = $condition . " AND app.propDate BETWEEN '" . $tmp['search_cred'] . " 00:00:00' AND  '" . $tmp['search_endd'] . " 23:59:59'";
 	}
@@ -215,7 +219,7 @@ WHERE 1
 			"camp" => nullToEmpty($rs['product_name']),
 			"camp_id" => nullToEmpty($rs['campaign_id']),
 			"saledt"  => nullToEmpty($rs['policy_create_date']),
-			"appsts"  => nullToEmpty($rs['incident_status']),
+			"appsts"  => nullToEmpty($rs['incident_status'])
 			// "owner"  => nullToEmpty($rs['owner']),
 			// "qc_name"  => nullToEmpty($rs['qc_name']),
 			// "qa_name"  => nullToEmpty($rs['qa_name'])
