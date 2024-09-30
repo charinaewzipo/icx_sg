@@ -549,7 +549,7 @@ error_reporting(E_ALL);
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'maritalStatus'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Marital Status'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -621,7 +621,7 @@ error_reporting(E_ALL);
                   <?php
                   $strSQL = "SELECT name, id, description
 FROM t_aig_sg_lov 
-where name='Occupation'";
+where name='ph occupation'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;

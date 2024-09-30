@@ -86,7 +86,7 @@
                         <select name="insured_ah_insuredMaritalStatus_${index}" ${isRequired ? 'required' : ''}>
                             <option value=""> <-- Please select an option --></option>
                             <?php
-                            $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'insuredMaritalStatus'";
+                            $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Marital Status'";
                             $objQuery = mysqli_query($Conn, $strSQL);
                             while ($objResuut = mysqli_fetch_array($objQuery)) {
                                 $data[] = $objResuut;
