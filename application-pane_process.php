@@ -111,8 +111,6 @@ function query()
 
 	$tmp = json_decode($_POST['data'], true);
 	$dbconn = new dbconn;
-	//connect tubtim db
-	//$dbconn->setDBName('Tubtim');
 	$res = $dbconn->createConn();
 	if ($res == 404) {
 		$res = array("result" => "dberror", "message" => "Can't connect to database");
@@ -127,72 +125,34 @@ function query()
 		$page =  (intval($_POST['page']) - 1) * $pagelength;
 	}
 
-	$sql = "SELECT  DISTINCT app.id, app.policyId, app.productId, app.distributionChannel, app.producerCode, app.propDate, app.policyEffDate, 
+	$sql = "SELECT DISTINCT app.id, app.policyId, app.productId, app.distributionChannel, app.producerCode, app.propDate, app.policyEffDate, 
        app.policyExpDate, app.campaignCode, app.ncdInfo, app.policyHolderInfo, app.insuredList, app.quoteNo, 
-       app.premiumPayable, app.quoteLapseDate, app.type, app.remarksC,  
+       app.premiumPayable, app.quoteLapseDate, app.type, app.remarksC, 
        app.agent_id, app.calllist_id, app.policyNo, app.policy_create_date, app.quote_create_date, 
-       app.update_date, app.campaign_id, app.import_id, tasp.product_name,
-        CASE
-        WHEN calllist.incident_status IS NOT NULL THEN calllist.incident_status
-        ELSE 'Open'
-    END AS incident_status
-FROM t_aig_app app 
+       app.update_date, app.campaign_id, app.import_id, tasp.product_name, app.fullname, calllist.incident_status
+FROM t_aig_app app
 LEFT JOIN t_aig_sg_product tasp ON app.productId = tasp.product_id
-LEFT JOIN t_agents  agent ON app.agent_id = agent.agent_id
-LEFT OUTER JOIN  t_campaign campaign ON app.campaign_id = campaign.campaign_id 
-left join t_calllist calllist on app.calllist_id = calllist.calllist_id
+LEFT JOIN t_agents agent ON app.agent_id = agent.agent_id
+LEFT JOIN t_calllist calllist ON app.calllist_id = calllist.calllist_id
+LEFT OUTER JOIN t_campaign campaign ON app.campaign_id = campaign.campaign_id 
 WHERE 1=1 
 ";
-	//if level is agent where current agent id
-
 
 	$lv =  intval($_SESSION['pfile']['lv']);  // set application
-	// switch ($lv) {
-	// 	case 1:
-	// 		$condition = $condition . " AND (AppStatus != 'Submit' or AppStatus != 'Submit Re-Confirm'  ) AND app.agent_id =  " . dbNumberFormat($_SESSION["uid"]);
-	// 		break;
-	// 	case 2:
-	// 		$condition = $condition . " AND (AppStatus != 'Success') AND agent.team_id = ( SELECT team_id FROM t_agents WHERE agent_id = " . dbNumberFormat($_SESSION["uid"]) . ") ";
-	// 		break;
-	// 	case 0:
-	// 		$condition = $condition . "  AND agent.team_id = ( SELECT team_id FROM t_agents WHERE agent_id = " . dbNumberFormat($_SESSION["uid"]) . ") ";
-	// 		break;
-	// 	case 4:
-	// 		$condition = $condition . "  AND agent.group_id = ( SELECT group_id FROM t_agents WHERE agent_id = " . dbNumberFormat($_SESSION["uid"]) . ") ";
-	// 		break;
-	// 	case 5:
-	// 		$condition = $condition . " ";
-	// 		break;
-	// 	case 3:
-	// 		$condition = $condition . " AND (AppStatus != 'Follow Doc') ";
-	// 		break;
-	// 	case 7:
-	// 		$condition = $condition . " AND (AppStatus IN ('Approve','QC_Approved')) ";
-	// 		break;
-	// } //end switch
 
-	/*
-			if(  $lv == 1){
-			     $condition = $condition."AND app.agent_id =  ".dbNumberFormat($_SESSION["uid"]   );
-			 }else if( $l{
- 			    //check level
-
-			 		//	$condition = $condition." WHERE AgentID IS NOT NULL";
-			 }
-			 //check level
-  			*/
-				if ($tmp['search_cust'] != "") {
-					$condition .= " AND app.fullname LIKE '%" . trim($tmp['search_cust']) . "%' ";
-			}
+	if ($tmp['search_cust'] != "") {
+		$condition .= " AND app.fullname LIKE '%" . trim($tmp['search_cust']) . "%' ";
+	}
 	// if ($tmp['search_agent'] != "") {
 	// 	$condition = $condition . " AND app.agent_id = " . dbformat($tmp['search_agent']) . " ";
 	// }
 	if ($tmp['search_quono'] != "") {
 		$condition = $condition . " AND app.quoteNo LIKE '%" . trim($tmp['search_quono']) . "%' ";
 	}
-// 	if ($tmp['search_sts'] != "") {
-//     $condition .= " AND calllist.incident_status = " . dbformat($tmp['search_sts']) . " ";
-// }
+	if ($tmp['search_sts'] != "") {
+    $sql .= " AND calllist.incident_status LIKE '%" . trim($tmp['search_sts']) . "%' ";
+}
+
 	if ($tmp['search_cred'] != "" & $tmp['search_endd'] != "") {
 		$condition = $condition . " AND app.propDate BETWEEN '" . $tmp['search_cred'] . " 00:00:00' AND  '" . $tmp['search_endd'] . " 23:59:59'";
 	}
@@ -201,21 +161,16 @@ WHERE 1=1
 	$sql .= $condition;
 	$sql .=  "GROUP BY app.id ORDER BY app.propDate DESC ";
 	//  " LIMIT ".$page." , ".$pagelength;
-
 	wlog('[application-pane_process][query] query : ' . $sql);
 	$count = 0;
 	$result = $dbconn->executeQuery($sql);
 	while ($rs = mysqli_fetch_array($result)) {
-		$policyHolderInfo = json_decode($rs['policyHolderInfo'], true);
 
-		$custname = "";
-		if (isset($policyHolderInfo['individualPolicyHolderInfo']['fullName'])) {
-			$custname = Encryption::decrypt($policyHolderInfo['individualPolicyHolderInfo']['fullName']);
-		}
+
 		$data[$count] = array(
 			"id"  => nullToEmpty($rs['id']),
 			"quono"  => nullToEmpty($rs['quoteNo']),
-			"cname"  => nullToEmpty($custname),
+			"cname"  => nullToEmpty($rs['fullname']),
 			"camp" => nullToEmpty($rs['product_name']),
 			"camp_id" => nullToEmpty($rs['campaign_id']),
 			"saledt"  => nullToEmpty($rs['policy_create_date']),
