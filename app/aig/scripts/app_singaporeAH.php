@@ -275,7 +275,7 @@
                         $strSQL = "SELECT name, id, description, source
 FROM t_aig_sg_lov 
 WHERE name = 'PA Occupation'
-AND (id = '147' OR id = '323');";
+AND (id = '147' OR id = '162');";
                         $objQuery = mysqli_query($Conn, $strSQL);
                         while ($objResult = mysqli_fetch_array($objQuery)) {
                             $selected = ($objResult["id"] == "${occupation}") ? 'selected' : '';
