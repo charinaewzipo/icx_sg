@@ -162,7 +162,7 @@
                 <tr>
                     <td style="white-space:nowrap">Plan Name : ${showAsterisk}</td>
                     <td>
-                        <select id="planSelect${index}" name="planId${index}" ${index===1 ? 'required' : ''}>
+                        <select id="planSelect${index}" name="planId${index}" ${index===1 ? 'required' : ''} style="width:216px">
                             <option value="">
                                 <-- Please select an option -->
                             </option>
