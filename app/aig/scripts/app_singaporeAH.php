@@ -221,7 +221,7 @@
         <tbody>
             <tr>
                 <td colspan="6">
-                    <h2>Child ${index-2}</h2>
+                    <h2>Child</h2>
                 </td>
             </tr>
             <tr>
@@ -285,6 +285,19 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                         
                     </select>
                 </td>
+                <td style="display:none">
+                        <select name="insured_ah_insuredMaritalStatus_${index}">
+                            <option value=""> <-- Please select an option --></option>
+                            <?php
+                            $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Marital Status'";
+                            $objQuery = mysqli_query($Conn, $strSQL);
+                            while ($objResult = mysqli_fetch_array($objQuery)) {
+                                $isSelected = ($objResult["id"] == 'S') ? 'selected' : '';
+                                echo "<option value='" . $objResult["id"] . "' $isSelected>" . $objResult["description"] . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </td>
             </tr>
             <tr>
                 <td>Insured Date Of Birth: <span style="color:red">*</span></td>
@@ -773,10 +786,10 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
 
                 if (indexCounter > 6) {
-                addButton.style.visibility = 'hidden'; // Change display to visibility hidden
-            } else {
-                addButton.style.visibility = 'visible'; // Ensure it's visible until the limit
-            }
+                    addButton.style.visibility = 'hidden'; // Change display to visibility hidden
+                } else {
+                    addButton.style.visibility = 'visible'; // Ensure it's visible until the limit
+                }
             }
         });
     }
@@ -786,16 +799,18 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
     function deleteChildInsured() {
         const insuredContainer = document.getElementById('insured-list-ah');
         const addButton = document.getElementById('add-insured-child');
-      
+
         insuredContainer.addEventListener('click', (event) => {
-                addButton.style.visibility = 'visible'; // Change display to visibility hidden
+            addButton.style.visibility = 'visible'; // Change display to visibility hidden
             if (event.target.classList.contains('delete-child')) {
                 const index = event.target.getAttribute('data-index');
                 const tableToRemove = document.getElementById(`table-form-${index}`);
                 if (tableToRemove) {
                     tableToRemove.remove();
                     // Adjust the indexCounter and button visibility if necessary
-                    indexCounter--;
+                    if(index>3){
+                        indexCounter--;
+                    }
                     if (indexCounter < 4) {
                         document.getElementById('add-insured-child').style.display = 'block';
                     }
@@ -839,9 +854,11 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             // Check if the selected text includes 'students'
             if (selectedText.toLowerCase().includes('students')) {
                 // Now check if the age is greater than 25
-                if (age > 25) {
+                if (age >= 18 && age < 25) {
                     console.log("student");
-                    alert(`Child must be less than or equal to 25 years old.`);
+                    
+                } else {
+                    alert(`Child must be between 18 and 25 years old.`);
                     $(`#datepicker-${index}`).val(''); // Clear the datepicker input
                     $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
                     return;
@@ -851,11 +868,17 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
 
         // Handle maximum age (based on productDetail)
-        if (age > productDetail?.max_age_child && occupationValue && occupationValue.value !== '147') {
-            alert(`Child must be less than or equal to ${productDetail?.max_age_child} years old.`);
-            $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-            $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-            return;
+        if (age >= productDetail?.max_age_child) {
+            if (occupationValue) {
+                const selectedText = occupationValue.options[occupationValue.selectedIndex].text;
+                if (!selectedText.toLowerCase().includes('students')) {
+                    alert(`Child must be less than or equal to ${productDetail?.max_age_child} years old.`);
+                    $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+                    $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+                    return;
+                }
+            }
+
         }
 
         // If age and days are valid, set the age value
@@ -880,6 +903,11 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         const filterchild = insuredData.filter(i => i?.personInfo?.relationToPolicyholder === "2");
         console.log("filterchild:", filterchild.length)
         let indexCounterChild = 3;
+        if(filterchild.length>0){
+
+            document.getElementById('add-insured-child').style.display = 'block';
+        }
+
         filterchild.forEach((child, childIndex) => {
             const currentIndex = indexCounterChild;
 
@@ -891,11 +919,14 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             document.getElementById(`genderDropdown_${currentIndex}`).value = child?.personInfo?.insuredGender;
             document.getElementById(`idTypeDropdown_${currentIndex}`).value = child?.personInfo?.insuredIdType;
             document.getElementById(`occupationDropdown_${currentIndex}`).value = child?.personInfo?.insuredOccupation;
-            const {
+            if(child?.personInfo?.insuredDateOfBirth){
+                const {
                 age,
                 days
             } = calculateAge(child?.personInfo?.insuredDateOfBirth);
             document.getElementById(`ageInsuredPerson_${currentIndex}`).value = `${days} day - ${age} years old`;
+            }
+           
 
             indexCounterChild++;
 
