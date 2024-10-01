@@ -157,7 +157,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $sql = "INSERT INTO t_aig_app (
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
-        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date, incident_status, 
+        quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date,  
         payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id";
 
     // Add quote_create_date field if response is not empty
@@ -174,7 +174,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
-        $campaign_id, $import_id, $calllist_id, NOW(), 'Open', '$payment_frequency', '$payment_mode', 
+        $campaign_id, $import_id, $calllist_id, 'Open', '$payment_frequency', '$payment_mode', 
         '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id'";
 
     // Add NOW() for quote_create_date if response is not empty

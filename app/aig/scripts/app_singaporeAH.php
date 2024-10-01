@@ -584,7 +584,9 @@ AND (id = '147' OR id = '162');";
 
         if (responseProduct) {
             await addInsuredSections(responseProduct?.number_of_person_insured || 2)
-
+            if(id &&!quotationData?.quoteNo){
+                setInsuredPerson(quotationData?.insuredList)
+            }
             //handle ProductId setValue from API but not change PlanPoi
             const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
             if (!id || !quotationData?.quoteNo) {
@@ -598,10 +600,10 @@ AND (id = '147' OR id = '162');";
                 populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
             }
         });
+ 
         if (!id) {
-            setDefaultRemarksC(responseProduct)
-        }
-
+    setDefaultRemarksC(responseProduct)
+}
 
     }
 

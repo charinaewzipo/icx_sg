@@ -209,116 +209,10 @@ function clearPlanInfo() {
     }
   });
 }
-const manualSetDefaultValueForm = () => {
 
-  const ncdInfo = {
-    ncdLevel: 0,
-    previousInsurer: "NCD0033",
-    previousPolicyNo: "prev123",
-    noClaimExperienceOther: "1",
-  };
-
-  const individualPolicyHolderInfo = {
-    customerType: "1",
-    individualPolicyHolderInfo: {
-      courtesyTitle: "38",
-      fullName: "charin aewzipo",
-      residentStatus: "1",
-      customerIdType: "6",
-      customerIdNo: "19222000012",
-      nationality: "6",
-      gender: "F",
-      dateOfBirth: "1996-08-07T17:00:00.000Z",
-      maritalStatus: "S",
-      occupation: "18",
-      isPolicyHolderDriving: "2",
-    },
-    contactInfo: {
-      postCode: "079120",
-      unitNo: "",
-      blockNo: "78",
-      streetName: "Shenton Way",
-      buildingName: "",
-      emailId: "charin.eawi@gmail.com",
-      mobileNo: "0950924619",
-    },
-    organizationPolicyHolderInfo: {
-      natureOfBusiness: "",
-      companyName: "",
-      companyRegNo: "",
-      companyRegDate: "",
-    },
-  };
-
-  // Set form fields based on the object data
-  // document.querySelector('select[name="select-product"]').value = productDetail?.productId;
-  document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
-  document.querySelector('select[name="NoClaimExperience"]').value =
-    ncdInfo.noClaimExperienceOther;
-
-  document.querySelector('select[name="courtesyTitle"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.courtesyTitle;
-  document.querySelector('input[name="firstName"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.fullName.split(
-      " "
-    )[0];
-  document.querySelector('input[name="lastName"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.fullName.split(
-      " "
-    )[1];
-  document.querySelector('select[name="residentStatus"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.residentStatus;
-  document.querySelector('select[name="customerIdType"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdType;
-  document.querySelector('input[name="customerIdNo"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.customerIdNo;
-  document.querySelector('select[name="nationality"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.nationality;
-  document.querySelector('select[name="gender"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.gender;
-  document.querySelector('input[name="dateOfBirth"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth.split(
-      "T"
-    )[0];
-  document.querySelector('select[name="maritalStatus"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.maritalStatus;
-  document.querySelector('select[name="occupation"]').value =
-    individualPolicyHolderInfo.individualPolicyHolderInfo.occupation;
-  document.querySelector('input[name="mobileNo"]').value =
-    individualPolicyHolderInfo.contactInfo.mobileNo;
-  document.querySelector('input[name="emailId"]').value =
-    individualPolicyHolderInfo.contactInfo.emailId;
-  document.querySelector('input[name="blockNo"]').value =
-    individualPolicyHolderInfo.contactInfo.blockNo;
-  document.querySelector('input[name="streetName"]').value =
-    individualPolicyHolderInfo.contactInfo.streetName;
-  document.querySelector('input[name="unitNo"]').value =
-    individualPolicyHolderInfo.contactInfo.unitNo;
-  document.querySelector('input[name="buildingName"]').value =
-    individualPolicyHolderInfo.contactInfo.buildingName;
-  document.querySelector('input[name="postCode"]').value =
-    individualPolicyHolderInfo.contactInfo.postCode;
-  document.querySelector('input[name="PolicyEffectiveDate"]').value =
-    "08/30/2024";
-  document.querySelector('input[name="campaignCode"]').value = "";
-
-  // Set radio buttons for 'isPolicyHolderDriving'
-  const drivingYes = document.querySelector("#isPolicyHolderDrivingYes");
-  const drivingNo = document.querySelector("#isPolicyHolderDrivingNo");
-  if (
-    individualPolicyHolderInfo.individualPolicyHolderInfo
-      .isPolicyHolderDriving === "2"
-  ) {
-    drivingYes.checked = true;
-  } else {
-    drivingNo.checked = true;
-  }
-};
 const manualSetDefaultValueFormCallingList = (data) => {
 console.log("data FormCallingList:", data)
   
-  // document.querySelector('select[name="courtesyTitle"]').value = "Mr"; // Assuming title from data is "Mr"
-  // document.querySelector('select[name="select-product"]').value = data.udf2;
   document.querySelector('input[name="firstName"]').value = data.name;
   document.querySelector('input[name="dateOfBirth"]').value = data.dob?isoToFormattedDate(data.dob):"";
   const dob = data.dob;
@@ -326,22 +220,18 @@ console.log("data FormCallingList:", data)
     const {age} = calculateAge(dob);
     document.getElementById('agePolicyHolder').value = age;
   }
-  document.querySelector('input[name="customerIdNo"]').value = data.passport_no; // Assuming using passport_no as customerIdNo
+  document.querySelector('input[name="customerIdNo"]').value = data.passport_no; 
   document.querySelector('input[name="mobileNo"]').value = data.udf1;
-  document.querySelector('input[name="emailId"]').value = data.email || ""; // Use email from data if available
+  document.querySelector('input[name="emailId"]').value = data.email || ""; 
   document.querySelector('input[name="postCode"]').value = data.home_post_cd;
-  // document.querySelector('input[name="PolicyEffectiveDate"]').value = "10/30/2024";
-  // document.querySelector('input[name="PolicyEffectiveDate"]').value = data.udf19;
-  // document.querySelector('input[name="campaignCode"]').value = data.udf12 || ""; // Campaign code
 
-  // Assuming these are required fields; update as needed
   document.querySelector('input[name="blockNo"]').value = data.home_addr1 || "";
   document.querySelector('input[name="streetName"]').value = data.home_addr2 || "";
   document.querySelector('input[name="unitNo"]').value = data.home_addr3 || "";
   document.querySelector('input[name="buildingName"]').value = data.home_city || "";
   document.querySelector('select[name="maritalStatus"]').value = data.marital_status || "";
   document.querySelector('select[name="nationality"]').value = data.nationality || "";
-  // document.querySelector('select[name="occupation"]').value = data.udf9 || ""; // Assuming occupation from udf9
+ 
 };
 const setDefaultRemarksC=(productDetail)=>{
   if(productDetail){
@@ -552,7 +442,7 @@ const setInsuredPerson = (insuredData) => {
       planSelect.innerHTML = ""; // Clear existing options
       const defaultOption = document.createElement("option");
       defaultOption.value = planInfo.planId;
-      defaultOption.textContent = planInfo.planDescription || "<-- Please select an option -->";
+      defaultOption.textContent = planInfo?.planDescription || "<-- Please select an option -->";
 
       planSelect.appendChild(defaultOption);
 
@@ -569,7 +459,7 @@ const setInsuredPerson = (insuredData) => {
         coverOption.value = cover.id;
         coverOption.setAttribute("data-name", cover.name);
         coverOption.setAttribute("data-netpremium", cover.limitAmount);
-        coverOption.textContent = cover.name == null ? "<-- Please select an option -->" : cover.name;
+        coverOption.textContent = cover?.name == null ? "<-- Please select an option -->" : cover.name;
 
         coverList.appendChild(coverOption);
 
@@ -649,17 +539,22 @@ const setDefaultPlanInfo = (insuredData, id = null) => {
 
 
 const setDefaultValueForm = async(dbData) => {
- 
+  
   console.log("dbData:", dbData)
   const ncdInfo = JSON.parse(dbData.ncdInfo);
   const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
   const insuredData = JSON.parse(dbData.insuredList);
 
-  document.querySelector('select[name="select-product"]').value = dbData?.productId || "";
+  const selectProductElement = document.querySelector('select[name="select-product"]');
+  selectProductElement.value = dbData?.productId || "";
+   
   if(!dbData?.quoteNo){
-    console.log("fetchhhh")
-    document.querySelector('select[name="select-product"]').value ="";
+    if (selectProductElement.value) {
+      handleProductChange(selectProductElement);
   }
+  }
+ 
+
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
