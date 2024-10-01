@@ -280,7 +280,6 @@ function extractQuotationData(data) {
   }
 }
 function populatePaymentForm(paymentData) {
-  console.log("paymentData:", paymentData)
   // Payment Mode
   // const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
   // paymentModeSelect.value = paymentData.payment_mode;
@@ -311,4 +310,28 @@ function populatePaymentForm(paymentData) {
   // securityCodeInput.value = "XXX";
   const Amount = document.querySelector('input[name="payment_amount"]');
   Amount.value = `${paymentData.order_amount}(${paymentData.order_currency})`;
+}
+
+const handleCardTypeFromResponse=()=>{
+  if(responsePayment){
+    const extract= JSON.parse(responsePayment?.response_json)
+    const cardType= extract?.sourceOfFunds?.provided?.card?.brand
+    if(quotationData?.payment_mode===1001){
+      if(cardType==="MASTERCARD"){
+        return 2
+      }else if (cardType==="VISA"){
+        return 1
+      }else if (cardType==="AMEX"){
+        return 23
+      }
+    }else if(quotationData?.payment_mode===124){
+      if(cardType==="MASTERCARD"){
+        return 10
+      }else if (cardType==="VISA"){
+        return 9
+      }else if (cardType==="AMEX"){
+        return 26
+      }
+    }
+  }
 }

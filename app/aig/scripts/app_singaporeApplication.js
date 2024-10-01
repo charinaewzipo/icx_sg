@@ -499,17 +499,14 @@ const handleValidateForm = () => {
             paymentDate: new Date(responsePayment.time_of_lastupdate).toISOString(),
             paymentFrequency: quotationData.payment_frequency,
             paymentAmount: responsePayment.order_amount,
-            cardType:quotationData?.payment_mode===1001? 2:10,
+            cardType:handleCardTypeFromResponse(),
             cardNumber: responsePayment.card_number,
             currency: responsePayment.order_currency,
             cardTokenNo: responsePayment?.payment_token_id || ""
           },
         ];
-        console.log("paymentDetails:", paymentDetails[0])
         console.log("quotationData:", quotationData)
-       
 
-        console.log("quotationData.policyEffDate",quotationData.policyEffDate)
         const policyRequest ={
           policyId: quotationData.policyId || "",
           productId: quotationData.productId || "",
@@ -525,7 +522,6 @@ const handleValidateForm = () => {
         console.log("policyRequest:", policyRequest)
         
         await fetchPolicy(policyRequest);
-        console.log("Policy fetch completed");
        
       } else {
         // const requestBodyQuote =removeKeysFromQuotationDataOnCreateQuote(requestBody)
