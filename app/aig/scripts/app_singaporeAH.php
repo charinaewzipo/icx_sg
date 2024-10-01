@@ -138,7 +138,7 @@
                             <?php
                             $strSQL = "SELECT name, id, description
                                 FROM t_aig_sg_lov 
-                                where name='PH Relation'";
+                                where name='PH Relation' and id !='2'";
                             $objQuery = mysqli_query($Conn, $strSQL);
                             while ($objResuut = mysqli_fetch_array($objQuery)) {
                                 $data[] = $objResuut;
@@ -207,16 +207,16 @@
     }
 
     function createListAhSectionChild(index, data) {
-    const firstName = data?.insuredFirstName || '';
-    const lastName = data?.insuredLastName || '';
-    const gender = data?.insuredGender || '';
-    const idType = data?.insuredIdType || '';
-    const idNumber = data?.insuredIdNumber || '';
-    const occupation = data?.insuredOccupation || '';
-    const dob = data?.insuredDateOfBirth ? isoToFormattedDate(data.insuredDateOfBirth) : '';
-    const age = data?.age || '';
+        const firstName = data?.insuredFirstName || '';
+        const lastName = data?.insuredLastName || '';
+        const gender = data?.insuredGender || '';
+        const idType = data?.insuredIdType || '';
+        const idNumber = data?.insuredIdNumber || '';
+        const occupation = data?.insuredOccupation || '';
+        const dob = data?.insuredDateOfBirth ? isoToFormattedDate(data.insuredDateOfBirth) : '';
+        const age = data?.age || '';
 
-    return `
+        return `
     <table id="table-form-${index}" class="table-ah" name="table-form-${index}">
         <tbody>
             <tr>
@@ -275,7 +275,7 @@
                         $strSQL = "SELECT name, id, description, source
 FROM t_aig_sg_lov 
 WHERE name = 'PA Occupation'
-AND (id = '147' OR id = '162');";
+AND (description LIKE 'student%' OR description LIKE 'other%')";
                         $objQuery = mysqli_query($Conn, $strSQL);
                         while ($objResult = mysqli_fetch_array($objQuery)) {
                             $selected = ($objResult["id"] == "${occupation}") ? 'selected' : '';
@@ -318,7 +318,7 @@ AND (id = '147' OR id = '162');";
         </tbody>
     </table>
     `;
-}
+    }
 
 
 
@@ -515,11 +515,11 @@ AND (id = '147' OR id = '162');";
             .then(response => response.text())
             .then(data => {
                 const result = JSON.parse(data)
-                
+
                 if (Array.isArray(result) && result.length > 0 && !id) {
                     manualSetDefaultValueFormCallingList(result[0]);
                 }
-                calllistDetail=result[0]
+                calllistDetail = result[0]
             })
             .catch(error => console.error('Error fetching cover list:', error))
             .finally(() => {
@@ -542,14 +542,14 @@ AND (id = '147' OR id = '162');";
             .then(response => response.text())
             .then(data => {
                 // campaignDetailsFromAPI=
-                const result =JSON.parse(data)
+                const result = JSON.parse(data)
                 console.log("result:", result)
                 // console.log("selectedType",selectedType)
                 if (Array.isArray(result) && result.length > 0) {
                     // selectedType =result[0].cp_type  // Assuming you want the first item
-                campaignDetailsFromAPI=result[0];
+                    campaignDetailsFromAPI = result[0];
 
-                } 
+                }
 
                 // console.log("data:", data)
             })
@@ -584,7 +584,7 @@ AND (id = '147' OR id = '162');";
 
         if (responseProduct) {
             await addInsuredSections(responseProduct?.number_of_person_insured || 2)
-            if(id &&!quotationData?.quoteNo){
+            if (id && !quotationData?.quoteNo) {
                 setInsuredPerson(quotationData?.insuredList)
             }
             //handle ProductId setValue from API but not change PlanPoi
@@ -600,10 +600,10 @@ AND (id = '147' OR id = '162');";
                 populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
             }
         });
- 
+
         if (!id) {
-    setDefaultRemarksC(responseProduct)
-}
+            setDefaultRemarksC(responseProduct)
+        }
 
     }
 
@@ -773,8 +773,10 @@ AND (id = '147' OR id = '162');";
 
 
                 if (indexCounter > 6) {
-                    addButton.style.display = 'none';
-                }
+                addButton.style.visibility = 'hidden'; // Change display to visibility hidden
+            } else {
+                addButton.style.visibility = 'visible'; // Ensure it's visible until the limit
+            }
             }
         });
     }
@@ -783,8 +785,10 @@ AND (id = '147' OR id = '162');";
 
     function deleteChildInsured() {
         const insuredContainer = document.getElementById('insured-list-ah');
-
+        const addButton = document.getElementById('add-insured-child');
+      
         insuredContainer.addEventListener('click', (event) => {
+                addButton.style.visibility = 'visible'; // Change display to visibility hidden
             if (event.target.classList.contains('delete-child')) {
                 const index = event.target.getAttribute('data-index');
                 const tableToRemove = document.getElementById(`table-form-${index}`);
@@ -796,6 +800,7 @@ AND (id = '147' OR id = '162');";
                         document.getElementById('add-insured-child').style.display = 'block';
                     }
                 }
+                console.log("indexCounter:", indexCounter)
             }
         });
     }
@@ -827,18 +832,26 @@ AND (id = '147' OR id = '162');";
         }
 
         // Check if the occupation indicates a student
-        if (occupationValue && occupationValue.value === '147') {
-            console.log("student");
-            if (age > 25) {
-                alert(`Child must be less than or equal to 25 years old.`);
-                $(`#datepicker-${index}`).val(''); // Clear the datepicker input
-                $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-                return;
+        if (occupationValue) {
+            const selectedText = occupationValue.options[occupationValue.selectedIndex].text;
+            console.log("selectedText:", selectedText);
+
+            // Check if the selected text includes 'students'
+            if (selectedText.toLowerCase().includes('students')) {
+                // Now check if the age is greater than 25
+                if (age > 25) {
+                    console.log("student");
+                    alert(`Child must be less than or equal to 25 years old.`);
+                    $(`#datepicker-${index}`).val(''); // Clear the datepicker input
+                    $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
+                    return;
+                }
             }
         }
 
+
         // Handle maximum age (based on productDetail)
-        if (age > productDetail?.max_age_child) {
+        if (age > productDetail?.max_age_child && occupationValue && occupationValue.value !== '147') {
             alert(`Child must be less than or equal to ${productDetail?.max_age_child} years old.`);
             $(`#datepicker-${index}`).val(''); // Clear the datepicker input
             $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
@@ -865,6 +878,7 @@ AND (id = '147' OR id = '162');";
     });
     const fillInsuredSectionChild = (insuredData) => {
         const filterchild = insuredData.filter(i => i?.personInfo?.relationToPolicyholder === "2");
+        console.log("filterchild:", filterchild.length)
         let indexCounterChild = 3;
         filterchild.forEach((child, childIndex) => {
             const currentIndex = indexCounterChild;
@@ -873,14 +887,14 @@ AND (id = '147' OR id = '162');";
             const insuredContainer = document.getElementById('insured-list-ah');
             const childSectionHTML = createListAhSectionChild(currentIndex, child.personInfo);
             insuredContainer.insertAdjacentHTML('beforeend', childSectionHTML);
-    
+
             document.getElementById(`genderDropdown_${currentIndex}`).value = child?.personInfo?.insuredGender;
             document.getElementById(`idTypeDropdown_${currentIndex}`).value = child?.personInfo?.insuredIdType;
             document.getElementById(`occupationDropdown_${currentIndex}`).value = child?.personInfo?.insuredOccupation;
             const {
-            age,
-            days
-        } = calculateAge(child?.personInfo?.insuredDateOfBirth);
+                age,
+                days
+            } = calculateAge(child?.personInfo?.insuredDateOfBirth);
             document.getElementById(`ageInsuredPerson_${currentIndex}`).value = `${days} day - ${age} years old`;
 
             indexCounterChild++;
