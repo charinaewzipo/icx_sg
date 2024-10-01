@@ -3,7 +3,7 @@ function handlePaymentFrequencyChange(radio) {
 
   const paymentFrequency = radio.value;
   const paymentModeSelect = document.querySelector('select[name="Payment_Mode"]');
-  paymentModeSelect.value = "";
+  // paymentModeSelect.value = "";
   const options = paymentModeSelect.options;
   for (let i = 0; i < options.length; i++) {
     const option = options[i];

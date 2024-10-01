@@ -563,8 +563,7 @@ const setDefaultValueForm = async(dbData) => {
 
   // Set Individual Policy Holder Info fields
 
-document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mode||"";
-
+  
   // Payment Frequency
   const paymentFrequencyAnnual = document.querySelector('#paymentFrequencyAnnual');
   const paymentFrequencyMonthly = document.querySelector('#paymentFrequencyMonthly');
@@ -573,6 +572,7 @@ document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mo
   } else if (dbData?.payment_frequency === 2) {
     paymentFrequencyMonthly.checked = true;
   }
+  document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mode||"";
 
   const emailFulfillmentYes = document.querySelector('#emailFulfillmentYes');
   const emailFulfillmentNo = document.querySelector('#emailFulfillmentNo');
