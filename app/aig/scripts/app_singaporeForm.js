@@ -395,7 +395,7 @@ const manualSetInsuredVehicleList = () => {
     'select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]'
   ).value = driverInfo.claimInfo[0].insuredLiability;
 };
-const setInsuredPerson = (insuredData) => {
+const setInsuredPerson = (insuredData,dbData) => {
  
   const formSections = document.querySelectorAll('table[id^="table-form-"]');
   formSections.forEach((section, index) => {
@@ -437,7 +437,12 @@ const setInsuredPerson = (insuredData) => {
       //   personInfo.natureOfBusiness || "";
   
   
-      populatePlanAndCovers(planInfo, section, index);
+      if(index===0 &&dbData?.productId&&planInfo){
+
+        // populatePlanAndCovers(planInfo, section, index);
+        populatePlans(dbData?.productId,1,section,planInfo)
+        populateCovers(dbData?.productId,1,section,planInfo)
+      }
     }
    
 
@@ -659,7 +664,7 @@ const setDefaultValueForm = async(dbData) => {
     case "auto":
       return setInsuredVehicleList(insuredData), setDefaultPlanInfo(insuredData);
     case "ah":
-      return setInsuredPerson(insuredData);
+      return setInsuredPerson(insuredData,dbData);
     default:
 
       return null

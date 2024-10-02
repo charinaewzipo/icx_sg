@@ -598,7 +598,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         if (responseProduct) {
             await addInsuredSections(responseProduct?.number_of_person_insured || 2)
             if (id && !quotationData?.quoteNo) {
-                setInsuredPerson(quotationData?.insuredList)
+                setInsuredPerson(quotationData?.insuredList,quotationData)
             }
             //handle ProductId setValue from API but not change PlanPoi
             const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
@@ -606,13 +606,13 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                 handlePaymentFrequencyChange(defaultRadio);
             }
         }
-        const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
-        planSelectElements.forEach((selectElement, index) => {
-            if (index === 0) { // Populate only the first one (index 0)
-                populatePlans(selectedProductId, index + 1); // Adjust index to be 1-based if needed
-                populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
-            }
-        });
+        // const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
+        // planSelectElements.forEach((selectElement, index) => {
+        //     if (index === 0) { // Populate only the first one (index 0)
+        //         populatePlans(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+        //         populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+        //     }
+        // });
 
         if (!id) {
             setDefaultRemarksC(responseProduct)
@@ -620,7 +620,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
     }
 
-    function populatePlans(productId, index) {
+    function populatePlans(productId, index, section, planInfo = null) {
         if (!productId) return;
 
         const url = `../scripts/get_plan.php?product_id=${productId}`;
@@ -657,6 +657,11 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                     option.setAttribute('data-desc', plan.plan_name);
                     planSelect.appendChild(option);
                 });
+                if (planInfo) {
+                    const planSelect = section.querySelector('[name^="planId"]');
+                    planSelect.value = planInfo?.planId
+                    section.querySelector('[name^="planPoi"]').value = planInfo.planPoi || "";
+                }
             })
             .catch(error => console.error('Error fetching plans:', error))
             .finally(() => {
@@ -664,7 +669,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             });
     }
 
-    function populateCovers(productId, index) {
+    function populateCovers(productId, index, section, planInfo = null) {
         if (!productId) return;
 
         const url = `../scripts/get_cover.php?product_id=${productId}`;
@@ -701,7 +706,17 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                     option.setAttribute('data-cover-code', cover.cover_code);
                     option.setAttribute('data-cover-name', cover.cover_name);
                     plan_cover_list_.appendChild(option);
+
+                
                 });
+                if (planInfo) {
+                const coverSelect = section.querySelector('[name^="plan_cover_list_1[]"]');
+                if (coverSelect && planInfo?.covers[0]?.id) {
+                    coverSelect.value = planInfo?.covers[0]?.id; // Pre-select the cover
+                }
+               
+            }
+                
             })
             .catch(error => console.error('Error fetching plans:', error))
             .finally(() => {
@@ -808,7 +823,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                 if (tableToRemove) {
                     tableToRemove.remove();
                     // Adjust the indexCounter and button visibility if necessary
-                    if(index>=3){
+                    if (index >= 3) {
                         indexCounter--;
                     }
                     if (indexCounter < 4) {
@@ -856,7 +871,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                 // Now check if the age is greater than 25
                 if (age >= 18 && age < 25) {
                     console.log("student");
-                    
+
                 } else {
                     alert(`Child must be between 18 and 25 years old.`);
                     $(`#datepicker-${index}`).val(''); // Clear the datepicker input
@@ -904,10 +919,10 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         console.log("filterchild:", filterchild.length)
 
         let indexCounterChild = 3;
-        if(filterchild.length>0){
+        if (filterchild.length > 0) {
 
             document.getElementById('add-insured-child').style.display = 'block';
-            indexCounter=indexCounter+filterchild.length;
+            indexCounter = indexCounter + filterchild.length;
         }
 
         filterchild.forEach((child, childIndex) => {
@@ -921,14 +936,14 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             document.getElementById(`genderDropdown_${currentIndex}`).value = child?.personInfo?.insuredGender;
             document.getElementById(`idTypeDropdown_${currentIndex}`).value = child?.personInfo?.insuredIdType;
             document.getElementById(`occupationDropdown_${currentIndex}`).value = child?.personInfo?.insuredOccupation;
-            if(child?.personInfo?.insuredDateOfBirth){
+            if (child?.personInfo?.insuredDateOfBirth) {
                 const {
-                age,
-                days
-            } = calculateAge(child?.personInfo?.insuredDateOfBirth);
-            document.getElementById(`ageInsuredPerson_${currentIndex}`).value = `${days} day - ${age} years old`;
+                    age,
+                    days
+                } = calculateAge(child?.personInfo?.insuredDateOfBirth);
+                document.getElementById(`ageInsuredPerson_${currentIndex}`).value = `${days} day - ${age} years old`;
             }
-           
+
 
             indexCounterChild++;
 
