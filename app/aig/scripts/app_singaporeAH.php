@@ -606,13 +606,16 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                 handlePaymentFrequencyChange(defaultRadio);
             }
         }
-        // const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
-        // planSelectElements.forEach((selectElement, index) => {
-        //     if (index === 0) { // Populate only the first one (index 0)
-        //         populatePlans(selectedProductId, index + 1); // Adjust index to be 1-based if needed
-        //         populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
-        //     }
-        // });
+        if(!quotationData){
+            const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
+        planSelectElements.forEach((selectElement, index) => {
+            if (index === 0) { // Populate only the first one (index 0)
+                populatePlans(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+                populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+            }
+        });
+        }
+     
 
         if (!id) {
             setDefaultRemarksC(responseProduct)
