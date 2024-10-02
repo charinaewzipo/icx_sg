@@ -714,7 +714,7 @@ const displayDateInsured = (dateText, index) => {
     // Reset the datepicker value
     $(`#datepicker-${index}`).val(''); // Clear the datepicker input
     $(`#ageInsuredPerson_${index}`).val(''); // Clear the age input field
-  } else if (age > productDetail?.max_age) {
+  } else if (age >= productDetail?.max_age) {
     alert(`Please enter a date of birth that is less than ${productDetail.max_age} years ago.`);
     // Reset the datepicker value
     $(`#datepicker-${index}`).val(''); // Clear the datepicker input
