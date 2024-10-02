@@ -403,76 +403,78 @@ const setInsuredPerson = (insuredData) => {
     const data = insuredData[index];
     const personInfo = data.personInfo;
     console.log("personInfo:", personInfo?.relationToPolicyholder)
-    const planInfo = personInfo.planInfo;
-    section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
-      personInfo.insuredFirstName || "";
-    // section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
-    //   personInfo.insuredLastName || "";
-    section.querySelector('[name^="insured_ah_insuredResidentStatus_"]').value =
-      personInfo.insuredResidentStatus || "";
-    section.querySelector('[name^="insured_ah_insuredIdType_"]').value =
-      personInfo.insuredIdType || "";
-    section.querySelector('[name^="insured_ah_insuredIdNumber_"]').value =
-      personInfo.insuredIdNumber || "";
-    section.querySelector('[name^="insured_ah_insuredGender_"]').value =
-      personInfo.insuredGender || "";
-      const dob = personInfo.insuredDateOfBirth;
-    section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =  
-    dob ? isoToFormattedDate(dob):""
-    if (dob) {
-      const {age} = calculateAge(dob);
-      section.querySelector('[name^="ageInsuredPerson_"]').value = age;
+    if(personInfo?.relationToPolicyholder!=2){
+      const planInfo = personInfo.planInfo;
+      section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
+        personInfo.insuredFirstName || "";
+      // section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
+      //   personInfo.insuredLastName || "";
+      section.querySelector('[name^="insured_ah_insuredResidentStatus_"]').value =
+        personInfo.insuredResidentStatus || "";
+      section.querySelector('[name^="insured_ah_insuredIdType_"]').value =
+        personInfo.insuredIdType || "";
+      section.querySelector('[name^="insured_ah_insuredIdNumber_"]').value =
+        personInfo.insuredIdNumber || "";
+      section.querySelector('[name^="insured_ah_insuredGender_"]').value =
+        personInfo.insuredGender || "";
+        const dob = personInfo.insuredDateOfBirth;
+      section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =  
+      dob ? isoToFormattedDate(dob):""
+      if (dob) {
+        const {age} = calculateAge(dob);
+        section.querySelector('[name^="ageInsuredPerson_"]').value = age;
+      }
+      section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value =
+        personInfo.insuredMaritalStatus || "";
+      section.querySelector('[name^="insured_ah_insuredOccupation_"]').value =
+        personInfo.insuredOccupation || "";
+      section.querySelector(
+        '[name^="insured_ah_relationToPolicyholder_"]'
+      ).value = personInfo.relationToPolicyholder || "";
+      // section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value =
+      //   personInfo.insuredCampaignCode || "";
+      // section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value =
+      //   personInfo.natureOfBusiness || "";
+  
+  
+      populatePlanAndCovers(planInfo, section, index);
     }
-    section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value =
-      personInfo.insuredMaritalStatus || "";
-    section.querySelector('[name^="insured_ah_insuredOccupation_"]').value =
-      personInfo.insuredOccupation || "";
-    section.querySelector(
-      '[name^="insured_ah_relationToPolicyholder_"]'
-    ).value = personInfo.relationToPolicyholder || "";
-    // section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value =
-    //   personInfo.insuredCampaignCode || "";
-    // section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value =
-    //   personInfo.natureOfBusiness || "";
-
-
-    const populatePlanAndCovers = (planInfo, section, index) => {
-      console.log("planInfo:", planInfo)
-      const planSelect = section.querySelector('[name^="planId"]');
-      planSelect.innerHTML = ""; // Clear existing options
-      const defaultOption = document.createElement("option");
-      defaultOption.value = planInfo.planId;
-      defaultOption.textContent = planInfo?.planDescription || "<-- Please select an option -->";
-
-      planSelect.appendChild(defaultOption);
-
-      const coverList = section.querySelector(".planCoverList");
-      coverList.innerHTML = ""; // Clear existing covers
-
-      planInfo.covers.forEach((cover, coverIndex) => {
-        const relatedElement = document.querySelector(`#planCoverLimitAmount${index + 1}`);
-
-        if (relatedElement) {
-          relatedElement.value = cover.limitAmount;
-        }
-        const coverOption = document.createElement("option");
-        coverOption.value = cover.id;
-        coverOption.setAttribute("data-name", cover.name);
-        coverOption.setAttribute("data-netpremium", cover.limitAmount);
-        coverOption.textContent = cover?.name == null ? "<-- Please select an option -->" : cover.name;
-
-        coverList.appendChild(coverOption);
-
-
-      });
-
-      section.querySelector('[name^="planPoi"]').value = planInfo.planPoi || "";
-    };
-
-    populatePlanAndCovers(planInfo, section, index);
+   
 
   });
   fillInsuredSectionChild(insuredData)
+};
+const populatePlanAndCovers = (planInfo, section, index) => {
+  console.log("planInfo:", planInfo)
+  const planSelect = section.querySelector('[name^="planId"]');
+  planSelect.innerHTML = ""; // Clear existing options
+  const defaultOption = document.createElement("option");
+  defaultOption.value = planInfo.planId;
+  defaultOption.textContent = planInfo?.planDescription || "<-- Please select an option -->";
+
+  planSelect.appendChild(defaultOption);
+
+  const coverList = section.querySelector(".planCoverList");
+  coverList.innerHTML = ""; // Clear existing covers
+
+  planInfo.covers.forEach((cover, coverIndex) => {
+    const relatedElement = document.querySelector(`#planCoverLimitAmount${index + 1}`);
+
+    if (relatedElement) {
+      relatedElement.value = cover.limitAmount;
+    }
+    const coverOption = document.createElement("option");
+    coverOption.value = cover.id;
+    coverOption.setAttribute("data-name", cover.name);
+    coverOption.setAttribute("data-netpremium", cover.limitAmount);
+    coverOption.textContent = cover?.name == null ? "<-- Please select an option -->" : cover.name;
+
+    coverList.appendChild(coverOption);
+
+
+  });
+
+  section.querySelector('[name^="planPoi"]').value = planInfo.planPoi || "";
 };
 
 const setDefaultPlanInfo = (insuredData, id = null) => {
@@ -553,6 +555,12 @@ const setDefaultValueForm = async(dbData) => {
       handleProductChange(selectProductElement);
   }
   }
+  // else if(dbData?.quoteNo){
+  //   populatePlans(dbData?.productId,1)
+  //   populateCovers(dbData?.productId,1)
+  // }
+ 
+
  
 
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";

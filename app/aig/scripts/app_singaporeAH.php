@@ -808,7 +808,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                 if (tableToRemove) {
                     tableToRemove.remove();
                     // Adjust the indexCounter and button visibility if necessary
-                    if(index>3){
+                    if(index>=3){
                         indexCounter--;
                     }
                     if (indexCounter < 4) {
@@ -902,10 +902,12 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
     const fillInsuredSectionChild = (insuredData) => {
         const filterchild = insuredData.filter(i => i?.personInfo?.relationToPolicyholder === "2");
         console.log("filterchild:", filterchild.length)
+
         let indexCounterChild = 3;
         if(filterchild.length>0){
 
             document.getElementById('add-insured-child').style.display = 'block';
+            indexCounter=indexCounter+filterchild.length;
         }
 
         filterchild.forEach((child, childIndex) => {
