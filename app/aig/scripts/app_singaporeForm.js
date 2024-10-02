@@ -220,7 +220,7 @@ console.log("data FormCallingList:", data)
     const {age} = calculateAge(dob);
     document.getElementById('agePolicyHolder').value = age;
   }
-  document.querySelector('input[name="customerIdNo"]').value = data.passport_no; 
+  document.querySelector('input[name="customerIdNo"]').value = data?.passport_no||data?.personal_id; 
   document.querySelector('input[name="mobileNo"]').value = data.udf1;
   document.querySelector('input[name="emailId"]').value = data.email || ""; 
   document.querySelector('input[name="postCode"]').value = data.home_post_cd;
