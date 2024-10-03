@@ -1,3 +1,5 @@
+let agentDetail = null
+
 function handlePaymentFrequencyChange(radio) {
   console.log("handlePaymentFrequencyChange");
 
@@ -31,6 +33,35 @@ function setPlanPoiValue(paymentFrequency) {
 
   console.log("planPoi value set to:", planPoi.value);
 }
+
+function fetchAgentDetail() {
+  document.body.classList.add('loading');
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let agent_id = url.searchParams.get('agent_id');
+  console.log("agent_id:", agent_id)
+  fetch('../scripts/get_agent_data.php', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+            agent_id: agent_id
+          })
+      })
+      .then(response => response.text())
+      .then(data => {
+          const result = JSON.parse(data)
+          console.log("result:", result)
+          agentDetail=result[0]
+          
+      })
+      .catch(error => console.error('Error fetching cover list:', error))
+      .finally(() => {
+          document.body.classList.remove('loading');
+      });
+}
+
 
 
 function fetchPaymentOption(paymentMode, paymentFrequency) {
@@ -113,6 +144,8 @@ const handleRetrieveQuote = async () => {
     }
     handlePaymentGateway(data?.premiumPayable, data?.paymentDetails[0]?.paymentMode);
   }
+
+
 };
 
 const handlePaymentGateway = async (premiumPayable, paymentMode) => {
@@ -121,7 +154,20 @@ const handlePaymentGateway = async (premiumPayable, paymentMode) => {
 
   if (premiumPayable) {
     const url = `payment.php?amount=${premiumPayable}&is_recurring=${isRecurring}&quoteNo=${quotationData?.quoteNo}`;
-    window.open(url, 'childWindow', 'width=600,height=480');
+    
+    // Open a new window for payment
+    const childWindow = window.open(url, 'childWindow', 'width=600,height=480');
+    
+    handleSecurePause();
+    
+
+    const checkWindowClosed = setInterval(() => {
+      if (childWindow.closed) {
+        clearInterval(checkWindowClosed); 
+        handleUnsecurePause();
+      }
+    }, 1000);
+    
   } else {
     console.log("No price", premiumPayable);
   }
@@ -129,6 +175,7 @@ const handlePaymentGateway = async (premiumPayable, paymentMode) => {
 
 
 function showAlert(message) {
+  handleUnsecurePause()
   alert(message);
   setTimeout(() => {
     window.location.reload();
@@ -226,3 +273,82 @@ const retrieveTransformDate = (dateString) => {
     return "Invalid date"; // Indicate that the date is invalid
   }
 };
+
+$(function () {
+  $.ajaxSetup({
+      url: "../Application/app_process.php"
+  })});
+  let intervalId;
+  let min = 0;
+  let sec = 0;
+const handleSecurePause=()=>{
+  let voiceid = localStorage.getItem("voiceid");
+        let lastInteraction = localStorage.getItem("lastInteraction");
+        localStorage.setItem("securepause",true);
+        $.ajax({
+            'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'PAUSED', 'agentid': agentDetail?.genesysid },
+            'dataType': 'html',
+            'type': 'POST',
+            'success': function (data) {
+                let response = eval('(' + data + ')');
+                console.log("response:", response)
+                if (response.result) {
+                    if(response.data.recordingState == "PAUSED"){
+                        displayPauseTime();
+                    }
+                    console.log('Recording state1 ' + response.data.recordingState);
+                    // alert('Recording state1 ' + response.data.recordingState);
+                } else {
+                    console.log('Recording state2 ' + response.data);
+                }
+            }
+        });
+}
+const handleUnsecurePause=()=>{
+  let voiceid = localStorage.getItem("voiceid");
+  let lastInteraction = localStorage.getItem("lastInteraction");
+  $.ajax({
+      'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'ACTIVE', 'agentid': agentDetail?.genesysid },
+      'dataType': 'html',
+      'type': 'POST',
+      'success': function (data) {
+          let response = eval('(' + data + ')');
+          if (response.result) {
+              localStorage.removeItem("securepause");
+              clearPauseTime();
+              console.log('Recording state1 ' + response.data.recordingState);
+          } else {
+              localStorage.removeItem("securepause");
+              clearPauseTime();
+              console.log('Recording state2 ' + response.data);
+          }
+      }
+  });
+}
+function displayPauseTime() {
+  if(intervalId == null){
+      min = 0;
+      sec = 0;
+      intervalId = setInterval(pauseTimer, 1000);
+      //console.log("intervalId",intervalId);
+  }
+}
+function pauseTimer() {
+  window.focus();
+  sec++;
+  if (sec >= 60) {
+      sec = 0;
+      min++;
+  }
+}
+function clearPauseTime() {
+  // document.title = "Application Form";
+  // document.getElementById("pauseDisplay").innerHTML = "";
+  clearInterval(intervalId);
+  intervalId = null;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetchAgentDetail()
+
+});
