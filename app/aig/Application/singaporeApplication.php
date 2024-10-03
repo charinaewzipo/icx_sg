@@ -1590,7 +1590,7 @@ where name='Occupation'";
 
         <button type="button" class="button draft-button" id="btnDraftForm" onclick="handleClickDraftButton()">Save</button>
         <button type="button" class="button draft-button" id="btnSaveDraftForm" onclick="handleClickSaveDraftButton()" hidden>Save</button>
-        <button hidden type="button" class="button edit" id="btnEditForm" onclick="handleEditQuote()" hidden>Edit</button>
+        <button hidden type="submit" class="button edit" id="btnEditForm" onclick="handleEditQuote()" data-recalculate="true">Edit</button>
         <button type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->

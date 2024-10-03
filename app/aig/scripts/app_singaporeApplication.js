@@ -452,6 +452,7 @@ function getPlanDetail() {
 }
 
 const handleValidateForm = () => {
+  console.log("handleValidateForm");
   document
     .getElementById("application")
     .addEventListener("submit", async function (event) {
@@ -464,7 +465,6 @@ const handleValidateForm = () => {
 
       console.log("form", handleForm());
       let isValid = true;
-
       document.querySelectorAll("input, select").forEach(function (field) {
         if (
           field.style.display !== "none" &&
@@ -487,7 +487,8 @@ const handleValidateForm = () => {
 
       const requestBody = handleForm();
       console.log("requestBody", requestBody)
-
+      const submitButton = document.querySelector("#btnEditForm");
+      const shouldRecalculate = submitButton.getAttribute("data-recalculate") === "true";
       if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         const paymentDetails = [
           {
@@ -524,11 +525,14 @@ const handleValidateForm = () => {
         
         await fetchPolicy(policyRequest);
        
-      } else {
-        // const requestBodyQuote =removeKeysFromQuotationDataOnCreateQuote(requestBody)
+      } else if(shouldRecalculate){
+        const removePolicyId = {...requestBody,policyId:""}
+        await fetchQuotation(removePolicyId);
+        console.log("fetch Recalculate")
+
+      }else{
         await fetchQuotation(requestBody);
         console.log("fetch quotation")
-
       }
     });
 };

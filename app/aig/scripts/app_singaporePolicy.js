@@ -22,7 +22,7 @@ const hideFormData = (elements) => {
         Object.assign(element.style, commonStyles); // Apply common styles
       } else {
         // Disable other input types
-        element.readOnly = true;
+        // element.readOnly = true;
         Object.assign(element.style, commonStyles); // Apply common styles
       }
     } else if (tagName === "select") {
@@ -67,44 +67,50 @@ const unhideFormData = (elements) => {
   const remarkCTextArea = document.getElementById("RemarkCInput");
   if (remarkCTextArea) remarkCTextArea.disabled = false;
 
+  // Iterate over each form element and reset its disabled/readOnly properties, ignoring readonly elements
   elements.forEach((element) => {
+    // Ignore elements with readonly attribute
+    if (element.hasAttribute('readonly')) return;
+    
     const tagName = element.tagName.toLowerCase();
 
     if (tagName === "input") {
       if (element.type === "radio" || element.type === "checkbox") {
         // Enable radio and checkbox elements
-        element.disabled = false; // Ensure radio/checkbox buttons are enabled
-        element.style.pointerEvents = ""; // Reset pointer events
-        element.style.opacity = ""; // Reset opacity
-        element.style.backgroundColor = ""; // Reset background color
-        element.style.border = ""; // Reset border style
+        element.disabled = false;
+        element.style.pointerEvents = "";  // Allow pointer events
+        element.style.opacity = "";        // Reset opacity
+        element.style.backgroundColor = "";// Reset background color
+        element.style.border = "";         // Reset border style
       } else {
-        // Enable other input types (e.g., text, number, etc.)
-        element.readOnly = false; // Remove read-only restriction
-        element.disabled = false; // Ensure inputs are enabled
+        // Enable other input types (text, number, etc.), unless they have readonly
+        element.readOnly = false;          // Remove read-only restriction
+        element.disabled = false;          // Ensure input is enabled
         element.style.backgroundColor = ""; // Reset background color
-        element.style.border = ""; // Reset border style
-        element.style.pointerEvents = "";
-        element.style.color = ""; // Reset text color
-        element.style.opacity = ""; // Reset opacity
+        element.style.border = "";         // Reset border style
+        element.style.pointerEvents = "";  // Allow pointer events
+        element.style.color = "";          // Reset text color
+        element.style.opacity = "";        // Reset opacity
       }
     } else if (tagName === "select") {
       // Enable select elements
-      element.style.pointerEvents = "";
+      element.disabled = false;           // Ensure select is enabled
+      element.style.pointerEvents = "";   // Allow pointer events
       element.style.backgroundColor = ""; // Reset background color
-      element.style.color = ""; // Reset text color
-      element.style.border = ""; // Reset border
-      element.style.opacity = ""; // Reset opacity
+      element.style.color = "";           // Reset text color
+      element.style.border = "";          // Reset border style
+      element.style.opacity = "";         // Reset opacity
     } else if (tagName === "textarea") {
-      // Enable textarea elements
-      element.disabled = false; // Enable textarea
+      // Enable textarea elements, ignoring readonly ones
+      element.readOnly = false;           // Remove read-only restriction
+      element.disabled = false;           // Enable textarea
       element.style.backgroundColor = ""; // Reset background color
-      element.style.border = ""; // Reset border style
+      element.style.border = "";          // Reset border style
     } else if (tagName === "button") {
       // Enable button elements
-      element.disabled = false; // Enable buttons
-      element.style.pointerEvents = ""; // Allow interaction
-      element.style.opacity = ""; // Reset opacity
+      element.disabled = false;           // Ensure button is enabled
+      element.style.pointerEvents = "";   // Allow interaction
+      element.style.opacity = "";         // Reset opacity
     }
   });
 };

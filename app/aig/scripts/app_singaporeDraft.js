@@ -54,12 +54,16 @@ const handleEditQuote = () => {
   const btnEditForm = document.getElementById('btnEditForm');
   console.log("Edit")
   if (!isEditing) {
-    const formElements = document.querySelectorAll("input, select, button:not(#btnSaveForm)");
+    event.preventDefault();
+    const formElements = document.querySelectorAll("input, select:not(#planPoiSelect1),textarea, button:not(#btnSaveForm)");
+
+   
     unhideFormData(formElements);
     btnEditForm.textContent = "Save"
     isEditing = true;
   } else {
-    window.alert("Fetch Recalculate Quote")
-    window.location.reload();
+    // window.alert("Fetch Recalculate Quote")
+    // window.location.reload();
+    // handleValidateForm();
   }
 }
