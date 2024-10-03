@@ -409,11 +409,13 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             const coverRows = section.querySelectorAll('.planCoverList');
             coverRows.forEach((coverSelect) => {
                 const selectedOption = coverSelect.querySelector('option:checked');
-                if (selectedOption) {
+                console.log("selectedOption:", selectedOption)
+                if (selectedOption&&selectedOption.value) {
                     covers.push({
                         id: selectedOption.value || '',
                         code: selectedOption.getAttribute('data-cover-code') || null,
                         name: selectedOption.getAttribute('data-cover-name') || null,
+                        selectedFlag:true
                     });
                 }
             });
@@ -422,7 +424,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             if (index === 0) {
                 tempPlan = {
                     ...planInfo,
-                    covers: covers
+                    coverList: covers
                 };
             }
 
@@ -713,12 +715,14 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                 
                 });
                 if (planInfo) {
-                const coverSelect = section.querySelector('[name^="plan_cover_list_1[]"]');
-                if (coverSelect && planInfo?.covers[0]?.id) {
-                    coverSelect.value = planInfo?.covers[0]?.id; // Pre-select the cover
-                }
-               
-            }
+    const coverSelect = section.querySelector('[name^="plan_cover_list_1[]"]');
+    
+    if (coverSelect && planInfo.coverList && planInfo.coverList.length > 0 && planInfo.coverList[0]?.id) {
+        coverSelect.value = planInfo.coverList[0].id; // Pre-select the cover
+    } else {
+        console.log("Cover list or cover select element is missing or invalid.");
+    }
+}
                 
             })
             .catch(error => console.error('Error fetching plans:', error))

@@ -239,13 +239,13 @@ console.log("data.paymentDetails[0]?.paymentFrequency",data.paymentDetails[0]?.p
             planId: (insured.planList[0]?.planId || quotationInsured.personInfo?.planInfo?.planId || ""),
             planDescription: (insured.planList[0]?.planName || quotationInsured.personInfo?.planInfo?.planDescription || ""),
             planPoi: (insured.planList[0]?.planPoi || quotationInsured.personInfo?.planInfo?.planPoi || ""), // Assuming this is constant
-            covers: (insured.planList[0]?.coverList ? Object.values(insured.planList[0].coverList) : []).length > 0
+            coverList: (insured.planList[0]?.coverList ? Object.values(insured.planList[0].coverList) : []).length > 0
               ? Object.values(insured.planList[0].coverList).map(cover => ({
                 id: cover.id || "",
                 code: cover.code || null,
                 name: cover.name || null
               }))
-              : (quotationInsured.personInfo?.planInfo?.covers || []).map(cover => ({
+              : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
                 id: cover.id || "",
                 code: cover.code || null,
                 name: cover.name || null
