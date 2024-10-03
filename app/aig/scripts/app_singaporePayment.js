@@ -175,7 +175,6 @@ const handlePaymentGateway = async (premiumPayable, paymentMode) => {
 
 
 function showAlert(message) {
-  handleUnsecurePause()
   alert(message);
   setTimeout(() => {
     window.location.reload();
