@@ -927,8 +927,6 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
         let indexCounterChild = 3;
         if (filterchild.length > 0) {
-
-            document.getElementById('add-insured-child').style.display = 'block';
             indexCounter = indexCounter + filterchild.length;
         }
 
