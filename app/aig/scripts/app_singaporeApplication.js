@@ -174,7 +174,8 @@ console.log("campaignDetails",campaignDetails)
     distributionChannel: 10,
     producerCode: calllistDetail[productDetail?.udf_field_producer_code]||"",
     // producerCode:"0002466000",
-    propDate:currentDate.format('YYYY-MM-DDTHH:mm:ss[Z]'),
+    // propDate:currentDate.format('YYYY-MM-DDTHH:mm:ss[Z]'),
+    propDate:"",
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
