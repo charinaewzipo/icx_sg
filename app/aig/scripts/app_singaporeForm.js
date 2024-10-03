@@ -555,11 +555,6 @@ const setDefaultValueForm = async(dbData) => {
 
   const selectProductElement = document.querySelector('select[name="select-product"]');
   selectProductElement.value = dbData?.productId || "";
-
-  if(dbData?.productId){
-
-    getProductDetail(dbData?.productId);
-  }
    
   if(!dbData?.quoteNo){
     if (selectProductElement.value) {
