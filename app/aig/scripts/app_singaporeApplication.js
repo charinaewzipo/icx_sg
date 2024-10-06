@@ -493,7 +493,7 @@ const handleValidateForm = () => {
         const paymentDetails = [
           {
             batchNo: responsePayment.batch_no,
-            orderNo: quotationData?.quoteNo,
+            orderNo: responsePayment?.payment_order_id,
             paymentMode: quotationData?.payment_mode,
             merchantId: responsePayment.merchant,
             cardExpiryMonth: responsePayment.card_expiry_month,
