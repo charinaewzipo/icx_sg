@@ -389,7 +389,6 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData)
     $fullName = isset($individualPolicyHolderInfo['fullName']) ? $individualPolicyHolderInfo['fullName'] : '';
     $customerIdNo = isset($individualPolicyHolderInfo['customerIdNo']) ? $individualPolicyHolderInfo['customerIdNo'] : '';
     $dateOfBirth = isset($individualPolicyHolderInfo['dateOfBirth']) ? convertToISO8601($individualPolicyHolderInfo['dateOfBirth']) : null;
-
     // Handle insured list information
     $insuredList = isset($formatData['insuredList']) ? json_encode($formatData['insuredList']) : '{}';
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
@@ -399,12 +398,12 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData)
     // No need for [0] since paymentDetails is not an array of arrays
     $paymentMode = !empty($paymentDetails) && isset($paymentDetails['paymentMode']) ? $paymentDetails['paymentMode'] : null;
     $paymentFrequency = !empty($paymentDetails) && isset($paymentDetails['paymentFrequency']) ? $paymentDetails['paymentFrequency'] : null;
-    $request_quote_json = json_encode($formatData); // Convert to JSON string
-    $response_quote_json = json_encode($response); // Convert to JSON string
+    $request_retrieve_json = json_encode($formatData); // Convert to JSON string
+    $response_retrieve_json = json_encode($response); // Convert to JSON string
     // Escape the strings for safe query execution
    
-    $request_quote_json = mysqli_real_escape_string($dbconn->dbconn, $request_quote_json);
-    $response_quote_json = mysqli_real_escape_string($dbconn->dbconn, $response_quote_json);
+    $request_retrieve_json = mysqli_real_escape_string($dbconn->dbconn, $request_retrieve_json);
+    $response_retrieve_json = mysqli_real_escape_string($dbconn->dbconn, $response_retrieve_json);
     
       // Prepare SQL statement
     $sql = "UPDATE t_aig_app
@@ -424,8 +423,8 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData)
                 payment_mode = '$paymentMode',
                 payment_frequency= '$paymentFrequency',
                 dob = " . ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ",
-                request_quote_json='$request_quote_json',
-                response_quote_json='$response_quote_json',
+                request_retrieve_json='$request_retrieve_json',
+                response_retrieve_json='$response_retrieve_json',
 
                 update_date = NOW()
             WHERE id = '$id'";
@@ -704,11 +703,17 @@ function transformDateQuote($dateString)
 }
 
 function convertToISO8601($dateStr) {
-     // Convert the date from DD/MM/YYYY to YYYY-MM-DD
-     $date = DateTime::createFromFormat('d/m/Y', $dateStr);
-
-     // Return the date in 'Y-m-d H:i:s' format with time as 00:00:00
-     return $date ? $date->format('Y-m-d 00:00:00') : null;
+    // Try to parse the ISO 8601 date (e.g., YYYY-MM-DDTHH:MM:SSZ)
+    try {
+        $date = new DateTime($dateStr);
+        // Return the date in 'Y-m-d H:i:s' format
+        return $date->format('Y-m-d 00:00:00');
+    } catch (Exception $e) {
+        // If the ISO 8601 format fails, try parsing as 'd/m/Y'
+        $date = DateTime::createFromFormat('d/m/Y', $dateStr);
+        // Return the date in 'Y-m-d H:i:s' format or null if invalid
+        return $date ? $date->format('Y-m-d 00:00:00') : null;
+    }
 }
 function maskCardNumber($card_number)
 {
