@@ -91,7 +91,7 @@
       });
     },
 
-    updatePolicyNo: function (policyid, policyNo) {
+    updatePolicyNo: function (policyid, policyNo,formData,response) {
       $.ajax({
         url: url,
         type: "POST",
@@ -99,7 +99,9 @@
         data: JSON.stringify({
           action: "updatePolicyNo",
           policyid: policyid,
-          policyNo: policyNo
+          policyNo: policyNo,
+          formData: formData,
+          response: response,
         }),
         dataType: "json",
         success: function (response) {

@@ -23,6 +23,7 @@ function DBGetQuoteDetailsWithId($id)
     $sql = "SELECT *
         FROM t_aig_app WHERE id = ?";
 
+// wlog("DBGetQuoteDetailsWithId ".$sql);
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind the policyId parameter
         $stmt->bind_param("i", $id);
@@ -64,7 +65,7 @@ function DBGetPaymentLogWithId($quoteNo)
     // Prepare the SQL query to select data by policyId
     $sql = "SELECT * FROM t_aig_sg_payment_log
             WHERE quote_no = ? and result='SUCCESS'";
-
+// wlog("DBGetPaymentLogWithId ".$sql);
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind the policyId parameter
         $stmt->bind_param("i", $quoteNo);
@@ -124,12 +125,14 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
-
+    $request_quote_json = json_encode($formData); // Convert to JSON string
+    $response_quote_json = json_encode($response); // Convert to JSON string
     // Escape the strings for safe query execution
     $ncdInfo = mysqli_real_escape_string($dbconn->dbconn, $ncdInfo);
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
-
+    $request_quote_json = mysqli_real_escape_string($dbconn->dbconn, $request_quote_json);
+    $response_quote_json = mysqli_real_escape_string($dbconn->dbconn, $response_quote_json);
     // Extract details from campaignDetails
     $agent_id = isset($campaignDetails["agent_id"]) ? (int)$campaignDetails["agent_id"] : null;
     $campaign_id = isset($campaignDetails["campaign_id"]) ? (int)$campaignDetails["campaign_id"] : null;
@@ -158,7 +161,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
         quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date,  
-        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id";
+        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id,request_quote_json,response_quote_json";
 
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
@@ -174,8 +177,8 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
         '$policyEffDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
-        $campaign_id, $import_id, $calllist_id, 'Open', '$payment_frequency', '$payment_mode', 
-        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id'";
+        $campaign_id, $import_id, $calllist_id,NOW(), '$payment_frequency', '$payment_mode', 
+        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id','$request_quote_json','$response_quote_json'";
 
     // Add NOW() for quote_create_date if response is not empty
     if (!empty($response)) {
@@ -191,7 +194,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
 
     // Execute query
     $result = $dbconn->executeUpdate($sql);
-
+    wlog("DBInsertQuotationData ".$sql);
     if (!$result) {
         $error = mysqli_error($dbconn->dbconn);
         echo json_encode(array("result" => "error", "message" => "Data insertion failed: $error"));
@@ -245,12 +248,14 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
     $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
     $policyExpDate = isset($response['policyExpDate']) ? transformDateQuote($response['policyExpDate']) : null;
-
+    $request_quote_json = json_encode($formData); // Convert to JSON string
+    $response_quote_json = json_encode($response); // Convert to JSON string
     // Escape the strings for safe query execution
     $ncdInfo = mysqli_real_escape_string($dbconn->dbconn, $ncdInfo);
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
-
+    $request_quote_json = mysqli_real_escape_string($dbconn->dbconn, $request_quote_json);
+    $response_quote_json = mysqli_real_escape_string($dbconn->dbconn, $response_quote_json);
     $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
     $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
 
@@ -289,6 +294,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
         fullname = '$full_name',                  
         dob = '$date_of_birth',
         efulfillmentFlag = '$efulfillmentFlag',
+        request_quote_json= '$request_quote_json',
+        response_quote_json= '$response_quote_json',
         customer_id='$customer_id',          
         update_date = NOW()";
 
@@ -302,7 +309,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
 
     // Execute query
     $result = $dbconn->executeUpdate($sql);
-
+    wlog("DBUpdateQuoteData ".$sql);
     header('Content-Type: application/json; charset=UTF-8');
     if (!$result) {
         $error = mysqli_error($dbconn->dbconn);
@@ -312,21 +319,26 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     }
 }
 
-function DBUpdatePolicyNo($policyid, $policyNo)
+function DBUpdatePolicyNo($policyid, $policyNo,$formData,$response)
 {
     // Initialize database connection
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
+    $request_policy_json = json_encode($formData); // Convert to JSON string
+    $response_policy_json = json_encode($response); // Convert to JSON string
+    // Escape the strings for safe query execution
 
+    $request_policy_json = mysqli_real_escape_string($dbconn->dbconn, $request_policy_json);
+    $response_policy_json = mysqli_real_escape_string($dbconn->dbconn, $response_policy_json);
     if ($res == "404") {
         echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
         exit();
     }
 
     $sql = "UPDATE t_aig_app 
-            SET policyNo = ?, policy_create_date = NOW(), update_date = NOW() 
+            SET policyNo = ?, policy_create_date = NOW(), update_date = NOW() ,request_policy_json='$request_policy_json',response_policy_json='$response_policy_json'
             WHERE policyId = ?";
-
+wlog("DBUpdatePolicyNo ".$sql);
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         $stmt->bind_param("si", $policyNo, $policyid);
 
@@ -387,7 +399,12 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData)
     // No need for [0] since paymentDetails is not an array of arrays
     $paymentMode = !empty($paymentDetails) && isset($paymentDetails['paymentMode']) ? $paymentDetails['paymentMode'] : null;
     $paymentFrequency = !empty($paymentDetails) && isset($paymentDetails['paymentFrequency']) ? $paymentDetails['paymentFrequency'] : null;
-    
+    $request_quote_json = json_encode($formatData); // Convert to JSON string
+    $response_quote_json = json_encode($response); // Convert to JSON string
+    // Escape the strings for safe query execution
+   
+    $request_quote_json = mysqli_real_escape_string($dbconn->dbconn, $request_quote_json);
+    $response_quote_json = mysqli_real_escape_string($dbconn->dbconn, $response_quote_json);
     
       // Prepare SQL statement
     $sql = "UPDATE t_aig_app
@@ -407,12 +424,15 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData)
                 payment_mode = '$paymentMode',
                 payment_frequency= '$paymentFrequency',
                 dob = " . ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ",
+                request_quote_json='$request_quote_json',
+                response_quote_json='$response_quote_json',
+
                 update_date = NOW()
             WHERE id = '$id'";
 
     // Execute the query
     $result = $dbconn->executeUpdate($sql);
-
+    wlog("DBUpdateQuoteRetrieve ".$sql);
     header('Content-Type: application/json; charset=UTF-8');
     if (!$result) {
         $error = mysqli_error($dbconn->dbconn);
@@ -473,7 +493,7 @@ function DBInsertPaymentLog($request, $response, $policyid, $objectPayment)
                 (batch_no, order_no, payment_mode, card_type, card_expiry_month, card_expiry_year, payment_date, payment_frequency, order_amount, card_number, order_currency, source_of_funds_type, merchant, result, time_of_lastupdate, time_of_record, response_json, request_json, policyId) 
             VALUES 
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+  wlog("DBInsertPaymentLog ".$sql);
     // Use prepared statements to avoid SQL injection
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
         // Bind parameters
@@ -641,7 +661,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($data['action'] === 'updatePolicyNo') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
-            DBUpdatePolicyNo($policyid, $policyNo);
+            $response = isset($data['response']) ? $data['response'] : array();
+            $formData = isset($data['formData']) ? $data['formData'] : array();
+            DBUpdatePolicyNo($policyid, $policyNo,$formData,$response);
         } elseif ($data['action'] === 'insertPaymentLog') {
             $request = isset($data['request']) ? $data['request'] : array();
             $response = isset($data['response']) ? $data['response'] : array();

@@ -83,11 +83,10 @@ function fetchPremium(requestBody) {
     });
 }
 async function fetchQuotation(requestBody) {
-
   document.body.classList.add('loading');
   console.log("Fetching Quotation data...");
   const apiUrl = '<?php echo $GLOBALS["aig_api_create_quote_url"]; ?>';
-    
+
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -98,9 +97,9 @@ async function fetchQuotation(requestBody) {
       body: JSON.stringify(requestBody),
     });
 
-
     const data = await response.json();
     console.log("data", data);
+
     let currentUrl = window.location.href;
     const url = new URL(currentUrl);
 
@@ -109,30 +108,32 @@ async function fetchQuotation(requestBody) {
     } else {
       url.searchParams.append('is_firsttime', '1');
     }
-   
-    requestBody=handleForm()
-    // Alert based on statusCode
-    if (data?.statusCode === "S03") {
-      
-      if (id != null && id !== "") {
-        await jQuery.agent.updateQuoteData(requestBody, data, id);
-        window.alert(data?.statusMessage || "Successfully!");
-        window.location.href = url.toString();
-      } else {
-        const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
-        window.alert(data?.statusMessage || "Successfully!");
-        if (url.searchParams.has('id')) {
-          url.searchParams.set('id', responseId);
-        } else {
-          url.searchParams.append('id', responseId);
-        }
-        window.location.href = url.toString();
-      }
+
+    requestBody = handleForm();
+
+    // Insert Quotation Data regardless of statusCode
+    if (id != null && id !== "") {
+      await jQuery.agent.updateQuoteData(requestBody, data, id);
     } else {
-      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
+      const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
+      if (url.searchParams.has('id')) {
+        url.searchParams.set('id', responseId);
+      } else {
+        url.searchParams.append('id', responseId);
+      }
+    }
+
+    // Handle different status codes
+    if (data?.statusCode === "S03") {
+      window.alert(data?.statusMessage || "Successfully!");
+      window.location.href = url.toString();
+    } else {
+      window.alert(`Error statusCode: ${data?.statusCode}\nstatusMessage: ${data?.statusMessage}`);
+      window.location.href = url.toString();
     }
 
     return data; // Return data for further processing
+
   } catch (error) {
     console.error("Error fetching quotation data:", error);
     window.alert("Failed to fetch quotation data. Please try again.");
@@ -141,6 +142,7 @@ async function fetchQuotation(requestBody) {
     document.body.classList.remove('loading');
   }
 }
+
 async function fetchPolicy(requestBody) {
   console.log("Fetching Policy data...");
   document.body.classList.add('loading');
@@ -156,14 +158,16 @@ async function fetchPolicy(requestBody) {
       body: JSON.stringify(requestBody),
     });
 
-
     const data = await response.json();
     console.log("data", data);
 
-    // Alert based on statusCode
+    // Update policyNo if present, regardless of statusCode
+    if (data?.policyNo) {
+      await jQuery.agent.updatePolicyNo(policyid, data?.policyNo,requestBody,data);
+    }
+
+    // Check for specific statusCode N02 and alert accordingly
     if (data?.statusCode === "N02") {
-      await jQuery.agent.updatePolicyNo(policyid, data?.policyNo);
-      // await jQuery.agent.insertPolicyData(policyid, data?.policyNo);
       window.alert(data?.statusMessage || "Successfully!");
       window.location.reload();
     } else {
@@ -173,13 +177,13 @@ async function fetchPolicy(requestBody) {
     return data;
   } catch (error) {
     console.error("Error fetching quotation data:", error);
-    // Optionally, you can alert the user about the error
     window.alert("Failed to fetch quotation data. Please try again.");
     throw error; // Re-throw the error to be caught by the caller
   } finally {
     document.body.classList.remove('loading');
   }
 }
+
 
 async function fetchRetrieveQuote(requestBody) {
   console.log("Fetching Policy data...");
