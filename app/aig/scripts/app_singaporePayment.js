@@ -41,25 +41,25 @@ function fetchAgentDetail() {
   let agent_id = url.searchParams.get('agent_id');
   console.log("agent_id:", agent_id)
   fetch('../scripts/get_agent_data.php', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams({
-            agent_id: agent_id
-          })
-      })
-      .then(response => response.text())
-      .then(data => {
-          const result = JSON.parse(data)
-          console.log("result:", result)
-          agentDetail=result[0]
-          
-      })
-      .catch(error => console.error('Error fetching cover list:', error))
-      .finally(() => {
-          document.body.classList.remove('loading');
-      });
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      agent_id: agent_id
+    })
+  })
+    .then(response => response.text())
+    .then(data => {
+      const result = JSON.parse(data)
+      console.log("result:", result)
+      agentDetail = result[0]
+
+    })
+    .catch(error => console.error('Error fetching cover list:', error))
+    .finally(() => {
+      document.body.classList.remove('loading');
+    });
 }
 
 
@@ -136,8 +136,8 @@ const handleRetrieveQuote = async () => {
     const isPaymentModeMatching =
       data?.paymentDetails[0]?.paymentMode === quotationData?.payment_mode;
 
-      if (!isPremiumPayableMatching) {
-        alert("Premium Payable does not match. It has changed to " + data?.premiumPayable + " " + data?.currency );
+    if (!isPremiumPayableMatching) {
+      alert("Premium Payable does not match. It has changed to " + data?.premiumPayable + " " + data?.currency);
     }
     if (!isPaymentModeMatching) {
       alert("Payment Mode has changed.");
@@ -154,20 +154,20 @@ const handlePaymentGateway = async (premiumPayable, paymentMode) => {
 
   if (premiumPayable) {
     const url = `payment.php?amount=${premiumPayable}&is_recurring=${isRecurring}&quoteNo=${quotationData?.quoteNo}`;
-    
+
     // Open a new window for payment
     const childWindow = window.open(url, 'childWindow', 'width=600,height=480');
-    
+
     handleSecurePause();
-    
+
 
     const checkWindowClosed = setInterval(() => {
       if (childWindow.closed) {
-        clearInterval(checkWindowClosed); 
+        clearInterval(checkWindowClosed);
         handleUnsecurePause();
       }
     }, 1000);
-    
+
   } else {
     console.log("No price", premiumPayable);
   }
@@ -182,9 +182,9 @@ function showAlert(message) {
 }
 
 const transformQuoteData = (data, quotationData) => {
+console.log("data:", data)
 
-console.log("data.paymentDetails[0]?.paymentMode",data.paymentDetails[0]?.paymentMode)
-console.log("data.paymentDetails[0]?.paymentFrequency",data.paymentDetails[0]?.paymentFrequency)
+ 
   const transformedData = {
     policyId: data.policyId || quotationData.policyId || "",
     productId: data.productId || quotationData.productId || "",
@@ -218,46 +218,80 @@ console.log("data.paymentDetails[0]?.paymentFrequency",data.paymentDetails[0]?.p
     insuredList: (data.insuredList || []).map((insured, index) => {
       // Access the corresponding entry in quotationData using the same index
       const quotationInsured = (quotationData.insuredList || [])[index] || {};
+      console.log("quotationInsured:", quotationInsured)
 
-      return {
-        personInfo: {
-          insuredFirstName: insured.personInfo?.insuredFirstName || quotationInsured.personInfo?.insuredFirstName || "",
-          insuredFullName: insured.personInfo?.insuredFullName || quotationInsured.personInfo?.insuredFullName || "",
-          insuredResidentStatus: insured.personInfo?.insuredResidentStatus || quotationInsured.personInfo?.insuredResidentStatus || "",
-          insuredIdType: insured.personInfo?.insuredIdType || quotationInsured.personInfo?.insuredIdType || "0",
-          insuredIdNumber: insured.insuredUniqueIdentifier || quotationInsured.insuredUniqueIdentifier || "",
-          insuredGender: insured.personInfo?.insuredGender || quotationInsured.personInfo?.insuredGender || "",
-          insuredDateOfBirth: insured.personInfo?.insuredDateOfBirth
-            ? retrieveTransformDate(insured.personInfo?.insuredDateOfBirth) : ""
-          ,
-          insuredMaritalStatus: insured.personInfo?.insuredMaritalStatus || quotationInsured.personInfo?.insuredMaritalStatus || "",
-          insuredOccupation: insured.personInfo?.insuredOccupation || quotationInsured.personInfo?.insuredOccupation || "0",
-          insuredCampaignCode: insured.personInfo?.insuredCampaignCode || quotationInsured.personInfo?.insuredCampaignCode || "",
-          relationToPolicyholder: insured.personInfo?.relationToPolicyholder || quotationInsured.personInfo?.relationToPolicyholder,
-          planInfo: {
-            planId: (insured.planList[0]?.planId || quotationInsured.personInfo?.planInfo?.planId || ""),
-            planDescription: (insured.planList[0]?.planName || quotationInsured.personInfo?.planInfo?.planDescription || ""),
-            planPoi: (insured.planList[0]?.planPoi || quotationInsured.personInfo?.planInfo?.planPoi || ""), // Assuming this is constant
-            coverList: (insured.planList[0]?.coverList ? Object.values(insured.planList[0].coverList) : []).length > 0
-              ? Object.values(insured.planList[0].coverList).map(cover => ({
-                id: cover.id || "",
-                code: cover.code || null,
-                name: cover.name || null
-              }))
-              : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
-                id: cover.id || "",
-                code: cover.code || null,
-                name: cover.name || null
-              }))
+      if (quotationData?.type === "ah") {
+        return {
+          personInfo: {
+            insuredFirstName: insured.personInfo?.insuredFirstName || quotationInsured.personInfo?.insuredFirstName || "",
+            insuredFullName: insured.personInfo?.insuredFullName || quotationInsured.personInfo?.insuredFullName || "",
+            insuredResidentStatus: insured.personInfo?.insuredResidentStatus || quotationInsured.personInfo?.insuredResidentStatus || "",
+            insuredIdType: insured.personInfo?.insuredIdType || quotationInsured.personInfo?.insuredIdType || "0",
+            insuredIdNumber: insured.insuredUniqueIdentifier || quotationInsured.insuredUniqueIdentifier || "",
+            insuredGender: insured.personInfo?.insuredGender || quotationInsured.personInfo?.insuredGender || "",
+            insuredDateOfBirth: insured.personInfo?.insuredDateOfBirth
+              ? retrieveTransformDate(insured.personInfo?.insuredDateOfBirth) : ""
+            ,
+            insuredMaritalStatus: insured.personInfo?.insuredMaritalStatus || quotationInsured.personInfo?.insuredMaritalStatus || "",
+            insuredOccupation: insured.personInfo?.insuredOccupation || quotationInsured.personInfo?.insuredOccupation || "0",
+            insuredCampaignCode: insured.personInfo?.insuredCampaignCode || quotationInsured.personInfo?.insuredCampaignCode || "",
+            relationToPolicyholder: insured.personInfo?.relationToPolicyholder || quotationInsured.personInfo?.relationToPolicyholder,
+            planInfo: {
+              planId: (insured.planList[0]?.planId || quotationInsured.personInfo?.planInfo?.planId || ""),
+              planDescription: (insured.planList[0]?.planName || quotationInsured.personInfo?.planInfo?.planDescription || ""),
+              planPoi: (insured.planList[0]?.planPoi || quotationInsured.personInfo?.planInfo?.planPoi || ""), // Assuming this is constant
+              coverList: (insured.planList[0]?.coverList ? Object.values(insured.planList[0].coverList) : []).length > 0
+                ? Object.values(insured.planList[0].coverList).map(cover => ({
+                  id: cover.id || "",
+                  code: cover.code || null,
+                  name: cover.name || null
+                }))
+                : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
+                  id: cover.id || "",
+                  code: cover.code || null,
+                  name: cover.name || null
+                }))
+            }
           }
-        }
-      };
+        };
+      } else {
+        return {
+            "addressInfo": {
+              "dwellingType": quotationInsured?.addressInfo?.dwellingType||"",
+              "flatType": quotationInsured?.addressInfo?.flatType||"",
+              "ownerOccupiedType":quotationInsured?.addressInfo?.ownerOccupiedType||"",
+              "floorOccupied": quotationInsured?.addressInfo?.floorOccupied||"",
+              "constructionType": quotationInsured?.addressInfo?.constructionType||"",
+              "yearBuilt": quotationInsured?.addressInfo?.yearBuilt||"",
+              "insuredBlockNo": quotationInsured?.addressInfo?.insuredBlockNo||"",
+              "insuredStreetName": quotationInsured?.addressInfo?.insuredStreetName||"",
+              "insuredUnitNo": quotationInsured?.addressInfo?.insuredUnitNo||"",
+              "insuredBuildingName": quotationInsured?.addressInfo?.insuredBuildingName||"",
+              "insuredPostCode": quotationInsured?.addressInfo?.insuredPostCode||"",
+              "smokeDetectorAvailable": quotationInsured?.addressInfo?.smokeDetectorAvailable||"",
+              "autoSprinklerAvailable":quotationInsured?.addressInfo?.autoSprinklerAvailable||"",
+              "securitySystemAvailable":quotationInsured?.addressInfo?.securitySystemAvailable||""
+            },
+            "planInfo": {
+              "planId": insured?.planList[0]?.planId||quotationInsured?.planInfo?.planId||"",
+              "planPoi": insured?.planList[0]?.planPoi ||quotationInsured?.planInfo?.planPoi||"",
+              "planDescription": insured?.planList[0]?.planName||quotationInsured?.planInfo?.planDescription||"",
+              "coverList":quotationInsured?.planInfo?.coverList.length>0 ? [
+                {
+                  "id": quotationInsured?.planInfo?.coverList[0]?.id||"",
+                  "code": quotationInsured?.planInfo?.coverList[0]?.code||"",
+                  "selectedFlag": quotationInsured?.planInfo?.coverList[0]?.selectedFlag||true
+                }
+              ]:[]
+            }
+          }
+      }
     }),
-    paymentDetails:{
-      paymentMode:data.paymentDetails[0]?.paymentMode || quotationData.payment_mode || 124,
-      paymentFrequency:data.paymentDetails[0]?.paymentFrequency || quotationData.payment_frequency || 2,
+    paymentDetails: {
+      paymentMode: data.paymentDetails[0]?.paymentMode || quotationData.payment_mode || 124,
+      paymentFrequency: data.paymentDetails[0]?.paymentFrequency || quotationData.payment_frequency || 2,
     }
-   
+
   };
 
   return transformedData;
@@ -275,69 +309,70 @@ const retrieveTransformDate = (dateString) => {
 
 $(function () {
   $.ajaxSetup({
-      url: "../Application/app_process.php"
-  })});
-  let intervalId;
-  let min = 0;
-  let sec = 0;
-const handleSecurePause=()=>{
+    url: "../Application/app_process.php"
+  })
+});
+let intervalId;
+let min = 0;
+let sec = 0;
+const handleSecurePause = () => {
   let voiceid = localStorage.getItem("voiceid");
-        let lastInteraction = localStorage.getItem("lastInteraction");
-        localStorage.setItem("securepause",true);
-        $.ajax({
-            'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'PAUSED', 'agentid': agentDetail?.genesysid },
-            'dataType': 'html',
-            'type': 'POST',
-            'success': function (data) {
-                let response = eval('(' + data + ')');
-                console.log("response:", response)
-                if (response.result) {
-                    if(response.data.recordingState == "PAUSED"){
-                        displayPauseTime();
-                    }
-                    console.log('Recording state1 ' + response.data.recordingState);
-                    // alert('Recording state1 ' + response.data.recordingState);
-                } else {
-                    console.log('Recording state2 ' + response.data);
-                }
-            }
-        });
+  let lastInteraction = localStorage.getItem("lastInteraction");
+  localStorage.setItem("securepause", true);
+  $.ajax({
+    'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'PAUSED', 'agentid': agentDetail?.genesysid },
+    'dataType': 'html',
+    'type': 'POST',
+    'success': function (data) {
+      let response = eval('(' + data + ')');
+      console.log("response:", response)
+      if (response.result) {
+        if (response.data.recordingState == "PAUSED") {
+          displayPauseTime();
+        }
+        console.log('Recording state1 ' + response.data.recordingState);
+        // alert('Recording state1 ' + response.data.recordingState);
+      } else {
+        console.log('Recording state2 ' + response.data);
+      }
+    }
+  });
 }
-const handleUnsecurePause=()=>{
+const handleUnsecurePause = () => {
   let voiceid = localStorage.getItem("voiceid");
   let lastInteraction = localStorage.getItem("lastInteraction");
   $.ajax({
-      'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'ACTIVE', 'agentid': agentDetail?.genesysid },
-      'dataType': 'html',
-      'type': 'POST',
-      'success': function (data) {
-          let response = eval('(' + data + ')');
-          if (response.result) {
-              localStorage.removeItem("securepause");
-              clearPauseTime();
-              console.log('Recording state1 ' + response.data.recordingState);
-          } else {
-              localStorage.removeItem("securepause");
-              clearPauseTime();
-              console.log('Recording state2 ' + response.data);
-          }
+    'data': { 'action': 'geneRecordingState', 'voiceid': voiceid, 'lastInteraction': lastInteraction, 'state': 'ACTIVE', 'agentid': agentDetail?.genesysid },
+    'dataType': 'html',
+    'type': 'POST',
+    'success': function (data) {
+      let response = eval('(' + data + ')');
+      if (response.result) {
+        localStorage.removeItem("securepause");
+        clearPauseTime();
+        console.log('Recording state1 ' + response.data.recordingState);
+      } else {
+        localStorage.removeItem("securepause");
+        clearPauseTime();
+        console.log('Recording state2 ' + response.data);
       }
+    }
   });
 }
 function displayPauseTime() {
-  if(intervalId == null){
-      min = 0;
-      sec = 0;
-      intervalId = setInterval(pauseTimer, 1000);
-      //console.log("intervalId",intervalId);
+  if (intervalId == null) {
+    min = 0;
+    sec = 0;
+    intervalId = setInterval(pauseTimer, 1000);
+    //console.log("intervalId",intervalId);
   }
 }
 function pauseTimer() {
   window.focus();
   sec++;
   if (sec >= 60) {
-      sec = 0;
-      min++;
+    sec = 0;
+    min++;
   }
 }
 function clearPauseTime() {

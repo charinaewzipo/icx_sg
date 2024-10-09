@@ -234,24 +234,30 @@ const setInsuredPerson = (insuredData,dbData) => {
 
 const setDefaultPlanInfo = (insuredData, dataPlanPremium) => {
   console.log("dataPlanPremium:", dataPlanPremium)
-  const planList =dataPlanPremium?.insuredList[0]?.planList
-  const planInfo = insuredData ? insuredData[0]?.planInfo : {};
-  const coverIndex =planInfo?.coverList[0]?.id;
-  console.log("coverIndex:", coverIndex)
-  console.log("planInfo", planInfo);
-  //setSelectElement
-  populatePlanSelect(planList)
-  let matchingIndexes = [];
-  for (const index in planList) {
-    if (planList[index]?.planId === planInfo?.planId && planList[index]?.planPoi === planInfo?.planPoi) {
-      matchingIndexes.push(index);
+  const insuredList = dataPlanPremium?.insuredList;
+  if (insuredList && insuredList.length > 0) {
+    const planList = insuredList[0]?.planList;
+    // Proceed with further logic using planList
+    console.log(planList);
+    const planInfo = insuredData ? insuredData[0]?.planInfo : {};
+    const coverIndex =planInfo?.coverList[0]?.id;
+    console.log("coverIndex:", coverIndex)
+    console.log("planInfo", planInfo);
+    //setSelectElement
+    populatePlanSelect(planList)
+    let matchingIndexes = [];
+    for (const index in planList) {
+      if (planList[index]?.planId === planInfo?.planId && planList[index]?.planPoi === planInfo?.planPoi) {
+        matchingIndexes.push(index);
+      }
     }
-  }
-  console.log("matchingIndexes",matchingIndexes[0]);//such as 1,2
-  updatePlanDetails(matchingIndexes[0])
-  
-  selectCoverById(coverIndex);
-  
+    console.log("matchingIndexes",matchingIndexes[0]);//such as 1,2
+    updatePlanDetails(matchingIndexes[0])
+    
+    selectCoverById(coverIndex);
+    
+}
+ 
 };
 
 
@@ -267,11 +273,14 @@ const setDefaultValueForm = async(dbData) => {
   const selectProductElement = document.querySelector('select[name="select-product"]');
   selectProductElement.value = dbData?.productId || "";
    
-  if(!dbData?.quoteNo){
+  if(dbData?.type==="ah"){
+ if(!dbData?.quoteNo){
     if (selectProductElement.value) {
       handleProductChange(selectProductElement);
   }
   }
+  }
+ 
 
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
