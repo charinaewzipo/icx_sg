@@ -48,7 +48,7 @@ const handleClickDraftButton = async () => {
 const handleClickSaveDraftButton = () => {
   console.log("handleClickSaveDraft")
   const requestBody = handleForm();
-  jQuery.agent.updateQuoteData(requestBody, null, id);
+  jQuery.agent.updateQuoteData(requestBody, null, id,planData);
 }
 const handleEditQuote = () => {
   const btnEditForm = document.getElementById('btnEditForm');

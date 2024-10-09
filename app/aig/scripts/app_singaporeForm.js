@@ -1,118 +1,97 @@
+function populateCoverOptions(selectElement) {
+  const planId = document.getElementById("planSelect").value;
+  const planListData = planData.insuredList[0];
+  const plan = planListData.planList[planId];
+
+  if (plan && plan.coverList) {
+    let coverOptions =
+      '<option value=""> <-- Please select an option --> </option>';
+    for (const coverId in plan.coverList) {
+      if (plan.coverList.hasOwnProperty(coverId)) {
+        const cover = plan.coverList[coverId];
+        coverOptions += `<option value="${coverId}">${cover.name}</option>`;
+      }
+    }
+    selectElement.innerHTML = coverOptions;
+  } else {
+    selectElement.innerHTML =
+      '<option value=""> <-- Please select an option --> </option>';
+  }
+}
+
+
+
+
+function updatePlanDetails(planId) {
+  const planSelect = document.getElementById("planSelect");
+  const planPoiSelect = document.getElementById("planPoiSelect");
+  const planCoverLists = document.querySelectorAll(".planCoverList");
+  const planListData = planData.insuredList[0];
+  console.log("planId:", planId)
+  console.log("planListData:", planListData)
+  console.log("planListData.planList[planId]:", planListData.planList[planId])
+
+  // Update the Plan POI field
+  if (planId && planListData.planList[planId]) {
+    //setPlanSelect
+    planSelect.value=planId
+    const plan = planListData.planList[planId];
+    console.log("plan:", plan)
+    if (plan.planPoi) {
+      planPoiSelect.value = plan.planPoi;
+    }
+
+    // Update cover options for all cover dropdowns
+    planCoverLists.forEach((select) => populateCoverOptions(select));
+  }
+}
+
+function selectCoverById(coverIndex) {
+  const planId = document.getElementById("planSelect").value;
+  const planListData = planData.insuredList[0];
+  const plan = planListData.planList[planId];
+
+  if (plan && plan.coverList) {
+    // Find the cover with the matching `coverIndex`
+    let selectedCover = null;
+    let keyIndex=null
+    for (const key in plan.coverList) {
+      const cover = plan.coverList[key];
+      if (cover.id === coverIndex) {
+        selectedCover = cover;
+        keyIndex=key
+        break;
+      }
+    }
+
+    if (selectedCover) {
+      console.log("Selected cover:", selectedCover);
+      console.log("key cover:", keyIndex);
+      // Now find the corresponding dropdown element and set the value
+      const planCoverLists = document.querySelectorAll(".planCoverList");
+      planCoverLists.forEach((selectElement) => {
+        selectElement.value=keyIndex
+      });
+    } else {
+      console.log(`Cover with id ${coverIndex} not found in the cover list.`);
+    }
+  } else {
+    console.log(`Plan with id ${planId} does not have a valid cover list.`);
+  }
+}
 document.addEventListener("DOMContentLoaded", () => {
   
-  window.removeCoverRow = function (button) {
-    const row = button.closest("tr");
-    const coverListBody = document.getElementById("coverListBody");
-
-    if (coverListBody.querySelectorAll(".cover-row").length > 1) {
-      row.remove();
-    } else {
-      alert("At least one cover row must remain.");
-      console.warn("At least one cover row must remain.");
-    }
-  };
-
-  function populateCoverOptions(selectElement) {
-    const planId = document.getElementById("planSelect").value;
-    const planListData = planData.insuredList[0];
-    const plan = planListData.planList[planId];
-
-    if (plan && plan.coverList) {
-      let coverOptions =
-        '<option value=""> <-- Please select an option --> </option>';
-      for (const coverId in plan.coverList) {
-        if (plan.coverList.hasOwnProperty(coverId)) {
-          const cover = plan.coverList[coverId];
-          coverOptions += `<option value="${coverId}">${cover.name}</option>`;
-        }
-      }
-      selectElement.innerHTML = coverOptions;
-    } else {
-      selectElement.innerHTML =
-        '<option value=""> <-- Please select an option --> </option>';
-    }
-  }
-
-  window.addCoverRow = function () {
-    const coverListBody = document.getElementById("coverListBody");
-    const newRow = document.createElement("tr");
-    newRow.classList.add("cover-row");
-
-    // Create a new row with a dropdown for cover list and populate it
-    newRow.innerHTML = `
-        <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
-        <td>
-          <select name="plan_cover_list[]" class="planCoverList" required>
-            <!-- Options will be populated by JavaScript -->
-          </select>
-        </td>
-        <td style="padding:0px 30px">Cover Code: <span style="color:red">*</span> </td>
-        <td style="width:70px">
-          <p class="planCoverCode"></p>
-        </td>
-        <td>Limit Amount:</td>
-        <td>
-          <p class="planCoverLimitAmount"></p>
-          <input type="hidden" class="selectedFlagInput" value="">
-          <p class="coverName" hidden ></p>
-        </td>
-        <td>
-          <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer;float:inline-end;" type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
-        </td>
-      `;
-
-    if (document.getElementById("planSelect").value !== "") {
-      coverListBody.appendChild(newRow);
-
-      // Populate the cover options for the new dropdown
-      const newCoverSelect = newRow.querySelector(".planCoverList");
-      populateCoverOptions(newCoverSelect);
-
-      disableSelectedOptions();
-    } else {
-      alert("Please select a plan first.");
-    }
-  };
-  function disableSelectedOptions() {
-    const coverSelects = document.querySelectorAll(
-      "#coverListBody .cover-row .planCoverList"
-    );
-    const selectedValues = Array.from(coverSelects)
-      .map((select) => select.value)
-      .filter((value) => value);
-
-    coverSelects.forEach((select) => {
-      const options = select.querySelectorAll("option");
-      options.forEach((option) => {
-        if (selectedValues.includes(option.value) && option.value !== "") {
-          option.disabled = true;
-        } else {
-          option.disabled = false;
-        }
-      });
-    });
-  }
-
-  // Event listener for changes to the planSelect dropdown
+  // Attach event listener to the select element
   document.getElementById("planSelect").addEventListener("change", function () {
+    console.log("planSelect Change")
     const planId = this.value;
-    const planPoiSelect = document.getElementById("planPoiSelect");
-    const planCoverLists = document.querySelectorAll(".planCoverList");
+    console.log("planId:", planId);
     const planListData = planData.insuredList[0];
-
-    // Update the Plan POI field
-    if (planId && planListData.planList[planId]) {
-      const plan = planListData.planList[planId];
-      if (plan.planPoi) {
-        planPoiSelect.value = plan.planPoi;
-      }
-
-      // Update cover options for all cover dropdowns
-      planCoverLists.forEach((select) => populateCoverOptions(select));
-    }
+    const choosePlan=planListData.planList[planId]
+    selectPlanPremium=choosePlan
+    updatePlanDetails(planId);  // Call the function when the plan changes
   });
 
-  // Event listener for changes to any cover dropdowns
   document
     .getElementById("coverListBody")
     .addEventListener("change", function (event) {
@@ -122,53 +101,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (coverId) {
           const coverDetails = getCoverDetails(coverId); // You should define this function
           console.log("coverDetails", coverDetails);
-
-          if (coverDetails) {
-            const row = target.closest("tr");
-
-            const planCoverCode = row.querySelector(".planCoverCode");
-            const planCoverLimitAmount = row.querySelector(
-              ".planCoverLimitAmount"
-            );
-            const selectedFlagInput = row.querySelector(".selectedFlagInput");
-            const coverName = row.querySelector(".coverName");
-
-            // Ensure each element exists before attempting to access its properties
-            if (planCoverCode) {
-              planCoverCode.innerHTML = coverDetails?.code || "N/A";
-            } else {
-              console.warn("planCoverCode element not found in the row.");
-            }
-
-            if (planCoverLimitAmount) {
-              planCoverLimitAmount.innerHTML = coverDetails?.limitAmount
-                ? `${parseFloat(coverDetails?.limitAmount).toLocaleString()}`
-                : "0";
-            } else {
-              console.warn(
-                "planCoverLimitAmount element not found in the row."
-              );
-            }
-
-            if (selectedFlagInput) {
-              selectedFlagInput.value = coverDetails?.selectedFlag;
-            } else {
-              console.warn("selectedFlagInput element not found in the row.");
-            }
-
-            if (coverName) {
-              coverName.innerHTML = coverDetails?.name;
-            } else {
-              console.warn("coverName element not found in the row.");
-            }
-          } else {
-            console.warn("No details found for Cover ID:", coverId);
-          }
+          selectCoverPremium=coverDetails;
         }
       }
     });
 });
 function populatePlanSelect(planList) {
+  console.log("planList:", planList)
+  console.log("populatePlanSelect:")
   const planSelect = document.getElementById("planSelect");
   let planListOptions =
     '<option value=""> <-- Please select an option --> </option>';
@@ -176,13 +116,14 @@ function populatePlanSelect(planList) {
   for (const planId in planList) {
     if (planList.hasOwnProperty(planId)) {
       const plan = planList[planId];
-      planListOptions += `<option value="${planId}">${plan.planDescription} (${plan.planPoi})</option>`;
+      planListOptions += `<option value="${planId}">${plan.planDescription} (POI: ${plan.planPoi})</option>`;
     }
   }
 
   planSelect.innerHTML = planListOptions;
 }
 function getCoverDetails(coverId) {
+  console.log("getCoverDetails:")
   const planList = planData.insuredList[0].planList;
   for (const planId in planList) {
     if (planList.hasOwnProperty(planId)) {
@@ -197,6 +138,7 @@ function getCoverDetails(coverId) {
 }
 
 function clearPlanInfo() {
+  console.log("clearPlanInfo")
   const planSelect = document.getElementById("planSelect");
   planSelect.selectedIndex = 0;
   const planPoiSelect = document.getElementById("planPoiSelect");
@@ -239,162 +181,7 @@ const setDefaultRemarksC=(productDetail)=>{
   }
   
 }
-const manualSetInsuredVehicleList = () => {
-  const insuredData = [
-    {
-      vehicleInfo: {
-        make: "BMW",
-        model: "52966",
-        vehicleRegYear: "2017",
-        regNo: "S1KE7499S",
-        insuringWithCOE: "2",
-        ageConditionBasis: "1",
-        offPeakCar: "1",
-        vehicleUsage: "216",
-        mileageCondition: "1838000062",
-        engineNo: "E7230005683A",
-        chassisNo: "C7230005683A",
-        mileageDeclaration: "123",
-        hirePurchaseCompany: "14",
-        declaredSI: 250000,
-      },
-      driverInfo: [
-        {
-          driverType: "5",
-          driverDOB: "1991-05-18T16:00:00.000Z",
-          driverGender: "M",
-          driverMaritalStatus: "S",
-          drivingExperience: "4",
-          occupation: "18",
-          claimExperience: "Y",
-          claimInfo: [
-            {
-              dateOfLoss: "2024-08-14T17:00:00.000Z",
-              lossDescription: "Own damage",
-              claimNature: "2",
-              claimsAmount: 1200.5,
-              status: 3,
-              insuredLiability: 2,
-            },
-          ],
-          driverName: "test Auto",
-          driverIdNumber: "S9499999F",
-          driverIdType: "9",
-          driverResidentStatus: "1",
-          driverNationality: "6",
-        },
-      ],
-      planInfo: {
-        planId: "1839000145",
-        planPoi: 12,
-        coverList: [],
-      },
-    },
-  ];
 
-  // Populate the form fields with data
-  const vehicleInfo = insuredData[0].vehicleInfo;
-  document.querySelector('select[name="insured_auto_vehicle_make"]').value =
-    vehicleInfo.make;
-  document.querySelector('select[name="insured_auto_vehicle_model"]').value =
-    vehicleInfo.model;
-  document.querySelector(
-    'select[name="insured_auto_vehicle_vehicleRegYear"]'
-  ).value = vehicleInfo.vehicleRegYear;
-  document.querySelector('input[name="insured_auto_vehicle_regNo"]').value =
-    vehicleInfo.regNo;
-  document.querySelector(
-    'input[name="insured_auto_vehicle_insuringWithCOE"][value="' +
-    vehicleInfo.insuringWithCOE +
-    '"]'
-  ).checked = true;
-  document.querySelector(
-    'select[name="insured_auto_vehicle_ageConditionBasis"]'
-  ).value = vehicleInfo.ageConditionBasis;
-  document.querySelector(
-    'input[name="insured_auto_vehicle_offPeakCar"][value="' +
-    vehicleInfo.offPeakCar +
-    '"]'
-  ).checked = true;
-  document.querySelector(
-    'select[name="insured_auto_vehicle_vehicleUsage"]'
-  ).value = vehicleInfo.vehicleUsage
-  document.querySelector(
-    'select[name="insured_auto_vehicle_mileageCondition"]'
-  ).value = vehicleInfo.mileageCondition;
-  document.querySelector('input[name="insured_auto_vehicle_engineNo"]').value =
-    vehicleInfo.engineNo;
-  document.querySelector('input[name="insured_auto_vehicle_chassisNo"]').value =
-    vehicleInfo.chassisNo;
-  document.querySelector(
-    'input[name="insured_auto_vehicle_mileageDeclaration"]'
-  ).value = vehicleInfo.mileageDeclaration;
-  document.querySelector(
-    'select[name="insured_auto_vehicle_hirePurchaseCompany"]'
-  ).value = vehicleInfo.hirePurchaseCompany;
-  document.querySelector(
-    'input[name="insured_auto_vehicle_declaredSI"]'
-  ).value = vehicleInfo.declaredSI;
-
-  const driverInfo = insuredData[0].driverInfo[0];
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverType"]'
-  ).value = driverInfo.driverType;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_driverName"]'
-  ).value = driverInfo.driverName;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_driverIdNumber"]'
-  ).value = driverInfo.driverIdNumber;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverIdType"]'
-  ).value = driverInfo.driverIdType;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverResidentStatus"]'
-  ).value = driverInfo.driverResidentStatus;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_driverDOB"]'
-  ).value = driverInfo.driverDOB.split("T")[0]; // Extract date
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverGender"]'
-  ).value = driverInfo.driverGender;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_driverNationality"]'
-  ).value = driverInfo.driverNationality;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_maritalStatus"]'
-  ).value = driverInfo.driverMaritalStatus;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_drivingExperience"]'
-  ).value = driverInfo.drivingExperience;
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_occupation"]'
-  ).value = driverInfo.occupation;
-  document.querySelector(
-    'input[name="insured_auto_driverInfo_claimExperience"][value="' +
-    driverInfo.claimExperience +
-    '"]'
-  ).checked = true;
-
-  (document.querySelector(
-    'input[name="insured_auto_driverInfo_claimInfo_dateOfLoss"]'
-  ).value = driverInfo.claimInfo[0].dateOfLoss.split("T")[0]),
-    (document.querySelector(
-      'input[name="insured_auto_driverInfo_claimInfo_lossDescription"]'
-    ).value = driverInfo.claimInfo[0].lossDescription),
-    (document.querySelector(
-      'select[name="insured_auto_driverInfo_claimInfo_claimNature"]'
-    ).value = driverInfo.claimInfo[0].claimNature),
-    (document.querySelector(
-      'input[name="insured_auto_driverInfo_claimInfo_claimAmount"]'
-    ).value = driverInfo.claimInfo[0].claimsAmount),
-    (document.querySelector(
-      'select[name="insured_auto_driverInfo_claimInfo_claimStatus"]'
-    ).value = driverInfo.claimInfo[0].status);
-  document.querySelector(
-    'select[name="insured_auto_driverInfo_claimInfo_insuredLiability"]'
-  ).value = driverInfo.claimInfo[0].insuredLiability;
-};
 const setInsuredPerson = (insuredData,dbData) => {
  
   const formSections = document.querySelectorAll('table[id^="table-form-"]');
@@ -407,8 +194,6 @@ const setInsuredPerson = (insuredData,dbData) => {
       const planInfo = personInfo.planInfo;
       section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
         personInfo.insuredFirstName || "";
-      // section.querySelector('[name^="insured_ah_insuredLastName_"]').value =
-      //   personInfo.insuredLastName || "";
       section.querySelector('[name^="insured_ah_insuredResidentStatus_"]').value =
         personInfo.insuredResidentStatus || "";
       section.querySelector('[name^="insured_ah_insuredIdType_"]').value =
@@ -431,15 +216,11 @@ const setInsuredPerson = (insuredData,dbData) => {
       section.querySelector(
         '[name^="insured_ah_relationToPolicyholder_"]'
       ).value = personInfo.relationToPolicyholder || "";
-      // section.querySelector('[name^="insured_ah_insuredCampaignCode_"]').value =
-      //   personInfo.insuredCampaignCode || "";
-      // section.querySelector('[name^="insured_ah_natureOfBusiness_"]').value =
-      //   personInfo.natureOfBusiness || "";
-  
+
   
       if(index===0 &&dbData?.productId&&planInfo){
 
-        // populatePlanAndCovers(planInfo, section, index);
+  
         populatePlans(dbData?.productId,1,section,planInfo)
         populateCovers(dbData?.productId,1,section,planInfo)
       }
@@ -450,99 +231,27 @@ const setInsuredPerson = (insuredData,dbData) => {
   fillInsuredSectionChild(insuredData)
 
 };
-const populatePlanAndCovers = (planInfo, section, index) => {
-  console.log("planInfo:", planInfo)
-  const planSelect = section.querySelector('[name^="planId"]');
-  planSelect.innerHTML = ""; // Clear existing options
-  const defaultOption = document.createElement("option");
-  defaultOption.value = planInfo.planId;
-  defaultOption.textContent = planInfo?.planDescription || "<-- Please select an option -->";
 
-  planSelect.appendChild(defaultOption);
-
-  const coverList = section.querySelector(".planCoverList");
-  coverList.innerHTML = ""; // Clear existing covers
-
-  planInfo.covers.forEach((cover, coverIndex) => {
-    const relatedElement = document.querySelector(`#planCoverLimitAmount${index + 1}`);
-
-    if (relatedElement) {
-      relatedElement.value = cover.limitAmount;
-    }
-    const coverOption = document.createElement("option");
-    coverOption.value = cover.id;
-    coverOption.setAttribute("data-name", cover.name);
-    coverOption.setAttribute("data-netpremium", cover.limitAmount);
-    coverOption.textContent = cover?.name == null ? "<-- Please select an option -->" : cover.name;
-
-    coverList.appendChild(coverOption);
-
-
-  });
-
-  section.querySelector('[name^="planPoi"]').value = planInfo.planPoi || "";
-};
-
-const setDefaultPlanInfo = (insuredData, id = null) => {
+const setDefaultPlanInfo = (insuredData, dataPlanPremium) => {
+  console.log("dataPlanPremium:", dataPlanPremium)
+  const planList =dataPlanPremium?.insuredList[0]?.planList
   const planInfo = insuredData ? insuredData[0]?.planInfo : {};
+  const coverIndex =planInfo?.coverList[0]?.id;
+  console.log("coverIndex:", coverIndex)
   console.log("planInfo", planInfo);
-
-  if (planInfo) {
-    // Set Plan Info
-    const planIdSelect = document.querySelector('select[name="planId"]');
-    const planPoiInput = document.querySelector('input[name="planPoi"]');
-
-    if (planIdSelect) {
-      planIdSelect.innerHTML = "";
-
-      const option = document.createElement("option");
-      option.value = planInfo.planId || "";
-      option.text = planInfo.planDescription || "";
-      planIdSelect.appendChild(option);
-
-      planIdSelect.value = planInfo.planId || "";
-    }
-
-    if (planPoiInput) {
-      planPoiInput.value = planInfo.planPoi || "";
-    }
-
-    // Handle Cover List
-    const coverListBody = document.getElementById("coverListBody");
-    coverListBody.innerHTML = ""; // Clear existing covers
-
-    if (Array.isArray(planInfo.coverList)) {
-      planInfo.coverList.forEach((cover) => {
-        const isDisabled = id !== null ? "disabled" : ""; // Disable if id is not null
-
-        const coverRow = document.createElement("tr");
-        coverRow.className = "cover-row";
-        coverRow.innerHTML = `
-          <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span></td>
-          <td>
-            <select name="plan_cover_list[]" class="planCoverList" required style="width:216px" ${isDisabled}>
-              <option value="${cover.id}">${cover.name}</option>
-            </select>
-          </td>
-          <td style="padding-left:20px">Cover Code: <span style="color:red">*</span></td>
-          <td style="width:70px">
-            <p class="planCoverCode">${cover.code || "N/A"}</p>
-          </td>
-          <td>Limit Amount:</td>
-          <td>
-            <p class="planCoverLimitAmount">${cover.limitAmount ? parseFloat(cover.limitAmount).toLocaleString() : "0"}</p>
-            <input type="hidden" class="selectedFlagInput" value="${cover.selectedFlag || ""}" ${isDisabled}>
-            <p class="coverName" hidden>${cover.name || ""}</p>
-          </td>
-          <td>
-            ${id == null ? '<button type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>' : ''}
-          </td>
-        `;
-
-        coverListBody.appendChild(coverRow);
-      });
+  //setSelectElement
+  populatePlanSelect(planList)
+  let matchingIndexes = [];
+  for (const index in planList) {
+    if (planList[index]?.planId === planInfo?.planId && planList[index]?.planPoi === planInfo?.planPoi) {
+      matchingIndexes.push(index);
     }
   }
+  console.log("matchingIndexes",matchingIndexes[0]);//such as 1,2
+  updatePlanDetails(matchingIndexes[0])
+  
+  selectCoverById(coverIndex);
+  
 };
 
 
@@ -552,7 +261,9 @@ const setDefaultValueForm = async(dbData) => {
   const ncdInfo = JSON.parse(dbData.ncdInfo);
   const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
   const insuredData = JSON.parse(dbData.insuredList);
-
+  console.log("insuredData:", insuredData)
+  const dataPlanPremium = JSON.parse(dbData.plan_premium_json);
+  planData=dataPlanPremium;
   const selectProductElement = document.querySelector('select[name="select-product"]');
   selectProductElement.value = dbData?.productId || "";
    
@@ -561,13 +272,6 @@ const setDefaultValueForm = async(dbData) => {
       handleProductChange(selectProductElement);
   }
   }
-  // else if(dbData?.quoteNo){
-  //   populatePlans(dbData?.productId,1)
-  //   populateCovers(dbData?.productId,1)
-  // }
- 
-
- 
 
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
@@ -661,9 +365,9 @@ const setDefaultValueForm = async(dbData) => {
   }
   switch (dbData.type) {
     case "home":
-      return setInsuredHome(insuredData), setDefaultPlanInfo(insuredData);
-    case "auto":
-      return setInsuredVehicleList(insuredData), setDefaultPlanInfo(insuredData);
+      return setInsuredHome(insuredData), setDefaultPlanInfo(insuredData,dataPlanPremium);
+    // case "auto":
+    //   return setInsuredVehicleList(insuredData), setDefaultPlanInfo(insuredData);
     case "ah":
       return setInsuredPerson(insuredData,dbData);
     default:
@@ -679,33 +383,33 @@ const setInsuredHome = (insuredData) => {
   const addressInfo = insuredData[0].addressInfo;
 
   // Map the addressInfo data to the form fields
-  document.querySelector('[name="insured_home_dwellingType"]').value = addressInfo.dwellingType || '';
-  document.querySelector('[name="insured_home_flatType"]').value = addressInfo.flatType || '';
-  document.querySelector('[name="insured_home_ownerOccupiedType"]').value = addressInfo.ownerOccupiedType || '';
-  document.querySelector('[name="insured_home_floorOccupied"]').value = addressInfo.floorOccupied || '';
-  document.querySelector('[name="insured_home_constructionType"]').value = addressInfo.constructionType || '';
-  document.querySelector('[name="insured_home_yearBuilt"]').value = addressInfo.yearBuilt || '';
-  document.querySelector('[name="insured_home_insuredBlockNo"]').value = addressInfo.insuredBlockNo || '';
-  document.querySelector('[name="insured_home_insuredStreetName"]').value = addressInfo.insuredStreetName || '';
-  document.querySelector('[name="insured_home_insuredUnitNo"]').value = addressInfo.insuredUnitNo || '';
-  document.querySelector('[name="insured_home_insuredBuildingName"]').value = addressInfo.insuredBuildingName || '';
-  document.querySelector('[name="insured_home_insuredPostCode"]').value = addressInfo.insuredPostCode || '';
+  document.querySelector('[name="insured_home_dwellingType"]').value = addressInfo?.dwellingType || '';
+  document.querySelector('[name="insured_home_flatType"]').value = addressInfo?.flatType || '';
+  document.querySelector('[name="insured_home_ownerOccupiedType"]').value = addressInfo?.ownerOccupiedType || '';
+  document.querySelector('[name="insured_home_floorOccupied"]').value = addressInfo?.floorOccupied || '';
+  document.querySelector('[name="insured_home_constructionType"]').value = addressInfo?.constructionType || '';
+  document.querySelector('[name="insured_home_yearBuilt"]').value = addressInfo?.yearBuilt || '';
+  document.querySelector('[name="insured_home_insuredBlockNo"]').value = addressInfo?.insuredBlockNo || '';
+  document.querySelector('[name="insured_home_insuredStreetName"]').value = addressInfo?.insuredStreetName || '';
+  document.querySelector('[name="insured_home_insuredUnitNo"]').value = addressInfo?.insuredUnitNo || '';
+  document.querySelector('[name="insured_home_insuredBuildingName"]').value = addressInfo?.insuredBuildingName || '';
+  document.querySelector('[name="insured_home_insuredPostCode"]').value = addressInfo?.insuredPostCode || '';
 
-  if (addressInfo.smokeDetectorAvailable === "1") {
+  if (addressInfo?.smokeDetectorAvailable === "1") {
     document.getElementById('smokeDetecYes').checked = true;
-  } else if (addressInfo.smokeDetectorAvailable === "2") {
+  } else if (addressInfo?.smokeDetectorAvailable === "2") {
     document.getElementById('smokeDetecNo').checked = true;
   }
 
-  if (addressInfo.autoSprinklerAvailable === "1") {
+  if (addressInfo?.autoSprinklerAvailable === "1") {
     document.getElementById('autoSprinkYes').checked = true;
-  } else if (addressInfo.autoSprinklerAvailable === "2") {
+  } else if (addressInfo?.autoSprinklerAvailable === "2") {
     document.getElementById('autoSprinkNo').checked = true;
   }
 
-  if (addressInfo.securitySystemAvailable === "1") {
+  if (addressInfo?.securitySystemAvailable === "1") {
     document.getElementById('securityYes').checked = true;
-  } else if (addressInfo.securitySystemAvailable === "2") {
+  } else if (addressInfo?.securitySystemAvailable === "2") {
     document.getElementById('securityNo').checked = true;
   }
 };
@@ -860,6 +564,35 @@ function attachCustomerIdValidation() {
     idNumberInput.addEventListener('input', validateCustomerIdNumber);
   }
 }
+
+function clearSelections() {
+  // Clear the planSelect dropdown to only have the option with value=""
+  const planSelect = document.getElementById("planSelect");
+  if (planSelect) {
+      planSelect.innerHTML = '<option value=""> &lt;-- Please select an option --&gt; </option>'; // Set inner HTML to only this option
+  }
+
+  // Clear the planPoiSelect dropdown to the first option (or empty if required)
+  const planPoiSelect = document.getElementById("planPoiSelect");
+  if (planPoiSelect) {
+      planPoiSelect.value = null// Reset to the first option (if applicable)
+  }
+
+  // Clear all planCoverList dropdowns to only have the option with value=""
+  const planCoverLists = document.querySelectorAll(".planCoverList");
+  planCoverLists.forEach(select => {
+      select.innerHTML = '<option value=""> &lt;-- Please select an option --&gt; </option>'; // Set inner HTML to only this option
+  });
+}
+
+// Example usage
+clearSelections(); // Call this function when you need to clear the selections
+
+
 document.addEventListener("DOMContentLoaded", () => {
   attachCustomerIdValidation()
+  const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
+  if (!id || !quotationData?.quoteNo) {
+      handlePaymentFrequencyChange(defaultRadio);
+  }
 })

@@ -77,6 +77,7 @@ const handleTypeConfirmQuote = () => {
         });
       }
     );
+    document.getElementById("remark-c-container").style.display = "none";
   } else if (selectedType === "auto") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAh].forEach(
       (container) => {
@@ -164,22 +165,21 @@ function handleForm() {
   const customerType = getTypeCustomerType();
   const formData = new FormData(document.getElementById("application"));
   let insuredList = [];
+  const paymentDetails = [{
+    paymentMode: Number(formData.get('Payment_Mode')),
+    paymentFrequency: Number(formData.get('Payment_Frequency')),
+  }]
 
-
-  const currentDate = moment().utc().startOf('day');
 console.log("campaignDetails",campaignDetails)
   const policyDetail = {
     policyId: policyid ? policyid : "",
     productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: calllistDetail[productDetail?.udf_field_producer_code]||"",
-    // producerCode:"0002466000",
-    // propDate:currentDate.format('YYYY-MM-DDTHH:mm:ss[Z]'),
     propDate:"",
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
-    // campaignCode: campaignDetailsFromAPI?.campaign_uniqueid,
     campaignCode: "",
     efulfillmentFlag: Number(formData.get('Email_Fulfillment_Flag')),
   };
@@ -364,10 +364,7 @@ console.log("campaignDetails",campaignDetails)
   } else if (formType === "ah") {
     insuredList = collectFormData()
 
-    const paymentDetails = [{
-      paymentMode: Number(formData.get('Payment_Mode')),
-      paymentFrequency: Number(formData.get('Payment_Frequency')),
-    }]
+   
     const fullForm = {
       ...policyDetail,
       policyHolderInfo,
@@ -389,63 +386,35 @@ console.log("campaignDetails",campaignDetails)
     ...policyDetail,
     policyHolderInfo,
     insuredList,
-    ...paymentDetail
+    paymentDetails
   };
   return fullForm;
 }
-function getCoverList() {
-  const coverList = [];
-  const coverRows = document.querySelectorAll("#coverListBody .cover-row");
 
-  coverRows.forEach((row) => {
-    const coverSelect = row.querySelector(".planCoverList");
-    const coverId = coverSelect ? coverSelect.value : "";
-
-    const coverCodeElement = row.querySelector(".planCoverCode");
-    const limitAmountElement = row.querySelector(".planCoverLimitAmount");
-    const coverNameElement = row.querySelector(".coverName");
-    const selectedFlagInput = row.querySelector(".selectedFlagInput");
-
-    const coverCode = coverCodeElement
-      ? coverCodeElement.innerText.trim()
-      : "N/A";
-    const limitAmount = limitAmountElement
-      ? limitAmountElement.innerText.trim()
-      : "0";
-    const coverName = coverNameElement
-      ? coverNameElement.innerText.trim()
-      : "N/A";
-    const selectedFlag = selectedFlagInput ? selectedFlagInput.value : "false";
-
-    if (coverId) {
-      coverList.push({
-        id: coverId,
-        code: coverCode,
-        limitAmount: limitAmount
-          ? parseFloat(limitAmount.replace(/,/g, ""))
-          : 0, // Convert to float
-        name: coverName,
-        selectedFlag: selectedFlag === "true",
-      });
-    }
-  });
-
-  return coverList;
-}
 
 function getPlanDetail() {
   const formData = new FormData(document.querySelector("form")); // Assuming the form element is available
   const planListData = planData?.insuredList[0];
   console.log("planListData", planListData);
+  console.log("selectCoverPremium",selectCoverPremium)
   const PlanDetail = {
     planId: planListData
       ? planListData?.planList[formData.get("planId")]?.planId
       : 0,
-    planPoi: formData.get("planPoi"),
+    planPoi: planListData?.planList[formData.get("planId")]?.planPoi,
     planDescription: planListData
       ? planListData?.planList[formData.get("planId")]?.planDescription
       : "",
-    coverList: getCoverList(),
+      
+
+    coverList: selectCoverPremium ? [
+      {
+        id:selectCoverPremium?.id,
+        code:selectCoverPremium?.code,
+        selectedFlag:true,
+      }
+      
+    ]:[],
   };
 
   return PlanDetail;
@@ -653,10 +622,6 @@ const getCampaignDetails = () => {
 document.addEventListener("DOMContentLoaded", () => {
   handleSelectType();
   handleValidateForm();
-  // manualSetDefaultValueForm();
-  // manualSetInsuredPerson()
-  // manualSetInsuredVehicleList();
-
 });
 
 const removeKeysFromQuotationDataOnCreateQuote = (data) => {

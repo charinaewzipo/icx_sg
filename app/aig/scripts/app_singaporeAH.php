@@ -596,17 +596,13 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         const selectedProductId = selectElement.value;
         select_product = selectedProductId
         const responseProduct = await getProductDetail(selectedProductId);
-
-        if (responseProduct) {
+        if(responseProduct?.product_group==="A&H"){
+            if (responseProduct) {
             await addInsuredSections(responseProduct?.number_of_person_insured || 2)
             if (id && !quotationData?.quoteNo) {
                 setInsuredPerson(quotationData?.insuredList,quotationData)
             }
-            //handle ProductId setValue from API but not change PlanPoi
-            const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
-            if (!id || !quotationData?.quoteNo) {
-                handlePaymentFrequencyChange(defaultRadio);
-            }
+          
         }
         if(!quotationData){
             const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
@@ -622,6 +618,12 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         if (!id) {
             setDefaultRemarksC(responseProduct)
         }
+        }
+      
+        //clear planSelect planPo planCoverLists
+
+            clearSelections()
+
 
     }
 

@@ -7,47 +7,14 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
 let responsePayment = null;
 let quotationData = null;
 let selectProduct = null;
+let selectPlanPremium=null;
+let selectCoverPremium=null;
 let calllistDetail = null;
 let campaignDetailsFromAPI=null;
+
 var token = null;
 
 
-function fetchPremiumAH(requestBody, index) {
-  document.body.classList.add('loading');
-  const apiUrl = '<?php echo $GLOBALS["aig_api_premium_url"]; ?>';
-  // const apiUrl =
-  //   "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/premium-calculation";
-  fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("responseData", data);
-      if (
-        data &&
-        data.Policy &&
-        data.Policy.insuredList &&
-        data.Policy.insuredList[0]
-      ) {
-        planData = data.Policy;
-        populatePlanSelectAH(planData.insuredList[0].planList, index);
-        return planData;
-      } else {
-        window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
-        console.error("Invalid API response:", data);
-      }
-    })
-    .catch((error) => console.error("Error fetching plan data:", error))
-    .finally(() => {
-      // Remove 'loading' class from body after fetch is complete
-      document.body.classList.remove('loading');
-    });
-}
 function fetchPremium(requestBody) {
   document.body.classList.add('loading');
   const apiUrl = '<?php echo $GLOBALS["aig_api_premium_url"]; ?>';
@@ -69,6 +36,7 @@ function fetchPremium(requestBody) {
         data.Policy.insuredList[0]
       ) {
         planData = data.Policy;
+        console.log("planData:", planData)
         populatePlanSelect(planData.insuredList[0].planList);
         return planData;
       } else {
@@ -113,9 +81,9 @@ async function fetchQuotation(requestBody) {
 
     // Insert Quotation Data regardless of statusCode
     if (id != null && id !== "") {
-      await jQuery.agent.updateQuoteData(requestBody, data, id);
+      await jQuery.agent.updateQuoteData(requestBody, data, id,planData);
     } else {
-      const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
+      const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails,planData);
       if (url.searchParams.has('id')) {
         url.searchParams.set('id', responseId);
       } else {
@@ -212,14 +180,13 @@ async function fetchRetrieveQuote(requestBody) {
     document.body.classList.remove('loading');
   }
 }
-const handleRequestBody = () => {
+const handlePremiumRequestBody = () => {
   const formData = new FormData(document.getElementById("application"));
   const requestBodyHome = {
     propDate: new Date(),
     productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: "0000064000",
-    applicationReceivedDate: "",
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
@@ -333,24 +300,7 @@ const handleRequestBody = () => {
     producerCode: "0002466000",
     campaignCode: "",
   };
-  const requestBodyAh = {
-    propDate: new Date(),
-    // productId: formData.get("select-product"),
-    productId: 600000060,
-
-    distributionChannel: "10",
-    producerCode: "0000064000",
-    applicationReceivedDate: "",
-    policyEffDate: "",
-    policyExpDate: "",
-    insuredList: [
-      {
-        addressInfo: {
-          ownerOccupiedType: "62",
-        },
-      },
-    ],
-  };
+ 
 
 
   switch (selectedType) {
@@ -358,8 +308,7 @@ const handleRequestBody = () => {
       return requestBodyHome;
     case "auto":
       return requestBodyAuto;
-    case "ah":
-      return requestBodyAh;
+
     default:
       console.error("Unknown selected type:", selectedType);
       return null;
@@ -368,7 +317,6 @@ const handleRequestBody = () => {
 const handleRequiredField = () => {
   const requiredFieldsTypeHome = [
     "select-product",
-    "PolicyEffectiveDate",
     "insured_home_ownerOccupiedType",
   ];
   const requiredFieldsTypeAuto = [
@@ -446,17 +394,12 @@ function validateAndSubmitFormCallPremium(index) {
     window.alert("Please fill in all required fields.");
     return;
   }
-  const apiBody = handleRequestBody();
+  const apiBody = handlePremiumRequestBody();
   if (apiBody) {
     fetchPremium(apiBody);
   }
 }
-function callPremiumAH(index) {
-  const apiBody = handleRequestBody();
-  if (apiBody) {
-    fetchPremiumAH(apiBody, index);
-  }
-}
+
 async function fetchPayment(requestBody) {
   console.log("Fetching payment data...");
   document.body.classList.add('loading');

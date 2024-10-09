@@ -842,9 +842,9 @@ where name='Nature of Business'";
                 </select>
               </td>
               <th>&nbsp;</th>
-              <td>Floor Occupied: <span style="color:red">*</span></td>
+              <td>Floor Occupied: </td>
               <td>
-                <input type="text" name="insured_home_floorOccupied" maxlength="60" required />
+                <input type="text" name="insured_home_floorOccupied" maxlength="60"  />
               </td>
             </tr>
             <tr>
@@ -1456,7 +1456,7 @@ where name='Occupation'";
               <th></th>
               <td style="white-space: nowrap;">Plan Poi :</td>
               <td colspan="2">
-                <input type="text" id="planPoiSelect" name="planPoi" disabled>
+                <input type="text" id="planPoiSelect" name="planPoi" readonly>
               </td>
             </tr>
             <tr>
@@ -1465,15 +1465,15 @@ where name='Occupation'";
             </tr>
             <tbody id="coverListBody">
               <tr class="cover-row">
-                <td style="padding:0px 30px">Cover Name: <span style="color:red">*</span> </td>
+                <td style="padding:0px 30px">Cover Name:  </td>
                 <td>
-                  <select name="plan_cover_list[]" class="planCoverList" required>
+                  <select name="plan_cover_list[]" class="planCoverList" >
                     <option value="">
                       <-- Please select an option -->
                     </option>
                   </select>
                 </td>
-                <td style="padding:0px 30px">Cover Code: <span style="color:red">*</span> </td>
+                <!-- <td style="padding:0px 30px">Cover Code: <span style="color:red">*</span> </td>
                 <td style="width:70px">
                   <p class="planCoverCode"></p>
                 </td>
@@ -1486,10 +1486,10 @@ where name='Occupation'";
 
                 <td>
                   <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer;float:inline-end;" type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
-                </td>
+                </td> -->
               </tr>
             </tbody>
-            <tr>
+            <!-- <tr>
               <td></td>
               <td></td>
               <td></td>
@@ -1499,7 +1499,7 @@ where name='Occupation'";
               <td>
                 <button type="button" class="button add-cover" onclick="addCoverRow()">Add Cover</button>
               </td>
-            </tr>
+            </tr> -->
             <tr>
               <td>
                 <button type="button" class="button seePlan" id="btnPaymentOnline" style="margin-left: 20px;" onclick="validateAndSubmitFormCallPremium()">See plan</button>
