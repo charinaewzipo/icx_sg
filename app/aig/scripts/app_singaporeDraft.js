@@ -60,6 +60,7 @@ const handleEditQuote = () => {
    
     unhideFormData(formElements);
     btnEditForm.textContent = "Save"
+    btnEditForm.hidden=false
     isEditing = true;
   } else {
     // window.alert("Fetch Recalculate Quote")

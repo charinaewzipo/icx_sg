@@ -254,23 +254,23 @@ console.log("data:", data)
             }
           }
         };
-      } else {
+      } else if (quotationData?.type === "home") {
         return {
             "addressInfo": {
-              "dwellingType": quotationInsured?.addressInfo?.dwellingType||"",
-              "flatType": quotationInsured?.addressInfo?.flatType||"",
-              "ownerOccupiedType":quotationInsured?.addressInfo?.ownerOccupiedType||"",
-              "floorOccupied": quotationInsured?.addressInfo?.floorOccupied||"",
-              "constructionType": quotationInsured?.addressInfo?.constructionType||"",
-              "yearBuilt": quotationInsured?.addressInfo?.yearBuilt||"",
-              "insuredBlockNo": quotationInsured?.addressInfo?.insuredBlockNo||"",
-              "insuredStreetName": quotationInsured?.addressInfo?.insuredStreetName||"",
-              "insuredUnitNo": quotationInsured?.addressInfo?.insuredUnitNo||"",
-              "insuredBuildingName": quotationInsured?.addressInfo?.insuredBuildingName||"",
-              "insuredPostCode": quotationInsured?.addressInfo?.insuredPostCode||"",
-              "smokeDetectorAvailable": quotationInsured?.addressInfo?.smokeDetectorAvailable||"",
-              "autoSprinklerAvailable":quotationInsured?.addressInfo?.autoSprinklerAvailable||"",
-              "securitySystemAvailable":quotationInsured?.addressInfo?.securitySystemAvailable||""
+              "dwellingType": insured?.addressInfo?.dwellingType|| quotationInsured?.addressInfo?.dwellingType||"",
+              "flatType": insured?.addressInfo?.flatType||quotationInsured?.addressInfo?.flatType||"",
+              "ownerOccupiedType":insured?.addressInfo?.ownerOccupiedType||quotationInsured?.addressInfo?.ownerOccupiedType||"",
+              "floorOccupied": insured?.addressInfo?.floorOccupied||quotationInsured?.addressInfo?.floorOccupied||"",
+              "constructionType": insured?.addressInfo?.constructionType||quotationInsured?.addressInfo?.constructionType||"",
+              "yearBuilt": insured?.addressInfo?.yearBuilt||quotationInsured?.addressInfo?.yearBuilt||"",
+              "insuredBlockNo": insured?.addressInfo?.insuredBlockNo||quotationInsured?.addressInfo?.insuredBlockNo||"",
+              "insuredStreetName": insured?.addressInfo?.insuredStreetName||quotationInsured?.addressInfo?.insuredStreetName||"",
+              "insuredUnitNo": insured?.addressInfo?.insuredUnitNo||quotationInsured?.addressInfo?.insuredUnitNo||"",
+              "insuredBuildingName": insured?.addressInfo?.insuredBuildingName||quotationInsured?.addressInfo?.insuredBuildingName||"",
+              "insuredPostCode": insured?.addressInfo?.insuredPostCode||quotationInsured?.addressInfo?.insuredPostCode||"",
+              "smokeDetectorAvailable": insured?.addressInfo?.smokeDetectorAvailable||quotationInsured?.addressInfo?.smokeDetectorAvailable||"",
+              "autoSprinklerAvailable":insured?.addressInfo?.autoSprinklerAvailable||quotationInsured?.addressInfo?.autoSprinklerAvailable||"",
+              "securitySystemAvailable":insured?.addressInfo?.securitySystemAvailable||quotationInsured?.addressInfo?.securitySystemAvailable||""
             },
             "planInfo": {
               "planId": insured?.planList[0]?.planId||quotationInsured?.planInfo?.planId||"",

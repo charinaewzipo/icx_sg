@@ -176,6 +176,7 @@ console.log("campaignDetails",campaignDetails)
     productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: calllistDetail[productDetail?.udf_field_producer_code]||"",
+    // producerCode: '0002466000',
     propDate:"",
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
@@ -394,30 +395,33 @@ console.log("campaignDetails",campaignDetails)
 
 function getPlanDetail() {
   const formData = new FormData(document.querySelector("form")); // Assuming the form element is available
-  const planListData = planData?.insuredList[0];
-  console.log("planListData", planListData);
-  console.log("selectCoverPremium",selectCoverPremium)
-  const PlanDetail = {
-    planId: planListData
-      ? planListData?.planList[formData.get("planId")]?.planId
-      : 0,
-    planPoi: planListData?.planList[formData.get("planId")]?.planPoi,
-    planDescription: planListData
-      ? planListData?.planList[formData.get("planId")]?.planDescription
-      : "",
-      
-
-    coverList: selectCoverPremium ? [
-      {
-        id:selectCoverPremium?.id,
-        code:selectCoverPremium?.code,
-        selectedFlag:true,
-      }
-      
-    ]:[],
-  };
-
-  return PlanDetail;
+  if(planData?.insuredList?.length > 0) {
+    const planListData = planData?.insuredList[0];
+    console.log("planListData", planListData);
+    console.log("selectCoverPremium",selectCoverPremium)
+    const PlanDetail = {
+      planId: planListData
+        ? planListData?.planList[formData.get("planId")]?.planId
+        : 0,
+      planPoi: planListData?.planList[formData.get("planId")]?.planPoi,
+      planDescription: planListData
+        ? planListData?.planList[formData.get("planId")]?.planDescription
+        : "",
+        
+  
+      coverList: selectCoverPremium ? [
+        {
+          id:selectCoverPremium?.id,
+          code:selectCoverPremium?.code,
+          selectedFlag:true,
+        }
+        
+      ]:[],
+    };
+  
+    return PlanDetail;
+  }
+  
 }
 
 const handleValidateForm = () => {
@@ -427,7 +431,10 @@ const handleValidateForm = () => {
     .addEventListener("submit", async function (event) {
       event.preventDefault();
       console.log("Form submission triggered");
-
+      const submitButton = document.querySelector("#btnEditForm");
+      console.log("submitButton:", submitButton)
+      const shouldRecalculate = submitButton.getAttribute("data-recalculate") === "true";
+      console.log("shouldRecalculate:", shouldRecalculate)
       // Create an instance of FormData from the form element
       const form = event.target;
       const formData = new FormData(form);
@@ -459,8 +466,9 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
 
       const requestBody = handleForm();
       console.log("requestBody", requestBody)
-      const submitButton = document.querySelector("#btnEditForm");
-      const shouldRecalculate = submitButton.getAttribute("data-recalculate") === "true";
+      // const submitButton = document.querySelector("#btnEditForm");
+      // const shouldRecalculate = submitButton.getAttribute("data-recalculate") === "true";
+      console.log("shouldRecalculate:", shouldRecalculate)
       if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         const paymentDetails = [
           {
@@ -497,9 +505,8 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         
         await fetchPolicy(policyRequest);
        
-      } else if(shouldRecalculate){
-        const removePolicyId = {...requestBody,policyId:""}
-        await fetchQuotation(removePolicyId);
+      } else if(shouldRecalculate&&!submitButton.hidden){
+        await fetchRecalculateQuote(requestBody);
         console.log("fetch Recalculate")
 
       }else{

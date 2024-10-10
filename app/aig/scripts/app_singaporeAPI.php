@@ -180,6 +180,44 @@ async function fetchRetrieveQuote(requestBody) {
     document.body.classList.remove('loading');
   }
 }
+async function fetchRecalculateQuote(requestBody) {
+  console.log("Fetching Recalculate data...");
+  document.body.classList.add('loading');
+  const apiUrl = '<?php echo $GLOBALS["aig_api_recalculate_quote_url"]; ?>';
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const data = await response.json();
+    console.log("data", data);
+
+    await jQuery.agent.updateQuoteData(requestBody, data, id,planData);
+    // Check for specific statusCode N02 and alert accordingly
+    if (data?.statusCode === "S03") {
+      window.alert(data?.statusMessage || "Successfully!");
+      window.location.reload();
+    } else {
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
+      window.location.reload();
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching quotation data:", error);
+    window.alert("Failed to fetch quotation data. Please try again.");
+    throw error; // Re-throw the error to be caught by the caller
+  } finally {
+    document.body.classList.remove('loading');
+  }
+}
+
 const handlePremiumRequestBody = () => {
   const formData = new FormData(document.getElementById("application"));
   const requestBodyHome = {
