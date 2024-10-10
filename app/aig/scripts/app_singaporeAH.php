@@ -596,13 +596,17 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         const selectedProductId = selectElement.value;
         select_product = selectedProductId
         const responseProduct = await getProductDetail(selectedProductId);
-        if(responseProduct?.product_group==="A&H"){
+        console.log("responseProduct?.product_group:",responseProduct?.product_group)
+        if(responseProduct?.product_group=="A&H"){
             if (responseProduct) {
             await addInsuredSections(responseProduct?.number_of_person_insured || 2)
             if (id && !quotationData?.quoteNo) {
                 setInsuredPerson(quotationData?.insuredList,quotationData)
             }
-          
+            const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
+  if (!id || !quotationData?.quoteNo) {
+      handlePaymentFrequencyChange(defaultRadio);
+  }
         }
         if(!quotationData){
             const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
