@@ -447,7 +447,10 @@ const handleValidateForm = () => {
           field.classList.remove("error-border");
         }
       });
-
+//bypass Policy
+if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
+  isValid = true; // Explicitly set to true if both conditions are met
+}
       if (!isValid) {
         alert("Please fill in all required fields.");
         return;
