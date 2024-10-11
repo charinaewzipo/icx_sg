@@ -22,6 +22,7 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
   if ($id) {
     $SQL = "select * from t_aig_app where id = '$id'";
   } else {
+    // $SQL = "select  tapp.id,tapp.calllist_id,tapp.agent_id,tapp.campaign_id,tcam.cp_type,tapp.import_id from t_aig_app tapp inner join t_campaign tcam on tcam.campaign_id=tapp.campaign_id where campaign_id = '$campaign_id' and  calllist_id = '$calllist_id' and import_id = '$import_id' limit 1 ";
     $SQL = "select * from t_aig_app where campaign_id = '$campaign_id' and  calllist_id = '$calllist_id' and import_id = '$import_id' limit 1 ";
   }
   wlog($SQL);
@@ -40,7 +41,14 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
     $campaign_id = ($tmp_campid)?$tmp_campid:$campaign_id;
   }
 
+  $SQL2 = "SELECT cp_type FROM t_campaign WHERE campaign_id = '$campaign_id'";
+  wlog($SQL2);
+  $result2 = mysqli_query($Conn, $SQL2) or die("ไม่สามารถเรียกดูข้อมูลแคมเปญได้");
 
+  $cp_type = "";
+  if ($row2 = mysqli_fetch_array($result2)) {
+    $cp_type = $row2["cp_type"];
+  }
   $app = "";
   $newapp = "";
   switch ($campaign_id) {
@@ -57,7 +65,7 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
       $newapp = "newApplication.php";
   }
 
-  echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id&id=$app_id&formType=ah';</script>";
+  echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id&id=$app_id&formType=$cp_type';</script>";
   // if ($chk > 0) {
   //   //echo  $SQL;
   //   if ((in_array($AppStatus,["Follow-doc","Follow Doc","QC_Reject","Reconfirm-App","Reconfirm"]) && $lv==1) || $lv>1) {
