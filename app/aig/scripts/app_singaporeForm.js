@@ -232,7 +232,7 @@ const setInsuredPerson = (insuredData,dbData) => {
 
 };
 
-const setDefaultPlanInfo = (insuredData, dataPlanPremium) => {
+const setDefaultPlanInfo = async(insuredData, dataPlanPremium) => {
   console.log("dataPlanPremium:", dataPlanPremium)
   const insuredList = dataPlanPremium?.insuredList;
   if (insuredList && insuredList.length > 0) {
@@ -244,10 +244,10 @@ const setDefaultPlanInfo = (insuredData, dataPlanPremium) => {
     console.log("coverIndex:", coverIndex)
     console.log("planInfo", planInfo);
     //setSelectElement
-    populatePlanSelect(planList)
+    await populatePlanSelect(planList)
     let matchingIndexes = [];
     for (const index in planList) {
-      if (planList[index]?.planId === planInfo?.planId && planList[index]?.planPoi === planInfo?.planPoi) {
+      if (planList[index]?.planId === planInfo?.planId && Number(planList[index]?.planPoi) === Number(planInfo?.planPoi)) {
         matchingIndexes.push(index);
       }
     }
@@ -262,7 +262,7 @@ const setDefaultPlanInfo = (insuredData, dataPlanPremium) => {
 
 
 const setDefaultValueForm = async(dbData) => {
-  
+  console.log("setDefaultValueForm")
   console.log("dbData:", dbData)
   const ncdInfo = JSON.parse(dbData.ncdInfo);
   const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
@@ -283,9 +283,9 @@ const setDefaultValueForm = async(dbData) => {
  
 
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
-  document.querySelector('select[name="Ncd_Level"]').value = ncdInfo.ncdLevel;
+  document.querySelector('select[name="Ncd_Level"]').value = ncdInfo?.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
-    ncdInfo.noClaimExperienceOther || "";
+    ncdInfo?.noClaimExperienceOther || "";
     document.querySelector('textarea[name="RemarkCInput"]').value = dbData?.remarksC || "";
 
   // Set Individual Policy Holder Info fields
@@ -390,6 +390,7 @@ const setInsuredHome = (insuredData) => {
   if (!insuredData || insuredData.length === 0) return;
 
   const addressInfo = insuredData[0].addressInfo;
+  console.log("addressInfo:", addressInfo)
 
   // Map the addressInfo data to the form fields
   document.querySelector('[name="insured_home_dwellingType"]').value = addressInfo?.dwellingType || '';

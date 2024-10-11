@@ -118,6 +118,7 @@ error_reporting(E_ALL);
   <script src="../scripts/app_singaporeForm.js"></script>
   <script src="../scripts/app_singaporeDraft.js"></script>
   <script src="../scripts/app_singaporePayment.js"></script>
+  <script src="../scripts/app_singaporeRenew.js"></script>
 
 
   <script>

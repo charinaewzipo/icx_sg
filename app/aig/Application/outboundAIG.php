@@ -449,6 +449,91 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData,$planData)
     }
 }
 
+function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails)
+{
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    // Extract data from response
+    $policyId = isset($response['policyId']) ? $response['policyId'] : '';
+    $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
+    $productId = isset($response['productId']) ? $response['productId'] : 0;
+    $producerCode = isset($response['producerCode']) ? $response['producerCode'] : '';
+    $propDate = isset($response['propDate']) ? convertToISO8601($response['propDate']) : null;
+    $policyEffDate = isset($response['policyEffDate']) ? convertToISO8601($response['policyEffDate']) : null;
+    $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
+    $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
+
+    // Add new data fields
+    $type = isset($type) ? $type : '';
+    $distributionChannel = isset($formatData['distributionChannel']) ? (int)$formatData['distributionChannel'] : 10;
+    $campaignCode = isset($formatData['campaignCode']) ? $formatData['campaignCode'] : '';
+
+    // Handle campaign details
+    $agent_id = isset($campaignDetails["agent_id"]) ? (int)$campaignDetails["agent_id"] : null;
+    $campaign_id = isset($campaignDetails["campaign_id"]) ? (int)$campaignDetails["campaign_id"] : null;
+    $import_id = isset($campaignDetails["import_id"]) ? (int)$campaignDetails["import_id"] : null;
+    $calllist_id = isset($campaignDetails["calllist_id"]) ? (int)$campaignDetails["calllist_id"] : null;
+
+    // Handle policy holder information
+    $policyHolderInfo = isset($formatData['policyHolderInfo']) ? json_encode($formatData['policyHolderInfo']) : '{}';
+    $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
+
+    $individualPolicyHolderInfo = isset($formatData['policyHolderInfo']['individualPolicyHolderInfo']) ? $formatData['policyHolderInfo']['individualPolicyHolderInfo'] : [];
+    $fullName = isset($individualPolicyHolderInfo['fullName']) ? $individualPolicyHolderInfo['fullName'] : '';
+    $customerIdNo = isset($individualPolicyHolderInfo['customerIdNo']) ? $individualPolicyHolderInfo['customerIdNo'] : '';
+    $dateOfBirth = isset($individualPolicyHolderInfo['dateOfBirth']) ? convertToISO8601($individualPolicyHolderInfo['dateOfBirth']) : null;
+
+    // Handle insured list information
+    $insuredList = isset($formatData['insuredList']) ? json_encode($formatData['insuredList']) : '{}';
+    $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
+
+    // Handle payment details
+    $paymentDetails = isset($formatData['paymentDetails']) ? $formatData['paymentDetails'] : [];
+    $paymentMode = !empty($paymentDetails) && isset($paymentDetails['paymentMode']) ? $paymentDetails['paymentMode'] : null;
+    $paymentFrequency = !empty($paymentDetails) && isset($paymentDetails['paymentFrequency']) ? $paymentDetails['paymentFrequency'] : null;
+
+    $request_retrieve_json = json_encode($formatData);
+    $response_retrieve_json = json_encode($response);
+
+    // Escape the strings for safe query execution
+    $request_retrieve_json = mysqli_real_escape_string($dbconn->dbconn, $request_retrieve_json);
+    $response_retrieve_json = mysqli_real_escape_string($dbconn->dbconn, $response_retrieve_json);
+
+    // Prepare SQL insert statement with new data fields
+    $sql = "INSERT INTO t_aig_app 
+        (policyId, productId, producerCode, propDate, policyEffDate, policyExpDate, policyHolderInfo, insuredList, 
+        premiumPayable, quoteNo, fullname, customer_id, payment_mode, payment_frequency, dob, request_retrieve_json, 
+        response_retrieve_json, update_date, type, distributionChannel, campaignCode, agent_id, campaign_id, import_id, calllist_id) 
+        VALUES ('$policyId', '$productId', '$producerCode', " . 
+        ($propDate === null ? 'NULL' : "'$propDate'") . ", " . 
+        ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ", " . 
+        ($policyExpDate === null ? 'NULL' : "'$policyExpDate'") . ", 
+        '$policyHolderInfo', '$insuredList', '$premiumPayable', '$quoteNo', '$fullName', 
+        '$customerIdNo', '$paymentMode', '$paymentFrequency', " . 
+        ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ", 
+        '$request_retrieve_json', '$response_retrieve_json', NOW(), 
+        '$type', '$distributionChannel', '$campaignCode', '$agent_id', '$campaign_id', '$import_id', '$calllist_id')";
+
+    // Execute the query
+    $result = $dbconn->executeUpdate($sql);
+    wlog("DBInsertRetrieveQuote ".$sql);
+    header('Content-Type: application/json; charset=UTF-8');
+    if (!$result) {
+        $error = mysqli_error($dbconn->dbconn);
+        echo json_encode(array("result" => "error", "message" => "Data insert failed: $error"));
+    } else {
+        $lastInsertedId = mysqli_insert_id($dbconn->dbconn);
+        echo json_encode(array("result" => "success", "message" => "Data inserted successfully", "id" => $lastInsertedId));
+    }
+}
+
+
 
 
 function DBInsertPaymentLog($request, $response, $policyid, $objectPayment)
@@ -687,6 +772,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $formatData = isset($data['formatData']) ? $data['formatData'] : array();
             $planData = isset($data['planData']) ? $data['planData'] : array();
             DBUpdateQuoteRetrieve($response, $id,$formatData,$planData);
+        } elseif ($data['action'] === 'insertRetrieveQuote') {
+            $response = isset($data['response']) ? $data['response'] : array();
+            $formData = isset($data['formData']) ? $data['formData'] : array();
+            $campaignDetails = isset($data['campaignDetails']) ? $data['campaignDetails'] : array();
+            $type = isset($data['type']) ? $data['type'] : "";
+            DBInsertRetrieveQuote($response,$formData, $type, $campaignDetails);
         } 
         
         else {

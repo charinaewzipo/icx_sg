@@ -535,6 +535,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                     manualSetDefaultValueFormCallingList(result[0]);
                 }
                 calllistDetail = result[0]
+                checkRenewCampaign(result[0])
             })
             .catch(error => console.error('Error fetching cover list:', error))
             .finally(() => {

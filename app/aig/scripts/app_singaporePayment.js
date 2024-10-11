@@ -183,44 +183,46 @@ function showAlert(message) {
 
 const transformQuoteData = (data, quotationData) => {
 console.log("data:", data)
-
+let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
  
   const transformedData = {
-    policyId: data.policyId || quotationData.policyId || "",
-    productId: data.productId || quotationData.productId || "",
-    producerCode: data.producerCode || quotationData.producerCode || "",
+    policyId: data.policyId || quotationData?.policyId || "",
+    productId: data.productId || quotationData?.productId || "",
+    producerCode: data.producerCode || quotationData?.producerCode || "",
     propDate: data.propDate ? retrieveTransformDate(data.propDate) : "",
     policyEffDate: data.policyEffDate ? retrieveTransformDate(data.policyEffDate) : "",
     policyHolderInfo: {
-      customerType: data.policyHolderInfo?.customerType || quotationData.policyHolderInfo?.customerType || "0",
+      customerType: data.policyHolderInfo?.customerType || quotationData?.policyHolderInfo?.customerType || "0",
       individualPolicyHolderInfo: {
-        courtesyTitle: data.policyHolderInfo?.individualPolicyHolderInfo?.courtesyTitle || quotationData.policyHolderInfo?.individualPolicyHolderInfo?.courtesyTitle,
-        fullName: data.policyHolderInfo?.individualPolicyHolderInfo?.fullName || quotationData.fullname || "",
-        residentStatus: data.policyHolderInfo?.individualPolicyHolderInfo?.residentStatus || quotationData.policyHolderInfo?.individualPolicyHolderInfo?.residentStatus || "",
-        customerIdType: data.policyHolderInfo?.individualPolicyHolderInfo?.customerIdType || quotationData.policyHolderInfo?.individualPolicyHolderInfo?.customerIdType || "0",
-        customerIdNo: data.policyHolderInfo?.individualPolicyHolderInfo?.customerIdNo || quotationData.policyHolderInfo?.individualPolicyHolderInfo?.customerIdNo || "",
-        nationality: data.policyHolderInfo?.individualPolicyHolderInfo?.nationality || quotationData.policyHolderInfo?.individualPolicyHolderInfo?.nationality || "",
-        gender: data.policyHolderInfo?.individualPolicyHolderInfo?.gender || quotationData.policyHolderInfo?.individualPolicyHolderInfo?.gender || "",
+        courtesyTitle: data.policyHolderInfo?.individualPolicyHolderInfo?.courtesyTitle || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.courtesyTitle||"",
+        fullName: data.policyHolderInfo?.individualPolicyHolderInfo?.fullName || quotationData?.fullname || "",
+        residentStatus: data.policyHolderInfo?.individualPolicyHolderInfo?.residentStatus || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.residentStatus || "",
+        customerIdType: data.policyHolderInfo?.individualPolicyHolderInfo?.customerIdType || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.customerIdType || "0",
+        customerIdNo: data.policyHolderInfo?.individualPolicyHolderInfo?.customerIdNo || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.customerIdNo || "",
+        nationality: data.policyHolderInfo?.individualPolicyHolderInfo?.nationality || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.nationality || "",
+        gender: data.policyHolderInfo?.individualPolicyHolderInfo?.gender || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.gender || "",
         dateOfBirth: data.policyHolderInfo?.individualPolicyHolderInfo?.dateOfBirth ? retrieveTransformDate(data.policyHolderInfo?.individualPolicyHolderInfo?.dateOfBirth) : "",
-        maritalStatus: data.policyHolderInfo?.individualPolicyHolderInfo?.maritalStatus || quotationData.policyHolderInfo?.individualPolicyHolderInfo?.maritalStatus || "",
-        occupation: data.policyHolderInfo?.individualPolicyHolderInfo?.occupation || quotationData.policyHolderInfo?.individualPolicyHolderInfo?.occupation || "0"
+        maritalStatus: data.policyHolderInfo?.individualPolicyHolderInfo?.maritalStatus || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.maritalStatus || "",
+        occupation: data.policyHolderInfo?.individualPolicyHolderInfo?.occupation || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.occupation || "0"
       },
       contactInfo: {
-        postCode: data.policyHolderInfo?.contactInfo?.postCode || quotationData.policyHolderInfo?.contactInfo?.postCode || "",
-        unitNo: data.policyHolderInfo?.contactInfo?.unitNo || quotationData.policyHolderInfo?.contactInfo?.unitNo || "",
-        blockNo: data.policyHolderInfo?.contactInfo?.blockNo || quotationData.policyHolderInfo?.contactInfo?.blockNo || "",
-        streetName: data.policyHolderInfo?.contactInfo?.streetName || quotationData.policyHolderInfo?.contactInfo?.streetName || "",
-        buildingName: data.policyHolderInfo?.contactInfo?.buildingName || quotationData.policyHolderInfo?.contactInfo?.buildingName || "",
-        emailId: data.policyHolderInfo?.contactInfo?.emailId || quotationData.policyHolderInfo?.contactInfo?.emailId || "",
-        mobileNo: data.policyHolderInfo?.contactInfo?.mobileNo || quotationData.policyHolderInfo?.contactInfo?.mobileNo || ""
+        postCode: data.policyHolderInfo?.contactInfo?.postCode || quotationData?.policyHolderInfo?.contactInfo?.postCode || "",
+        unitNo: data.policyHolderInfo?.contactInfo?.unitNo || quotationData?.policyHolderInfo?.contactInfo?.unitNo || "",
+        blockNo: data.policyHolderInfo?.contactInfo?.blockNo || quotationData?.policyHolderInfo?.contactInfo?.blockNo || "",
+        streetName: data.policyHolderInfo?.contactInfo?.streetName || quotationData?.policyHolderInfo?.contactInfo?.streetName || "",
+        buildingName: data.policyHolderInfo?.contactInfo?.buildingName || quotationData?.policyHolderInfo?.contactInfo?.buildingName || "",
+        emailId: data.policyHolderInfo?.contactInfo?.emailId || quotationData?.policyHolderInfo?.contactInfo?.emailId || "",
+        mobileNo: data.policyHolderInfo?.contactInfo?.mobileNo || quotationData?.policyHolderInfo?.contactInfo?.mobileNo || ""
       }
     },
     insuredList: (data.insuredList || []).map((insured, index) => {
       // Access the corresponding entry in quotationData using the same index
-      const quotationInsured = (quotationData.insuredList || [])[index] || {};
+      const quotationInsured = (quotationData?.insuredList || [])[index] || {};
       console.log("quotationInsured:", quotationInsured)
 
-      if (quotationData?.type === "ah") {
+      if (formType === "ah") {
         return {
           personInfo: {
             insuredFirstName: insured.personInfo?.insuredFirstName || quotationInsured.personInfo?.insuredFirstName || "",
@@ -254,27 +256,27 @@ console.log("data:", data)
             }
           }
         };
-      } else if (quotationData?.type === "home") {
+      } else if (formType === "home") {
         return {
             "addressInfo": {
               "dwellingType": insured?.addressInfo?.dwellingType|| quotationInsured?.addressInfo?.dwellingType||"",
               "flatType": insured?.addressInfo?.flatType||quotationInsured?.addressInfo?.flatType||"",
-              "ownerOccupiedType":insured?.addressInfo?.ownerOccupiedType||quotationInsured?.addressInfo?.ownerOccupiedType||"",
+              "ownerOccupiedType":insured?.addressInfo?.ownedOrNot||quotationInsured?.addressInfo?.ownerOccupiedType||"",
               "floorOccupied": insured?.addressInfo?.floorOccupied||quotationInsured?.addressInfo?.floorOccupied||"",
-              "constructionType": insured?.addressInfo?.constructionType||quotationInsured?.addressInfo?.constructionType||"",
+              "constructionType": insured?.addressInfo?.constructionType||quotationInsured?.addressInfo?.constructionType||"941",
               "yearBuilt": insured?.addressInfo?.yearBuilt||quotationInsured?.addressInfo?.yearBuilt||"",
               "insuredBlockNo": insured?.addressInfo?.insuredBlockNo||quotationInsured?.addressInfo?.insuredBlockNo||"",
               "insuredStreetName": insured?.addressInfo?.insuredStreetName||quotationInsured?.addressInfo?.insuredStreetName||"",
               "insuredUnitNo": insured?.addressInfo?.insuredUnitNo||quotationInsured?.addressInfo?.insuredUnitNo||"",
               "insuredBuildingName": insured?.addressInfo?.insuredBuildingName||quotationInsured?.addressInfo?.insuredBuildingName||"",
               "insuredPostCode": insured?.addressInfo?.insuredPostCode||quotationInsured?.addressInfo?.insuredPostCode||"",
-              "smokeDetectorAvailable": insured?.addressInfo?.smokeDetectorAvailable||quotationInsured?.addressInfo?.smokeDetectorAvailable||"",
-              "autoSprinklerAvailable":insured?.addressInfo?.autoSprinklerAvailable||quotationInsured?.addressInfo?.autoSprinklerAvailable||"",
-              "securitySystemAvailable":insured?.addressInfo?.securitySystemAvailable||quotationInsured?.addressInfo?.securitySystemAvailable||""
+              "smokeDetectorAvailable": insured?.addressInfo?.smokeDetectorAvailable||quotationInsured?.addressInfo?.smokeDetectorAvailable||"1",
+              "autoSprinklerAvailable":insured?.addressInfo?.autoSprinklerAvailable||quotationInsured?.addressInfo?.autoSprinklerAvailable||"1",
+              "securitySystemAvailable":insured?.addressInfo?.securitySystemAvailable||quotationInsured?.addressInfo?.securitySystemAvailable||"1"
             },
             "planInfo": {
               "planId": insured?.planList[0]?.planId||quotationInsured?.planInfo?.planId||"",
-              "planPoi": insured?.planList[0]?.planPoi ||quotationInsured?.planInfo?.planPoi||"",
+              "planPoi": insured?.planList[0]?.planPoi||calllistDetail?.udf6 ||quotationInsured?.planInfo?.planPoi||"",
               "planDescription": insured?.planList[0]?.planName||quotationInsured?.planInfo?.planDescription||"",
               "coverList":quotationInsured?.planInfo?.coverList.length>0 ? [
                 {
@@ -288,8 +290,8 @@ console.log("data:", data)
       }
     }),
     paymentDetails: {
-      paymentMode: data.paymentDetails[0]?.paymentMode || quotationData.payment_mode || 124,
-      paymentFrequency: data.paymentDetails[0]?.paymentFrequency || quotationData.payment_frequency || 2,
+      paymentMode: data.paymentDetails[0]?.paymentMode || quotationData?.payment_mode || 124,
+      paymentFrequency: data.paymentDetails[0]?.paymentFrequency || quotationData?.payment_frequency || 2,
     }
 
   };
