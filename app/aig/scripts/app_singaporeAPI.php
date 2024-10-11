@@ -224,12 +224,7 @@ const handlePremiumRequestBody = () => {
     propDate: new Date(),
     productId: formData.get("select-product"),
     distributionChannel: 10,
-    producerCode: "0000064000",
-    policyEffDate: formData.get("PolicyEffectiveDate")
-      ? transformDate(formData.get("PolicyEffectiveDate"))
-      : "",
- 
-
+    producerCode:calllistDetail[productDetail?.udf_field_producer_code]||"",
     insuredList: [
       {
         addressInfo: {
