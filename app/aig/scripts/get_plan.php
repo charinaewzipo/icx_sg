@@ -7,7 +7,7 @@ include("../../function/StartConnect.inc");
 $product_id = isset($_GET['product_id']) ? $_GET['product_id'] : '';
 
 // Your SQL query to fetch payment modes and card types
-$strSQL = "SELECT id, plan_code, plan_name, product_id
+$strSQL = "SELECT *
 FROM t_aig_sg_plan where product_id='$product_id' ;";
 
 // wlog($strSQL);

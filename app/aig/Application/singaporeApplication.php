@@ -268,7 +268,7 @@ error_reporting(E_ALL);
                     while ($objResult = mysqli_fetch_array($objQuery)) {
                       $data[] = $objResult;
                     ?>
-                  <input type="text" id="product-<?php echo $objResult['campaign_id']; ?>" value="<?php echo $objResult['campaign_name']; ?>" readonly>
+                  <input style="width:216px;" type="text" id="product-<?php echo $objResult['campaign_id']; ?>" value="<?php echo $objResult['campaign_name']; ?>" readonly>
 
                 <?php
                     }
@@ -286,6 +286,10 @@ error_reporting(E_ALL);
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <th></th>
+              <td style="white-space:nowrap;" id="promocode-label">Promo Code:</td>
+              <td id="promocode-input"> 
+              <input type="text" style="display: inline-block; width:216px;" readonly />
+              </td>
             </tr>
 
 
@@ -403,11 +407,11 @@ error_reporting(E_ALL);
             <tr>
               <td style="float:inline-start">Payment Frequency: <span style="color:red">*</span></td>
               <td>
-                <div class="form-check">
+                <div class="form-check" id="display-paymentFrequencyAnnual">
                   <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" >
                   <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
                 </div>
-                <div class="form-check">
+                <div class="form-check" id="display-paymentFrequencyMonthly">
                   <input type="radio" class="form-check-input" id="paymentFrequencyMonthly" name="Payment_Frequency" value="2" onchange="handlePaymentFrequencyChange(this)" checked>
                   <label class="form-check-label" for="paymentFrequencyMonthly">Monthly</label>
                 </div>
@@ -678,7 +682,7 @@ where name='ph occupation'";
             </tr>
             <tr>
               <td>Postal/Zip Code : <span style="color:red">*</span></td>
-              <td><input type="text" name="postCode" maxlength="60" required /></td>
+              <td><input type="text" name="postCode" maxlength="6" required /></td>
             </tr>
 
             <tr id="isPolicyHolderDrivingRow">
@@ -843,39 +847,9 @@ where name='Nature of Business'";
                 </select>
               </td>
               <th>&nbsp;</th>
-              <td>Floor Occupied: </td>
-              <td>
-                <input type="text" name="insured_home_floorOccupied" maxlength="60"  />
-              </td>
+              
             </tr>
-            <tr>
-              <td>Construction Type : <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_home_constructionType" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'constructionType'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
-                  ?>
-
-                </select>
-              </td>
-              <th>&nbsp;</th>
-              <td>Year Built : </td>
-              <td>
-                <input type="text" name="insured_home_yearBuilt" maxlength="4" placeholder="ex.2019" />
-              </td>
-            </tr>
+      
             <tr>
               <td>Block Number : <span style="color:red">*</span></td>
               <td>
@@ -906,7 +880,7 @@ where name='Nature of Business'";
               <th>&nbsp;</th>
             </tr>
 
-            <tr>
+            <!-- <tr>
               <td style="float: inline-start;">Smoke Detector Available : </td>
               <td>
                 <div class="form-check">
@@ -944,7 +918,7 @@ where name='Nature of Business'";
                   <label class="form-check-label" for="securityNo">No</label>
                 </div>
               </td>
-            </tr>
+            </tr> -->
           </table>
         </div>
 
@@ -1438,7 +1412,7 @@ where name='Occupation'";
         <button id="add-insured-child" class="button payment" style="float: right; display:none" type="button">Add Child</button>
 
         <!--Form Insured List Plan info -->
-        <div class="table" id="plan-info-container-main">
+        <div id="plan-info-container-main">
           <table id="table-form" name="plan-info">
             <tr>
               <td>
@@ -1446,12 +1420,13 @@ where name='Occupation'";
               </td>
             </tr>
             <tr>
-              <td style="white-space:nowrap">Plan Name : <span style="color:red">*</span> </td>
+              <td style="white-space:nowrap;padding-right:75px;">Plan Name : <span style="color:red">*</span> </td>
               <td>
                 <select id="planSelect" name="planId" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
+                  
                 </select>
               </td>
               <th></th>
@@ -1460,52 +1435,7 @@ where name='Occupation'";
                 <input type="text" id="planPoiSelect" name="planPoi" readonly>
               </td>
             </tr>
-            <tr>
-              <td>Cover List</td>
-              <td></td>
-            </tr>
-            <tbody id="coverListBody">
-              <tr class="cover-row">
-                <td style="padding:0px 30px">Cover Name:  </td>
-                <td>
-                  <select name="plan_cover_list[]" class="planCoverList" >
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                  </select>
-                </td>
-                <!-- <td style="padding:0px 30px">Cover Code: <span style="color:red">*</span> </td>
-                <td style="width:70px">
-                  <p class="planCoverCode"></p>
-                </td>
-                <td>Limit Amount:</td>
-                <td>
-                  <p class="planCoverLimitAmount"></p>
-                  <input type="hidden" class="selectedFlagInput" value="" readonly>
-                  <p class="coverName" hidden></p>
-                </td>
-
-                <td>
-                  <button style="color:#65558F; background-Color:white; border:1px solid white; cursor:pointer;float:inline-end;" type="button" class="removeCoverBtn" onclick="removeCoverRow(this)">Remove</button>
-                </td> -->
-              </tr>
-            </tbody>
-            <!-- <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>
-                <button type="button" class="button add-cover" onclick="addCoverRow()">Add Cover</button>
-              </td>
-            </tr> -->
-            <tr>
-              <td>
-                <button type="button" class="button seePlan" id="btnPaymentOnline" style="margin-left: 20px;" onclick="validateAndSubmitFormCallPremium()">See plan</button>
-              </td>
-            </tr>
+           <tr></tr>
           </table>
         </div>
 

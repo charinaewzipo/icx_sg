@@ -8,7 +8,21 @@ window.onload = function () {
   if (defaultShowForm) {
     showForm(defaultShowForm)
   }
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
+  // Get the radio buttons
+  var annualRadio = document.getElementById('paymentFrequencyAnnual');
+  var displayMonthly = document.getElementById('display-paymentFrequencyMonthly');
 
+  // Check if formType is 'home'
+  if (formType === "home") {
+    // Automatically check Annual radio button
+    annualRadio.checked = true;
+
+    // Hide the Monthly radio option
+    displayMonthly.style.display = "none";
+  }
 };
 
 
@@ -88,6 +102,7 @@ const handleTypeConfirmQuote = () => {
     );
 
     isPolicyHolderDrivingRow.style.display = "table-row";
+  
   } else if (selectedType === "ah") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto, planInfoContainer].forEach(
       (container) => {
@@ -96,6 +111,8 @@ const handleTypeConfirmQuote = () => {
         });
       }
     );
+    document.getElementById("promocode-label").style.display = "none";
+    document.getElementById("promocode-input").style.display = "none";
   }
 
   if (selectedType === "home") {
@@ -244,12 +261,6 @@ console.log("campaignDetails",campaignDetails)
       emailId: formData.get("emailId"),
       mobileNo: formData.get("mobileNo"),
     },
-    // organizationPolicyHolderInfo: {
-    //   natureOfBusiness: formData.get("natureOfBusiness"),
-    //   companyName: formData.get("companyName"),
-    //   companyRegNo: formData.get("companyRegNo"),
-    //   companyRegDate: formData.get("companyRegDate"),
-    // },
   };
   if (formType === "auto") {
     policyHolderInfo.individualPolicyHolderInfo.isPolicyHolderDriving =
@@ -375,15 +386,12 @@ console.log("campaignDetails",campaignDetails)
     return fullForm
   }
 
+
   insuredObject.planInfo = {};
-
   const planDetail = getPlanDetail();
-  console.log(planDetail);
   insuredObject.planInfo = planDetail;
-
   insuredList.push(insuredObject);
   const fullForm = {
-
     ...policyDetail,
     policyHolderInfo,
     insuredList,
@@ -395,33 +403,61 @@ console.log("campaignDetails",campaignDetails)
 
 function getPlanDetail() {
   const formData = new FormData(document.querySelector("form")); // Assuming the form element is available
-  if(planData?.insuredList?.length > 0) {
-    const planListData = planData?.insuredList[0];
-    console.log("planListData", planListData);
-    console.log("selectCoverPremium",selectCoverPremium)
-    const PlanDetail = {
-      planId: planListData
-        ? planListData?.planList[formData.get("planId")]?.planId
-        : 0,
-      planPoi: planListData?.planList[formData.get("planId")]?.planPoi,
-      planDescription: planListData
-        ? planListData?.planList[formData.get("planId")]?.planDescription
-        : "",
-        
-  
-      coverList: selectCoverPremium ? [
-        {
-          id:selectCoverPremium?.id,
-          code:selectCoverPremium?.code,
-          selectedFlag:true,
-        }
-        
-      ]:[],
-    };
-  
-    return PlanDetail;
-  }
-  
+ const PlanDetail = {
+  planId:formData.get("planId") || "",
+  planPoi:formData.get("planPoi") || ""
+
+ }
+ return PlanDetail
+}
+function populatePlansNormal(productId,planInfo) {
+  if (!productId) return;
+
+  const url = `../scripts/get_plan.php?product_id=${productId}`;
+  document.body.classList.add('loading');
+
+  fetch(url)
+      .then(response => response.json())
+      .then(data => {
+          const planSelect = document.getElementById('planSelect');
+
+          // Debugging
+          if (!planSelect) {
+              console.error(`No element found with ID: planSelect`);
+              return;
+          }
+
+          // Clear previous options
+          planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
+
+          // Handle no plans case
+          if (data.length === 0) {
+              const option = document.createElement('option');
+              option.textContent = 'No plans available';
+              option.disabled = true;
+              planSelect.appendChild(option);
+              return;
+          }
+
+          // Populate the dropdown with new options
+          data.forEach(plan => {
+              const option = document.createElement('option');
+              option.value = plan.plan_code; // Use plan_code as value
+              option.textContent = `${plan.plan_name} (POI:${plan.plan_poi})`; // Display plan_name
+              option.setAttribute('data-desc', plan.plan_name);
+              option.setAttribute('data-planpoi', plan.plan_poi);
+              planSelect.appendChild(option);
+          });
+          if (planInfo) {
+              document.getElementById("planSelect").value=planInfo.planId||""
+              document.getElementById("planPoiSelect").value=planInfo.planPoi||""
+              
+          }
+      })
+      .catch(error => console.error('Error fetching plans:', error))
+      .finally(() => {
+          document.body.classList.remove('loading');
+      });
 }
 
 const handleValidateForm = () => {
@@ -517,95 +553,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
 };
 
 
-//handlePayment
-document.addEventListener('DOMContentLoaded', function () {
-  const paymentContainer = document.getElementById('payment-container');
-  const submitButton = document.getElementById('btnPayment');
 
-  if (!paymentContainer) {
-    console.error('The payment container was not found');
-    return;
-  }
-
-  // Function to get the data from the div elements
-  function getFormDataPayment() {
-    const selectElements = paymentContainer.querySelectorAll('select');
-    const inputElements = paymentContainer.querySelectorAll('input');
-    const formData = {};
-
-    selectElements.forEach(select => {
-      formData[select.name] = select.value;
-    });
-
-    inputElements.forEach(input => {
-      if (input.type === 'radio' && input.checked) {
-        formData[input.name] = input.value;
-      } else if (input.type !== 'radio') {
-        formData[input.name] = input.value;
-      }
-    });
-
-    const [expMonth, expYear] = formData['payment_expiryDate'] ? formData['payment_expiryDate'].split('/').map(val => val.trim()) : ['', ''];
-
-    return {
-      apiOperation: "PAY",
-      order: {
-        amount: parseFloat(quotationData?.premiumPayable),
-        currency: "SGD"
-      },
-      sourceOfFunds: {
-        type: "CARD",
-        provided: {
-          card: {
-            // number: "5123456789012346",
-            number: formData['payment_cardNumber'],
-            expiry: {
-              month: expMonth,
-              year: expYear
-            }
-            // securityCode: Number(formData['payment_securityCode'])
-          }
-        }
-      }
-    };
-  }
-
-  // function validateFields() {
-  //   const paymentMode = document.querySelector('select[name="Payment_Mode"]').value;
-  //   const paymentFrequency = document.querySelector('input[name="Payment_Frequency"]:checked');
-  //   const cardType = document.querySelector('select[name="Payment_CardType"]').value;
-  //   const cardNumber = document.querySelector('input[name="payment_cardNumber"]').value;
-  //   const expiryDate = document.querySelector('input[name="payment_expiryDate"]').value;
-  //   // const securityCode = document.querySelector('input[name="payment_securityCode"]').value;
-
-  //   if (!paymentMode || !paymentFrequency || !cardType || !cardNumber || !expiryDate ) {
-  //     window.alert('Please fill out all required fields.');
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
-  // if (submitButton) {
-  //   submitButton.addEventListener('click', async function () {
-  //     paymentContainer.removeAttribute('hidden');
-  //     if (validateFields()) {
-  //       const requestBody = getFormDataPayment();
-  //       try {
-  //         await fetchPayment(requestBody);
-  //       } catch (error) {
-  //         console.error("Failed to fetch payment data:", error);
-  //         window.alert("Failed to fetch payment data. Please try again.");
-  //       }
-  //     }
-
-  //   });
-  // } else {
-  //   console.error('The submit button was not found');
-  // }
-
-
-});
-//initial
 
 document.addEventListener("DOMContentLoaded", () => {
   const queryString = window.location.search;
@@ -614,6 +562,13 @@ document.addEventListener("DOMContentLoaded", () => {
   handleTypeConfirmQuote();
   getCampaignDetails()
 
+  document.getElementById("planSelect").addEventListener("change",function(){
+     var selectedOption = this.options[this.selectedIndex];
+
+    // Get the data-planpoi attribute from the selected option
+    var planPoi = selectedOption.getAttribute('data-planpoi');
+    document.getElementById("planPoiSelect").value=planPoi
+  })
 });
 const getCampaignDetails = () => {
   const queryString = window.location.search;

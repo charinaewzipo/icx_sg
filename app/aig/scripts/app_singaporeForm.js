@@ -1,141 +1,3 @@
-function populateCoverOptions(selectElement) {
-  const planId = document.getElementById("planSelect").value;
-  const planListData = planData.insuredList[0];
-  const plan = planListData.planList[planId];
-
-  if (plan && plan.coverList) {
-    let coverOptions =
-      '<option value=""> <-- Please select an option --> </option>';
-    for (const coverId in plan.coverList) {
-      if (plan.coverList.hasOwnProperty(coverId)) {
-        const cover = plan.coverList[coverId];
-        coverOptions += `<option value="${coverId}">${cover.name}</option>`;
-      }
-    }
-    selectElement.innerHTML = coverOptions;
-  } else {
-    selectElement.innerHTML =
-      '<option value=""> <-- Please select an option --> </option>';
-  }
-}
-
-
-
-
-function updatePlanDetails(planId) {
-  const planSelect = document.getElementById("planSelect");
-  const planPoiSelect = document.getElementById("planPoiSelect");
-  const planCoverLists = document.querySelectorAll(".planCoverList");
-  const planListData = planData.insuredList[0];
-  console.log("planId:", planId)
-  console.log("planListData:", planListData)
-  console.log("planListData.planList[planId]:", planListData.planList[planId])
-
-  // Update the Plan POI field
-  if (planId && planListData.planList[planId]) {
-    //setPlanSelect
-    planSelect.value=planId
-    const plan = planListData.planList[planId];
-    console.log("plan:", plan)
-    if (plan.planPoi) {
-      planPoiSelect.value = plan.planPoi;
-    }
-
-    // Update cover options for all cover dropdowns
-    planCoverLists.forEach((select) => populateCoverOptions(select));
-  }
-}
-
-function selectCoverById(coverIndex) {
-  const planId = document.getElementById("planSelect").value;
-  const planListData = planData.insuredList[0];
-  const plan = planListData.planList[planId];
-
-  if (plan && plan.coverList) {
-    // Find the cover with the matching `coverIndex`
-    let selectedCover = null;
-    let keyIndex=null
-    for (const key in plan.coverList) {
-      const cover = plan.coverList[key];
-      if (cover.id === coverIndex) {
-        selectedCover = cover;
-        keyIndex=key
-        break;
-      }
-    }
-
-    if (selectedCover) {
-      console.log("Selected cover:", selectedCover);
-      console.log("key cover:", keyIndex);
-      // Now find the corresponding dropdown element and set the value
-      const planCoverLists = document.querySelectorAll(".planCoverList");
-      planCoverLists.forEach((selectElement) => {
-        selectElement.value=keyIndex
-      });
-    } else {
-      console.log(`Cover with id ${coverIndex} not found in the cover list.`);
-    }
-  } else {
-    console.log(`Plan with id ${planId} does not have a valid cover list.`);
-  }
-}
-document.addEventListener("DOMContentLoaded", () => {
-  
-  // Attach event listener to the select element
-  document.getElementById("planSelect").addEventListener("change", function () {
-    console.log("planSelect Change")
-    const planId = this.value;
-    console.log("planId:", planId);
-    const planListData = planData.insuredList[0];
-    const choosePlan=planListData.planList[planId]
-    selectPlanPremium=choosePlan
-    updatePlanDetails(planId);  // Call the function when the plan changes
-  });
-
-  document
-    .getElementById("coverListBody")
-    .addEventListener("change", function (event) {
-      const target = event.target;
-      if (target.classList.contains("planCoverList")) {
-        const coverId = target.value;
-        if (coverId) {
-          const coverDetails = getCoverDetails(coverId); // You should define this function
-          console.log("coverDetails", coverDetails);
-          selectCoverPremium=coverDetails;
-        }
-      }
-    });
-});
-function populatePlanSelect(planList) {
-  console.log("planList:", planList)
-  console.log("populatePlanSelect:")
-  const planSelect = document.getElementById("planSelect");
-  let planListOptions =
-    '<option value=""> <-- Please select an option --> </option>';
-
-  for (const planId in planList) {
-    if (planList.hasOwnProperty(planId)) {
-      const plan = planList[planId];
-      planListOptions += `<option value="${planId}">${plan.planDescription} (POI: ${plan.planPoi})</option>`;
-    }
-  }
-
-  planSelect.innerHTML = planListOptions;
-}
-function getCoverDetails(coverId) {
-  console.log("getCoverDetails:")
-  const planList = planData.insuredList[0].planList;
-  for (const planId in planList) {
-    if (planList.hasOwnProperty(planId)) {
-      const plan = planList[planId];
-      const coverList = plan.coverList;
-      if (coverList && coverList.hasOwnProperty(coverId)) {
-        return coverList[coverId];
-      }
-    }
-  }
-  return null;
-}
 
 function clearPlanInfo() {
   console.log("clearPlanInfo")
@@ -153,18 +15,18 @@ function clearPlanInfo() {
 }
 
 const manualSetDefaultValueFormCallingList = (data) => {
-console.log("data FormCallingList:", data)
-  
+  console.log("data FormCallingList:", data)
+
   document.querySelector('input[name="firstName"]').value = data.name;
-  document.querySelector('input[name="dateOfBirth"]').value = data.dob?isoToFormattedDate(data.dob):"";
+  document.querySelector('input[name="dateOfBirth"]').value = data.dob ? isoToFormattedDate(data.dob) : "";
   const dob = data.dob;
   if (dob) {
-    const {age} = calculateAge(dob);
+    const { age } = calculateAge(dob);
     document.getElementById('agePolicyHolder').value = age;
   }
-  document.querySelector('input[name="customerIdNo"]').value = data?.personal_id||data?.passport_no; 
+  document.querySelector('input[name="customerIdNo"]').value = data?.personal_id || data?.passport_no;
   document.querySelector('input[name="mobileNo"]').value = data.udf1;
-  document.querySelector('input[name="emailId"]').value = data.email || ""; 
+  document.querySelector('input[name="emailId"]').value = data.email || "";
   document.querySelector('input[name="postCode"]').value = data.home_post_cd;
 
   document.querySelector('input[name="blockNo"]').value = data.home_addr1 || "";
@@ -173,24 +35,24 @@ console.log("data FormCallingList:", data)
   document.querySelector('input[name="buildingName"]').value = data.home_city || "";
   document.querySelector('select[name="maritalStatus"]').value = data.marital_status || "";
   document.querySelector('select[name="nationality"]').value = data.nationality || "";
- 
+
 };
-const setDefaultRemarksC=(productDetail)=>{
-  if(productDetail){
-    document.querySelector('textarea[name="RemarkCInput"]').value=productDetail?.remarks_c ||""
+const setDefaultRemarksC = (productDetail) => {
+  if (productDetail) {
+    document.querySelector('textarea[name="RemarkCInput"]').value = productDetail?.remarks_c || ""
   }
-  
+
 }
 
-const setInsuredPerson = (insuredData,dbData) => {
- 
+const setInsuredPerson = (insuredData, dbData) => {
+
   const formSections = document.querySelectorAll('table[id^="table-form-"]');
   formSections.forEach((section, index) => {
     if (index >= insuredData.length) return; // Prevent index out of bounds
     const data = insuredData[index];
     const personInfo = data.personInfo;
     console.log("personInfo:", personInfo?.relationToPolicyholder)
-    if(personInfo?.relationToPolicyholder!=2){
+    if (personInfo?.relationToPolicyholder != 2) {
       const planInfo = personInfo.planInfo;
       section.querySelector('[name^="insured_ah_insuredFirstName_"]').value =
         personInfo.insuredFirstName || "";
@@ -202,11 +64,11 @@ const setInsuredPerson = (insuredData,dbData) => {
         personInfo.insuredIdNumber || "";
       section.querySelector('[name^="insured_ah_insuredGender_"]').value =
         personInfo.insuredGender || "";
-        const dob = personInfo.insuredDateOfBirth;
-      section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =  
-      dob ? isoToFormattedDate(dob):""
+      const dob = personInfo.insuredDateOfBirth;
+      section.querySelector('[name^="insured_ah_insuredDateOfBirth_"]').value =
+        dob ? isoToFormattedDate(dob) : ""
       if (dob) {
-        const {age} = calculateAge(dob);
+        const { age } = calculateAge(dob);
         section.querySelector('[name^="ageInsuredPerson_"]').value = age;
       }
       section.querySelector('[name^="insured_ah_insuredMaritalStatus_"]').value =
@@ -217,51 +79,32 @@ const setInsuredPerson = (insuredData,dbData) => {
         '[name^="insured_ah_relationToPolicyholder_"]'
       ).value = personInfo.relationToPolicyholder || "";
 
-  
-      if(index===0 &&dbData?.productId&&planInfo){
 
-  
-        populatePlans(dbData?.productId,1,section,planInfo)
-        populateCovers(dbData?.productId,1,section,planInfo)
+      if (index === 0 && dbData?.productId && planInfo) {
+
+
+        populatePlans(dbData?.productId, 1, section, planInfo)
+        populateCovers(dbData?.productId, 1, section, planInfo)
       }
     }
-   
+
 
   });
   fillInsuredSectionChild(insuredData)
 
 };
 
-const setDefaultPlanInfo = async(insuredData, dataPlanPremium) => {
-  console.log("dataPlanPremium:", dataPlanPremium)
-  const insuredList = dataPlanPremium?.insuredList;
-  if (insuredList && insuredList.length > 0) {
-    const planList = insuredList[0]?.planList;
-    // Proceed with further logic using planList
-    console.log(planList);
+const setDefaultPlanInfo = async (insuredData,dbData) => {
+    console.log("insuredData:", insuredData)
     const planInfo = insuredData ? insuredData[0]?.planInfo : {};
-    const coverIndex =planInfo?.coverList[0]?.id;
-    console.log("coverIndex:", coverIndex)
-    console.log("planInfo", planInfo);
-    //setSelectElement
-    await populatePlanSelect(planList)
-    let matchingIndexes = [];
-    for (const index in planList) {
-      if (planList[index]?.planId === planInfo?.planId && Number(planList[index]?.planPoi) === Number(planInfo?.planPoi)) {
-        matchingIndexes.push(index);
-      }
+    if (dbData&&planInfo) {
+      populatePlansNormal(dbData?.productId,planInfo)
     }
-    console.log("matchingIndexes",matchingIndexes[0]);//such as 1,2
-    updatePlanDetails(matchingIndexes[0])
-    
-    selectCoverById(coverIndex);
-    
-}
- 
+
 };
 
 
-const setDefaultValueForm = async(dbData) => {
+const setDefaultValueForm = async (dbData) => {
   console.log("setDefaultValueForm")
   console.log("dbData:", dbData)
   const ncdInfo = JSON.parse(dbData.ncdInfo);
@@ -269,28 +112,28 @@ const setDefaultValueForm = async(dbData) => {
   const insuredData = JSON.parse(dbData.insuredList);
   console.log("insuredData:", insuredData)
   const dataPlanPremium = JSON.parse(dbData.plan_premium_json);
-  planData=dataPlanPremium;
+  planData = dataPlanPremium;
   const selectProductElement = document.querySelector('select[name="select-product"]');
   selectProductElement.value = dbData?.productId || "";
-   
-  if(dbData?.type==="ah"){
- if(!dbData?.quoteNo){
-    if (selectProductElement.value) {
-      handleProductChange(selectProductElement);
+
+  if (dbData?.type === "ah") {
+    if (!dbData?.quoteNo) {
+      if (selectProductElement.value) {
+        handleProductChange(selectProductElement);
+      }
+    }
   }
-  }
-  }
- 
+  
 
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   document.querySelector('select[name="Ncd_Level"]').value = ncdInfo?.ncdLevel;
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo?.noClaimExperienceOther || "";
-    document.querySelector('textarea[name="RemarkCInput"]').value = dbData?.remarksC || "";
+  document.querySelector('textarea[name="RemarkCInput"]').value = dbData?.remarksC || "";
 
   // Set Individual Policy Holder Info fields
 
-  
+
   // Payment Frequency
   const paymentFrequencyAnnual = document.querySelector('#paymentFrequencyAnnual');
   const paymentFrequencyMonthly = document.querySelector('#paymentFrequencyMonthly');
@@ -299,11 +142,11 @@ const setDefaultValueForm = async(dbData) => {
   } else if (dbData?.payment_frequency === 2) {
     paymentFrequencyMonthly.checked = true;
   }
-  document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mode||"";
+  document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mode || "";
 
   const emailFulfillmentYes = document.querySelector('#emailFulfillmentYes');
   const emailFulfillmentNo = document.querySelector('#emailFulfillmentNo');
-  
+
   if (dbData?.email_fullfillment === "1") {
     emailFulfillmentYes.checked = true;
   } else if (dbData?.email_fullfillment === "2") {
@@ -330,11 +173,11 @@ const setDefaultValueForm = async(dbData) => {
   document.querySelector('select[name="gender"]').value =
     individualPolicyHolderInfo.individualPolicyHolderInfo.gender;
 
-    const dob = individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth;
-  document.querySelector('input[name="dateOfBirth"]').value = dob? isoToFormattedDate(dob):null
+  const dob = individualPolicyHolderInfo.individualPolicyHolderInfo.dateOfBirth;
+  document.querySelector('input[name="dateOfBirth"]').value = dob ? isoToFormattedDate(dob) : null
 
   if (dob) {
-    const {age} = calculateAge(dob);
+    const { age } = calculateAge(dob);
     document.getElementById('agePolicyHolder').value = age;
   }
   document.querySelector('select[name="maritalStatus"]').value =
@@ -355,8 +198,8 @@ const setDefaultValueForm = async(dbData) => {
     individualPolicyHolderInfo.contactInfo.buildingName;
   document.querySelector('input[name="postCode"]').value =
     individualPolicyHolderInfo.contactInfo.postCode;
-  document.querySelector('input[name="PolicyEffectiveDate"]').value =dbData.policyEffDate?
-  isoToFormattedDate(dbData.policyEffDate):""
+  document.querySelector('input[name="PolicyEffectiveDate"]').value = dbData.policyEffDate ?
+    isoToFormattedDate(dbData.policyEffDate) : ""
 
 
   document.querySelector('input[name="campaignCode"]').value =
@@ -374,11 +217,11 @@ const setDefaultValueForm = async(dbData) => {
   }
   switch (dbData.type) {
     case "home":
-      return setInsuredHome(insuredData), setDefaultPlanInfo(insuredData,dataPlanPremium);
+      return setInsuredHome(insuredData), setDefaultPlanInfo(insuredData,dbData);
     // case "auto":
     //   return setInsuredVehicleList(insuredData), setDefaultPlanInfo(insuredData);
     case "ah":
-      return setInsuredPerson(insuredData,dbData);
+      return setInsuredPerson(insuredData, dbData);
     default:
 
       return null
@@ -396,9 +239,6 @@ const setInsuredHome = (insuredData) => {
   document.querySelector('[name="insured_home_dwellingType"]').value = addressInfo?.dwellingType || '';
   document.querySelector('[name="insured_home_flatType"]').value = addressInfo?.flatType || '';
   document.querySelector('[name="insured_home_ownerOccupiedType"]').value = addressInfo?.ownerOccupiedType || '';
-  document.querySelector('[name="insured_home_floorOccupied"]').value = addressInfo?.floorOccupied || '';
-  document.querySelector('[name="insured_home_constructionType"]').value = addressInfo?.constructionType || '';
-  document.querySelector('[name="insured_home_yearBuilt"]').value = addressInfo?.yearBuilt || '';
   document.querySelector('[name="insured_home_insuredBlockNo"]').value = addressInfo?.insuredBlockNo || '';
   document.querySelector('[name="insured_home_insuredStreetName"]').value = addressInfo?.insuredStreetName || '';
   document.querySelector('[name="insured_home_insuredUnitNo"]').value = addressInfo?.insuredUnitNo || '';
@@ -579,19 +419,19 @@ function clearSelections() {
   // Clear the planSelect dropdown to only have the option with value=""
   const planSelect = document.getElementById("planSelect");
   if (planSelect) {
-      planSelect.innerHTML = '<option value=""> &lt;-- Please select an option --&gt; </option>'; // Set inner HTML to only this option
+    planSelect.innerHTML = '<option value=""> &lt;-- Please select an option --&gt; </option>'; // Set inner HTML to only this option
   }
 
   // Clear the planPoiSelect dropdown to the first option (or empty if required)
   const planPoiSelect = document.getElementById("planPoiSelect");
   if (planPoiSelect) {
-      planPoiSelect.value = null// Reset to the first option (if applicable)
+    planPoiSelect.value = null// Reset to the first option (if applicable)
   }
 
   // Clear all planCoverList dropdowns to only have the option with value=""
   const planCoverLists = document.querySelectorAll(".planCoverList");
   planCoverLists.forEach(select => {
-      select.innerHTML = '<option value=""> &lt;-- Please select an option --&gt; </option>'; // Set inner HTML to only this option
+    select.innerHTML = '<option value=""> &lt;-- Please select an option --&gt; </option>'; // Set inner HTML to only this option
   });
 }
 
@@ -601,8 +441,5 @@ clearSelections(); // Call this function when you need to clear the selections
 
 document.addEventListener("DOMContentLoaded", () => {
   attachCustomerIdValidation()
-  const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
-  if (!id || !quotationData?.quoteNo) {
-      handlePaymentFrequencyChange(defaultRadio);
-  }
+
 })

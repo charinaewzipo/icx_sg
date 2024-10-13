@@ -410,12 +410,12 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             coverRows.forEach((coverSelect) => {
                 const selectedOption = coverSelect.querySelector('option:checked');
                 console.log("selectedOption:", selectedOption)
-                if (selectedOption&&selectedOption.value) {
+                if (selectedOption && selectedOption.value) {
                     covers.push({
                         id: selectedOption.value || '',
                         code: selectedOption.getAttribute('data-cover-code') || null,
                         name: selectedOption.getAttribute('data-cover-name') || null,
-                        selectedFlag:true
+                        selectedFlag: true
                     });
                 }
             });
@@ -597,37 +597,38 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         const selectedProductId = selectElement.value;
         select_product = selectedProductId
         const responseProduct = await getProductDetail(selectedProductId);
-        console.log("responseProduct?.product_group:",responseProduct?.product_group)
-        if(responseProduct?.product_group=="A&H"){
+        console.log("responseProduct?.product_group:", responseProduct?.product_group)
+        if (responseProduct?.product_group == "A&H") {
             if (responseProduct) {
-            await addInsuredSections(responseProduct?.number_of_person_insured || 2)
-            if (id && !quotationData?.quoteNo) {
-                setInsuredPerson(quotationData?.insuredList,quotationData)
+                await addInsuredSections(responseProduct?.number_of_person_insured || 2)
+                if (id && !quotationData?.quoteNo) {
+                    setInsuredPerson(quotationData?.insuredList, quotationData)
+                }
+                const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
+                if (!id || !quotationData?.quoteNo) {
+                    handlePaymentFrequencyChange(defaultRadio);
+                }
             }
-            const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
-  if (!id || !quotationData?.quoteNo) {
-      handlePaymentFrequencyChange(defaultRadio);
-  }
-        }
-        if(!quotationData){
-            const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
-        planSelectElements.forEach((selectElement, index) => {
-            if (index === 0) { // Populate only the first one (index 0)
-                populatePlans(selectedProductId, index + 1); // Adjust index to be 1-based if needed
-                populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+            if (!quotationData) {
+                const planSelectElements = document.querySelectorAll('[id^="planSelect"]');
+                planSelectElements.forEach((selectElement, index) => {
+                    if (index === 0) { // Populate only the first one (index 0)
+                        populatePlans(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+                        populateCovers(selectedProductId, index + 1); // Adjust index to be 1-based if needed
+                    }
+                });
             }
-        });
-        }
-     
 
-        if (!id) {
-            setDefaultRemarksC(responseProduct)
+
+            if (!id) {
+                setDefaultRemarksC(responseProduct)
+            }
         }
-        }
-      
+
         //clear planSelect planPo planCoverLists
 
-            clearSelections()
+        clearSelections()
+        populatePlansNormal(selectedProductId)
 
 
     }
@@ -719,18 +720,18 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                     option.setAttribute('data-cover-name', cover.cover_name);
                     plan_cover_list_.appendChild(option);
 
-                
+
                 });
                 if (planInfo) {
-    const coverSelect = section.querySelector('[name^="plan_cover_list_1[]"]');
-    
-    if (coverSelect && planInfo.coverList && planInfo.coverList.length > 0 && planInfo.coverList[0]?.id) {
-        coverSelect.value = planInfo.coverList[0].id; // Pre-select the cover
-    } else {
-        console.log("Cover list or cover select element is missing or invalid.");
-    }
-}
-                
+                    const coverSelect = section.querySelector('[name^="plan_cover_list_1[]"]');
+
+                    if (coverSelect && planInfo.coverList && planInfo.coverList.length > 0 && planInfo.coverList[0]?.id) {
+                        coverSelect.value = planInfo.coverList[0].id; // Pre-select the cover
+                    } else {
+                        console.log("Cover list or cover select element is missing or invalid.");
+                    }
+                }
+
             })
             .catch(error => console.error('Error fetching plans:', error))
             .finally(() => {
