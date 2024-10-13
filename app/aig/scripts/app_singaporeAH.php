@@ -497,23 +497,6 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         };
     }
 
-    function resetPlanData(index) {
-        const planDropdown = document.querySelector(`select[name="plan_cover_list_${index}[]"]`);
-        if (planDropdown) {
-            planDropdown.innerHTML = "<option value=''> <-- Please select an option --></option>";
-        }
-
-        const coverLimitAmountInput = document.querySelector(`.planCoverLimitAmount${index}`);
-        if (coverLimitAmountInput) {
-            coverLimitAmountInput.value = '';
-        }
-
-        const planPoiInput = document.getElementById(`planPoiSelect${index}`);
-        if (planPoiInput) {
-            planPoiInput.value = '';
-        }
-    }
-
     function fetchCallingList() {
         document.body.classList.add('loading');
         const callListId = <?php echo json_encode($_GET["calllist_id"]); ?>;
@@ -597,7 +580,10 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         const selectedProductId = selectElement.value;
         select_product = selectedProductId
         const responseProduct = await getProductDetail(selectedProductId);
-        console.log("responseProduct?.product_group:", responseProduct?.product_group)
+        console.log("responseProduct:", responseProduct)
+        const promoInput = document.getElementById("promocode-input")
+        promoInput.value=responseProduct?.promo_campaign_code||"";
+
         if (responseProduct?.product_group == "A&H") {
             if (responseProduct) {
                 await addInsuredSections(responseProduct?.number_of_person_insured || 2)

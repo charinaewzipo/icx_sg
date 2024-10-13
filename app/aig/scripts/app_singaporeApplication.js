@@ -112,7 +112,7 @@ const handleTypeConfirmQuote = () => {
       }
     );
     document.getElementById("promocode-label").style.display = "none";
-    document.getElementById("promocode-input").style.display = "none";
+    document.getElementById("promocode-label2").style.display = "none";
   }
 
   if (selectedType === "home") {
@@ -193,12 +193,11 @@ console.log("campaignDetails",campaignDetails)
     productId: formData.get("select-product"),
     distributionChannel: 10,
     producerCode: calllistDetail[productDetail?.udf_field_producer_code]||"",
-    // producerCode: '0002466000',
     propDate:"",
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
-    campaignCode: "",
+    campaignCode: formData.get("campaignCode"),
     efulfillmentFlag: Number(formData.get('Email_Fulfillment_Flag')),
   };
   if (formType === "auto") {

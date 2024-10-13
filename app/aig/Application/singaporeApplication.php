@@ -274,9 +274,7 @@ error_reporting(E_ALL);
                     }
                 ?>
               </td>
-              <td>
-                <input hidden type="text" id="campaign-code" name="campaignCode" style="max-width: 130px;" value='<?php echo $campaign_id; ?>' readonly>
-              </td>
+        
             </tr>
             <tr id="policyid-display">
               <td id="policyid-text">Policy/Quote No:</td>
@@ -287,8 +285,8 @@ error_reporting(E_ALL);
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <th></th>
               <td style="white-space:nowrap;" id="promocode-label">Promo Code:</td>
-              <td id="promocode-input"> 
-              <input type="text" style="display: inline-block; width:216px;" readonly />
+              <td id="promocode-label2"> 
+              <input id="promocode-input" name="campaignCode" type="text" style="display: inline-block; width:216px;" readonly />
               </td>
             </tr>
 
