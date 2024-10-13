@@ -50,7 +50,7 @@
         });
       });
     },
-    insertQuotationData: function (formData, response, campaignDetails,planData) {
+    insertQuotationData: function (formData, response, campaignDetails) {
       return new Promise((resolve, reject) => {
         $.ajax({
           url: url,
@@ -61,8 +61,7 @@
             formData: formData,
             response: response,
             type: selectedType,
-            campaignDetails: campaignDetails,
-            planData
+            campaignDetails: campaignDetails
           }),
           dataType: "text",  // Set to "text" to manually handle parsing
           success: function (responseText) {
@@ -155,7 +154,7 @@
       });
     },
 
-    updateRetrieveQuote: function (response, id,formatData,planData) {
+    updateRetrieveQuote: function (response, id,formatData) {
       $.ajax({
         url: url,
         type: "POST",
@@ -164,8 +163,7 @@
           action: "updateRetrieveQuote",
           response: response,
           id: id,
-          formatData:formatData,
-          planData
+          formatData:formatData
         }),
         dataType: "text",
         success: function (response) {
@@ -184,7 +182,7 @@
         }
       });
     },
-    updateQuoteData: function (formData, response, id,planData) {
+    updateQuoteData: function (formData, response, id) {
       $.ajax({
         url: url,
         type: "POST",
@@ -194,8 +192,7 @@
           formData: formData,
           response: response,
           type: selectedType,
-          id: id,
-          planData
+          id: id
         }),
         dataType: "text",
         success: function (response) {

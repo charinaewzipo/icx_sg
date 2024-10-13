@@ -3,7 +3,6 @@
 include_once '../../../app/function/settings.php'; // Update with the correct path to settings.php
 ?>
 <script>
-  let planData = null;
 let responsePayment = null;
 let quotationData = null;
 let selectProduct = null;
@@ -35,10 +34,10 @@ function fetchPremium(requestBody) {
         data.Policy.insuredList &&
         data.Policy.insuredList[0]
       ) {
-        planData = data.Policy;
-        console.log("planData:", planData)
-        populatePlanSelect(planData.insuredList[0].planList);
-        return planData;
+        // planData = data.Policy;
+        // console.log("planData:", planData)
+        // populatePlanSelect(planData.insuredList[0].planList);
+        // return planData;
       } else {
         window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
         console.error("Invalid API response:", data);
@@ -81,9 +80,9 @@ async function fetchQuotation(requestBody) {
 
     // Insert Quotation Data regardless of statusCode
     if (id != null && id !== "") {
-      await jQuery.agent.updateQuoteData(requestBody, data, id,planData);
+      await jQuery.agent.updateQuoteData(requestBody, data, id);
     } else {
-      const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails,planData);
+      const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
       if (url.searchParams.has('id')) {
         url.searchParams.set('id', responseId);
       } else {
@@ -198,7 +197,7 @@ async function fetchRecalculateQuote(requestBody) {
     const data = await response.json();
     console.log("data", data);
 
-    await jQuery.agent.updateQuoteData(requestBody, data, id,planData);
+    await jQuery.agent.updateQuoteData(requestBody, data, id);
     // Check for specific statusCode N02 and alert accordingly
     if (data?.statusCode === "S03") {
       window.alert(data?.statusMessage || "Successfully!");

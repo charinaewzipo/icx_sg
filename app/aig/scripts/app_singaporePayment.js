@@ -128,7 +128,7 @@ const handleRetrieveQuote = async () => {
     const transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
 
-    await jQuery.agent.updateRetrieveQuote(data, id, transformedData,planData);
+    await jQuery.agent.updateRetrieveQuote(data, id, transformedData);
 
     const isPremiumPayableMatching =
       parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable);

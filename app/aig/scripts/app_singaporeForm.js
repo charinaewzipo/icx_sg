@@ -111,8 +111,6 @@ const setDefaultValueForm = async (dbData) => {
   const individualPolicyHolderInfo = JSON.parse(dbData.policyHolderInfo);
   const insuredData = JSON.parse(dbData.insuredList);
   console.log("insuredData:", insuredData)
-  const dataPlanPremium = JSON.parse(dbData.plan_premium_json);
-  planData = dataPlanPremium;
   const selectProductElement = document.querySelector('select[name="select-product"]');
   selectProductElement.value = dbData?.productId || "";
 
