@@ -615,7 +615,8 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
         clearSelections()
         populatePlansNormal(selectedProductId)
-
+       const responseDwelling= await fetchGetDwelling(select_product)
+       console.log("responseDwelling:", responseDwelling)
 
     }
 

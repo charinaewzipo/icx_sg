@@ -121,11 +121,13 @@ const setDefaultValueForm = async (dbData) => {
       }
     }
   }
-  // else if (dbData?.type==="home"){
-  //   if (selectProductElement.value) {
-  //     handleProductChange(selectProductElement);
-  //   }
-  // }
+  else if (dbData?.type==="home"){
+    if (selectProductElement.value) {
+      // handleProductChange(selectProductElement);
+     await fetchGetDwelling(dbData?.productId)
+     console.log("fetchGetDwellingfetchGetDwellingfetchGetDwelling:")
+    }
+  }
   
 
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";

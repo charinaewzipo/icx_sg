@@ -448,10 +448,23 @@ function populatePlansNormal(productId,planInfo) {
               planSelect.appendChild(option);
           });
           if (planInfo) {
-              document.getElementById("planSelect").value=planInfo.planId||""
-              document.getElementById("planPoiSelect").value=planInfo.planPoi||""
+            const planSelect = document.getElementById("planSelect");
+            const planPoiValue = planInfo.planPoi || ""; 
+            
+            // Loop through the options in the select dropdown
+            for (let i = 0; i < planSelect.options.length; i++) {
+              const option = planSelect.options[i];
               
+              if (option.getAttribute("data-planpoi") === planPoiValue) {
+                planSelect.selectedIndex = i;
+                break;
+              }
+            }
+          
+            // Also set the planPoiSelect input field with the same value
+            document.getElementById("planPoiSelect").value = planPoiValue;
           }
+          
       })
       .catch(error => console.error('Error fetching plans:', error))
       .finally(() => {

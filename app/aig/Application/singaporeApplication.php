@@ -785,18 +785,7 @@ where name='Nature of Business'";
                   <option value="">
                     <-- Please select an option -->
                   </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'dwellingType'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
-                  ?>
+                 
 
                 </select>
               </td>
@@ -808,7 +797,7 @@ where name='Nature of Business'";
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'flatType'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Flat Type'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -830,7 +819,7 @@ where name='Nature of Business'";
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'ownerOccupiedType'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Owner Occupancy Type'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
