@@ -19,17 +19,7 @@ function handlePaymentFrequencyChange(radio) {
 
   setPlanPoiValue(paymentFrequency);
 }
-function handlePaymentModeChange(value) {
-  if (value === "1001") {
-    console.log("Credit Card Lump sum selected");
-    // Add any additional logic for this option
-  } else if (value === "124") {
-    console.log("Recurring Credit Card selected");
-    // Add any additional logic for this option
-  } else {
-    console.log("No valid option selected");
-  }
-}
+
 
 // Attach the event listener to the payment mode select element
 
@@ -400,7 +390,6 @@ function clearPauseTime() {
 document.addEventListener("DOMContentLoaded", () => {
   fetchAgentDetail()
   document.getElementById("paymentModeSelect").addEventListener("change", function(event) {
-    handlePaymentModeChange(event.target.value);
     const selectedProductId= document.getElementById("select-product")
     const paymentModeSelect= document.getElementById("paymentModeSelect")
     if(selectedProductId.value&&paymentModeSelect.value){
