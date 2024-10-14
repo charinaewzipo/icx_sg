@@ -243,23 +243,23 @@ const setInsuredHome = (insuredData) => {
   document.querySelector('[name="insured_home_insuredBuildingName"]').value = addressInfo?.insuredBuildingName || '';
   document.querySelector('[name="insured_home_insuredPostCode"]').value = addressInfo?.insuredPostCode || '';
 
-  if (addressInfo?.smokeDetectorAvailable === "1") {
-    document.getElementById('smokeDetecYes').checked = true;
-  } else if (addressInfo?.smokeDetectorAvailable === "2") {
-    document.getElementById('smokeDetecNo').checked = true;
-  }
+  // if (addressInfo?.smokeDetectorAvailable === "1") {
+  //   document.getElementById('smokeDetecYes').checked = true;
+  // } else if (addressInfo?.smokeDetectorAvailable === "2") {
+  //   document.getElementById('smokeDetecNo').checked = true;
+  // }
 
-  if (addressInfo?.autoSprinklerAvailable === "1") {
-    document.getElementById('autoSprinkYes').checked = true;
-  } else if (addressInfo?.autoSprinklerAvailable === "2") {
-    document.getElementById('autoSprinkNo').checked = true;
-  }
+  // if (addressInfo?.autoSprinklerAvailable === "1") {
+  //   document.getElementById('autoSprinkYes').checked = true;
+  // } else if (addressInfo?.autoSprinklerAvailable === "2") {
+  //   document.getElementById('autoSprinkNo').checked = true;
+  // }
 
-  if (addressInfo?.securitySystemAvailable === "1") {
-    document.getElementById('securityYes').checked = true;
-  } else if (addressInfo?.securitySystemAvailable === "2") {
-    document.getElementById('securityNo').checked = true;
-  }
+  // if (addressInfo?.securitySystemAvailable === "1") {
+  //   document.getElementById('securityYes').checked = true;
+  // } else if (addressInfo?.securitySystemAvailable === "2") {
+  //   document.getElementById('securityNo').checked = true;
+  // }
 };
 const setInsuredVehicleList = (insuredData) => {
   console.log("setInsuredList vehicle")

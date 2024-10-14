@@ -269,10 +269,10 @@ let currentUrl = window.location.href;
               "insuredStreetName": insured?.addressInfo?.insuredStreetName||quotationInsured?.addressInfo?.insuredStreetName||"",
               "insuredUnitNo": insured?.addressInfo?.insuredUnitNo||quotationInsured?.addressInfo?.insuredUnitNo||"",
               "insuredBuildingName": insured?.addressInfo?.insuredBuildingName||quotationInsured?.addressInfo?.insuredBuildingName||"",
-              "insuredPostCode": insured?.addressInfo?.insuredPostCode||quotationInsured?.addressInfo?.insuredPostCode||"",
-              "smokeDetectorAvailable": insured?.addressInfo?.smokeDetectorAvailable||quotationInsured?.addressInfo?.smokeDetectorAvailable||"1",
-              "autoSprinklerAvailable":insured?.addressInfo?.autoSprinklerAvailable||quotationInsured?.addressInfo?.autoSprinklerAvailable||"1",
-              "securitySystemAvailable":insured?.addressInfo?.securitySystemAvailable||quotationInsured?.addressInfo?.securitySystemAvailable||"1"
+              "insuredPostCode": insured?.addressInfo?.insuredPostCode||quotationInsured?.addressInfo?.insuredPostCode||""
+              // "smokeDetectorAvailable": insured?.addressInfo?.smokeDetectorAvailable||quotationInsured?.addressInfo?.smokeDetectorAvailable||"1",
+              // "autoSprinklerAvailable":insured?.addressInfo?.autoSprinklerAvailable||quotationInsured?.addressInfo?.autoSprinklerAvailable||"1",
+              // "securitySystemAvailable":insured?.addressInfo?.securitySystemAvailable||quotationInsured?.addressInfo?.securitySystemAvailable||"1"
             },
             "planInfo": {
               "planId": insured?.planList[0]?.planId||quotationInsured?.planInfo?.planId||"",
