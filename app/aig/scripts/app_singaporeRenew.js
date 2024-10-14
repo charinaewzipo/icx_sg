@@ -23,10 +23,7 @@ async function renewRetrieve(callListData){
   }
 
   const { statusCode, quoteList, statusMessage } = responseRetrieve;
-  if (statusCode !== "P00") {
-    alert(statusMessage);
-    return;
-  }
+  alert(statusMessage);
   if(quoteList.length>0){
     let data = quoteList?.[0]?.Policy;
     console.log("data:", data);
