@@ -27,7 +27,8 @@ async function renewRetrieve(callListData){
     alert(statusMessage);
     return;
   }
-  let data = quoteList?.[0]?.Policy;
+  if(quoteList.length>0){
+    let data = quoteList?.[0]?.Policy;
     console.log("data:", data);
     const transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
@@ -40,5 +41,9 @@ async function renewRetrieve(callListData){
       url.searchParams.append('id', responseId);
     }
     window.location.href = url.toString();
+  }else{
+    alert("The quoteList has no data")
+  }
+  
 }
 

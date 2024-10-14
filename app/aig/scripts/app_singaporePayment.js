@@ -277,14 +277,14 @@ let currentUrl = window.location.href;
             "planInfo": {
               "planId": insured?.planList[0]?.planId||quotationInsured?.planInfo?.planId||"",
               "planPoi": insured?.planList[0]?.planPoi||calllistDetail?.udf6 ||quotationInsured?.planInfo?.planPoi||"",
-              "planDescription": insured?.planList[0]?.planName||quotationInsured?.planInfo?.planDescription||"",
-              "coverList":quotationInsured?.planInfo?.coverList.length>0 ? [
-                {
-                  "id": quotationInsured?.planInfo?.coverList[0]?.id||"",
-                  "code": quotationInsured?.planInfo?.coverList[0]?.code||"",
-                  "selectedFlag": quotationInsured?.planInfo?.coverList[0]?.selectedFlag||true
-                }
-              ]:[]
+              "planDescription": insured?.planList[0]?.planName||quotationInsured?.planInfo?.planDescription||""
+              // "coverList":quotationInsured?.planInfo?.coverList.length>0 ? [
+              //   {
+              //     "id": quotationInsured?.planInfo?.coverList[0]?.id||"",
+              //     "code": quotationInsured?.planInfo?.coverList[0]?.code||"",
+              //     "selectedFlag": quotationInsured?.planInfo?.coverList[0]?.selectedFlag||true
+              //   }
+              // ]:[]
             }
           }
       }
