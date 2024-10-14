@@ -197,9 +197,9 @@ async function fetchRecalculateQuote(requestBody) {
     const data = await response.json();
     console.log("data", data);
 
-    await jQuery.agent.updateQuoteData(requestBody, data, id);
     // Check for specific statusCode N02 and alert accordingly
     if (data?.statusCode === "S03") {
+      await jQuery.agent.updateQuoteData(requestBody, data, id);
       window.alert(data?.statusMessage || "Successfully!");
       window.location.reload();
     } else {
