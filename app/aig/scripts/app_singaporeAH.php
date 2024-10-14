@@ -614,9 +614,16 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         //clear planSelect planPo planCoverLists
 
         clearSelections()
-        populatePlansNormal(selectedProductId)
-       const responseDwelling= await fetchGetDwelling(select_product)
-       console.log("responseDwelling:", responseDwelling)
+        const paymentModeSelect= document.getElementById("paymentModeSelect")
+        if(paymentModeSelect.value){
+
+            populatePlansNormal(selectedProductId,null,paymentModeSelect.value)
+        }else{
+            populatePlansNormal(selectedProductId,null)
+
+        }
+      await fetchGetDwelling(select_product)
+       
 
     }
 

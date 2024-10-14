@@ -11,17 +11,19 @@ window.onload = function () {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
-  // Get the radio buttons
   var annualRadio = document.getElementById('paymentFrequencyAnnual');
   var displayMonthly = document.getElementById('display-paymentFrequencyMonthly');
 
-  // Check if formType is 'home'
   if (formType === "home") {
-    // Automatically check Annual radio button
     annualRadio.checked = true;
 
-    // Hide the Monthly radio option
     displayMonthly.style.display = "none";
+
+    const paymentModeSelect = document.getElementById("paymentModeSelect");
+    const recurringOption = paymentModeSelect.querySelector('option[value="124"]')
+    if (recurringOption) {
+      recurringOption.textContent = "Annual Recurring Credit Card";
+    }
   }
 };
 
@@ -409,10 +411,17 @@ function getPlanDetail() {
  }
  return PlanDetail
 }
-function populatePlansNormal(productId,planInfo) {
+function populatePlansNormal(productId,planInfo,paymentMode) {
+  console.log("populatePlansNormal:")
   if (!productId) return;
-
-  const url = `../scripts/get_plan.php?product_id=${productId}`;
+  let url = "";
+  if (paymentMode) {
+      let plan_poi = "";
+      plan_poi = (paymentMode === "124") ? 12 : 60; 
+      url = `../scripts/get_plan.php?product_id=${productId}&plan_poi=${plan_poi}`;
+  } else {
+      url = `../scripts/get_plan.php?product_id=${productId}`;
+  }
   document.body.classList.add('loading');
 
   fetch(url)

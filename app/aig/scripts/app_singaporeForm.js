@@ -98,7 +98,7 @@ const setDefaultPlanInfo = async (insuredData,dbData) => {
     console.log("insuredData:", insuredData)
     const planInfo = insuredData ? insuredData[0]?.planInfo : {};
     if (dbData&&planInfo) {
-      populatePlansNormal(dbData?.productId,planInfo)
+      populatePlansNormal(dbData?.productId,planInfo,dbData?.payment_mode)
     }
 
 };
