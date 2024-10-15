@@ -536,6 +536,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData,$request)
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
     $productId = isset($response['productId']) ? $response['productId'] : 0;
     $producerCode = isset($response['producerCode']) ? $response['producerCode'] : '';
+    $campaignCode = isset($formatData['campaignCode']) ? $formatData['campaignCode'] : '';
     $propDate = isset($response['propDate']) ? convertToISO8601($response['propDate']) : null;
     $policyEffDate = isset($response['policyEffDate']) ? convertToISO8601($response['policyEffDate']) : null;
     $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
@@ -578,6 +579,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData,$request)
                 insuredList = '$insuredList',
                 premiumPayable = '$premiumPayable',
                 quoteNo = '$quoteNo',
+                campaignCode='$campaignCode'
                 fullname = '$fullName',
                 customer_id = '$customerIdNo',
                 payment_mode = '$paymentMode',

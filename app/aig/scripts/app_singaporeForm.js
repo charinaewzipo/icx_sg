@@ -36,8 +36,11 @@ const manualSetDefaultValueFormCallingList = (data) => {
   document.querySelector('input[name="buildingName"]').value = data.home_city || "";
   document.querySelector('select[name="maritalStatus"]').value = data.marital_status || "";
   document.querySelector('select[name="nationality"]').value = data.nationality || "";
-
-     document.querySelector('input[name="promocode-input"]').value = calllistDetail[campaignDetailsFromAPI?.udf_field_promo_code] || ""
+  
+  const promoInput=document.getElementById("promocode-input")
+  if(promoInput){
+   promoInput.value = calllistDetail[campaignDetailsFromAPI?.udf_field_promo_code] || ""
+  }
 };
 const setDefaultRemarksC = (productDetail) => {
   if (productDetail) {
