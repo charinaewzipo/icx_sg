@@ -38,9 +38,12 @@ const manualSetDefaultValueFormCallingList = (data) => {
   document.querySelector('select[name="nationality"]').value = data.nationality || "";
   
   const promoInput=document.getElementById("promocode-input")
-  if(promoInput){
-   promoInput.value = calllistDetail[campaignDetailsFromAPI?.udf_field_promo_code] || ""
-  }
+  if (promoInput && calllistDetail && campaignDetailsFromAPI?.udf_field_promo_code) {
+    const promoCodeField = campaignDetailsFromAPI.udf_field_promo_code;
+    promoInput.value = calllistDetail[promoCodeField] || "";
+} else {
+    promoInput.value = "";
+}
 };
 const setDefaultRemarksC = (productDetail) => {
   if (productDetail) {
