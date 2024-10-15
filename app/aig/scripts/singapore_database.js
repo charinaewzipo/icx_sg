@@ -213,6 +213,63 @@
         }
       });
     },
+    updateRecalQuoteData: function (formData, response, id) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "updateRecalQuoteData",
+          formData: formData,
+          response: response,
+          type: selectedType,
+          id: id
+        }),
+        dataType: "text",
+        success: function (response) {
+          try {
+            var jsonResponse = JSON.parse(response.trim());  // Manually parse the JSON and remove extra spaces
+            console.log("Insert Response:", jsonResponse);
+            if (jsonResponse.result === "success") {
+              window.location.reload();
+            }
+          } catch (e) {
+            console.error("JSON Parsing Error:", e, response);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX Error:", error);
+        }
+      });
+    },
+    updateRecalQuoteDataFailed: function (formData, response, id) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "updateRecalQuoteDataFailed",
+          formData: formData,
+          response: response,
+          id: id
+        }),
+        dataType: "text",
+        success: function (response) {
+          try {
+            var jsonResponse = JSON.parse(response.trim());  // Manually parse the JSON and remove extra spaces
+            console.log("Insert Response:", jsonResponse);
+            if (jsonResponse.result === "success") {
+              window.location.reload();
+            }
+          } catch (e) {
+            console.error("JSON Parsing Error:", e, response);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX Error:", error);
+        }
+      });
+    },
 
     insertPaymentLog: function (request, response, policyid, objectPayment) {
       $.ajax({

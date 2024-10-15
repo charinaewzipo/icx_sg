@@ -320,7 +320,165 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
         echo json_encode(array("result" => "success", "message" => "Data updated successfully"));
     }
 }
+function DBUpdateRecalQuoteData($formData, $response, $type, $id)
+{
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
 
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    if (empty($id)) {
+        echo json_encode(array("result" => "error", "message" => "id is required for updating"));
+        return;
+    }
+
+    // Form data
+    $productId = isset($formData['productId']) ? (int)$formData['productId'] : 0;
+    $type = isset($type) ? $type : '';
+    $remarksC = isset($formData['remarksC']) ? $formData['remarksC'] : '';
+    $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
+    $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
+
+    //ISO to YYYY-MM-DD HH:MM:SS
+    $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
+    $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
+
+    $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
+    $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
+    $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
+    $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
+
+    // Response data
+    $policyId = isset($response['policyId']) ? $response['policyId'] : '';
+    $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
+    $efulfillmentFlag = isset($formData['efulfillmentFlag']) ? $formData['efulfillmentFlag'] : '';
+    $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
+    $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
+    $policyExpDate = isset($response['policyExpDate']) ? transformDateQuote($response['policyExpDate']) : null;
+    $request_recalculate_json = json_encode($formData); // Convert to JSON string
+    $response_recalculate_json = json_encode($response); // Convert to JSON string
+
+    // Escape the strings for safe query execution
+    $ncdInfo = mysqli_real_escape_string($dbconn->dbconn, $ncdInfo);
+    $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
+    $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
+    $request_recalculate_json = mysqli_real_escape_string($dbconn->dbconn, $request_recalculate_json);
+    $response_recalculate_json = mysqli_real_escape_string($dbconn->dbconn, $response_recalculate_json);
+
+    $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
+    $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
+
+    $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
+
+    if (!empty($paymentDetails) && is_array($paymentDetails)) {
+        $payment_mode = isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
+        $payment_frequency = isset($paymentDetails[0]['paymentFrequency']) ? $paymentDetails[0]['paymentFrequency'] : null;
+    } else {
+        $payment_mode = null;
+        $payment_frequency = null;
+    }
+    $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
+    $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
+    $customer_id = isset($individual_info['customerIdNo']) ? $individual_info['customerIdNo'] : '';
+    // Initialize the SQL query
+    $sql = "UPDATE t_aig_app
+    SET 
+        type = '$type',
+        productId = $productId,
+        distributionChannel = $distributionChannel,
+        producerCode = '$producerCode',
+        propDate = '$propDate',
+        policyEffDate = " . ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ",
+        campaignCode = '$campaignCode',
+        ncdInfo = '$ncdInfo',
+        policyHolderInfo = '$policyHolderInfo',
+        insuredList = '$insuredList',
+        remarksC = '$remarksC',
+        policyId = '$policyId',
+        quoteNo = '$quoteNo',
+        premiumPayable = '$premiumPayable',
+        quoteLapseDate = " . ($quoteLapseDate === null ? 'NULL' : "'$quoteLapseDate'") . ",
+        payment_frequency = '$payment_frequency', 
+        payment_mode = '$payment_mode',            
+        fullname = '$full_name',                  
+        dob = '$date_of_birth',
+        efulfillmentFlag = '$efulfillmentFlag',
+        request_recalculate_json= '$request_recalculate_json',
+        response_recalculate_json= '$response_recalculate_json',
+        customer_id='$customer_id',          
+        update_date = NOW()";
+
+    // Add quote_create_date if response is not null
+    if (!empty($response)) {
+        $sql .= ", quote_create_date = NOW() ,policyExpDate='$policyExpDate'";
+    }
+
+    // Complete the WHERE clause
+    $sql .= " WHERE id = '$id'";
+
+    // Execute query
+    $result = $dbconn->executeUpdate($sql);
+    wlog("DBUpdateQuoteData ".$sql);
+    header('Content-Type: application/json; charset=UTF-8');
+    if (!$result) {
+        $error = mysqli_error($dbconn->dbconn);
+        echo json_encode(array("result" => "error", "message" => "Data update failed: $error"));
+    } else {
+        echo json_encode(array("result" => "success", "message" => "Data updated successfully"));
+    }
+}
+function DBUpdateRecalQuoteDataFailed($formData, $response, $id)
+{
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    if (empty($id)) {
+        echo json_encode(array("result" => "error", "message" => "id is required for updating"));
+        return;
+    }
+
+    // Form data
+    $request_recalculate_json = json_encode($formData); 
+    $response_recalculate_json = json_encode($response); 
+
+
+   
+    $request_recalculate_json = mysqli_real_escape_string($dbconn->dbconn, $request_recalculate_json);
+    $response_recalculate_json = mysqli_real_escape_string($dbconn->dbconn, $response_recalculate_json);
+
+   
+
+   
+    $sql = "UPDATE t_aig_app
+    SET 
+       
+        request_recalculate_json= '$request_recalculate_json',
+        response_recalculate_json= '$response_recalculate_json',
+    
+        update_date = NOW()";
+
+    // Complete the WHERE clause
+    $sql .= " WHERE id = '$id'";
+
+    // Execute query
+    $result = $dbconn->executeUpdate($sql);
+    wlog("DBUpdateRecalQuoteDataFailed ".$sql);
+    header('Content-Type: application/json; charset=UTF-8');
+    if (!$result) {
+        $error = mysqli_error($dbconn->dbconn);
+        echo json_encode(array("result" => "error", "message" => "Data update failed: $error"));
+    } else {
+        echo json_encode(array("result" => "success", "message" => "Data updated successfully"));
+    }
+}
 function DBUpdatePolicyNo($policyid, $policyNo,$formData,$response)
 {
     // Initialize database connection
@@ -737,7 +895,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $type = isset($data['type']) ? $data['type'] : "";
             $id = isset($data['id']) ? $data['id'] : "";
             DBUpdateQuoteData($formData, $response, $type, $id);
-        } elseif ($data['action'] === 'getQuotationWithId') {
+        } 
+        elseif ($data['action'] === 'updateRecalQuoteData') {
+            $formData = isset($data['formData']) ? $data['formData'] : array();
+            $response = isset($data['response']) ? $data['response'] : array();
+            $type = isset($data['type']) ? $data['type'] : "";
+            $id = isset($data['id']) ? $data['id'] : "";
+            DBUpdateRecalQuoteData($formData, $response, $type, $id);
+        } 
+        elseif ($data['action'] === 'updateRecalQuoteDataFailed') {
+            $formData = isset($data['formData']) ? $data['formData'] : array();
+            $response = isset($data['response']) ? $data['response'] : array();
+            $id = isset($data['id']) ? $data['id'] : "";
+            DBUpdateRecalQuoteDataFailed($formData, $response, $id);
+        } 
+        
+        elseif ($data['action'] === 'getQuotationWithId') {
             $id = isset($data['id']) ? $data['id'] : 0;
             DBGetQuoteDetailsWithId($id);
         } elseif ($data['action'] === 'getPaymentLogWithId') {

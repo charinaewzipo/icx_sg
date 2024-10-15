@@ -862,7 +862,7 @@ where name='Nature of Business'";
             <tr>
               <td>Postal/Zip Code: <span style="color:red">*</span></td>
               <td>
-                <input type="text" name="insured_home_insuredPostCode" maxlength="60" required />
+                <input type="text" name="insured_home_insuredPostCode" maxlength="6" required />
               </td>
               <th>&nbsp;</th>
             </tr>

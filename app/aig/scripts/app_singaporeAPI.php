@@ -199,10 +199,11 @@ async function fetchRecalculateQuote(requestBody) {
 
     // Check for specific statusCode N02 and alert accordingly
     if (data?.statusCode === "S03") {
-      await jQuery.agent.updateQuoteData(requestBody, data, id);
+      await jQuery.agent.updateRecalQuoteData(requestBody, data, id);
       window.alert(data?.statusMessage || "Successfully!");
       window.location.reload();
     } else {
+      await jQuery.agent.updateRecalQuoteDataFailed(requestBody, data, id);
       window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
       window.location.reload();
     }
