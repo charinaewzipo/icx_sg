@@ -24,7 +24,13 @@ async function renewRetrieve(callListData){
 
   const { statusCode, quoteList, statusMessage } = responseRetrieve;
   alert(statusMessage);
-  if(quoteList.length>0){
+  if (statusCode === "N18") {
+    //policy issuance
+    setTimeout(()=>{
+      window.close(); 
+    },3000)
+}
+  if(quoteList&&quoteList.length>0){
     let data = quoteList?.[0]?.Policy;
     console.log("data:", data);
     const transformedData = transformQuoteData(data, quotationData);
@@ -48,7 +54,7 @@ async function fetchGetDwelling(productId) {
 
   let checkPlan = null;
   // Determine dwelling type based on productId
-  if (productId === 600000060) {
+  if (Number(productId) === 600000060) {
     checkPlan = "HE Dwelling Type";
   } else {
     checkPlan = "Dwelling Type";
