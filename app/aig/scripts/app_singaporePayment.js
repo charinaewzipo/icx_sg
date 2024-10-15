@@ -279,8 +279,9 @@ let currentUrl = window.location.href;
             },
             "planInfo": {
               "planId": insured?.planList[0]?.planId||quotationInsured?.planInfo?.planId||"",
-              "planPoi": insured?.planList[0]?.planPoi||calllistDetail?.udf6 ||quotationInsured?.planInfo?.planPoi||"",
-              "planDescription": insured?.planList[0]?.planName||quotationInsured?.planInfo?.planDescription||""
+              "planPoi": insured?.planList[0]?.planPoi ||quotationInsured?.planInfo?.planPoi||"",
+              "planDescription": insured?.planList[0]?.planName||quotationInsured?.planInfo?.planDescription||"",
+              "planCode":insured?.planList[0]?.planCode||""
               // "coverList":quotationInsured?.planInfo?.coverList.length>0 ? [
               //   {
               //     "id": quotationInsured?.planInfo?.coverList[0]?.id||"",

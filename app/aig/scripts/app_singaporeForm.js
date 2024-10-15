@@ -18,6 +18,7 @@ const manualSetDefaultValueFormCallingList = (data) => {
   console.log("data FormCallingList:", data)
 
   document.querySelector('input[name="firstName"]').value = data.name;
+
   document.querySelector('input[name="dateOfBirth"]').value = data.dob ? isoToFormattedDate(data.dob) : "";
   const dob = data.dob;
   if (dob) {
@@ -36,6 +37,7 @@ const manualSetDefaultValueFormCallingList = (data) => {
   document.querySelector('select[name="maritalStatus"]').value = data.marital_status || "";
   document.querySelector('select[name="nationality"]').value = data.nationality || "";
 
+     document.querySelector('input[name="promocode-input"]').value = calllistDetail[campaignDetailsFromAPI?.udf_field_promo_code] || ""
 };
 const setDefaultRemarksC = (productDetail) => {
   if (productDetail) {
@@ -122,9 +124,19 @@ const setDefaultValueForm = async (dbData) => {
     }
   }
   else if (dbData?.type==="home"){
-    if (selectProductElement.value) {
+    //handleProductname with planCode such as HE,HAP,HC ...
+      const planCode=insuredData[0]?.planInfo?.planCode||""
+      console.log("planCode:", planCode)
+      const options = selectProductElement.querySelectorAll('option');
+      options.forEach(option => {
+        if (option.getAttribute('data-plan_group') === planCode) {
+          selectProductElement.value = option.value; // Set the value of the <select> to the matched option
+        }
+      });
      await fetchGetDwelling(dbData?.productId)
-    }
+
+    
+    
   }
   
 

@@ -404,10 +404,12 @@ console.log("campaignDetails",campaignDetails)
 
 function getPlanDetail() {
   const formData = new FormData(document.querySelector("form")); // Assuming the form element is available
- const PlanDetail = {
+  const selectProductElement = document.getElementById("select-product");
+  const selectedOption = selectProductElement.options[selectProductElement.selectedIndex];
+  const PlanDetail = {
   planId:formData.get("planId") || "",
-  planPoi:formData.get("planPoi") || ""
-
+  planPoi:formData.get("planPoi") || "",
+  planCode: selectedOption.getAttribute("data-plan_group") || "" 
  }
  return PlanDetail
 }
@@ -594,6 +596,7 @@ document.addEventListener("DOMContentLoaded", () => {
     var planPoi = selectedOption.getAttribute('data-planpoi');
     document.getElementById("planPoiSelect").value=planPoi
   })
+  
 });
 const getCampaignDetails = () => {
   const queryString = window.location.search;
