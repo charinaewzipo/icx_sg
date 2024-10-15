@@ -609,11 +609,10 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             if (!id) {
                 setDefaultRemarksC(responseProduct)
             }
-        }
-
+        }else{
         //clear planSelect planPo planCoverLists
 
-        clearSelections()
+            clearSelections()
         const paymentModeSelect= document.getElementById("paymentModeSelect")
         if(paymentModeSelect.value){
 
@@ -623,6 +622,10 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
         }
       await fetchGetDwelling(select_product)
+        }
+
+
+      
        
 
     }
