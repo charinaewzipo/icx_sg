@@ -497,66 +497,83 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         };
     }
 
-    function fetchCallingList() {
-        document.body.classList.add('loading');
+    async function fetchCallingList() {
+    document.body.classList.add('loading');
+    
+    try {
         const callListId = <?php echo json_encode($_GET["calllist_id"]); ?>;
-        console.log("callListId:", callListId)
-        fetch('../scripts/get_callList_data.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    calllist_id: callListId
-                })
+        console.log("callListId:", callListId);
+        
+        // Perform the fetch request
+        const response = await fetch('../scripts/get_callList_data.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                calllist_id: callListId
             })
-            .then(response => response.text())
-            .then(data => {
-                const result = JSON.parse(data)
+        });
+        
+        // Parse the response text as JSON
+        const data = await response.text();
+        const result = JSON.parse(data);
 
-                if (Array.isArray(result) && result.length > 0 && !id) {
-                    manualSetDefaultValueFormCallingList(result[0]);
-                }
-                calllistDetail = result[0]
-                checkRenewCampaign(result[0])
-            })
-            .catch(error => console.error('Error fetching cover list:', error))
-            .finally(() => {
-                document.body.classList.remove('loading');
-            });
+        // If result is an array and has elements
+        if (Array.isArray(result) && result.length > 0) {
+            // Call manualSetDefaultValueFormCallingList if no 'id' is set
+            if (!id) {
+                manualSetDefaultValueFormCallingList(result[0]);
+            }
+            calllistDetail = result[0]; // Set the call list detail
+            checkRenewCampaign(result[0]); // Check renew campaign
+        }
+
+    } catch (error) {
+        console.error('Error fetching call list:', error);
+    } finally {
+        // Remove the loading class from the body
+        document.body.classList.remove('loading');
     }
+}
 
-    function fetchCampaignDetail() {
-        document.body.classList.add('loading');
+
+    async function fetchCampaignDetail() {
+    document.body.classList.add('loading');
+    
+    try {
         const campaign_id = <?php echo json_encode($_GET["campaign_id"]); ?>;
-        fetch('../scripts/get_campaign_data.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    campaign_id: campaign_id
-                })
+        
+        // Make the fetch request
+        const response = await fetch('../scripts/get_campaign_data.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                campaign_id: campaign_id
             })
-            .then(response => response.text())
-            .then(data => {
-                // campaignDetailsFromAPI=
-                const result = JSON.parse(data)
-                console.log("result:", result)
-                // console.log("selectedType",selectedType)
-                if (Array.isArray(result) && result.length > 0) {
-                    // selectedType =result[0].cp_type  // Assuming you want the first item
-                    campaignDetailsFromAPI = result[0];
+        });
+        
+        // Await response text and parse it as JSON
+        const data = await response.text();
+        const result = JSON.parse(data);
+        
+        console.log("result:", result);
+        
+        // Check if result is an array and has elements
+        if (Array.isArray(result) && result.length > 0) {
+            // Assuming you want to select the first item
+            campaignDetailsFromAPI = result[0];
+        }
 
-                }
-
-                // console.log("data:", data)
-            })
-            .catch(error => console.error('Error fetching cover list:', error))
-            .finally(() => {
-                document.body.classList.remove('loading');
-            });
+    } catch (error) {
+        console.error('Error fetching cover list:', error);
+    } finally {
+        // Always remove the loading class
+        document.body.classList.remove('loading');
     }
+}
 
     function populatePlanDropdown(data, index) {
         const selectElement = document.getElementById(`planSelect${index}`);
@@ -581,8 +598,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         select_product = selectedProductId
         const responseProduct = await getProductDetail(selectedProductId);
         console.log("responseProduct:", responseProduct)
-        const promoInput = document.getElementById("promocode-input")
-        promoInput.value=responseProduct?.promo_campaign_code||"";
+        D
 
         if (responseProduct?.product_group == "A&H") {
             if (responseProduct) {
@@ -609,24 +625,24 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             if (!id) {
                 setDefaultRemarksC(responseProduct)
             }
-        }else{
-        //clear planSelect planPo planCoverLists
+        } else {
+            //clear planSelect planPo planCoverLists
 
             clearSelections()
-        const paymentModeSelect= document.getElementById("paymentModeSelect")
-        if(paymentModeSelect.value){
+            const paymentModeSelect = document.getElementById("paymentModeSelect")
+            if (paymentModeSelect.value) {
+                populatePlansNormal(selectedProductId, null, paymentModeSelect.value)
+            } else {
+                populatePlansNormal(selectedProductId, null)
 
-            populatePlansNormal(selectedProductId,null,paymentModeSelect.value)
-        }else{
-            populatePlansNormal(selectedProductId,null)
-
+            }
+            await fetchGetDwelling(select_product)
+         
         }
-      await fetchGetDwelling(select_product)
-        }
 
 
-      
-       
+
+
 
     }
 
@@ -913,12 +929,12 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
     };
 
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async() => {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         checkParamsId = urlParams.get("id");
-        fetchCallingList()
-        fetchCampaignDetail()
+        await fetchCampaignDetail()
+        await fetchCallingList()
 
         addInsuredSections(2)
         addChildInsured()
