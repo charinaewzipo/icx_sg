@@ -60,6 +60,8 @@ const handleEditQuote = () => {
    
     unhideFormData(formElements);
     btnEditForm.textContent = "Save"
+    document.getElementById("btnPayment").disabled=true;
+    document.getElementById("btnPayment").style.opacity="0.65";
     btnEditForm.hidden=false
     isEditing = true;
   } else {

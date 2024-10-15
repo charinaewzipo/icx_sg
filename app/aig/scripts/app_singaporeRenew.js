@@ -43,6 +43,11 @@ async function renewRetrieve(callListData){
     } else {
       url.searchParams.append('id', responseId);
     }
+    if (url.searchParams.has('is_firsttime')) {
+      url.searchParams.set('is_firsttime', '1');
+    } else {
+      url.searchParams.append('is_firsttime', '1');
+    }
     window.location.href = url.toString();
   }else{
     alert("The quoteList has no data")
