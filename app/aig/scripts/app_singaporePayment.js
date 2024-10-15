@@ -389,11 +389,19 @@ function clearPauseTime() {
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchAgentDetail()
-  document.getElementById("paymentModeSelect").addEventListener("change", function(event) {
-    const selectedProductId= document.getElementById("select-product")
-    const paymentModeSelect= document.getElementById("paymentModeSelect")
-    if(selectedProductId.value&&paymentModeSelect.value){
-      populatePlansNormal(selectedProductId.value,null,paymentModeSelect.value)
-    }
-  });
+
+
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
+  if(formType === "home"){
+
+    document.getElementById("paymentModeSelect").addEventListener("change", function(event) {
+      const selectedProductId= document.getElementById("select-product")
+      const paymentModeSelect= document.getElementById("paymentModeSelect")
+      if(selectedProductId.value&&paymentModeSelect.value){
+        populatePlansNormal(selectedProductId.value,null,paymentModeSelect.value)
+      }
+    });
+  }
 });

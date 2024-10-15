@@ -418,9 +418,9 @@ function populatePlansNormal(productId,planInfo,paymentMode) {
   if (paymentMode) {
       let plan_poi = "";
       plan_poi = (Number(paymentMode) === 124) ? 12 : 60; 
-      url = `../scripts/get_plan.php?product_id=${productId}&plan_poi=${plan_poi}`;
+      url = `../scripts/get_plan_normal.php?product_id=${productId}&plan_poi=${plan_poi}`;
   } else {
-      url = `../scripts/get_plan.php?product_id=${productId}`;
+      url = `../scripts/get_plan_normal.php?product_id=${productId}`;
   }
   document.body.classList.add('loading');
 
