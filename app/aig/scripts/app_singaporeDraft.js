@@ -55,8 +55,14 @@ const handleEditQuote = () => {
   console.log("Edit")
   if (!isEditing) {
     event.preventDefault();
-    const formElements = document.querySelectorAll("input, select:not(#planPoiSelect1),textarea, button:not(#btnSaveForm)");
+    let formElements=null;
+    if(quotationData?.type==="home"){
 
+      formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product),textarea, button:not(#btnSaveForm)");
+    }else{
+      formElements = document.querySelectorAll("input, select:not(#planPoiSelect1),textarea, button:not(#btnSaveForm)");
+    }
+    
    
     unhideFormData(formElements);
     btnEditForm.textContent = "Save"
