@@ -421,7 +421,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id)
 
     // Execute query
     $result = $dbconn->executeUpdate($sql);
-    wlog("DBUpdateQuoteData ".$sql);
+    wlog("DBUpdateRecalQuoteData ".$sql);
     header('Content-Type: application/json; charset=UTF-8');
     if (!$result) {
         $error = mysqli_error($dbconn->dbconn);
