@@ -460,6 +460,7 @@ function populatePlansNormal(productId,planInfo,paymentMode) {
               planSelect.appendChild(option);
           });
           if (planInfo) {
+            console.log("planInfo:", planInfo)
             const planSelect = document.getElementById("planSelect");
             const planPoiValue = planInfo.planPoi || ""; 
             
@@ -467,7 +468,7 @@ function populatePlansNormal(productId,planInfo,paymentMode) {
             for (let i = 0; i < planSelect.options.length; i++) {
               const option = planSelect.options[i];
               
-              if (option.getAttribute("data-planpoi") === planPoiValue) {
+              if (Number(option.getAttribute("data-planpoi")) === Number(planPoiValue)) {
                 planSelect.selectedIndex = i;
                 break;
               }
