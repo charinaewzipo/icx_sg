@@ -107,7 +107,7 @@ const handleRetrieveQuote = async () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let is_firsttime = url.searchParams.get('is_firsttime');
-
+  if(!quotationData?.payment_mode) return alert("Payment Mode has no value");
   if (is_firsttime === "1") {
     handlePaymentGateway(quotationData?.premiumPayable, quotationData?.payment_mode);
   } else {
@@ -293,8 +293,8 @@ let currentUrl = window.location.href;
       }
     }),
     paymentDetails: {
-      paymentMode: data.paymentDetails[0]?.paymentMode || quotationData?.payment_mode || 124,
-      paymentFrequency: data.paymentDetails[0]?.paymentFrequency || quotationData?.payment_frequency || 2,
+      paymentMode: data.paymentDetails[0]?.paymentMode || quotationData?.payment_mode || "",
+      paymentFrequency: data.paymentDetails[0]?.paymentFrequency || quotationData?.payment_frequency || "",
     }
 
   };
