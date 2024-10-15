@@ -7,6 +7,7 @@ include("../../function/StartConnect.inc");
 // Sanitize and validate input parameters
 $product_id = isset($_GET['product_id']) ? mysqli_real_escape_string($Conn, $_GET['product_id']) : '';
 $plan_poi = isset($_GET['plan_poi']) ? mysqli_real_escape_string($Conn, $_GET['plan_poi']) : '';
+$plan_group = isset($_GET['plan_group']) ? mysqli_real_escape_string($Conn, $_GET['plan_group']) : '';
 
 // Check if product_id is provided
 if (empty($product_id)) {
@@ -14,31 +15,25 @@ if (empty($product_id)) {
     exit;
 }
 
-// Prepare the SQL query with placeholders
-$strSQL = "SELECT * FROM t_aig_sg_plan WHERE product_id = ?";
+// Prepare the base SQL query
+$strSQL = "SELECT * FROM t_aig_sg_plan WHERE product_id = ? AND plan_group = ?";
 
-// Add condition for payment_mode if it's provided
+// Add condition for plan_poi if it's provided
 if (!empty($plan_poi)) {
     $plan_poi = (int)$plan_poi; 
-    if ($plan_poi === 12) { // Check for plan_poi as 12
+    if ($plan_poi === 12) { // Check for plan_poi = 12
         $strSQL .= " AND plan_poi = 12";
     } else { // For any other value, exclude plan_poi = 12
         $strSQL .= " AND plan_poi <> 12";
     }
 }
 
-
-
 // Prepare the SQL statement
 $stmt = mysqli_prepare($Conn, $strSQL);
 
 if ($stmt) {
-    // Bind parameters based on whether payment_mode is provided
-    if (!empty($payment_mode)) {
-        mysqli_stmt_bind_param($stmt, 'ss', $product_id, $payment_mode);
-    } else {
-        mysqli_stmt_bind_param($stmt, 's', $product_id);
-    }
+    // Bind parameters for product_id and plan_group
+    mysqli_stmt_bind_param($stmt, 'ss', $product_id, $plan_group);
 
     // Execute the statement
     mysqli_stmt_execute($stmt);

@@ -35,7 +35,7 @@ async function renewRetrieve(callListData){
     console.log("data:", data);
     const transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
-    const responseId =await jQuery.agent.insertRetrieveQuote(data, transformedData,campaignDetails);
+    const responseId =await jQuery.agent.insertRetrieveQuote(data, transformedData,campaignDetails,objectRetrieve);
     let currentUrl = window.location.href;
     const url = new URL(currentUrl);
     if (url.searchParams.has('id')) {

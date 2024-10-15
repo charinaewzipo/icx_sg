@@ -358,7 +358,7 @@ wlog("DBUpdatePolicyNo ".$sql);
     $dbconn->dbconn->close();
 }
 
-function DBUpdateQuoteRetrieve($response, $id,$formatData)
+function DBUpdateQuoteRetrieve($response, $id,$formatData,$request)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -400,7 +400,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData)
     // No need for [0] since paymentDetails is not an array of arrays
     $paymentMode = !empty($paymentDetails) && isset($paymentDetails['paymentMode']) ? $paymentDetails['paymentMode'] : null;
     $paymentFrequency = !empty($paymentDetails) && isset($paymentDetails['paymentFrequency']) ? $paymentDetails['paymentFrequency'] : null;
-    $request_retrieve_json = json_encode($formatData); // Convert to JSON string
+    $request_retrieve_json = json_encode($request); // Convert to JSON string
     $response_retrieve_json = json_encode($response); // Convert to JSON string
     // Escape the strings for safe query execution
    
@@ -442,7 +442,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData)
     }
 }
 
-function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails)
+function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails,$request)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -491,7 +491,7 @@ function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails)
     $paymentMode = !empty($paymentDetails) && isset($paymentDetails['paymentMode']) ? $paymentDetails['paymentMode'] : null;
     $paymentFrequency = !empty($paymentDetails) && isset($paymentDetails['paymentFrequency']) ? $paymentDetails['paymentFrequency'] : null;
 
-    $request_retrieve_json = json_encode($formatData);
+    $request_retrieve_json = json_encode($request);
     $response_retrieve_json = json_encode($response);
 
     // Escape the strings for safe query execution
@@ -761,13 +761,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = isset($data['id']) ? $data['id'] : 0;
             $response = isset($data['response']) ? $data['response'] : array();
             $formatData = isset($data['formatData']) ? $data['formatData'] : array();
-            DBUpdateQuoteRetrieve($response, $id,$formatData);
+            $request = isset($data['request']) ? $data['request'] : array();
+            DBUpdateQuoteRetrieve($response, $id,$formatData,$request);
         } elseif ($data['action'] === 'insertRetrieveQuote') {
             $response = isset($data['response']) ? $data['response'] : array();
             $formData = isset($data['formData']) ? $data['formData'] : array();
+            $request = isset($data['request']) ? $data['request'] : array();
             $campaignDetails = isset($data['campaignDetails']) ? $data['campaignDetails'] : array();
             $type = isset($data['type']) ? $data['type'] : "";
-            DBInsertRetrieveQuote($response,$formData, $type, $campaignDetails);
+            DBInsertRetrieveQuote($response,$formData, $type, $campaignDetails,$request);
         } 
         
         else {

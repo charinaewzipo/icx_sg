@@ -251,7 +251,7 @@ error_reporting(E_ALL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
                   ?>
-                    <option value="<?php echo $objResuut["product_id"]; ?>">
+                    <option value="<?php echo $objResuut["product_id"]; ?>" data-plan_group="<?php echo $objResuut["plan_group"]; ?>">
                       <?php echo $objResuut["product_name"]; ?>
                     </option>
                   <?php

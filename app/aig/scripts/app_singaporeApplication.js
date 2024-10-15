@@ -413,14 +413,17 @@ function getPlanDetail() {
 }
 function populatePlansNormal(productId,planInfo,paymentMode) {
   console.log("populatePlansNormal:")
+  const selectProduct = document.getElementById("select-product");
+  const planGroup = selectProduct.options[selectProduct.selectedIndex].getAttribute("data-plan_group");
+  console.log("planGroup:", planGroup)
   if (!productId) return;
   let url = "";
-  if (paymentMode) {
-      let plan_poi = "";
-      plan_poi = (Number(paymentMode) === 124) ? 12 : 60; 
-      url = `../scripts/get_plan_normal.php?product_id=${productId}&plan_poi=${plan_poi}`;
+  if (paymentMode && planGroup) {
+      let plan_poi = (Number(paymentMode) === 124) ? 12 : 60; 
+      url = `../scripts/get_plan_normal.php?product_id=${productId}&plan_poi=${plan_poi}&plan_group=${planGroup}`;
   } else {
-      url = `../scripts/get_plan_normal.php?product_id=${productId}`;
+      console.error("Payment mode or plan group missing");
+      return;
   }
   document.body.classList.add('loading');
 

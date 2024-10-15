@@ -123,9 +123,7 @@ const setDefaultValueForm = async (dbData) => {
   }
   else if (dbData?.type==="home"){
     if (selectProductElement.value) {
-      // handleProductChange(selectProductElement);
      await fetchGetDwelling(dbData?.productId)
-     console.log("fetchGetDwellingfetchGetDwellingfetchGetDwelling:")
     }
   }
   
@@ -135,9 +133,7 @@ const setDefaultValueForm = async (dbData) => {
   document.querySelector('select[name="NoClaimExperience"]').value =
     ncdInfo?.noClaimExperienceOther || "";
   document.querySelector('textarea[name="RemarkCInput"]').value = dbData?.remarksC || "";
-  // const promoInput = document.getElementById("promocode-input")
-  // promoInput.value=responseProduct?.promo_campaign_code||"";
-  // Set Individual Policy Holder Info fields
+
 
 
   // Payment Frequency
