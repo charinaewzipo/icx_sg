@@ -929,19 +929,22 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
     };
 
 
-    document.addEventListener('DOMContentLoaded', async() => {
+    document.addEventListener('DOMContentLoaded', () => {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         checkParamsId = urlParams.get("id");
-        await fetchCampaignDetail()
-        await fetchCallingList()
-
+        fetchDataCampaignAndCallList()
         addInsuredSections(2)
         addChildInsured()
         deleteChildInsured()
 
 
     });
+
+    const fetchDataCampaignAndCallList=async()=>{
+        await fetchCampaignDetail()
+        await fetchCallingList()
+    }
     const fillInsuredSectionChild = (insuredData) => {
         const filterchild = insuredData.filter(i => i?.personInfo?.relationToPolicyholder === "2");
         console.log("filterchild:", filterchild.length)

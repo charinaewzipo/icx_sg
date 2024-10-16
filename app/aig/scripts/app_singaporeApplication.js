@@ -68,6 +68,9 @@ const handleSelectType = () => {
   handleTypeConfirmQuote();
 };
 const handleTypeConfirmQuote = () => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const formType = urlParams.get("formType");
   const ncdinfoContainer = document.getElementById("ncd-info-container");
   const insuredListHome = document.getElementById("insured-list-home");
   const insuredListAuto = document.getElementById("insured-list-auto");
@@ -85,7 +88,7 @@ const handleTypeConfirmQuote = () => {
   insuredListAuto.style.display = "none";
   insuredListAh.style.display = "none";
   isPolicyHolderDrivingRow.style.display = "none";
-  if (selectedType === "home") {
+  if (formType === "home") {
     [ncdinfoContainer, properateForm, insuredListAuto, insuredListAh].forEach(
       (container) => {
         container.querySelectorAll("input, select").forEach((field) => {
@@ -94,7 +97,7 @@ const handleTypeConfirmQuote = () => {
       }
     );
     document.getElementById("remark-c-container").style.display = "none";
-  } else if (selectedType === "auto") {
+  } else if (formType === "auto") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAh].forEach(
       (container) => {
         container.querySelectorAll("input, select").forEach((field) => {
@@ -105,7 +108,7 @@ const handleTypeConfirmQuote = () => {
 
     isPolicyHolderDrivingRow.style.display = "table-row";
   
-  } else if (selectedType === "ah") {
+  } else if (formType === "ah") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto, planInfoContainer].forEach(
       (container) => {
         container.querySelectorAll("input, select").forEach((field) => {
@@ -117,12 +120,12 @@ const handleTypeConfirmQuote = () => {
     document.getElementById("promocode-label2").style.display = "none";
   }
 
-  if (selectedType === "home") {
+  if (formType === "home") {
     insuredListHome.style.display = "block";
-  } else if (selectedType === "auto") {
+  } else if (formType === "auto") {
     ncdinfoContainer.style.display = "block";
     insuredListAuto.style.display = "block";
-  } else if (selectedType === "ah") {
+  } else if (formType === "ah") {
     insuredListAh.style.display = "block";
     planInfoContainer.style.display = "none"
   }
