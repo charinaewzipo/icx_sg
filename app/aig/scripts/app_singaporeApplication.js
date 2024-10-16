@@ -599,6 +599,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Get the data-planpoi attribute from the selected option
     var planPoi = selectedOption.getAttribute('data-planpoi');
     document.getElementById("planPoiSelect").value=planPoi
+
+    handleClearPromoCode(planPoi)
   })
   
 });

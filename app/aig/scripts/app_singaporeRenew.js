@@ -107,5 +107,25 @@ async function fetchGetDwelling(productId) {
     document.body.classList.remove('loading');
   }
 }
+const handleClearPromoCode=(planPoi)=>{
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  let formType = urlParams.get("formType");
+  if(formType==="home" && Number(planPoi)===12){
+    console.log("changepromocode")
+   document.getElementById("promocode-input").value="";
+  }else{
+    const promoInput=document.getElementById("promocode-input")
+    console.log("calllistDetail:", calllistDetail)
+    console.log("campaignDetailsFromAPI:", productDetail)
+    if (promoInput && calllistDetail && productDetail?.udf_field_promo_code) {
+      const promoCodeField = productDetail.udf_field_promo_code;
+      console.log("promoCodeField:", promoCodeField)
+      promoInput.value = calllistDetail[promoCodeField] || "";
+  } else {
+      promoInput.value = "";
+  }
+  }
+}
 
 
