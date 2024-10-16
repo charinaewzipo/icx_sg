@@ -196,7 +196,7 @@ let currentUrl = window.location.href;
     producerCode: data.producerCode || quotationData?.producerCode || "",
     propDate: data.propDate ? retrieveTransformDate(data.propDate) : "",
     policyEffDate: data.policyEffDate ? retrieveTransformDate(data.policyEffDate) : "",
-    campaignCode:calllistDetail[campaignDetailsFromAPI?.udf_field_promo_code]||"",
+    campaignCode:calllistDetail[productDetail?.udf_field_promo_code]||"",
     policyHolderInfo: {
       customerType: data.policyHolderInfo?.customerType || quotationData?.policyHolderInfo?.customerType || "0",
       individualPolicyHolderInfo: {

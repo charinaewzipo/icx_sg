@@ -37,16 +37,8 @@ const manualSetDefaultValueFormCallingList = (data) => {
   document.querySelector('select[name="maritalStatus"]').value = data.marital_status || "";
   document.querySelector('select[name="nationality"]').value = data.nationality || "";
   
-  const promoInput=document.getElementById("promocode-input")
-  console.log("calllistDetail:", calllistDetail)
-  console.log("campaignDetailsFromAPI:", campaignDetailsFromAPI)
-  if (promoInput && data && campaignDetailsFromAPI?.udf_field_promo_code) {
-    const promoCodeField = campaignDetailsFromAPI.udf_field_promo_code;
-    console.log("promoCodeField:", promoCodeField)
-    promoInput.value = data[promoCodeField] || "";
-} else {
-    promoInput.value = "";
-}
+  document.getElementById("promocode-input").value=data?.campaignCode||""
+  
 };
 const setDefaultRemarksC = (productDetail) => {
   if (productDetail) {

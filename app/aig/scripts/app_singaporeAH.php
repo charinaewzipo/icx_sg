@@ -637,7 +637,16 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
             }
             await fetchGetDwelling(select_product)
-         
+            const promoInput=document.getElementById("promocode-input")
+  console.log("calllistDetail:", calllistDetail)
+  console.log("campaignDetailsFromAPI:", productDetail)
+  if (promoInput && calllistDetail && productDetail?.udf_field_promo_code) {
+    const promoCodeField = productDetail.udf_field_promo_code;
+    console.log("promoCodeField:", promoCodeField)
+    promoInput.value = calllistDetail[promoCodeField] || "";
+} else {
+    promoInput.value = "";
+}
         }
 
 
