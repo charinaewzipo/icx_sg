@@ -107,6 +107,55 @@ async function fetchGetDwelling(productId) {
     document.body.classList.remove('loading');
   }
 }
+async function fetchGetFlatType(dwellingId) {
+  if (!dwellingId) return;
+
+  let filterValue=null
+  if(dwellingId===1||dwellingId===2||dwellingId===3||dwellingId===4||dwellingId===5){
+    filterValue='Flat Type'
+  }else{
+
+    filterValue='Flat Typessss'
+  }
+
+  const url = `../scripts/get_dwelling.php?name=${filterValue}`;
+  document.body.classList.add('loading');
+
+  try {
+    // Await the fetch response
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log("data:", data)
+
+    // Ensure the select element exists
+    const flatTypeSelect = document.querySelector('select[name="insured_home_flatType"]');
+    if (!flatTypeSelect) {
+      console.error("Dropdown not found!");
+      return;
+    }
+
+    // Clear existing options
+    flatTypeSelect.innerHTML = `
+      <option value="">
+        <-- Please select an option -->
+      </option>
+    `;
+
+    // Populate new options from the fetched data
+    if (data && Array.isArray(data)) {
+      data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.description;
+        flatTypeSelect.appendChild(option);
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching plans:', error);
+  } finally {
+    document.body.classList.remove('loading');
+  }
+}
 const handleClearPromoCode=(planPoi)=>{
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
@@ -128,4 +177,13 @@ const handleClearPromoCode=(planPoi)=>{
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+
+  document.querySelector('select[name="insured_home_dwellingType"]').addEventListener('change', (event) => {
+    const selectedValue = event.target.value;  
+    console.log("Selected value:", selectedValue);
+    fetchGetFlatType(selectedValue)
+  });
+
+});
 
