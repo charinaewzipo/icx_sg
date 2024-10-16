@@ -33,6 +33,8 @@ async function renewRetrieve(callListData){
   if(quoteList&&quoteList.length>0){
     let data = quoteList?.[0]?.Policy;
     console.log("data:", data);
+   
+    await getProductDetail(data?.productId);
     const transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
     const responseId =await jQuery.agent.insertRetrieveQuote(data, transformedData,campaignDetails,objectRetrieve);
