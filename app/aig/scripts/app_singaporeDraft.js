@@ -53,18 +53,36 @@ const handleClickSaveDraftButton = () => {
 const handleEditQuote = () => {
   const btnEditForm = document.getElementById('btnEditForm');
   console.log("Edit")
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let campaign_id = url.searchParams.get('campaign_id');
+ 
+  
   if (!isEditing) {
     event.preventDefault();
     let formElements=null;
-    if(quotationData?.type==="home"){
-
+    if(campaign_id==="9"||campaign_id==="10"){
+       formElements = document.querySelectorAll(
+        "input:not([name='PolicyEffectiveDate']):not([name='firstName']):not([name='dateOfBirth']):not([name='customerIdNo']), " + 
+        "select:not(#planPoiSelect1):not(#select-product):not([name='gender']):not([name='nationality']):not([name='maritalStatus']):not([name='residentStatus']):not([name='customerIdType']), " + 
+        "textarea, " + 
+        "button:not(#btnSaveForm)"
+      );
+    }else if(quotationData?.type==="home"){
       formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product),textarea, button:not(#btnSaveForm)");
     }else{
       formElements = document.querySelectorAll("input, select:not(#planPoiSelect1),textarea, button:not(#btnSaveForm)");
     }
-    
    
+    
+
+    
     unhideFormData(formElements);
+    
+    if(campaign_id==="9"||campaign_id==="10"){
+      $(datepicker5).datepicker("disable")
+      $(datepicker).datepicker("disable")
+    }
     btnEditForm.textContent = "Save"
     document.getElementById("btnPayment").disabled=true;
     document.getElementById("btnPayment").style.opacity="0.65";
