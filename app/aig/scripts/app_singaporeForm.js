@@ -38,9 +38,12 @@ const manualSetDefaultValueFormCallingList = (data) => {
   document.querySelector('select[name="nationality"]').value = data.nationality || "";
   
   const promoInput=document.getElementById("promocode-input")
-  if (promoInput && calllistDetail && campaignDetailsFromAPI?.udf_field_promo_code) {
+  console.log("calllistDetail:", calllistDetail)
+  console.log("campaignDetailsFromAPI:", campaignDetailsFromAPI)
+  if (promoInput && data && campaignDetailsFromAPI?.udf_field_promo_code) {
     const promoCodeField = campaignDetailsFromAPI.udf_field_promo_code;
-    promoInput.value = calllistDetail[promoCodeField] || "";
+    console.log("promoCodeField:", promoCodeField)
+    promoInput.value = data[promoCodeField] || "";
 } else {
     promoInput.value = "";
 }
