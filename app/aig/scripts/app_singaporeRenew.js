@@ -111,7 +111,7 @@ async function fetchGetFlatType(dwellingId) {
   if (!dwellingId) return;
 
   let filterValue=null
-  if(dwellingId===1||dwellingId===2||dwellingId===3||dwellingId===4||dwellingId===5){
+  if(Number(dwellingId)===1||Number(dwellingId)===2||Number(dwellingId)===3||Number(dwellingId)===4||Number(dwellingId)===5){
     filterValue='Flat Type'
   }else{
 
@@ -149,6 +149,13 @@ async function fetchGetFlatType(dwellingId) {
         option.textContent = item.description;
         flatTypeSelect.appendChild(option);
       });
+    }else {
+      // Display a message when no data is available
+      const option = document.createElement('option');
+      option.value = "";
+      option.textContent = "No options available";
+      flatTypeSelect.appendChild(option);
+      flatTypeSelect.required = false;
     }
   } catch (error) {
     console.error('Error fetching plans:', error);

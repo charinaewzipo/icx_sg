@@ -140,7 +140,7 @@ const setDefaultValueForm = async (dbData) => {
         }
       });
      await fetchGetDwelling(dbData?.productId)
-
+     await fetchGetFlatType(insuredData[0]?.addressInfo?.dwellingType)
     
     
   }
