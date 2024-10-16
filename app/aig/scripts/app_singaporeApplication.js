@@ -197,7 +197,7 @@ console.log("campaignDetails",campaignDetails)
     policyId: policyid ? policyid : "",
     productId: formData.get("select-product"),
     distributionChannel: 10,
-    producerCode: calllistDetail[productDetail?.udf_field_producer_code]||"",
+    producerCode: quotationData ? quotationData.producerCode : (calllistDetail[productDetail?.udf_field_producer_code] || ""),
     propDate:"",
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
@@ -417,6 +417,7 @@ function getPlanDetail() {
  return PlanDetail
 }
 function populatePlansNormal(productId,planInfo,paymentMode) {
+  console.log("planInfo:", planInfo)
   console.log("populatePlansNormal:")
   const selectProduct = document.getElementById("select-product");
   const planGroup = selectProduct.options[selectProduct.selectedIndex].getAttribute("data-plan_group");
