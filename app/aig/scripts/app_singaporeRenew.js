@@ -24,7 +24,7 @@ async function renewRetrieve(callListData){
 
   const { statusCode, quoteList, statusMessage } = responseRetrieve;
   alert(statusMessage);
-  if (statusCode === "N18"||"N15"||"N16") {
+  if (statusCode === "N18" || statusCode === "N15" || statusCode === "N16") {
     //policy issuance
     setTimeout(()=>{
       window.close(); 
@@ -36,8 +36,13 @@ async function renewRetrieve(callListData){
     console.log("data:", data);
    
     await getProductDetail(data?.productId);
-    const transformedData = transformQuoteData(data, quotationData);
+    let transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
+    const getDataPlanPoi=quoteList?.[0]?.Policy?.insuredList[0]?.planList[0]?.planPoi;
+    console.log("getDataPlanPoi:", getDataPlanPoi)
+    if(Number(getDataPlanPoi)===12){
+      transformedData={...transformedData,campaignCode:""}
+    }
     const responseId =await jQuery.agent.insertRetrieveQuote(data, transformedData,campaignDetails,objectRetrieve);
     let currentUrl = window.location.href;
     const url = new URL(currentUrl);
@@ -142,18 +147,20 @@ async function fetchGetFlatType(dwellingId) {
     `;
 
     // Populate new options from the fetched data
-    if (data && Array.isArray(data)) {
+    if (data && Array.isArray(data)&&data?.length>0) {
       data.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
         option.textContent = item.description;
         flatTypeSelect.appendChild(option);
+        flatTypeSelect.required = true;
       });
     }else {
       // Display a message when no data is available
       const option = document.createElement('option');
       option.value = "";
       option.textContent = "No options available";
+      option.disabled = true;
       flatTypeSelect.appendChild(option);
       flatTypeSelect.required = false;
     }
