@@ -598,7 +598,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         select_product = selectedProductId
         const responseProduct = await getProductDetail(selectedProductId);
         console.log("responseProduct:", responseProduct)
-        D
+        
 
         if (responseProduct?.product_group == "A&H") {
             if (responseProduct) {
