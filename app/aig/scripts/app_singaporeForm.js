@@ -135,7 +135,7 @@ const setDefaultValueForm = async (dbData) => {
       console.log("planCode:", planCode)
       const options = selectProductElement.querySelectorAll('option');
       options.forEach(option => {
-        if (option.getAttribute('data-plan_group') === planCode) {
+        if (planCode.startsWith(option.getAttribute('data-plan_group'))) {
           selectProductElement.value = option.value; // Set the value of the <select> to the matched option
         }
       });
