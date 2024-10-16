@@ -1,5 +1,5 @@
-<?php include "wlog.php"; ?>
-<?php
+<?php 
+include "wlog.php";
 header('Content-Type: application/json; charset=utf-8');
 
 include("../../function/StartConnect.inc");
@@ -15,8 +15,11 @@ if (empty($product_id)) {
     exit;
 }
 
+// Prepend '%' to the plan_group to match values ending with plan_group
+$plan_group = $plan_group . '%';
+
 // Prepare the base SQL query
-$strSQL = "SELECT * FROM t_aig_sg_plan WHERE product_id = ? AND plan_group = ?";
+$strSQL = "SELECT * FROM t_aig_sg_plan WHERE product_id = ? AND plan_group LIKE ?";
 
 // Add condition for plan_poi if it's provided
 if (!empty($plan_poi)) {
@@ -29,9 +32,7 @@ if (!empty($plan_poi)) {
 }
 
 // Prepare the SQL statement
-$stmt = mysqli_prepare($Conn, $strSQL);
-
-if ($stmt) {
+if ($stmt = mysqli_prepare($Conn, $strSQL)) {
     // Bind parameters for product_id and plan_group
     mysqli_stmt_bind_param($stmt, 'ss', $product_id, $plan_group);
 
@@ -53,7 +54,8 @@ if ($stmt) {
     // Close the statement
     mysqli_stmt_close($stmt);
 } else {
-    echo json_encode(['error' => 'Failed to prepare SQL statement']);
+    // Output the MySQL error for debugging
+    echo json_encode(['error' => 'Failed to prepare SQL statement: ' . mysqli_error($Conn)]);
 }
 
 // Close the database connection

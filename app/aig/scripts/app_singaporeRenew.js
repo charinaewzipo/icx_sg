@@ -26,7 +26,9 @@ async function renewRetrieve(callListData){
   alert(statusMessage);
   if (statusCode === "N18"||"N15"||"N16") {
     //policy issuance
-
+    setTimeout(()=>{
+      window.close(); 
+    },2000)
     return
 }
   if(quoteList&&quoteList.length>0){
