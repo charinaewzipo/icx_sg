@@ -191,8 +191,6 @@ function handleForm() {
     paymentMode: Number(formData.get('Payment_Mode')),
     paymentFrequency: Number(formData.get('Payment_Frequency')),
   }]
-
-console.log("campaignDetails",campaignDetails)
   const policyDetail = {
     policyId: policyid ? policyid : "",
     productId: formData.get("select-product"),
@@ -463,18 +461,21 @@ function populatePlansNormal(productId,planInfo,paymentMode) {
               option.textContent = `${plan.plan_name} (POI:${plan.plan_poi})`; // Display plan_name
               option.setAttribute('data-desc', plan.plan_name);
               option.setAttribute('data-planpoi', plan.plan_poi);
+              option.setAttribute('data-plan_group', plan?.plan_group||"");
+
               planSelect.appendChild(option);
           });
           if (planInfo) {
             console.log("planInfo:", planInfo)
             const planSelect = document.getElementById("planSelect");
             const planPoiValue = planInfo.planPoi || ""; 
+            const planCodeValue = planInfo.planCode || ""; 
             
             // Loop through the options in the select dropdown
             for (let i = 0; i < planSelect.options.length; i++) {
               const option = planSelect.options[i];
               
-              if (Number(option.getAttribute("data-planpoi")) === Number(planPoiValue)) {
+              if (Number(option.getAttribute("data-planpoi")) === Number(planPoiValue)&&planCodeValue.startsWith(option.getAttribute('data-plan_group'))) {
                 planSelect.selectedIndex = i;
                 break;
               }
@@ -573,8 +574,8 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         await fetchPolicy(policyRequest);
        
       } else if(shouldRecalculate&&!submitButton.hidden){
-        await fetchRecalculateQuote(requestBody);
         console.log("fetch Recalculate")
+        await fetchRecalculateQuote(requestBody);
 
       }else{
         await fetchQuotation(requestBody);

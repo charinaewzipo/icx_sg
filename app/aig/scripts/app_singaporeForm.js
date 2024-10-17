@@ -120,29 +120,44 @@ const setDefaultValueForm = async (dbData) => {
   const insuredData = JSON.parse(dbData.insuredList);
   console.log("insuredData:", insuredData)
   const selectProductElement = document.querySelector('select[name="select-product"]');
-  selectProductElement.value = dbData?.productId || "";
 
   if (dbData?.type === "ah") {
+  selectProductElement.value = dbData?.productId || "";
+
     if (!dbData?.quoteNo) {
       if (selectProductElement.value) {
         handleProductChange(selectProductElement);
       }
     }
   }
-  else if (dbData?.type==="home"){
-    //handleProductname with planCode such as HE,HAP,HC ...
-      const planCode=insuredData[0]?.planInfo?.planCode||""
-      console.log("planCode:", planCode)
-      const options = selectProductElement.querySelectorAll('option');
-      options.forEach(option => {
-        if (planCode.startsWith(option.getAttribute('data-plan_group'))) {
-          selectProductElement.value = option.value; // Set the value of the <select> to the matched option
-        }
-      });
-     await fetchGetDwelling(dbData?.productId)
-     await fetchGetFlatType(insuredData[0]?.addressInfo?.dwellingType)
+  else if (dbData?.type === "home") {
+    const planCode = insuredData[0]?.planInfo?.planCode || "";
+    console.log("planCode:", planCode);
     
-    
+    const options = selectProductElement.querySelectorAll('option');
+    let matchingOptionIndex = -1;
+  
+    // Find the matching option's index based on planCode and data-plan_group
+    options.forEach((option, index) => {
+      const planGroup = option.getAttribute('data-plan_group');
+      if (planCode.startsWith(planGroup)) {
+        matchingOptionIndex = index;
+      }
+    });
+  
+    if (matchingOptionIndex !== -1) {
+      // Set the matching option using its index
+      selectProductElement.selectedIndex = matchingOptionIndex;
+      
+      // Optionally log to ensure the correct one is selected
+      console.log("Matching option found and selected:", options[matchingOptionIndex]);
+    } else {
+      console.error("No matching option found for planCode:", planCode);
+    }
+  
+    // Continue with fetching dwelling type and flat type
+    await fetchGetDwelling(dbData?.productId);
+    await fetchGetFlatType(insuredData[0]?.addressInfo?.dwellingType);
   }
   
 
