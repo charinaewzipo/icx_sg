@@ -405,8 +405,8 @@ function handleForm() {
 
 function getPlanDetail() {
   const formData = new FormData(document.querySelector("form")); // Assuming the form element is available
-  const selectProductElement = document.getElementById("select-product");
-  const selectedOption = selectProductElement.options[selectProductElement.selectedIndex];
+  const planSelectElement = document.getElementById("planSelect");
+  const selectedOption = planSelectElement.options[planSelectElement.selectedIndex];
   const PlanDetail = {
   planId:formData.get("planId") || "",
   planPoi:formData.get("planPoi") || "",
