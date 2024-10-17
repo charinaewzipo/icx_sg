@@ -24,7 +24,7 @@ async function renewRetrieve(callListData){
 
   const { statusCode, quoteList, statusMessage } = responseRetrieve;
   alert(statusMessage);
-  if (statusCode === "N18" || statusCode === "N15" || statusCode === "N16") {
+  if (statusCode === "N18" || statusCode === "N15" || statusCode === "N16"||statusCode === "N01") {
     //policy issuance
     setTimeout(()=>{
       window.close(); 

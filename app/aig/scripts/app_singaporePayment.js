@@ -107,9 +107,13 @@ const handleRetrieveQuote = async () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let is_firsttime = url.searchParams.get('is_firsttime');
-  if(!quotationData?.payment_mode) return alert("Payment Mode has no value");
+  const paymentModeValue = document.getElementById("paymentModeSelect").value
+  if (!paymentModeValue) {
+    alert("Payment Mode has no value");
+    return;
+  }
   if (is_firsttime === "1") {
-    handlePaymentGateway(quotationData?.premiumPayable, quotationData?.payment_mode);
+    handlePaymentGateway(quotationData?.premiumPayable, Number(paymentModeValue));
   } else {
     const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
     console.log("responseRetrieve:", responseRetrieve);
@@ -130,14 +134,14 @@ const handleRetrieveQuote = async () => {
     console.log("data:", data);
     const transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
-
-    await jQuery.agent.updateRetrieveQuote(data, id, transformedData,objectRetrieve);
+    const getPlanPoi=quoteList?.[0]?.Policy
+    // await jQuery.agent.updateRetrieveQuote(data, id, transformedData,objectRetrieve);
 
     const isPremiumPayableMatching =
       parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable);
 
     const isPaymentModeMatching =
-      data?.paymentDetails[0]?.paymentMode === quotationData?.payment_mode;
+      Number(data?.paymentDetails[0]?.paymentMode) === Number(paymentModeValue);
 
     if (!isPremiumPayableMatching) {
       alert("Premium Payable does not match. It has changed to " + data?.premiumPayable + " " + data?.currency);
