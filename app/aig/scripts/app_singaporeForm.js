@@ -104,7 +104,7 @@ const setDefaultPlanInfo = async (insuredData,dbData) => {
       populatePlansNormal(dbData?.productId,planInfo,dbData?.payment_mode)
     }
     if(dbData?.campaign_id===9||dbData?.campaign_id===10) {
-     let paymentModee= planInfo?.planPoi===12 ? 124:1001
+     let paymentModee= Number(planInfo?.planPoi)===12 ? 124:1001
      document.getElementById("paymentModeSelect").value=paymentModee;
       populatePlansNormal(dbData?.productId,planInfo,paymentModee)
     }

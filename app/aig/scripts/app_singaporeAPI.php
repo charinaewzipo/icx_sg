@@ -134,8 +134,12 @@ async function fetchPolicy(requestBody) {
     }
 
     // Check for specific statusCode N02 and alert accordingly
-    if (data?.statusCode === "N02"||data?.statusCode==="P00") {
-      window.alert(data?.statusMessage || "Successfully!");
+    if (data?.statusCode === "N02" || data?.statusCode === "P00") {
+      if (data?.statusCode === "P00") {
+        window.alert(`Policy ${data?.statusMessage} issued successfully`);
+      } else {
+        window.alert(data?.statusMessage || "Successfully!");
+      }
       window.location.reload();
     } else {
       window.alert(`Error statusCode: ${data?.statusCode}\nstatusMessage: ${data?.statusMessage}`);
