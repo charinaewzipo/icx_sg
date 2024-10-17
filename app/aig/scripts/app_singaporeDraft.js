@@ -78,11 +78,7 @@ const handleEditQuote = () => {
 
     
     unhideFormData(formElements);
-    
-    if(campaign_id==="9"||campaign_id==="10"){
-      $(datepicker5).datepicker("disable")
-      $(datepicker).datepicker("disable")
-    }
+
     btnEditForm.textContent = "Save"
     document.getElementById("btnPayment").disabled=true;
     document.getElementById("btnPayment").style.opacity="0.65";
