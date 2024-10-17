@@ -134,11 +134,11 @@ async function fetchPolicy(requestBody) {
     }
 
     // Check for specific statusCode N02 and alert accordingly
-    if (data?.statusCode === "N02") {
+    if (data?.statusCode === "N02"||data?.statusCode==="P00") {
       window.alert(data?.statusMessage || "Successfully!");
       window.location.reload();
     } else {
-      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
+      window.alert(`Error statusCode: ${data?.statusCode}\nstatusMessage: ${data?.statusMessage}`);
     }
 
     return data;
@@ -204,7 +204,7 @@ async function fetchRecalculateQuote(requestBody) {
       window.location.reload();
     } else {
       await jQuery.agent.updateRecalQuoteDataFailed(requestBody, data, id);
-      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
+      window.alert(`Error statusCode: ${data?.statusCode}\nstatusMessage: ${data?.statusMessage}`);
       window.location.reload();
     }
 
