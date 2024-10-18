@@ -355,7 +355,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         $(`#datepicker-${index}`).datepicker({
             yearRange: "c-80:c+20",
             maxDate: new Date(),
-            dateFormat: 'mm/dd/yy',
+            dateFormat: 'dd/mm/yy',
             changeMonth: true,
             changeYear: true,
             showAnim: "slideDown",
@@ -821,7 +821,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                 $("#datepicker-" + currentIndex).datepicker({
                     yearRange: "c-80:c+20",
                     maxDate: new Date(),
-                    dateFormat: 'mm/dd/yy',
+                    dateFormat: 'dd/mm/yy',
                     changeMonth: true,
                     changeYear: true,
                     showAnim: "slideDown",
@@ -989,7 +989,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             $("#datepicker-" + currentIndex).datepicker({
                 yearRange: "c-80:c+20",
                 maxDate: new Date(),
-                dateFormat: 'mm/dd/yy',
+                dateFormat: 'dd/mm/yy',
                 changeMonth: true,
                 changeYear: true,
                 showAnim: "slideDown",

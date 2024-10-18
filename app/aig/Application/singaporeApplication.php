@@ -126,7 +126,7 @@ error_reporting(E_ALL);
       yearRange: "c-80:c+20",
       changeMonth: true,
       changeYear: true,
-      dateFormat: 'mm/dd/yy',
+      dateFormat: 'dd/mm/yy',
       showAnim: "slideDown"
     };
     $(function() {

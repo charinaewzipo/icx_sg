@@ -667,7 +667,8 @@ function isoToFormattedDate(isoDateStr) {
 }
 //datetoISO
 const transformDate = (dateString) => {
-  const date = moment.parseZone(dateString); // Keeps the original timezone information
+  console.log("dateString:", dateString)
+  const date = moment(dateString, 'DD/MM/YYYY'); // Keeps the original timezone information
   return date.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
 };
 const displayDateInsured = (dateText, index) => {
