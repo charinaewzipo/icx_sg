@@ -463,39 +463,54 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
 
     function calculateAge(dob) {
-        const dobDate = new Date(dob);
-        const today = new Date();
+    console.log("dob:", dob)
+    let dobDate;
 
-        if (isNaN(dobDate.getTime())) {
-            console.error('Invalid Date:', dob);
-            return {
-                age: '',
-                days: ''
-            }; // Return empty if invalid date
-        }
-
-        let age = today.getFullYear() - dobDate.getFullYear();
-        let days = Math.floor((today - dobDate) / (1000 * 60 * 60 * 24)); // Total days difference
-
-        const monthDiff = today.getMonth() - dobDate.getMonth();
-
-        // Adjust the age if the current month is before the birth month, or it's the birth month but the current date is before the birth date
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
-            age--;
-        }
-
-        // Adjust the days to consider the exact age in days
-        const lastBirthday = new Date(today.getFullYear(), dobDate.getMonth(), dobDate.getDate());
-        if (lastBirthday > today) {
-            lastBirthday.setFullYear(lastBirthday.getFullYear() - 1);
-        }
-        days = Math.floor((today - lastBirthday) / (1000 * 60 * 60 * 24));
-
-        return {
-            age,
-            days
-        };
+    // Check if the date is in dd/mm/yyyy format
+    if (dob.includes('/')) {
+        const [day, month, year] = dob.split("/").map(Number);
+        dobDate = new Date(year, month - 1, day); // month is 0-indexed in JavaScript
+    } else if (dob.includes('-')) {
+        // If the date is in yyyy-mm-dd format
+        dobDate = new Date(dob); // Directly use the string in this case
     }
+
+    const today = new Date();
+
+    // Check if the date is valid
+    if (isNaN(dobDate.getTime())) {
+        console.error('Invalid Date:', dob);
+        return {
+            age: '',
+            days: ''
+        }; // Return empty if the date is invalid
+    }
+
+    let age = today.getFullYear() - dobDate.getFullYear();
+    const monthDiff = today.getMonth() - dobDate.getMonth();
+    const dayDiff = today.getDate() - dobDate.getDate();
+
+    // Adjust age if today is before the birthday in the current year
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+    }
+
+    // Calculate the total number of days from the last birthday to today
+    const lastBirthday = new Date(today.getFullYear(), dobDate.getMonth(), dobDate.getDate());
+
+    if (lastBirthday > today) {
+        // If the birthday hasn't occurred this year yet, use the previous year
+        lastBirthday.setFullYear(lastBirthday.getFullYear() - 1);
+    }
+
+    const daysSinceLastBirthday = Math.floor((today - lastBirthday) / (1000 * 60 * 60 * 24)); // Days since last birthday
+
+    return {
+        age,
+        days: daysSinceLastBirthday
+    };
+}
+
 
     async function fetchCallingList() {
     document.body.classList.add('loading');
