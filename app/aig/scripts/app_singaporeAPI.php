@@ -95,7 +95,7 @@ async function fetchQuotation(requestBody) {
       window.alert(data?.statusMessage || "Successfully!");
       window.location.href = url.toString();
     } else {
-      window.alert(`Error statusCode: ${data?.statusCode}\nstatusMessage: ${data?.statusMessage}`);
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
       window.location.href = url.toString();
     }
 
@@ -142,7 +142,7 @@ async function fetchPolicy(requestBody) {
       }
       window.location.reload();
     } else {
-      window.alert(`Error statusCode: ${data?.statusCode}\nstatusMessage: ${data?.statusMessage}`);
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
     }
 
     return data;
