@@ -64,7 +64,7 @@ const handleEditQuote = () => {
     if(campaign_id==="9"||campaign_id==="10"){
        formElements = document.querySelectorAll(
         "input:not([name='PolicyEffectiveDate']):not([name='firstName']):not([name='dateOfBirth']):not([name='customerIdNo']), " + 
-        "select:not(#planPoiSelect1):not(#select-product):not([name='courtesyTitle']):not([name='gender']):not([name='nationality']):not([name='maritalStatus']):not([name='residentStatus']):not([name='customerIdType']), " + 
+        "select:not(#planPoiSelect1):not(#select-product):not([name='gender']):not([name='nationality']):not([name='maritalStatus']):not([name='residentStatus']):not([name='customerIdType']), " + 
         "textarea, " + 
         "button:not(#btnSaveForm)"
       );
