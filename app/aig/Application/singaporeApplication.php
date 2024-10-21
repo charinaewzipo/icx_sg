@@ -458,9 +458,9 @@ error_reporting(E_ALL);
         <div id="individualForm" class="form-section" style="display:none;">
           <table id="table-form">
             <tr>
-              <td>Courtesy Title : <span style="color:red">*</span> </td>
+              <td>Courtesy Title : </td>
               <td>
-                <select name="courtesyTitle" required>
+                <select name="courtesyTitle" >
                   <option value="">
                     <-- Please select an option -->
                   </option>

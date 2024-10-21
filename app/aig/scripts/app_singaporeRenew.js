@@ -19,18 +19,21 @@ async function renewRetrieve(callListData){
   console.log("responseRetrieve:", responseRetrieve);
   if (!responseRetrieve) {
     alert("Quote Retrieval List Operation failed");
+    setTimeout(()=>{
+      window.close(); 
+    },2000)
     return;
   }
 
   const { statusCode, quoteList, statusMessage } = responseRetrieve;
   alert(statusMessage);
-  if (statusCode === "N18" || statusCode === "N15" || statusCode === "N16"||statusCode === "N01") {
+  if (statusCode !== "P00") {
     //policy issuance
     setTimeout(()=>{
       window.close(); 
     },2000)
     return
-}
+  }
   if(quoteList&&quoteList.length>0){
     let data = quoteList?.[0]?.Policy;
     console.log("data:", data);
@@ -59,6 +62,10 @@ async function renewRetrieve(callListData){
     window.location.href = url.toString();
   }else{
     alert("The quoteList has no data")
+    setTimeout(()=>{
+      window.close(); 
+    },2000)
+
   }
   
 }
