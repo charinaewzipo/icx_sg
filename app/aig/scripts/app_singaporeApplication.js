@@ -505,7 +505,7 @@ const handleValidateForm = () => {
       console.log("shouldRecalculate:", shouldRecalculate)
       // Create an instance of FormData from the form element
       const form = event.target;
-      const formData = new FormData(form);
+      const formData = new FormData(document.getElementById("application"));
 
       console.log("form", handleForm());
       let isValid = true;
@@ -542,7 +542,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
           {
             batchNo: responsePayment.batch_no,
             orderNo: responsePayment?.payment_order_id,
-            paymentMode: quotationData?.payment_mode,
+            paymentMode: Number(formData.get('Payment_Mode')),
             merchantId: responsePayment.merchant,
             cardExpiryMonth: responsePayment.card_expiry_month,
             cardExpiryYear: responsePayment.card_expiry_year,
