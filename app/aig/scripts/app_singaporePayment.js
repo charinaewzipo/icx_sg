@@ -135,7 +135,7 @@ const handleRetrieveQuote = async () => {
     const transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
     const getPlanPoi=quoteList?.[0]?.Policy
-    // await jQuery.agent.updateRetrieveQuote(data, id, transformedData,objectRetrieve);
+    await jQuery.agent.updateRetrieveQuote(data, id, transformedData,objectRetrieve);
 
     const isPremiumPayableMatching =
       parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable);
@@ -149,7 +149,7 @@ const handleRetrieveQuote = async () => {
     if (!isPaymentModeMatching) {
       alert("Payment Mode has changed.");
     }
-    handlePaymentGateway(data?.premiumPayable, data?.paymentDetails[0]?.paymentMode);
+    handlePaymentGateway(data?.premiumPayable, data?.paymentDetails[0]?.paymentMode||Number(paymentModeValue));
   }
 
 
