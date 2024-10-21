@@ -143,9 +143,9 @@ WHERE 1=1
 	if ($tmp['search_cust'] != "") {
 		$condition .= " AND app.fullname LIKE '%" . trim($tmp['search_cust']) . "%' ";
 	}
-	// if ($tmp['search_agent'] != "") {
-	// 	$condition = $condition . " AND app.agent_id = " . dbformat($tmp['search_agent']) . " ";
-	// }
+	if ($tmp['search_agent'] != "") {
+		$condition = $condition . " AND app.agent_id = " . dbformat($tmp['search_agent']) . " ";
+	}
 	if ($tmp['search_quono'] != "") {
 		$condition = $condition . " AND app.quoteNo LIKE '%" . trim($tmp['search_quono']) . "%' ";
 	}
