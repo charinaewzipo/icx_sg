@@ -107,7 +107,6 @@ const handleTypeConfirmQuote = () => {
     );
 
     isPolicyHolderDrivingRow.style.display = "table-row";
-  
   } else if (formType === "ah") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto, planInfoContainer].forEach(
       (container) => {
@@ -667,9 +666,10 @@ function isoToFormattedDate(isoDateStr) {
 }
 //datetoISO
 const transformDate = (dateString) => {
-  console.log("dateString:", dateString)
-  const date = moment(dateString, 'DD/MM/YYYY'); // Keeps the original timezone information
-  return date.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+  console.log("dateString:", dateString);
+  const date = moment.utc(dateString, 'DD/MM/YYYY').startOf('day');
+  
+  return date.format('YYYY-MM-DDTHH:mm:ss[Z]');
 };
 const displayDateInsured = (dateText, index) => {
   const { age, days } = calculateAge(dateText);
