@@ -194,7 +194,7 @@ function handleForm() {
     policyId: policyid ? policyid : "",
     productId: formData.get("select-product"),
     distributionChannel: 10,
-    producerCode: quotationData ? quotationData.producerCode : (calllistDetail[productDetail?.udf_field_producer_code] || ""),
+    producerCode: quotationData?.producerCode ? quotationData?.producerCode : (calllistDetail[productDetail?.udf_field_producer_code] || ""),
     propDate:"",
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
