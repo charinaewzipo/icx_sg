@@ -112,7 +112,6 @@ error_reporting(E_ALL);
   <script type="text/javascript" src="../scripts/jsvalidateSingapore.js?v=<?= time(); ?>"></script> -->
   <!-- <SCRIPT type="text/javascript" src="js/app.js?v=<?= time(); ?>"></script>  -->
   <script src="../scripts/app_singaporeApplication.js"></script>
-  <!-- <script src="../scripts/app_singaporeAPI.js"></script> -->
   <script src="../scripts/singapore_database.js"></script>
   <script src="../scripts/app_singaporePolicy.js"></script>
   <script src="../scripts/app_singaporeForm.js"></script>
@@ -224,7 +223,7 @@ error_reporting(E_ALL);
       </div> -->
 
       <!--Form PolicyDetail -->
-      <div id="confirmQuoteContainer">
+      <div id="confirmQuoteContainer" hidden>
 
         <fieldset id="form-content">
           <legend>Product Detail</legend>
@@ -395,7 +394,7 @@ error_reporting(E_ALL);
 
         </fieldset>
       </div>
-      <div id="payment-container">
+      <div id="payment-container" hidden style="display:none">
         <fieldset id="form-content">
           <legend>Payment</legend>
 
@@ -434,7 +433,7 @@ error_reporting(E_ALL);
 
 
       <!--Form Individual PolicyHolder Info -->
-      <fieldset id="form-content">
+      <fieldset id="form-content" hidden>
         <br>
         <h1 style="padding-left:0.5em">Individual Policy Holder Info</h1><br>
         <legend>Policy Holder Info</legend>
@@ -1444,11 +1443,11 @@ if ($formType === 'auto') {
 
       </fieldset>
 
-      <div id="payment-container-amount" hidden>
+      <div id="payment-container-amount" hidden >
         <fieldset id="form-content">
           <!-- <legend>Payment</legend> -->
 
-          <div class="table">
+          <div class="table" hidden >
             <div class="table-header">
               <div class="header__item">Payment Type</div>
               <div class="header__item">Action</div>
@@ -1520,15 +1519,15 @@ if ($formType === 'auto') {
 
       <div style="display: flex; justify-content: center;padding:1em 0px; gap:10px">
         <input type="hidden" name="action" id="formAction" value="">
-
-        <button type="button" class="button draft-button" id="btnDraftForm" onclick="handleClickDraftButton()">Save</button>
-        <button type="button" class="button draft-button" id="btnSaveDraftForm" onclick="handleClickSaveDraftButton()" hidden>Save</button>
-        <button hidden type="submit" class="button edit" id="btnEditForm" onclick="handleEditQuote()" data-recalculate="true">Edit</button>
-        <button type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
+        <button style="display:none" type="button" class="button draft-button" id="btnDraftForm" onclick="handleClickDraftButton()">Save</button>
+        <button style="display:none" type="button" class="button draft-button" id="btnSaveDraftForm" onclick="handleClickSaveDraftButton()" hidden>Save</button>
+        <button style="display:none" type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
+        <button type="button"  class="button edit" id="btnEditForm" >Keep change</button>
+        <button type="button" class="button draft-button" id="btnEditForm"  >Close</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->
       </div>
-
+      
     </form>
   </div>
 

@@ -56,6 +56,9 @@ const handleEditQuote = () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let campaign_id = url.searchParams.get('campaign_id');
+  let formType = url.searchParams.get('formType');
+  let id = url.searchParams.get('id');
+  
  
   
   if (!isEditing) {
@@ -85,7 +88,16 @@ const handleEditQuote = () => {
     btnEditForm.hidden=false
     isEditing = true;
   } else {
-    // window.alert("Fetch Recalculate Quote")
+    if(formType==="auto"){
+      event.preventDefault();
+       window.alert("Fetch Recalculate Quote")
+       console.log("campaignDetails",campaignDetails)
+       const url = `singaporeAutoRecalculatePage.php?campaign_id=${campaignDetails?.campaign_id}&calllist_id=${campaignDetails?.calllist_id}&agent_id=${campaignDetails?.agent_id}&import_id=${campaignDetails?.import_id}&formType=${formType}&id=${id}`;
+
+       // Open a new window for payment
+       window.open(url, 'childWindow', 'width=1024,height=768');
+   
+    }
     // window.location.reload();
     // handleValidateForm();
   }

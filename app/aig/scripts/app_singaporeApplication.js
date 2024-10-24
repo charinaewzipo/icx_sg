@@ -105,7 +105,9 @@ const handleTypeConfirmQuote = () => {
         });
       }
     );
-
+    document.getElementById("remark-c-container").style.display = "none";
+    document.getElementById("promocode-label").style.display = "none";
+    document.getElementById("promocode-label2").style.display = "none";
     isPolicyHolderDrivingRow.style.display = "table-row";
   } else if (formType === "ah") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto, planInfoContainer].forEach(

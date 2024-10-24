@@ -613,7 +613,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         select_product = selectedProductId
         const responseProduct = await getProductDetail(selectedProductId);
         console.log("responseProduct:", responseProduct)
-        
+
 
         if (responseProduct?.product_group == "A&H") {
             if (responseProduct) {
@@ -640,7 +640,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             if (!id) {
                 setDefaultRemarksC(responseProduct)
             }
-        } else {
+        } else if (responseProduct?.product_group == "Home") {
             //clear planSelect planPo planCoverLists
 
             clearSelections()
@@ -652,16 +652,20 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
             }
             await fetchGetDwelling(select_product)
-            const promoInput=document.getElementById("promocode-input")
-  console.log("calllistDetail:", calllistDetail)
-  console.log("campaignDetailsFromAPI:", productDetail)
-  if (promoInput && calllistDetail && productDetail?.udf_field_promo_code) {
-    const promoCodeField = productDetail.udf_field_promo_code;
-    console.log("promoCodeField:", promoCodeField)
-    promoInput.value = calllistDetail[promoCodeField] || "";
-} else {
-    promoInput.value = "";
-}
+            const promoInput = document.getElementById("promocode-input")
+            if (promoInput && calllistDetail && productDetail?.udf_field_promo_code) {
+                const promoCodeField = productDetail.udf_field_promo_code;
+                promoInput.value = calllistDetail[promoCodeField] || "";
+            } else {
+                promoInput.value = "";
+            }
+        } else if (responseProduct?.product_group == "Auto"){
+            populatePlanAuto(selectedProductId,null)
+            populateCoverAuto(selectedProductId,null)
+            const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
+                if (!id || !quotationData?.quoteNo) {
+                    handlePaymentFrequencyChange(defaultRadio);
+                }
         }
 
 
