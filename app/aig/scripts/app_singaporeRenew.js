@@ -3,7 +3,8 @@ function checkRenewCampaign(data){
   const url = new URL(currentUrl);
   let campaign_id = url.searchParams.get('campaign_id');
   console.log("checkRenewCampaign:")
-  if(!id&&(campaign_id==="9"||campaign_id==="10")){
+  console.log("campaignDetailsFromAPI",campaignDetailsFromAPI)
+  if(!id&&(campaignDetailsFromAPI?.incident_type==="Renewal")){
     setTimeout(()=>{
       renewRetrieve(data)
     },2000)
