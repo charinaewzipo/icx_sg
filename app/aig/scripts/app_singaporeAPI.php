@@ -129,9 +129,7 @@ async function fetchPolicy(requestBody) {
     console.log("data", data);
 
     // Update policyNo if present, regardless of statusCode
-    if (data?.policyNo) {
-      await jQuery.agent.updatePolicyNo(policyid, data?.policyNo,requestBody,data);
-    }
+
 
     // Check for specific statusCode N02 and alert accordingly
     if (data?.statusCode === "N02" || data?.statusCode === "P00") {
@@ -140,6 +138,9 @@ async function fetchPolicy(requestBody) {
       } else {
         window.alert(data?.statusMessage || "Successfully!");
       }
+      if (data?.policyNo) {
+      await jQuery.agent.updatePolicyNo(policyid, data?.policyNo,requestBody,data);
+    }
       window.location.reload();
     } else {
       window.alert(`Error statusCode: ${data?.statusCode||data?.Policy?.statusCode}\nstatusMessage: ${data?.statusMessage||data?.Policy?.statusMessage}`);
