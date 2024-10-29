@@ -116,3 +116,43 @@ function populateCoverAuto(productId,planInfo = null) {
           document.body.classList.remove('loading');
       });
 }
+
+function validateCustomerIdNumberAuto() {
+  const idTypeSelect = document.querySelector(`select[name="insured_auto_driverInfo_driverIdType"]`);
+  const idNumberInput = document.querySelector(`input[name="insured_auto_driverInfo_driverIdNumber"]`);
+
+  if (!idTypeSelect || !idNumberInput) return; // Ensure the elements exist
+
+  const idType = idTypeSelect.value;
+  const idNumber = idNumberInput.value;
+
+  // Regular expression for the pattern: letter-7 digits-letter
+  const idPattern = /^[A-Za-z]\d{7}[A-Za-z]$/;
+
+  if (idType === '9' || idType === '10' || idType === '6') { // NRIC, FIN, or Birth Certificate
+    if (!idPattern.test(idNumber)) {
+      idNumberInput.setCustomValidity("Invalid format. ID should be in the format: letter-7 digits-letter.");
+    } else {
+      idNumberInput.setCustomValidity("");
+    }
+  } else {
+    idNumberInput.setCustomValidity("");
+  }
+  idNumberInput.reportValidity();
+}
+
+// Attach event listeners for customer's ID
+function attachCustomerIdValidationAuto() {
+  const idTypeSelect = document.querySelector(`select[name="insured_auto_driverInfo_driverIdType"]`);
+  const idNumberInput = document.querySelector(`input[name="insured_auto_driverInfo_driverIdNumber"]`);
+
+  if (idTypeSelect && idNumberInput) {
+    idTypeSelect.addEventListener('change', validateCustomerIdNumberAuto);
+    idNumberInput.addEventListener('input', validateCustomerIdNumberAuto);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  attachCustomerIdValidationAuto()
+
+})
