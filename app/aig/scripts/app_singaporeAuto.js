@@ -117,6 +117,19 @@ function populateCoverAuto(productId,planInfo = null) {
       });
 }
 
+const handleKeepChangeButton = () => {
+  const userConfirmed = window.confirm("Are you sure you want to proceed with recalculation?");
+  
+  if (userConfirmed) {
+    if (window.opener && !window.opener.closed) {
+      window.alert("Fetching Recalculate...");
+      window.close();
+      window.opener.showAlert('Fetch Recalculate successfully!');
+    }
+  }
+}
+const handleCloseButton=()=>{ window.close()}
+
 function validateCustomerIdNumberAuto() {
   const idTypeSelect = document.querySelector(`select[name="insured_auto_driverInfo_driverIdType"]`);
   const idNumberInput = document.querySelector(`input[name="insured_auto_driverInfo_driverIdNumber"]`);
@@ -153,6 +166,11 @@ function attachCustomerIdValidationAuto() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  attachCustomerIdValidationAuto()
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
+  if(formType==="auto"){
+    attachCustomerIdValidationAuto()
+  }
 
 })

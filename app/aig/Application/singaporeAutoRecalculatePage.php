@@ -1522,8 +1522,8 @@ if ($formType === 'auto') {
         <button style="display:none" type="button" class="button draft-button" id="btnDraftForm" onclick="handleClickDraftButton()">Save</button>
         <button style="display:none" type="button" class="button draft-button" id="btnSaveDraftForm" onclick="handleClickSaveDraftButton()" hidden>Save</button>
         <button style="display:none" type="submit" class="button payment" id="btnSaveForm">Create Quote</button>
-        <button type="button"  class="button edit" id="btnEditForm" >Keep change</button>
-        <button type="button" class="button draft-button" id="btnEditForm"  >Close</button>
+        <button type="button"  class="button edit" id="btnEditForm" onclick="handleKeepChangeButton()">Keep change</button>
+        <button type="button" class="button draft-button" id="btnEditForm" onclick="handleCloseButton()" >Close</button>
         <!-- <button type="submit" class="button payment" id="btnPaymentOnline" onclick="handleForm()">Save</button> -->
         <!-- <button type="button" class="button payment" id="btnClearForm" style="color:#65558F; background-Color:white; border:1px solid white;">Clear</button> -->
       </div>
