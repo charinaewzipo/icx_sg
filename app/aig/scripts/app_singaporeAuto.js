@@ -60,62 +60,62 @@ function populatePlanAuto(productId,planInfo = null) {
           document.body.classList.remove('loading');
       });
 }
-function populateCoverAuto(productId,planInfo = null) {
-  if (!productId) return;
+// function populateCoverAuto(productId,planInfo = null) {
+//   if (!productId) return;
 
-  const url = `../scripts/get_cover.php?product_id=${productId}`;
-  document.body.classList.add('loading');
+//   const url = `../scripts/get_cover.php?product_id=${productId}`;
+//   document.body.classList.add('loading');
 
-  fetch(url)
-      .then(response => response.json())
-      .then(data => {
-          const plan_cover_list_ = document.getElementById('plan_cover_list');
+//   fetch(url)
+//       .then(response => response.json())
+//       .then(data => {
+//           const plan_cover_list_ = document.getElementById('plan_cover_list');
 
-          // Debugging
-          if (!plan_cover_list_) {
-              console.error(`No element found with ID: plan_cover_list`);
-              return;
-          }
+//           // Debugging
+//           if (!plan_cover_list_) {
+//               console.error(`No element found with ID: plan_cover_list`);
+//               return;
+//           }
 
-          // Clear previous options
-          plan_cover_list_.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
+//           // Clear previous options
+//           plan_cover_list_.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
 
-          // Handle no plans case
-          if (data.length === 0) {
-              const option = document.createElement('option');
-              option.textContent = 'No covers available';
-              option.disabled = true;
-              plan_cover_list_.appendChild(option);
-              return;
-          }
+//           // Handle no plans case
+//           if (data.length === 0) {
+//               const option = document.createElement('option');
+//               option.textContent = 'No covers available';
+//               option.disabled = true;
+//               plan_cover_list_.appendChild(option);
+//               return;
+//           }
 
-          // Populate the dropdown with new options
-          data.forEach(cover => {
-              const option = document.createElement('option');
-              option.value = cover.cover_id;
-              option.textContent = cover.cover_name;
-              option.setAttribute('data-cover-code', cover.cover_code);
-              option.setAttribute('data-cover-name', cover.cover_name);
-              plan_cover_list_.appendChild(option);
+//           // Populate the dropdown with new options
+//           data.forEach(cover => {
+//               const option = document.createElement('option');
+//               option.value = cover.cover_id;
+//               option.textContent = cover.cover_name;
+//               option.setAttribute('data-cover-code', cover.cover_code);
+//               option.setAttribute('data-cover-name', cover.cover_name);
+//               plan_cover_list_.appendChild(option);
 
 
-          });
-          // if (planInfo) {
-          //     const coverSelect = section.querySelector('[name^="plan_cover_list_1[]"]');
+//           });
+//           // if (planInfo) {
+//           //     const coverSelect = section.querySelector('[name^="plan_cover_list_1[]"]');
 
-          //     if (coverSelect && planInfo.coverList && planInfo.coverList.length > 0 && planInfo.coverList[0]?.id) {
-          //         coverSelect.value = planInfo.coverList[0].id; // Pre-select the cover
-          //     } else {
-          //         console.log("Cover list or cover select element is missing or invalid.");
-          //     }
-          // }
+//           //     if (coverSelect && planInfo.coverList && planInfo.coverList.length > 0 && planInfo.coverList[0]?.id) {
+//           //         coverSelect.value = planInfo.coverList[0].id; // Pre-select the cover
+//           //     } else {
+//           //         console.log("Cover list or cover select element is missing or invalid.");
+//           //     }
+//           // }
 
-      })
-      .catch(error => console.error('Error fetching plans:', error))
-      .finally(() => {
-          document.body.classList.remove('loading');
-      });
-}
+//       })
+//       .catch(error => console.error('Error fetching plans:', error))
+//       .finally(() => {
+//           document.body.classList.remove('loading');
+//       });
+// }
 
 const handleKeepChangeButton = () => {
   const userConfirmed = window.confirm("Are you sure you want to proceed with recalculation?");

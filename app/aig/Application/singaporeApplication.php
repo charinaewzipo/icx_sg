@@ -1412,31 +1412,7 @@ where name='Occupation'";
                 <input type="text" id="planPoiSelect" name="planPoi" readonly>
               </td>
             </tr>
-            <?php
-// Only populate the select options if formType is 'auto'
-if ($formType === 'auto') {
-    ?>
-    <tr>
-        <td>Cover List</td>
-        <td></td>
-    </tr>
-    <tbody id="coverListBody>">
-        <tr class="cover-row">
-            <td style="padding:0 30px">Cover Name: </td>
-            <td>
-                <select name="plan_cover_list" id="plan_cover_list" class="planCoverList" style="max-width: 216px;">
-                    <option value="">
-                        <-- Please select an option -->
-                    </option>
-                </select>
-            </td>
-            <td></td>
-        </tr>
-    </tbody>
-    <?php
-}
-// If formType is not 'auto', no additional options will be added
-?>
+        
          
           </table>
         </div>
