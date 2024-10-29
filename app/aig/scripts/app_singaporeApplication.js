@@ -508,6 +508,9 @@ const handleValidateForm = () => {
       const form = event.target;
       const formData = new FormData(document.getElementById("application"));
 
+      let currentUrl = window.location.href;
+      const url = new URL(currentUrl);
+      let formType = url.searchParams.get('formType');
       console.log("form", handleForm());
       let isValid = true;
       document.querySelectorAll("input, select").forEach(function (field) {
@@ -575,8 +578,13 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         await fetchPolicy(policyRequest);
        
       } else if(shouldRecalculate&&!submitButton.hidden){
-        console.log("fetch Recalculate")
-        await fetchRecalculateQuote(requestBody);
+        if(formType==="ah"){
+          const requestAH={...requestBody,policyId:""}
+          await fetchQuotation(requestAH);
+        }else{
+          console.log("fetch Recalculate")
+          await fetchRecalculateQuote(requestBody);
+        }
 
       }else{
         await fetchQuotation(requestBody);
