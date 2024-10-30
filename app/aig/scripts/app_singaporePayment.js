@@ -296,6 +296,48 @@ let currentUrl = window.location.href;
               // ]:[]
             }
           }
+      } else if (formType === "auto"){
+        return {
+          "vehicleInfo": {
+            "make": insured?.vehicleInfo?.make || "",
+            "model": insured?.vehicleInfo?.model || "",
+            "vehicleRegYear": "",  // If there's a specific year required, you can provide it here
+            "regNo": insured?.insuredId.toString() || "", // Using insuredId as a registration number
+            "insuringWithCOE": "2",
+            "ageConditionBasis": "1",
+            "offPeakCar": "2",
+            "vehicleUsage": "215",
+            "mileageCondition": insured?.vehicleInfo?.mileageCondition || "",
+            "engineNo": insured?.vehicleInfo?.engineNo || "",
+            "chassisNo": insured?.vehicleInfo?.chassisNo || "",
+            "mileageDeclaration": "",
+            "hirePurchaseCompany": insured?.vehicleInfo?.hirePurchaseCompany || "", // Use the provided hire purchase company
+            "declaredSI": "231"
+          },
+          "driverInfo": [
+            {
+              "driverType": "5",
+              "driverDOB": "1993-10-14T00:00:00Z",  // Placeholder, update if necessary
+              "driverGender": "M",  // Placeholder, update if necessary
+              "driverMaritalStatus": "M",  // Placeholder, update if necessary
+              "drivingExperience": "2",  // Placeholder, update if necessary
+              "occupation": "60",  // Placeholder, update if necessary
+              "claimExperience": "N",
+              "claimInfo": [],
+              "driverName": "Test Auto",  // Assuming driver name corresponds with insured name
+              "driverIdNumber": insured?.insuredId.toString() || "S9499999F", // Using insuredId for driver ID
+              "driverIdType": "3",  // Placeholder, update if necessary
+              "driverResidentStatus": "1",  // Placeholder, update if necessary
+              "driverNationality": "6"  // Placeholder, update if necessary
+            }
+          ],
+          "planInfo": {
+            "planId": insured?.planList[0]?.planId || "1839000040",
+            "planPoi": insured?.planList[0]?.planPoi || "12",
+            "planCode": insured?.planList[0]?.planCode || ""
+          }
+        }
+        
       }
     }),
     paymentDetails: {

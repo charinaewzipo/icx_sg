@@ -542,6 +542,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             }
             calllistDetail = result[0]; // Set the call list detail
             checkRenewCampaign(result[0]); // Check renew campaign
+            checkRetrieveCampaignAuto(result[0]); // Check renew campaign
         }
 
     } catch (error) {

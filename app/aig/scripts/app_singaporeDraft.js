@@ -89,7 +89,8 @@ const handleEditQuote = () => {
     isEditing = true;
   } else {
     if(formType==="auto"){
-      event.preventDefault();
+       event.preventDefault();
+       handleValidateForm()
        window.alert("Fetch Recalculate Quote")
        console.log("campaignDetails",campaignDetails)
        const url = `singaporeAutoRecalculatePage.php?campaign_id=${campaignDetails?.campaign_id}&calllist_id=${campaignDetails?.calllist_id}&agent_id=${campaignDetails?.agent_id}&import_id=${campaignDetails?.import_id}&formType=${formType}&id=${id}`;
@@ -98,7 +99,5 @@ const handleEditQuote = () => {
        window.open(url, 'childWindow', 'width=1024,height=768');
    
     }
-    // window.location.reload();
-    // handleValidateForm();
   }
 }

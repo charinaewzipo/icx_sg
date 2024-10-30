@@ -1,3 +1,75 @@
+function checkRetrieveCampaignAuto(data){
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
+  console.log("checkRetrieveCampaignAuto:")
+  console.log("campaignDetailsFromAPI",campaignDetailsFromAPI)
+  if(!id&&(formType==="auto")){
+    setTimeout(()=>{
+      handleRetrieveAuto(data)
+    },2000)
+  }
+}
+async function handleRetrieveAuto(callListData){
+  const objectRetrieve = {
+    "channelType": "10",
+    // "idNo": callListData?.personal_id||callListData?.passport_no,
+    // "policyNo": callListData?.udf4
+    // "idNo": "E1234567C",
+    // "policyNo": 7240001732
+    "idNo": "S9499999F",
+    "policyNo": 7240001734
+  };
+  const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
+  console.log("responseRetrieve:", responseRetrieve);
+  if (!responseRetrieve) {
+    alert("Quote Retrieval List Operation failed");
+    setTimeout(()=>{
+      window.close(); 
+    },2000)
+    return;
+  }
+
+  const { statusCode, quoteList, statusMessage } = responseRetrieve;
+  alert(statusMessage);
+  if (statusCode !== "P00") {
+    //policy issuance
+    // setTimeout(()=>{
+    //   window.close(); 
+    // },2000)
+    return
+  }
+  if(quoteList&&quoteList.length>0){
+    let data = quoteList?.[0]?.Policy;
+    console.log("data:", data);
+   
+    await getProductDetail(data?.productId);
+    let transformedData = transformQuoteData(data, quotationData);
+    console.log("transformedData", transformedData);
+    const responseId =await jQuery.agent.insertRetrieveQuote(data, transformedData,campaignDetails,objectRetrieve);
+    let currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+    if (url.searchParams.has('id')) {
+      url.searchParams.set('id', responseId);
+    } else {
+      url.searchParams.append('id', responseId);
+    }
+    if (url.searchParams.has('is_firsttime')) {
+      url.searchParams.set('is_firsttime', '1');
+    } else {
+      url.searchParams.append('is_firsttime', '1');
+    }
+    window.location.href = url.toString();
+  }else{
+    alert("The quoteList has no data")
+    // setTimeout(()=>{
+    //   window.close(); 
+    // },2000)
+
+  }
+  
+}
+
 function populatePlanAuto(productId,planInfo = null) {
   if (!productId) return;
 
