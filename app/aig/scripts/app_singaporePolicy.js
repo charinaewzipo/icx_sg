@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("Response:", response);
         await getProductDetail(response?.data?.productId);
-        setDefaultValueForm(response?.data);
+        await setDefaultValueForm(response?.data);
 
         const extractData = extractQuotationData(response?.data);
         quotationData = extractData;

@@ -226,11 +226,23 @@ async function fetchRecalculateQuote(requestBody) {
 
 const handlePremiumRequestBody = () => {
   const formData = new FormData(document.getElementById("application"));
+  let producerCode = "";
+
+if (productDetail && productDetail?.udf_field_producer_code &&calllistDetail) {
+    const code = productDetail.udf_field_producer_code;
+    producerCode = calllistDetail[code] || "";
+}
+
+// Example usage
+if (!producerCode) {
+    window.location.reload(); // Reload if producerCode is empty
+}
+
   const requestBodyHome = {
     propDate: new Date(),
     productId: formData.get("select-product"),
     distributionChannel: 10,
-    producerCode:calllistDetail[productDetail?.udf_field_producer_code]||"",
+    // producerCode:productDetail ? calllistDetail[productDetail?.udf_field_producer_code]:"",
     insuredList: [
       {
         addressInfo: {
@@ -336,7 +348,7 @@ const handlePremiumRequestBody = () => {
         ],
       },
     ],
-    producerCode: "0002466000",
+    producerCode: producerCode,
     campaignCode: "",
   };
  
