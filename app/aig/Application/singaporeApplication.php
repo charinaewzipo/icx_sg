@@ -275,7 +275,7 @@ error_reporting(E_ALL);
                     }
                 ?>
               </td>
-        
+
             </tr>
             <tr id="policyid-display">
               <td id="policyid-text">Policy/Quote No:</td>
@@ -286,23 +286,23 @@ error_reporting(E_ALL);
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <th></th>
               <td style="white-space:nowrap;" id="promocode-label">Promo Code:</td>
-              <td id="promocode-label2"> 
-              <input id="promocode-input" name="campaignCode" type="text" style="display: inline-block; width:216px;" readonly />
+              <td id="promocode-label2">
+                <input id="promocode-input" name="campaignCode" type="text" style="display: inline-block; width:216px;" readonly />
               </td>
             </tr>
 
 
-               
-          </table>
-          <table  id="table-form">
 
-<tr id="remark-c-container">
-  <td style="float: inline-start;padding-right: 84px;">RemarksC:</td>
-  <td style="white-space:nowrap;">
-    <textarea name="RemarkCInput" id="RemarkCInput" rows="4" cols="50" maxlength="2000"></textarea>
-  </td>
-</tr>
-</table>
+          </table>
+          <table id="table-form">
+
+            <tr id="remark-c-container">
+              <td style="float: inline-start;padding-right: 84px;">RemarksC:</td>
+              <td style="white-space:nowrap;">
+                <textarea name="RemarkCInput" id="RemarkCInput" rows="4" cols="50" maxlength="2000"></textarea>
+              </td>
+            </tr>
+          </table>
           <div class="table" id="ncd-info-container">
             <table id="table-form">
               <tr>
@@ -407,7 +407,7 @@ error_reporting(E_ALL);
               <td style="float:inline-start">Payment Frequency: <span style="color:red">*</span></td>
               <td>
                 <div class="form-check" id="display-paymentFrequencyAnnual">
-                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)" >
+                  <input type="radio" class="form-check-input" id="paymentFrequencyAnnual" name="Payment_Frequency" value="1" onchange="handlePaymentFrequencyChange(this)">
                   <label class="form-check-label" for="paymentFrequencyAnnual">Annual</label>
                 </div>
                 <div class="form-check" id="display-paymentFrequencyMonthly">
@@ -420,7 +420,7 @@ error_reporting(E_ALL);
             <tr>
               <td>Payment Mode: <span style="color:red">*</span></td>
               <td>
-                <select name="Payment_Mode" id="paymentModeSelect"  required>
+                <select name="Payment_Mode" id="paymentModeSelect" required>
                   <option value=""> <-- Please select an option --> </option>
                   <option value="1001">Credit Card Lump sum</option>
                   <option value="124">Recurring Credit Card</option>
@@ -461,7 +461,7 @@ error_reporting(E_ALL);
             <tr>
               <td>Courtesy Title : </td>
               <td>
-                <select name="courtesyTitle" >
+                <select name="courtesyTitle">
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -514,9 +514,9 @@ error_reporting(E_ALL);
                 </select>
               </td>
               <th>&nbsp;</th>
-              <td>Nationality : <span style="color:red">*</span></td>
+              <td>Nationality : <?php echo ($formType === "home") ? '' : '<span style="color:red">*</span>'; ?></td>
               <td>
-                <select name="nationality" required>
+                <select name="nationality" <?php echo ($formType === "home") ? '' : 'required'; ?>>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -533,6 +533,8 @@ error_reporting(E_ALL);
                   }
                   ?>
                 </select>
+              </td>
+
             </tr>
             <tr>
               <td>Date Of Birth : <span style="color:red">*</span></td>
@@ -649,15 +651,15 @@ where name='ph occupation'";
               <th></th>
               <td style="float:inline-start">Email Fulfillment Flag: <span style="color:red">*</span></td>
               <td>
-    <div class="form-check">
-      <input type="radio" class="form-check-input" id="emailFulfillmentYes" name="Email_Fulfillment_Flag" value="1"  checked>
-      <label class="form-check-label" for="emailFulfillmentYes">Yes</label>
-    </div>
-    <div class="form-check">
-      <input type="radio" class="form-check-input" id="emailFulfillmentNo" name="Email_Fulfillment_Flag" value="2" >
-      <label class="form-check-label" for="emailFulfillmentNo">No</label>
-    </div>
-  </td>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="emailFulfillmentYes" name="Email_Fulfillment_Flag" value="1" checked>
+                  <label class="form-check-label" for="emailFulfillmentYes">Yes</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" class="form-check-input" id="emailFulfillmentNo" name="Email_Fulfillment_Flag" value="2">
+                  <label class="form-check-label" for="emailFulfillmentNo">No</label>
+                </div>
+              </td>
             </tr>
 
             <tr>
@@ -786,7 +788,7 @@ where name='Nature of Business'";
                   <option value="">
                     <-- Please select an option -->
                   </option>
-                 
+
 
                 </select>
               </td>
@@ -797,7 +799,7 @@ where name='Nature of Business'";
                   <option value="">
                     <-- Please select an option -->
                   </option>
-                  
+
                 </select>
               </td>
             </tr>
@@ -824,9 +826,9 @@ where name='Nature of Business'";
                 </select>
               </td>
               <th>&nbsp;</th>
-              
+
             </tr>
-      
+
             <tr>
               <td>Block Number : <span style="color:red">*</span></td>
               <td>
@@ -932,7 +934,7 @@ where name='Nature of Business'";
               <th>&nbsp;</th>
               <td>Model :</td>
               <td>
-                <select name="insured_auto_vehicle_model" >
+                <select name="insured_auto_vehicle_model">
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -955,7 +957,7 @@ where name='Nature of Business'";
             <tr>
               <td>Vehicle Reg Year :<span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_vehicleRegYear" >
+                <select name="insured_auto_vehicle_vehicleRegYear">
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -1025,7 +1027,7 @@ where name='Nature of Business'";
             <tr>
               <td>Vehicle Usage :</td>
               <td>
-                <select name="insured_auto_vehicle_vehicleUsage" >
+                <select name="insured_auto_vehicle_vehicleUsage">
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -1077,10 +1079,10 @@ where name='Nature of Business'";
             </tr>
             <tr>
               <td>Engine No. : </td>
-              <td><input type="text" name="insured_auto_vehicle_engineNo" maxlength="60"  /></td>
+              <td><input type="text" name="insured_auto_vehicle_engineNo" maxlength="60" /></td>
               <th>&nbsp;</th>
               <td>Chassis No. : </td>
-              <td><input type="text" name="insured_auto_vehicle_chassisNo" maxlength="60"  /></td>
+              <td><input type="text" name="insured_auto_vehicle_chassisNo" maxlength="60" /></td>
             </tr>
             <tr>
               <td>Hire Purchase Company: <span style="color:red">*</span></td>
@@ -1403,7 +1405,7 @@ where name='Occupation'";
                   <option value="">
                     <-- Please select an option -->
                   </option>
-                  
+
                 </select>
               </td>
               <th></th>
@@ -1412,8 +1414,8 @@ where name='Occupation'";
                 <input type="text" id="planPoiSelect" name="planPoi" readonly>
               </td>
             </tr>
-        
-         
+
+
           </table>
         </div>
 
@@ -1434,7 +1436,7 @@ where name='Occupation'";
                 <div class="table-data">Online Payment Gateway </div>
                 <div class="table-data">
                   <!-- <button type="button" class="button payment" id="btnPayment">Payment</button> -->
-                  <button type="button" class="button payment" id="btnPayment" onclick="handleRetrieveQuote()" >Payment</button>
+                  <button type="button" class="button payment" id="btnPayment" onclick="handleRetrieveQuote()">Payment</button>
                 </div>
                 <!-- <button type="button" onclick="handlePaymentGateway()">Payment</button> -->
               </div>
@@ -1461,10 +1463,10 @@ where name='Occupation'";
                 </select>
               </td>
             </tr> -->
-            <tr id="card-number-container" hidden >
+            <tr id="card-number-container" hidden>
               <td>Card Number : <span style="color:red">*</span> </td>
               <td>
-                <input type="text" name="payment_cardNumber" maxlength="60"  disabled/>
+                <input type="text" name="payment_cardNumber" maxlength="60" disabled />
               </td>
             </tr>
             <tr id="card-expiry-container" hidden>
