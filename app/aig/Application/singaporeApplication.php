@@ -143,10 +143,24 @@ error_reporting(E_ALL);
       }));
 
       $("#datepicker2").datepicker($.extend({}, datepickerOptions, {
+        maxDate: new Date(),
+        onSelect: function(dateText) {
+          const {
+            age,
+            days
+          } = calculateAge(dateText);
+          if(age<=18){
+            alert("The driver's age should be greater than 18 years.")
+            $(`#datepicker2`).val('');
+            return
+          }
+        }
+      }));
+
+      $("#datepicker3").datepicker($.extend({}, datepickerOptions, {
         maxDate: new Date()
       }));
 
-      $("#datepicker3").datepicker(datepickerOptions);
 
       $("#datepicker4").datepicker(datepickerOptions);
 

@@ -1,10 +1,10 @@
 function checkRenewCampaign(data){
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
-  let campaign_id = url.searchParams.get('campaign_id');
+  let formType = url.searchParams.get('formType');
   console.log("checkRenewCampaign:")
   console.log("campaignDetailsFromAPI",campaignDetailsFromAPI)
-  if(!id&&(campaignDetailsFromAPI?.incident_type==="Renewal")){
+  if(!id&&(campaignDetailsFromAPI?.incident_type==="Renewal")&&(formType==="home")){
     setTimeout(()=>{
       renewRetrieve(data)
     },2000)

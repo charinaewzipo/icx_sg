@@ -15,10 +15,13 @@ async function handleRetrieveAuto(callListData){
     "channelType": "10",
     // "idNo": callListData?.personal_id||callListData?.passport_no,
     // "policyNo": callListData?.udf4
-    // "idNo": "E1234567C",
-    // "policyNo": 7240001732
+//error
     "idNo": "S9499999F",
-    "policyNo": 7240001734
+    "policyNo": 724000174122222222222
+    //success
+
+    // "idNo": "S9499999F",
+    // "policyNo": 7240001742
   };
   const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
   console.log("responseRetrieve:", responseRetrieve);

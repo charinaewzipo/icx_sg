@@ -88,7 +88,7 @@ const handleEditQuote = () => {
     btnEditForm.hidden=false
     isEditing = true;
   } else {
-    if(formType==="auto"){
+    if(formType==="auto"&&campaignDetailsFromAPI?.incident_type==="Renewal" ){
        event.preventDefault();
        handleValidateForm()
        window.alert("Fetch Recalculate Quote")
