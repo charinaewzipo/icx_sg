@@ -77,7 +77,6 @@ async function handleRetrieveAuto(callListData){
 function populatePlanAutoPremium(planList) {
   const planSelect = document.getElementById('planSelect');
   const planPoiSelect = document.getElementById('planPoiSelect');
-  const premiumAmountInput = document.getElementById('premium-amount');
 
   planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
 
@@ -96,11 +95,16 @@ function populatePlanAutoPremium(planList) {
   // Update planPoiSelect when an option is selected
   planSelect.addEventListener('change', function() {
     const selectedOption = planSelect.options[planSelect.selectedIndex];
-    const planPoi = selectedOption.dataset.planPoi || ''; // Use empty string if undefined
-    const premiumAmount = selectedOption.dataset.netPremium || ''; // Use empty string if undefined
+    const planPoi = selectedOption.dataset.planPoi || '';
+    const premiumAmount = selectedOption.dataset.netPremium || '';
     planPoiSelect.value = planPoi;
-    premiumAmountInput.value = premiumAmount ? `${premiumAmount}(SGD)` : ''; // Update or clear the input
+
+    const premiumAmountInput = document.getElementById('premium-amount');
+    if (premiumAmountInput) {
+        premiumAmountInput.value = premiumAmount ? `${premiumAmount} (SGD)` : '';
+    }
 });
+
 }
 
 const handleKeepChangeButton = () => {

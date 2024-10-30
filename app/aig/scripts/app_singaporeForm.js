@@ -118,20 +118,21 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
     const planSelect = document.getElementById('planSelect');
     const planPoiSelect = document.getElementById('planPoiSelect');
     const premiumAmountInput = document.getElementById('premium-amount');
-    if (dbData&&planInfo) {
-      const apiBody = handlePremiumRequestBody();
-      if (apiBody) {
-        await fetchPremium(apiBody);
-      }
-      //select plan
-        for (const option of planSelect.options) {
-          if (Number(option.value) === Number(planInfo.planId)) {
-              option.selected = true;  // Select the matching option
-              planPoiSelect.value = option.dataset.planPoi || ''; 
-              premiumAmountInput.value = `${option.dataset.netPremium}(SGD)` || '';  // Update planPoiSelect
-              break;
-          }
-      }
+    if (dbData&&planInfo?.planId) {
+      setTimeout(async () => {
+          const apiBody = handlePremiumRequestBody();
+          await fetchPremium(apiBody);
+          for (const option of planSelect.options) {
+            if (Number(option.value) === Number(planInfo.planId)) {
+              alert("eauql")
+                option.selected = true;  // Select the matching option
+                planPoiSelect.value = option.dataset.planPoi || ''; 
+                premiumAmountInput.value = `${option.dataset.netPremium}(SGD)` || '';  // Update planPoiSelect
+                break;
+            }
+        }
+      }, 1000); 
+      
      
     }
     
