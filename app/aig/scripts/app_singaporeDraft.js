@@ -87,17 +87,24 @@ const handleEditQuote = () => {
     document.getElementById("btnPayment").style.opacity="0.65";
     btnEditForm.hidden=false
     isEditing = true;
-  } else {
-    if(formType==="auto"&&campaignDetailsFromAPI?.incident_type==="Renewal" ){
-       event.preventDefault();
-       handleValidateForm()
-       window.alert("Fetch Recalculate Quote")
-       console.log("campaignDetails",campaignDetails)
-       const url = `singaporeAutoRecalculatePage.php?campaign_id=${campaignDetails?.campaign_id}&calllist_id=${campaignDetails?.calllist_id}&agent_id=${campaignDetails?.agent_id}&import_id=${campaignDetails?.import_id}&formType=${formType}&id=${id}`;
 
-       // Open a new window for payment
-       window.open(url, 'childWindow', 'width=1024,height=768');
-   
+    if(formType==="auto"){
+      document.getElementById("premium-amount-label").hidden=false;
+      document.getElementById("payment_amount_label").hidden=true;
+
     }
+  } else {
+    // if(formType==="auto"&&campaignDetailsFromAPI?.incident_type==="Renewal" ){
+    //    event.preventDefault();
+    //    handleValidateForm()
+    //    window.alert("Fetch Recalculate Quote")
+    //    console.log("campaignDetails",campaignDetails)
+    //    const url = `singaporeAutoRecalculatePage.php?campaign_id=${campaignDetails?.campaign_id}&calllist_id=${campaignDetails?.calllist_id}&agent_id=${campaignDetails?.agent_id}&import_id=${campaignDetails?.import_id}&formType=${formType}&id=${id}`;
+
+    //    // Open a new window for payment
+    //    window.open(url, 'childWindow', 'width=1024,height=768');
+   
+    // }
+    
   }
 }

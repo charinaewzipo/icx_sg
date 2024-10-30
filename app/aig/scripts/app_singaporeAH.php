@@ -660,15 +660,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             } else {
                 promoInput.value = "";
             }
-        } else if (responseProduct?.product_group == "Auto"){
-            populatePlanAuto(selectedProductId,null)
-            // populateCoverAuto(selectedProductId,null)
-            const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
-                if (!id || !quotationData?.quoteNo) {
-                    handlePaymentFrequencyChange(defaultRadio);
-                }
         }
-
 
 
 

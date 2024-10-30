@@ -14,41 +14,42 @@ let campaignDetailsFromAPI=null;
 var token = null;
 
 
-function fetchPremium(requestBody) {
+async function fetchPremium(requestBody) {
   document.body.classList.add('loading');
   const apiUrl = '<?php echo $GLOBALS["aig_api_premium_url"]; ?>';
-  fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("responseData", data);
-      if (
-        data &&
-        data.Policy &&
-        data.Policy.insuredList &&
-        data.Policy.insuredList[0]
-      ) {
-        // planData = data.Policy;
-        // console.log("planData:", planData)
-        // populatePlanSelect(planData.insuredList[0].planList);
-        // return planData;
-      } else {
-        window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
-        console.error("Invalid API response:", data);
-      }
-    })
-    .catch((error) => console.error("Error fetching plan data:", error))
-    .finally(() => {
-      // Remove 'loading' class from body after fetch is complete
-      document.body.classList.remove('loading');
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
     });
+
+    const data = await response.json();
+    console.log("responseData", data);
+
+    if (
+      data &&
+      data.Policy &&
+      data.Policy.insuredList &&
+      data.Policy.insuredList[0]
+    ) {
+      await populatePlanAutoPremium(data.Policy.insuredList[0].planList);
+    } else {
+      window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
+      console.error("Invalid API response:", data);
+    }
+  } catch (error) {
+    console.error("Error fetching plan data:", error);
+  } finally {
+    // Remove 'loading' class from body after fetch is complete
+    document.body.classList.remove('loading');
+  }
 }
+
 async function fetchQuotation(requestBody) {
   document.body.classList.add('loading');
   console.log("Fetching Quotation data...");
@@ -400,7 +401,7 @@ const handleRequiredField = () => {
 };
 
 //see plan
-function validateAndSubmitFormCallPremium(index) {
+function validateAndSubmitFormCallPremium() {
   const formElement = document.getElementById("application");
   const formData = new FormData(formElement);
   const requiredFields = handleRequiredField();

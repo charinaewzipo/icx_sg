@@ -114,8 +114,25 @@ const setDefaultPlanInfo = async (insuredData,dbData) => {
 const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
     console.log("insuredData:", insuredData)
     const planInfo = insuredData ? insuredData[0]?.planInfo : {};
+    console.log("planInfo:", planInfo)
+    const planSelect = document.getElementById('planSelect');
+    const planPoiSelect = document.getElementById('planPoiSelect');
+    const premiumAmountInput = document.getElementById('premium-amount');
     if (dbData&&planInfo) {
-      populatePlanAuto(dbData?.productId,planInfo)
+      const apiBody = handlePremiumRequestBody();
+      if (apiBody) {
+        await fetchPremium(apiBody);
+      }
+      //select plan
+        for (const option of planSelect.options) {
+          if (Number(option.value) === Number(planInfo.planId)) {
+              option.selected = true;  // Select the matching option
+              planPoiSelect.value = option.dataset.planPoi || ''; 
+              premiumAmountInput.value = `${option.dataset.netPremium}(SGD)` || '';  // Update planPoiSelect
+              break;
+          }
+      }
+     
     }
     
 

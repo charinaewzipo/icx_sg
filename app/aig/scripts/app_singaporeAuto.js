@@ -6,10 +6,11 @@ function checkRetrieveCampaignAuto(data){
   console.log("campaignDetailsFromAPI",campaignDetailsFromAPI)
   if(!id&&(formType==="auto")){
     setTimeout(()=>{
-      handleRetrieveAuto(data)
+      // handleRetrieveAuto(data)
     },2000)
   }
 }
+
 async function handleRetrieveAuto(callListData){
   const objectRetrieve = {
     "channelType": "10",
@@ -73,124 +74,34 @@ async function handleRetrieveAuto(callListData){
   
 }
 
-function populatePlanAuto(productId,planInfo = null) {
-  if (!productId) return;
+function populatePlanAutoPremium(planList) {
+  const planSelect = document.getElementById('planSelect');
+  const planPoiSelect = document.getElementById('planPoiSelect');
+  const premiumAmountInput = document.getElementById('premium-amount');
 
-  const url = `../scripts/get_plan.php?product_id=${productId}`;
-  document.body.classList.add('loading');
+  planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
 
-  fetch(url)
-      .then(response => response.json())
-      .then(data => {
-          const planSelect = document.getElementById('planSelect');
+  for (const key in planList) {
+      if (planList.hasOwnProperty(key)) {
+          const plan = planList[key];
+          const option = document.createElement('option');
+          option.value = plan.planId; 
+          option.textContent = `${plan.planDescription} (${plan?.planPoi})`;
+          option.dataset.planPoi = plan.planPoi; 
+          option.dataset.netPremium = plan.netPremium; 
+          planSelect.appendChild(option);
+      }
+  }
 
-          // Debugging
-          if (!planSelect) {
-              console.error(`No element found with ID: planSelect`);
-              return;
-          }
-
-          // Clear previous options
-          planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
-
-          // Handle no plans case
-          if (data.length === 0) {
-              const option = document.createElement('option');
-              option.textContent = 'No plans available';
-              option.disabled = true;
-              planSelect.appendChild(option);
-              return;
-          }
-
-          // Populate the dropdown with new options
-          data.forEach(plan => {
-              const option = document.createElement('option');
-              option.value = plan.plan_code; // Use plan_code as value
-              option.textContent = `${plan.plan_name} (POI:${plan.plan_poi})`; // Display plan_name
-              option.setAttribute('data-desc', plan.plan_name);
-              option.setAttribute('data-planpoi', plan.plan_poi);
-              planSelect.appendChild(option);
-          });
-          if (planInfo) {
-            console.log("planInfossssssssss:", planInfo)
-            const planPoiValue = planInfo.planPoi || ""; 
-            
-         // Loop through the options in the select dropdown
-         for (let i = 0; i < planSelect.options.length; i++) {
-          const option = planSelect.options[i];
-          
-          if (Number(option.getAttribute("data-planpoi")) === Number(planPoiValue)) {
-            planSelect.selectedIndex = i;
-            console.log("planSelectchoose:", planSelect)
-            break;
-          }
-        }
-          
-            // Also set the planPoiSelect input field with the same value
-            document.getElementById("planPoiSelect").value = planPoiValue;
-          }
-      })
-      .catch(error => console.error('Error fetching plans:', error))
-      .finally(() => {
-          document.body.classList.remove('loading');
-      });
+  // Update planPoiSelect when an option is selected
+  planSelect.addEventListener('change', function() {
+    const selectedOption = planSelect.options[planSelect.selectedIndex];
+    const planPoi = selectedOption.dataset.planPoi || ''; // Use empty string if undefined
+    const premiumAmount = selectedOption.dataset.netPremium || ''; // Use empty string if undefined
+    planPoiSelect.value = planPoi;
+    premiumAmountInput.value = premiumAmount ? `${premiumAmount}(SGD)` : ''; // Update or clear the input
+});
 }
-// function populateCoverAuto(productId,planInfo = null) {
-//   if (!productId) return;
-
-//   const url = `../scripts/get_cover.php?product_id=${productId}`;
-//   document.body.classList.add('loading');
-
-//   fetch(url)
-//       .then(response => response.json())
-//       .then(data => {
-//           const plan_cover_list_ = document.getElementById('plan_cover_list');
-
-//           // Debugging
-//           if (!plan_cover_list_) {
-//               console.error(`No element found with ID: plan_cover_list`);
-//               return;
-//           }
-
-//           // Clear previous options
-//           plan_cover_list_.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
-
-//           // Handle no plans case
-//           if (data.length === 0) {
-//               const option = document.createElement('option');
-//               option.textContent = 'No covers available';
-//               option.disabled = true;
-//               plan_cover_list_.appendChild(option);
-//               return;
-//           }
-
-//           // Populate the dropdown with new options
-//           data.forEach(cover => {
-//               const option = document.createElement('option');
-//               option.value = cover.cover_id;
-//               option.textContent = cover.cover_name;
-//               option.setAttribute('data-cover-code', cover.cover_code);
-//               option.setAttribute('data-cover-name', cover.cover_name);
-//               plan_cover_list_.appendChild(option);
-
-
-//           });
-//           // if (planInfo) {
-//           //     const coverSelect = section.querySelector('[name^="plan_cover_list_1[]"]');
-
-//           //     if (coverSelect && planInfo.coverList && planInfo.coverList.length > 0 && planInfo.coverList[0]?.id) {
-//           //         coverSelect.value = planInfo.coverList[0].id; // Pre-select the cover
-//           //     } else {
-//           //         console.log("Cover list or cover select element is missing or invalid.");
-//           //     }
-//           // }
-
-//       })
-//       .catch(error => console.error('Error fetching plans:', error))
-//       .finally(() => {
-//           document.body.classList.remove('loading');
-//       });
-// }
 
 const handleKeepChangeButton = () => {
   const userConfirmed = window.confirm("Are you sure you want to proceed with recalculation?");
@@ -247,5 +158,4 @@ document.addEventListener("DOMContentLoaded", () => {
   if(formType==="auto"){
     attachCustomerIdValidationAuto()
   }
-
 })

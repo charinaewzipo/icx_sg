@@ -149,10 +149,10 @@ error_reporting(E_ALL);
             age,
             days
           } = calculateAge(dateText);
-          if(age<=18){
-            alert("The driver's age should be greater than 18 years.")
+          if (age <= 23 || age >= 70) {
+            alert("The driver's age should be between 23 and 70 years.");
             $(`#datepicker2`).val('');
-            return
+            return;
           }
         }
       }));
@@ -1064,8 +1064,8 @@ where name='Nature of Business'";
               <th>&nbsp;</th>
             </tr>
             <tr>
-              <td>Mileage Condition :</td>
-              <td><select name="insured_auto_vehicle_mileageCondition">
+              <td>Mileage Condition : <span style="color:red">*</span></td>
+              <td><select name="insured_auto_vehicle_mileageCondition" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -1092,11 +1092,11 @@ where name='Nature of Business'";
 
             </tr>
             <tr>
-              <td>Engine No. : </td>
-              <td><input type="text" name="insured_auto_vehicle_engineNo" maxlength="60" /></td>
+              <td>Engine No. : <span style="color:red">*</span> </td>
+              <td><input type="text" name="insured_auto_vehicle_engineNo" maxlength="60" required /></td>
               <th>&nbsp;</th>
-              <td>Chassis No. : </td>
-              <td><input type="text" name="insured_auto_vehicle_chassisNo" maxlength="60" /></td>
+              <td>Chassis No. : <span style="color:red">*</span></td>
+              <td><input type="text" name="insured_auto_vehicle_chassisNo" maxlength="60" required /></td>
             </tr>
             <tr>
               <td>Hire Purchase Company: <span style="color:red">*</span></td>
@@ -1403,6 +1403,7 @@ where name='Occupation'";
 
         </div>
         <button id="add-insured-child" class="button payment" style="float: right; display:none" type="button">Add Child</button>
+        <button id="get-premium-button" class="button payment" type="button" onclick="validateAndSubmitFormCallPremium()">Get premium</button>
 
         <!--Form Insured List Plan info -->
         <div id="plan-info-container-main">
@@ -1426,6 +1427,13 @@ where name='Occupation'";
               <td style="white-space: nowrap;">Plan Poi :</td>
               <td colspan="2">
                 <input type="text" id="planPoiSelect" name="planPoi" readonly>
+              </td>
+             
+            </tr>
+            <tr id="premium-amount-label">
+              <td>Amount : </td>
+              <td>
+                <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="" >
               </td>
             </tr>
 
@@ -1497,7 +1505,7 @@ where name='Occupation'";
                 <input type="text" name="payment_securityCode" id="securityCode" maxlength="10" size="10" required />
               </td>
             </tr> -->
-            <tr>
+            <tr id='payment_amount_label'>
               <td>Amount : </td>
               <td>
                 <input type="text" name="payment_amount" id="payment_amount" maxlength="10" size="10" readonly />

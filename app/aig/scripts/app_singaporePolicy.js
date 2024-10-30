@@ -130,7 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnEditForm = document.getElementById('btnEditForm');
   const btnSaveForm = document.getElementById('btnSaveForm');
   const btnSaveDraftForm = document.getElementById('btnSaveDraftForm');
-
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
 
   id = urlParams.get("id");
 
@@ -162,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("policyNo:", policyNo)
         const Amount = document.querySelector('input[name="payment_amount"]');
         if (Amount) {
-
           Amount.value = `${response?.data?.premiumPayable}(SGD)`;
         }
         if (policyId && !policyNo) {
@@ -187,7 +188,11 @@ document.addEventListener("DOMContentLoaded", function () {
         paymentContainer.querySelectorAll("input, select").forEach((field) => {
           field.removeAttribute("required");
         });
-
+        
+ 
+        if (formType === "auto" && quotationData?.quoteNo) {
+          document.getElementById("premium-amount-label").hidden = true;
+        }
       } catch (error) {
         console.error("Error occurred:", error);
       }
