@@ -317,95 +317,7 @@ error_reporting(E_ALL);
               </td>
             </tr>
           </table>
-          <div class="table" id="ncd-info-container">
-            <table id="table-form">
-              <tr>
-                <td>
-                  <h1>Ncd Info</h1>
-                </td>
-              </tr>
-              <tr>
-                <td>Ncd Level: <span style="color:red">*</span> </td>
-                <td>
-
-                  <select name="Ncd_Level" id="ncdLevel" onchange="toggleNcdLevel()" style="text-align:center" required>
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                    <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Level'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                      $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>%
-                      </option>
-                    <?php
-                    }
-                    ?>
-
-                  </select>
-                </td>
-                <td>&nbsp;</td>
-              </tr>
-              <tr id="noClaimExperienceRow">
-                <td>No Claim Experience : <span style="color:red">*</span> </td>
-                <td>
-                  <select name="NoClaimExperience" id="ncdNoExperience" onchange="toggleNcdNoExperience()" required>
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                    <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'noClaimExperience'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                      $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                    }
-                    ?>
-                  </select>
-                </td>
-                <th>&nbsp;</th>
-                <td id="otherExperience" style="display:none">Other <span style="color:red">*</span> <input type="text" name="otherExperience" maxlength="60" size="30" /></td>
-              </tr>
-              <tr id="haveExperienceRow" style="display:none">
-                <td>Previous Insurer: <span style="color:red">*</span> </td>
-                <td>
-                  <select name="haveEx-PreviousInsurer" required>
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                    <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Previous Insurer'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                      $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                    }
-                    ?>
-                  </select>
-                  <!-- <input type="text" name="haveEx-PreviousInsurer" maxlength="60" size="30" /> -->
-                </td>
-                <th>&nbsp;</th>
-                <td>Previous PolicyNo.: <span style="color:red">*</span> </td>
-                <td>
-                  <input type="text" name="haveEx-PreviousPolicyNo" maxlength="60" size="30" />
-                </td>
-              </tr>
-
-
-
-            </table>
-          </div>
+         
 
         </fieldset>
       </div>
@@ -1310,6 +1222,96 @@ where name='Occupation'";
             </tr>
 
           </table>
+          
+          <div class="table" id="ncd-info-container">
+            <table id="table-form">
+              <tr>
+                <td>
+                  <h1>Ncd Info</h1>
+                </td>
+              </tr>
+              <tr>
+                <td  style="padding-left:30px">Ncd Level: <span style="color:red">*</span> </td>
+                <td>
+
+                  <select name="Ncd_Level" id="ncdLevel" onchange="toggleNcdLevel()" style="text-align:center " required>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Level'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>%
+                      </option>
+                    <?php
+                    }
+                    ?>
+
+                  </select>
+                </td>
+                <td>&nbsp;</td>
+              </tr>
+              <tr id="noClaimExperienceRow">
+                <td style="padding-left:30px">No Claim Experience : <span style="color:red">*</span> </td>
+                <td>
+                  <select name="NoClaimExperience" id="ncdNoExperience" onchange="toggleNcdNoExperience()" required>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'noClaimExperience'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
+                  </select>
+                </td>
+                <th>&nbsp;</th>
+                <td id="otherExperience" style="display:none">Other <span style="color:red">*</span> <input type="text" name="otherExperience" maxlength="60" size="30" /></td>
+              </tr>
+              <tr id="haveExperienceRow" style="display:none">
+                <td>Previous Insurer: <span style="color:red">*</span> </td>
+                <td>
+                  <select name="haveEx-PreviousInsurer" required>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Previous Insurer'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
+                  </select>
+                  <!-- <input type="text" name="haveEx-PreviousInsurer" maxlength="60" size="30" /> -->
+                </td>
+                <th>&nbsp;</th>
+                <td>Previous PolicyNo.: <span style="color:red">*</span> </td>
+                <td>
+                  <input type="text" name="haveEx-PreviousPolicyNo" maxlength="60" size="30" />
+                </td>
+              </tr>
+
+
+
+            </table>
+          </div>
           <div class="table" id="claim-info">
 
             <table id="table-form">

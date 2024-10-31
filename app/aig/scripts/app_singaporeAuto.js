@@ -154,12 +154,75 @@ function attachCustomerIdValidationAuto() {
     idNumberInput.addEventListener('input', validateCustomerIdNumberAuto);
   }
 }
+function setupFormListeners() {
+  const formFieldNames = [
+      "select-product",
+      "PolicyEffectiveDate",
+      "Ncd_Level",
+      "customerType",
+      "isPolicyHolderDriving",
+      "insured_auto_vehicle_make",
+      "insured_auto_vehicle_model",
+      "insured_auto_vehicle_vehicleRegYear",
+      "insured_auto_vehicle_regNo",
+      "insured_auto_vehicle_insuringWithCOE",
+      "insured_auto_vehicle_ageConditionBasis",
+      "insured_auto_vehicle_offPeakCar",
+      "insured_auto_vehicle_mileageCondition",
+      "insured_auto_driverInfo_driverType",
+      "insured_auto_driverInfo_driverDOB",
+      "insured_auto_driverInfo_driverGender",
+      "insured_auto_driverInfo_maritalStatus",
+      "insured_auto_driverInfo_drivingExperience",
+      "insured_auto_driverInfo_occupation",
+      "insured_auto_driverInfo_claimExperience",
+      "insured_auto_driverInfo_claimInfo_dateOfLoss",
+      "insured_auto_driverInfo_claimInfo_lossDescription",
+      "insured_auto_driverInfo_claimInfo_claimNature",
+      "insured_auto_driverInfo_claimInfo_claimAmount",
+      "insured_auto_driverInfo_claimInfo_claimStatus",
+      "insured_auto_driverInfo_claimInfo_insuredLiability",
+  ];
+
+  formFieldNames.forEach(fieldName => {
+      const elements = document.getElementsByName(fieldName);
+      elements.forEach(element => {
+          element.addEventListener("change", () => {
+              console.log(`${fieldName} changed`);
+              resetPlanSelect();
+          });
+      });
+  });
+}
+
+// Function to reset the planSelect dropdown
+function resetPlanSelect() {
+  const planSelect = document.getElementById('planSelect');
+  const planPoiSelect = document.getElementById('planPoiSelect');
+  const premiumAmount = document.getElementById('premium-amount');
+  if (planSelect) {
+      console.log("Resetting planSelect dropdown");
+      const defaultOption = planSelect.querySelector('option[value=""]');
+        planSelect.innerHTML = '';
+
+        // Re-add only the default option
+        if (defaultOption) {
+            planSelect.appendChild(defaultOption);
+        }
+
+      planSelect.value = '';
+      planPoiSelect.value = '';
+      premiumAmount.value = '';
+  } 
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
-  if(formType==="auto"){
-    attachCustomerIdValidationAuto()
-  }
-})
+  console.log("Form type:", formType);
+  if (formType === "auto") {
+      attachCustomerIdValidationAuto();
+      setupFormListeners();
+  } 
+});

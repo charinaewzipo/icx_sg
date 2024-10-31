@@ -98,7 +98,7 @@ const handleTypeConfirmQuote = () => {
     );
     document.getElementById("remark-c-container").style.display = "none";
   } else if (formType === "auto") {
-    [ncdinfoContainer, properateForm, insuredListHome, insuredListAh].forEach(
+    [properateForm, insuredListHome, insuredListAh].forEach(
       (container) => {
         container.querySelectorAll("input, select").forEach((field) => {
           field.removeAttribute("required");
