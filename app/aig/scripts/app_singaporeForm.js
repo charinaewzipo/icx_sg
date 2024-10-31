@@ -394,27 +394,20 @@ const setInsuredVehicleList = (insuredData) => {
   document.querySelector(
     'select[name="insured_auto_driverInfo_occupation"]'
   ).value = driverInfo.occupation;
-  document.querySelector(
-    `input[name="insured_auto_driverInfo_claimExperience"][value="${driverInfo.claimExperience}"]`
-  ).checked = true;
 
 
+  const claimExperienceElement = document.querySelector('select[name="insured_auto_driverInfo_claimExperience"]');
+  if (claimExperienceElement) {
+    claimExperienceElement.value = driverInfo.claimExperience;
+    toggleClaimExperience(claimExperienceElement);
+  }
 
-  const claimExperienceElement = document.querySelector(
-    `input[name="insured_auto_driverInfo_claimExperience"][value="${driverInfo.claimExperience}"]`
-  );
-  toggleClaimExperience(claimExperienceElement)
-  const claimInfoElements = document.querySelectorAll("#claim-info input, #claim-info select");
-
-  claimInfoElements.forEach((field) => {
-    field.removeAttribute("required");
-  });
+  
 
 
-  if (claimExperienceElement && claimExperienceElement.checked) {
+  if (claimExperienceElement && claimExperienceElement.value==="Y") {
     const claimInfo = driverInfo.claimInfo && driverInfo.claimInfo[0] ? driverInfo.claimInfo[0] : {};
 
-    // Helper function to set value if element exists
     const setValue = (selector, value) => {
       const element = document.querySelector(selector);
       if (element) {

@@ -1208,8 +1208,19 @@ where name='Occupation'";
 
             </tr>
             <tr>
-              <td style="float: inline-start;">Claim Experience : </td>
+              <td style="float: inline-start;">Claim Experience : <span style="color:red">*</span> </td>
               <td>
+              <select id="insured_auto_driverInfo_claimExperience" name="insured_auto_driverInfo_claimExperience" required
+              onchange="toggleClaimExperience(this)"
+              >
+              <option value=""> <-- Please select an option --></option>
+              <option value="N"> No claims </option>
+              <option value="Y"> 1 claim</option>
+              <option value="morethan1">More than 1 claim </option>
+              
+              </select>
+              </td>
+              <!-- <td>
                 <div class="form-check">
                   <input type="radio" class="form-check-input" id="insured_auto_driverInfo_claimExperience" name="insured_auto_driverInfo_claimExperience" value="Y" checked onclick="toggleClaimExperience(this)">
                   <label class="form-check-label" for="Yes">Yes</label>
@@ -1218,7 +1229,7 @@ where name='Occupation'";
                   <input type="radio" class="form-check-input" id="insured_auto_driverInfo_claimExperience" name="insured_auto_driverInfo_claimExperience" value="N" onclick="toggleClaimExperience(this)">
                   <label class="form-check-label" for="No">No</label>
                 </div>
-              </td>
+              </td> -->
             </tr>
 
           </table>
@@ -1282,7 +1293,7 @@ where name='Occupation'";
               <tr id="haveExperienceRow" style="display:none">
                 <td>Previous Insurer: <span style="color:red">*</span> </td>
                 <td>
-                  <select name="haveEx-PreviousInsurer" required>
+                  <select name="haveEx-PreviousInsurer">
                     <option value="">
                       <-- Please select an option -->
                     </option>
@@ -1299,7 +1310,6 @@ where name='Occupation'";
                     }
                     ?>
                   </select>
-                  <!-- <input type="text" name="haveEx-PreviousInsurer" maxlength="60" size="30" /> -->
                 </td>
                 <th>&nbsp;</th>
                 <td>Previous PolicyNo.: <span style="color:red">*</span> </td>

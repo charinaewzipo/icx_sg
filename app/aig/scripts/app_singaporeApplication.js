@@ -133,15 +133,39 @@ const handleTypeConfirmQuote = () => {
 };
 const toggleNcdLevel = () => {
   const ncdLevel = document.getElementById("ncdLevel").value;
-  const noClaimExperienceRow = document.getElementById("noClaimExperienceRow");
+  console.log("ncdLevel:", ncdLevel)
   const haveExperienceRow = document.getElementById("haveExperienceRow");
+  const noClaimExperienceRow = document.getElementById("noClaimExperienceRow");
   if (ncdLevel < 10) {
-    noClaimExperienceRow.style.display = "";
-    haveExperienceRow.style.display = "none";
-  } else if (ncdLevel >= 10) {
-    noClaimExperienceRow.style.display = "none";
-    haveExperienceRow.style.display = "";
-  }
+    noClaimExperienceRow.style.display = "";  // Show no claim experience row
+    haveExperienceRow.style.display = "none"; // Hide have experience row
+    
+    // Remove required attribute
+    const previousInsurerSelect = haveExperienceRow.querySelector('select[name="haveEx-PreviousInsurer"]');
+    const previousPolicyNoInput = haveExperienceRow.querySelector('input[name="haveEx-PreviousPolicyNo"]');
+
+    if (previousInsurerSelect) {
+        previousInsurerSelect.removeAttribute('required'); // Remove required
+    }
+    if (previousPolicyNoInput) {
+        previousPolicyNoInput.removeAttribute('required'); // Remove required
+    }
+
+} else {
+    noClaimExperienceRow.style.display = "none"; // Hide no claim experience row
+    haveExperienceRow.style.display = ""; // Show have experience row
+    
+    // Add required attribute back
+    const previousInsurerSelect = haveExperienceRow.querySelector('select[name="haveEx-PreviousInsurer"]');
+    const previousPolicyNoInput = haveExperienceRow.querySelector('input[name="haveEx-PreviousPolicyNo"]');
+
+    if (previousInsurerSelect) {
+        previousInsurerSelect.setAttribute('required', ''); // Add required
+    }
+    if (previousPolicyNoInput) {
+        previousPolicyNoInput.setAttribute('required', ''); // Add required
+    }
+}
 };
 const toggleNcdNoExperience = () => {
   const ncdNoExperience = document.getElementById("ncdNoExperience").value;
@@ -149,11 +173,13 @@ const toggleNcdNoExperience = () => {
   document.getElementById("otherExperience").style.display = displayStyle;
 };
 const toggleClaimExperience = (selectedOption) => {
+  console.log("toggleClaimExperience:")
   const ncdNoExperience = document.getElementById("claim-info");
   const displayStyle = selectedOption.value == "Y" ? "block" : "none";
   ncdNoExperience.style.display = displayStyle;
 
   const claimInfo = document.querySelectorAll("#claim-info");
+ 
   if (selectedOption.value === "N") {
     claimInfo.forEach((container) => {
       container.querySelectorAll("input, select").forEach((field) => {
@@ -166,6 +192,11 @@ const toggleClaimExperience = (selectedOption) => {
         field.setAttribute("required", "required");
       });
     });
+  }
+  if(selectedOption.value === "morethan1"){
+    alert("We regret that we are unable to provide you with a quote due to your claim experience. ")
+    selectedOption.value=''
+    return 
   }
 };
 function showForm(selectedOption) {
