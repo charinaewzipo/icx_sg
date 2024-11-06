@@ -324,10 +324,11 @@ function populatePaymentForm(paymentData) {
 }
 
 const handleCardTypeFromResponse=()=>{
+  const formData = new FormData(document.getElementById("application"));
   if(responsePayment){
     const extract= JSON.parse(responsePayment?.response_json)
     const cardType= extract?.sourceOfFunds?.provided?.card?.brand
-    if(quotationData?.payment_mode===1001){
+    if(Number(formData.get('Payment_Mode'))===1001){
       if(cardType==="MASTERCARD"){
         return 2
       }else if (cardType==="VISA"){
@@ -335,7 +336,7 @@ const handleCardTypeFromResponse=()=>{
       }else if (cardType==="AMEX"){
         return 23
       }
-    }else if(quotationData?.payment_mode===124){
+    }else if(Number(formData.get('Payment_Mode'))===124){
       if(cardType==="MASTERCARD"){
         return 10
       }else if (cardType==="VISA"){
