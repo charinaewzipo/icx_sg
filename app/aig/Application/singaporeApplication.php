@@ -317,7 +317,7 @@ error_reporting(E_ALL);
               </td>
             </tr>
           </table>
-         
+
 
         </fieldset>
       </div>
@@ -1214,15 +1214,14 @@ where name='Occupation'";
             <tr>
               <td style="float: inline-start;">Claim Experience : <span style="color:red">*</span> </td>
               <td>
-              <select id="insured_auto_driverInfo_claimExperience" name="insured_auto_driverInfo_claimExperience" required
-              onchange="toggleClaimExperience(this)"
-              >
-              <option value=""> <-- Please select an option --></option>
-              <option value="N"> No claims </option>
-              <option value="Y"> 1 claim</option>
-              <option value="morethan1">More than 1 claim </option>
-              
-              </select>
+                <select id="insured_auto_driverInfo_claimExperience" name="insured_auto_driverInfo_claimExperience" required
+                  onchange="toggleClaimExperience(this)">
+                  <option value=""> <-- Please select an option --></option>
+                  <option value="N"> No claims </option>
+                  <option value="Y"> 1 claim</option>
+                  <option value="morethan1">More than 1 claim </option>
+
+                </select>
               </td>
               <!-- <td>
                 <div class="form-check">
@@ -1237,7 +1236,7 @@ where name='Occupation'";
             </tr>
 
           </table>
-          
+
           <div class="table" id="ncd-info-container">
             <table id="table-form">
               <tr>
@@ -1246,7 +1245,7 @@ where name='Occupation'";
                 </td>
               </tr>
               <tr>
-                <td  style="padding-left:30px">Ncd Level: <span style="color:red">*</span> </td>
+                <td style="padding-left:30px">Ncd Level: <span style="color:red">*</span> </td>
                 <td>
 
                   <select name="Ncd_Level" id="ncdLevel" onchange="toggleNcdLevel()" style="text-align:center " required>
@@ -1444,12 +1443,31 @@ where name='Occupation'";
               <td colspan="2">
                 <input type="text" id="planPoiSelect" name="planPoi" readonly>
               </td>
-             
+
+            </tr>
+            <tr id="coverListDisplay" hidden>
+              <td>Cover List</td>
+              <td></td>
+            </tr>
+            <tbody id="coverListBody">
+
+            </tbody>
+            </tr>
+            <tr id="addCoverDisplay" hidden>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+          
+              <td>
+
+                <button type="button" id="addCover" class="button payment" style="float:right;">Add cover</button>
+              </td>
             </tr>
             <tr id="premium-amount-label">
               <td>Amount : </td>
               <td>
-                <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="" >
+                <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="">
               </td>
             </tr>
 

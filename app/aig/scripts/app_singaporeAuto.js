@@ -77,34 +77,175 @@ async function handleRetrieveAuto(callListData){
 function populatePlanAutoPremium(planList) {
   const planSelect = document.getElementById('planSelect');
   const planPoiSelect = document.getElementById('planPoiSelect');
-
   planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
 
   for (const key in planList) {
-      if (planList.hasOwnProperty(key)) {
-          const plan = planList[key];
-          const option = document.createElement('option');
-          option.value = plan.planId; 
-          option.textContent = `${plan.planDescription} (${plan?.planPoi})`;
-          option.dataset.planPoi = plan.planPoi; 
-          option.dataset.netPremium = plan.netPremium; 
-          planSelect.appendChild(option);
-      }
+    if (planList.hasOwnProperty(key)) {
+      const plan = planList[key];
+      const option = document.createElement('option');
+      option.value = plan.planId;
+      option.textContent = `${plan.planDescription} (${plan?.planPoi})`;
+      option.dataset.planPoi = plan.planPoi;
+      option.dataset.netPremium = plan.netPremium;
+      planSelect.appendChild(option);
+    }
   }
 
   // Update planPoiSelect when an option is selected
   planSelect.addEventListener('change', function() {
+    const coverListDisplay =document.getElementById("coverListDisplay");
+    const addCoverDisplay =document.getElementById("addCoverDisplay");
     const selectedOption = planSelect.options[planSelect.selectedIndex];
     const planPoi = selectedOption.dataset.planPoi || '';
     const premiumAmount = selectedOption.dataset.netPremium || '';
+    const selectedPlanId = selectedOption.value;
+    console.log("selectedPlanId:", selectedPlanId)
     planPoiSelect.value = planPoi;
 
     const premiumAmountInput = document.getElementById('premium-amount');
     if (premiumAmountInput) {
-        premiumAmountInput.value = premiumAmount ? `${premiumAmount} (SGD)` : '';
+      premiumAmountInput.value = premiumAmount ? `${premiumAmount} (SGD)` : '';
     }
-});
 
+    let selectedPlan;
+
+    // Find the plan in planList by planId
+    for (const key in planList) {
+      if (planList[key].planId === parseInt(selectedPlanId)) {
+        selectedPlan = planList[key];
+        break;
+      }
+    }
+
+    if (selectedPlan) {
+      coverListDisplay.hidden=false
+      addCoverDisplay.hidden=false
+      planPoiSelect.value = selectedPlan.planPoi;
+      populateCoverListAutoPremium(selectedPlan.coverList);
+    }
+  });
+}
+
+function populateCoverListAutoPremium(coverList) {
+  const coverListBody = document.getElementById('coverListBody');
+  coverListBody.innerHTML = ''; // Clear previous covers
+  if(coverList){
+    // Initially add one cover row
+    document.getElementById("addCover").addEventListener('click', () => addCoverRow(coverList))
+    addCoverRow(coverList);
+
+  }
+}
+
+// Function to add a new row for each cover option
+function addCoverRow(coverList) {
+  const coverListBody = document.getElementById('coverListBody');
+  
+  const allRows = coverListBody.getElementsByClassName('cover-row');
+  if (allRows.length > 0) {
+    const lastRowSelect = allRows[allRows.length - 1].querySelector('select');
+    if (!lastRowSelect || !lastRowSelect.value) {
+      alert('Please select an option in the previous row before adding a new cover.');
+      return; // ไม่อนุญาตให้เพิ่มแถวใหม่
+    }
+  }
+  // Create a new row
+  const row = document.createElement('tr');
+  row.className = 'cover-row';
+
+  // Cover Label Cell
+  const labelCell = document.createElement('td');
+  labelCell.style.padding = '0 30px';
+  labelCell.textContent = 'Cover Name: ';
+  row.appendChild(labelCell);
+
+  // Cover Dropdown Cell
+  const selectCell = document.createElement('td');
+  const tdCell = document.createElement('td');
+  const selectElement = document.createElement('select');
+  selectElement.className = 'planCoverList';
+  selectElement.style.maxWidth = '216px';
+
+  // Add the default option
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.textContent = '<-- Please select an option -->';
+  defaultOption.disabled = true;
+  defaultOption.selected = true;
+  selectElement.appendChild(defaultOption);
+
+  // Populate dropdown with cover options
+  for (const key in coverList) {
+    if (coverList.hasOwnProperty(key)) {
+      const cover = coverList[key];
+      const option = document.createElement('option');
+      option.value = cover.id;
+      option.textContent = cover.name;
+      option.dataset.premium = cover.premium; // Store premium in the option's dataset
+      selectElement.appendChild(option);
+    }
+  }
+
+  // Premium Display Cell
+  const premiumCell = document.createElement('td');
+  const premiumDisplay = document.createElement('span');
+  premiumDisplay.className = 'premium-display';
+  premiumDisplay.textContent = ''; // Initial premium display is empty
+  
+
+  // Append the dropdown cell
+  selectCell.appendChild(selectElement);
+  row.appendChild(selectCell);
+  row.appendChild(tdCell);
+  premiumCell.appendChild(premiumDisplay);
+  row.appendChild(premiumCell);
+
+  // Append the row to the cover list body
+ 
+
+  // Update premium value when cover is selected
+  selectElement.addEventListener('change', function () {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    premiumDisplay.textContent = selectedOption.dataset.premium 
+      ? `Amount: ${selectedOption.dataset.premium} (SGD)`
+      : '';
+  });
+  const removeCell = document.createElement("td");
+  const removeButton = document.createElement("button");
+  removeButton.textContent = "Remove";
+  removeButton.type = "button";
+  removeButton.className = "button draft-button";
+  removeButton.style.float="right"
+
+  removeButton.onclick = function () {
+    if (coverListBody.children.length === 1) {
+      alert("No cover rows left."); // หรือแสดงข้อความอื่น
+      return 
+      // คุณสามารถปิดใช้งานปุ่ม Add Cover ได้ถ้าต้องการ
+      // document.getElementById("addCoverButton").disabled = true;
+    }
+    coverListBody.removeChild(row); // ลบแถวออกจาก tbody
+  };
+  removeCell.appendChild(removeButton);
+  row.appendChild(removeCell);
+
+  coverListBody.appendChild(row);
+  // Update disabled options initially
+  updateDisabledOptions();
+}
+
+
+// Function to disable selected options in all dropdowns
+function updateDisabledOptions() {
+  const selectedValues = Array.from(document.querySelectorAll('.planCoverList'))
+    .map(select => select.value)
+    .filter(value => value); // Collect selected values only
+
+  document.querySelectorAll('.planCoverList').forEach(select => {
+    Array.from(select.options).forEach(option => {
+      option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
+    });
+  });
 }
 
 const handleKeepChangeButton = () => {
@@ -224,5 +365,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (formType === "auto") {
       attachCustomerIdValidationAuto();
       setupFormListeners();
+
   } 
 });
