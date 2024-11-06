@@ -134,7 +134,7 @@ function populateCoverListAutoPremium(coverList) {
     document.getElementById("addCover").addEventListener('click', () => {
       const rowCount = coverListBody.getElementsByClassName('cover-row').length;
       
-      if (rowCount < 4) {
+      if (rowCount < 10) {
         addCoverRow(coverList);  
       } else {
         alert('You cannot add more than 10 cover rows.');
