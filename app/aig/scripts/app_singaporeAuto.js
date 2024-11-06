@@ -129,22 +129,32 @@ function populatePlanAutoPremium(planList) {
 function populateCoverListAutoPremium(coverList) {
   const coverListBody = document.getElementById('coverListBody');
   coverListBody.innerHTML = ''; // Clear previous covers
-  if(coverList){
+  if (coverList) {
     // Initially add one cover row
-    document.getElementById("addCover").addEventListener('click', () => addCoverRow(coverList))
+    document.getElementById("addCover").addEventListener('click', () => {
+      const rowCount = coverListBody.getElementsByClassName('cover-row').length;
+      
+      if (rowCount < 4) {
+        addCoverRow(coverList);  
+      } else {
+        alert('You cannot add more than 10 cover rows.');
+      }
+    });
+
+    // Add the first cover row
     addCoverRow(coverList);
-
   }
-}
 
+}
 // Function to add a new row for each cover option
 function addCoverRow(coverList) {
   const coverListBody = document.getElementById('coverListBody');
   
-  const allRows = coverListBody.getElementsByClassName('cover-row');
-  if (allRows.length > 0) {
-    const lastRowSelect = allRows[allRows.length - 1].querySelector('select');
-    if (!lastRowSelect || !lastRowSelect.value) {
+  const allSelects = coverListBody.querySelectorAll('select');
+
+  // ตรวจสอบทุก dropdown ว่ามีการเลือกหรือไม่
+  for (const selectElement of allSelects) {
+    if (!selectElement.value) {
       alert('Please select an option in the previous row before adding a new cover.');
       return; // ไม่อนุญาตให้เพิ่มแถวใหม่
     }
