@@ -112,7 +112,6 @@ const handlePaymentValidateFormHome = () => {
       !formData.get(field.name)          // Verify value from FormData
     ) {
       console.log(`Error: ${field.name} is empty`);
-      alert(`Error: ${field.name} is empty`);
       isValid = false;
       field.classList.add("error-border");
     } else {
