@@ -166,14 +166,22 @@ WHERE 1=1
 	$result = $dbconn->executeQuery($sql);
 	while ($rs = mysqli_fetch_array($result)) {
 
-
+		if (!empty($rs['policy_create_date'])) {
+			// Convert and add 8 hours to policy_create_date
+			$policyCreateDate = new DateTime($rs['policy_create_date']);
+			$policyCreateDate->modify('+8 hours');
+			$formattedPolicyCreateDate = $policyCreateDate->format('Y-m-d H:i:s');
+	} else {
+			// Set as empty string if policy_create_date is null or empty
+			$formattedPolicyCreateDate = '';
+	}
 		$data[$count] = array(
 			"id"  => nullToEmpty($rs['id']),
 			"quono"  => nullToEmpty($rs['quoteNo']),
 			"cname"  => nullToEmpty($rs['fullname']),
 			"camp" => nullToEmpty($rs['product_name']),
 			"camp_id" => nullToEmpty($rs['campaign_id']),
-			"saledt"  => nullToEmpty($rs['policy_create_date']),
+		  "saledt"   => $formattedPolicyCreateDate, 
 			"appsts"  => nullToEmpty($rs['incident_status'])
 			// "owner"  => nullToEmpty($rs['owner']),
 			// "qc_name"  => nullToEmpty($rs['qc_name']),

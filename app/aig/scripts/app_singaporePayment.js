@@ -97,6 +97,37 @@ function fetchPaymentOption(paymentMode, paymentFrequency) {
       document.body.classList.remove('loading');
     });
 }
+
+const handlePaymentValidateFormHome = () => {
+  const form = document.getElementById("application");
+  const formData = new FormData(form); 
+  let isValid = true;
+
+  const fields = form.querySelectorAll("input:not([name='PolicyEffectiveDate']):not([name='dateOfBirth']), select, textarea,button:not(#btnSaveForm)");
+
+  fields.forEach((field) => {
+    if (
+      field.style.display !== "none" && // Ensure the field is visible
+      field.required &&                  // Only check required fields
+      !formData.get(field.name)          // Verify value from FormData
+    ) {
+      console.log(`Error: ${field.name} is empty`);
+      alert(`Error: ${field.name} is empty`);
+      isValid = false;
+      field.classList.add("error-border");
+    } else {
+      field.classList.remove("error-border");
+    }
+  });
+
+  if (!isValid) {
+    alert("Please Edit and fill in all required fields.");
+    handleEditQuote()
+  }
+
+  return isValid;
+};
+
 const handleRetrieveQuote = async () => {
   const objectRetrieve = {
     "channelType": "10",
@@ -107,10 +138,16 @@ const handleRetrieveQuote = async () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let is_firsttime = url.searchParams.get('is_firsttime');
+  let formType = url.searchParams.get('formType');
   const paymentModeValue = document.getElementById("paymentModeSelect").value
   if (!paymentModeValue) {
     alert("Payment Mode has no value");
     return;
+  }
+  if(formType==="home"){
+    if(!handlePaymentValidateFormHome()){
+      return
+    }
   }
   if (is_firsttime === "1") {
     handlePaymentGateway(quotationData?.premiumPayable, Number(paymentModeValue));

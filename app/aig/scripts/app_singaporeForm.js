@@ -217,9 +217,9 @@ const setDefaultValueForm = async (dbData) => {
   const emailFulfillmentYes = document.querySelector('#emailFulfillmentYes');
   const emailFulfillmentNo = document.querySelector('#emailFulfillmentNo');
 
-  if (dbData?.email_fullfillment === "1") {
+  if (Number(dbData?.efulfillmentFlag) === "1") {
     emailFulfillmentYes.checked = true;
-  } else if (dbData?.email_fullfillment === "2") {
+  } else if (Number(dbData?.efulfillmentFlag) === "2") {
     emailFulfillmentNo.checked = true;
   }
 

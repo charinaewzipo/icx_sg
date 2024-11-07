@@ -67,7 +67,7 @@ const handleEditQuote = () => {
     if(campaignDetailsFromAPI?.incident_type==="Renewal" &&quotationData?.type==="home"){
        formElements = document.querySelectorAll(
         "input:not([name='PolicyEffectiveDate']):not([name='firstName']):not([name='dateOfBirth']):not([name='customerIdNo']), " + 
-        "select:not(#planPoiSelect1):not(#select-product):not([name='gender']):not([name='maritalStatus']):not([name='residentStatus']):not([name='customerIdType']), " + 
+        "select:not(#planPoiSelect1):not(#select-product):not([name='gender']):not([name='residentStatus']):not([name='customerIdType']), " + 
         "textarea, " + 
         "button:not(#btnSaveForm)"
       );
