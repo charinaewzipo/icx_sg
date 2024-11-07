@@ -1470,6 +1470,12 @@ where name='Occupation'";
                 <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="">
               </td>
             </tr>
+            <tr id="comment-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+              <td style="float: inline-start;">Comments History:</td>
+              <td style="white-space:nowrap;">
+                <textarea name="commentHistory" id="commentHistory" rows="4" cols="35" maxlength="2000"></textarea>
+              </td>
+            </tr>
 
 
           </table>
