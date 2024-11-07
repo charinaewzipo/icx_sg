@@ -474,9 +474,9 @@ error_reporting(E_ALL);
               </td>
             </tr>
             <tr>
-              <td style="white-space:nowrap">Marital Status : <span style="color:red">*</span> </td>
+              <td style="white-space:nowrap">Marital Status : <?php echo ($formType === "home") ? '' : '<span style="color:red">*</span>'; ?> </td>
               <td>
-                <select name="maritalStatus" required>
+                <select name="maritalStatus" <?php echo ($formType === "home") ? '' : 'required'; ?>>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -546,9 +546,9 @@ error_reporting(E_ALL);
               <td><input type="text" name="customerIdNo" maxlength="60" size="30" required /></td>
             </tr>
             <tr>
-              <td>Occupation : <span style="color:red">*</span></td>
+              <td>Occupation : <?php echo ($formType === "home") ? '' : '<span style="color:red">*</span>'; ?></td>
               <td>
-                <select name="occupation" required>
+                <select name="occupation" <?php echo ($formType === "home") ? '' : 'required'; ?>>
                   <option value=""> <-- Please select an option --></option>
                   <?php
                   $strSQL = "SELECT name, id, description
@@ -836,9 +836,9 @@ where name='Nature of Business'";
               </td>
             </tr>
             <tr>
-              <td>Brand :</td>
+              <td>Brand : <span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_make">
+                <select name="insured_auto_vehicle_make" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -858,9 +858,9 @@ where name='Nature of Business'";
                 </select>
               </td>
               <th>&nbsp;</th>
-              <td>Model :</td>
+              <td>Model : <span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_model">
+                <select name="insured_auto_vehicle_model" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -919,9 +919,9 @@ where name='Nature of Business'";
                 </div>
               </td>
               <th></th>
-              <td>Age Condition Basis : </td>
+              <td>Age Condition Basis : <span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_ageConditionBasis">
+                <select name="insured_auto_vehicle_ageConditionBasis" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -955,9 +955,9 @@ where name='Nature of Business'";
               </td>
             </tr>
             <tr>
-              <td>Vehicle Usage :</td>
+              <td>Vehicle Usage :<span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_vehicleUsage">
+                <select name="insured_auto_vehicle_vehicleUsage" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -1001,9 +1001,9 @@ where name='Nature of Business'";
                 </select>
 
               <th>&nbsp;</th>
-              <td>Mileage Declaration : </td>
+              <td>Mileage Declaration : <span style="color:red">*</span></td>
               <td>
-                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" />
+                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" required/>
               </td>
 
             </tr>
@@ -1418,7 +1418,7 @@ where name='Occupation'";
 
         </div>
         <button id="add-insured-child" class="button payment" style="float: right; display:none" type="button">Add Child</button>
-        <button id="get-premium-button" class="button payment" type="button" onclick="validateAndSubmitFormCallPremium()">Get premium</button>
+        <button <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?> id="get-premium-button" class="button payment" type="button" onclick="validateAndSubmitFormCallPremium()">Get premium</button>
 
         <!--Form Insured List Plan info -->
         <div id="plan-info-container-main">
@@ -1464,7 +1464,7 @@ where name='Occupation'";
                 <button type="button" id="addCover" class="button payment" style="float:right;">Add cover</button>
               </td>
             </tr>
-            <tr id="premium-amount-label">
+            <tr id="premium-amount-label"  <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
               <td>Amount : </td>
               <td>
                 <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="">
