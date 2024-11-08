@@ -836,7 +836,7 @@ where name='Nature of Business'";
               </td>
             </tr>
             <tr>
-              <td>Brand : <span style="color:red">*</span></td>
+              <td>Make : <span style="color:red">*</span></td>
               <td>
                 <select name="insured_auto_vehicle_make" required>
                   <option value="">
@@ -919,27 +919,7 @@ where name='Nature of Business'";
                 </div>
               </td>
               <th></th>
-              <td>Age Condition Basis : <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_auto_vehicle_ageConditionBasis" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'ageConditionBasis'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
-                  ?>
-
-                </select>
-              </td>
+              
             </tr>
             <tr>
               <td style="float: inline-start;">Off Peak Car : </td>
@@ -978,34 +958,10 @@ where name='Nature of Business'";
 
               </td>
               <th>&nbsp;</th>
-            </tr>
-            <tr>
-              <td>Mileage Condition : <span style="color:red">*</span></td>
-              <td><select name="insured_auto_vehicle_mileageCondition" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Mileage Condition'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
-                  ?>
-
-                </select>
-
-              <th>&nbsp;</th>
               <td>Mileage Declaration : <span style="color:red">*</span></td>
               <td>
                 <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" required/>
               </td>
-
             </tr>
             <tr>
               <td>Engine No. : <span style="color:red">*</span> </td>
@@ -1036,11 +992,7 @@ where name='Nature of Business'";
                   ?>
 
                 </select>
-              <th>&nbsp;</th>
-              <td>Declared SI : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_vehicle_declaredSI" maxlength="60" required /></td>
-            </tr>
-            <tr></tr>
+                         </tr>
             <tr>
               <td>
                 <h1>Driver Info</h1>
@@ -1209,7 +1161,9 @@ where name='Occupation'";
 
                   ?>
                 </select>
-
+              </td>
+              <th></th>
+              
             </tr>
             <tr>
               <td style="float: inline-start;">Claim Experience : <span style="color:red">*</span> </td>
@@ -1237,7 +1191,7 @@ where name='Occupation'";
 
           </table>
 
-          <div class="table" id="ncd-info-container">
+          <div  id="ncd-info-container">
             <table id="table-form">
               <tr>
                 <td>
@@ -1245,7 +1199,7 @@ where name='Occupation'";
                 </td>
               </tr>
               <tr>
-                <td style="padding-left:30px">Ncd Level: <span style="color:red">*</span> </td>
+                <td style="width:185px">Ncd Level: <span style="color:red">*</span> </td>
                 <td>
 
                   <select name="Ncd_Level" id="ncdLevel" onchange="toggleNcdLevel()" style="text-align:center " required>
@@ -1270,7 +1224,7 @@ where name='Occupation'";
                 <td>&nbsp;</td>
               </tr>
               <tr id="noClaimExperienceRow">
-                <td style="padding-left:30px">No Claim Experience : <span style="color:red">*</span> </td>
+                <td >No Claim Experience : <span style="color:red">*</span> </td>
                 <td>
                   <select name="NoClaimExperience" id="ncdNoExperience" onchange="toggleNcdNoExperience()" required>
                     <option value="">
@@ -1315,7 +1269,7 @@ where name='Occupation'";
                   </select>
                 </td>
                 <th>&nbsp;</th>
-                <td>Previous PolicyNo.: <span style="color:red">*</span> </td>
+                <td>Previous PolicyNo: <span style="color:red">*</span> </td>
                 <td>
                   <input type="text" name="haveEx-PreviousPolicyNo" maxlength="60" size="30" />
                 </td>
@@ -1411,6 +1365,60 @@ where name='Occupation'";
               </tr>
             </table>
           </div>
+          <div id="agecondition">
+            <table id="table-form">
+            <tr>
+                <td>
+                  <h1>Other Info</h1>
+                </td>
+              </tr>
+              <tr>
+              <td style="width:185px">Age Condition Basis : <span style="color:red">*</span></td>
+              <td>
+                <select name="insured_auto_vehicle_ageConditionBasis" required>
+                  <option value="">
+                    <-- Please select an option -->
+                  </option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'ageConditionBasis'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
+
+                </select>
+              </td>
+              <th></th>
+              <td>Mileage Condition : <span style="color:red">*</span></td>
+              <td><select name="insured_auto_vehicle_mileageCondition" required>
+                  <option value="">
+                    <-- Please select an option -->
+                  </option>
+                  <?php
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Mileage Condition'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+                  ?>
+
+                </select>
+              </td>
+              </tr>
+            </table>
+            
+          </div>
           <br>
         </div>
         <!--Form Insured List (A&H) -->
@@ -1473,7 +1481,7 @@ where name='Occupation'";
             <tr id="comment-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
               <td style="float: inline-start;">Comments History:</td>
               <td style="white-space:nowrap;">
-                <textarea name="commentHistory" id="commentHistory" rows="4" cols="35" maxlength="2000"></textarea>
+                <textarea name="commentHistory" id="commentHistory" rows="4" cols="35" maxlength="2000" readonly></textarea>
               </td>
             </tr>
 

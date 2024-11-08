@@ -354,9 +354,7 @@ const setInsuredVehicleList = (insuredData) => {
   document.querySelector(
     'select[name="insured_auto_vehicle_hirePurchaseCompany"]'
   ).value = vehicleInfo.hirePurchaseCompany;
-  document.querySelector(
-    'input[name="insured_auto_vehicle_declaredSI"]'
-  ).value = vehicleInfo.declaredSI;
+
 
   const driverInfo = insuredData[0].driverInfo[0];
   console.log("driverInfo", driverInfo);

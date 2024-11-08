@@ -14,7 +14,7 @@ window.onload = function () {
   var annualRadio = document.getElementById('paymentFrequencyAnnual');
   var displayMonthly = document.getElementById('display-paymentFrequencyMonthly');
 
-  if (formType === "home") {
+  if (formType === "home" || formType==="auto") {
     annualRadio.checked = true;
 
     displayMonthly.style.display = "none";
@@ -106,8 +106,6 @@ const handleTypeConfirmQuote = () => {
       }
     );
     document.getElementById("remark-c-container").style.display = "none";
-    document.getElementById("promocode-label").style.display = "none";
-    document.getElementById("promocode-label2").style.display = "none";
     isPolicyHolderDrivingRow.style.display = "table-row";
   } else if (formType === "ah") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto, planInfoContainer].forEach(
@@ -136,7 +134,7 @@ const toggleNcdLevel = () => {
   console.log("ncdLevel:", ncdLevel)
   const haveExperienceRow = document.getElementById("haveExperienceRow");
   const noClaimExperienceRow = document.getElementById("noClaimExperienceRow");
-  if (ncdLevel < 10) {
+  if (ncdLevel < 1) {
     noClaimExperienceRow.style.display = "";  // Show no claim experience row
     haveExperienceRow.style.display = "none"; // Hide have experience row
     
@@ -333,7 +331,6 @@ function handleForm() {
           formData.get("insured_auto_vehicle_mileageDeclaration") || "",
         hirePurchaseCompany:
           formData.get("insured_auto_vehicle_hirePurchaseCompany") || "",
-        declaredSI: formData.get("insured_auto_vehicle_declaredSI") || "",
       },
       driverInfo: [
         {

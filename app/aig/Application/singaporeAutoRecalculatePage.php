@@ -1103,10 +1103,7 @@ where name='Nature of Business'";
                   ?>
 
                 </select>
-              <th>&nbsp;</th>
-              <td>Declared SI : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_vehicle_declaredSI" maxlength="60" required /></td>
-            </tr>
+                          </tr>
             <tr></tr>
             <tr>
               <td>
