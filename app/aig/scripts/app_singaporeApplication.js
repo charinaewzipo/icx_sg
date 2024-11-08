@@ -134,8 +134,10 @@ const toggleNcdLevel = () => {
   console.log("ncdLevel:", ncdLevel)
   const haveExperienceRow = document.getElementById("haveExperienceRow");
   const noClaimExperienceRow = document.getElementById("noClaimExperienceRow");
+  const ncdNoExperience = document.getElementById("ncdNoExperience");
+  
   if (ncdLevel < 1) {
-    noClaimExperienceRow.style.display = "";  // Show no claim experience row
+    noClaimExperienceRow.style.display = "";
     haveExperienceRow.style.display = "none"; // Hide have experience row
     
     // Remove required attribute
@@ -144,6 +146,7 @@ const toggleNcdLevel = () => {
 
     if (previousInsurerSelect) {
         previousInsurerSelect.removeAttribute('required'); // Remove required
+    
     }
     if (previousPolicyNoInput) {
         previousPolicyNoInput.removeAttribute('required'); // Remove required
@@ -152,16 +155,18 @@ const toggleNcdLevel = () => {
 } else {
     noClaimExperienceRow.style.display = "none"; // Hide no claim experience row
     haveExperienceRow.style.display = ""; // Show have experience row
-    
+    ncdNoExperience.value="";
     // Add required attribute back
     const previousInsurerSelect = haveExperienceRow.querySelector('select[name="haveEx-PreviousInsurer"]');
     const previousPolicyNoInput = haveExperienceRow.querySelector('input[name="haveEx-PreviousPolicyNo"]');
 
     if (previousInsurerSelect) {
         previousInsurerSelect.setAttribute('required', ''); // Add required
+        previousInsurerSelect.value=""
     }
     if (previousPolicyNoInput) {
         previousPolicyNoInput.setAttribute('required', ''); // Add required
+        previousPolicyNoInput.value=""
     }
 }
 };

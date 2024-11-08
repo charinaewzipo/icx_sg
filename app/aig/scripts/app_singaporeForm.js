@@ -318,6 +318,7 @@ const setInsuredHome = (insuredData) => {
 };
 const setInsuredVehicleList = (insuredData) => {
   console.log("setInsuredList vehicle")
+  toggleNcdLevel()
   if (!insuredData || insuredData.length === 0) return;
   const vehicleInfo = insuredData[0].vehicleInfo;
   document.querySelector('select[name="insured_auto_vehicle_make"]').value =
