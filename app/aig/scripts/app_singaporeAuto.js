@@ -1,3 +1,5 @@
+let premiumBaseAmount = 0;
+
 function checkRetrieveCampaignAuto(data){
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -98,6 +100,7 @@ function populatePlanAutoPremium(planList) {
     const selectedOption = planSelect.options[planSelect.selectedIndex];
     const planPoi = selectedOption.dataset.planPoi || '';
     const premiumAmount = selectedOption.dataset.netPremium || '';
+    premiumBaseAmount=parseFloat(premiumAmount)
     const selectedPlanId = selectedOption.value;
     console.log("selectedPlanId:", selectedPlanId)
     planPoiSelect.value = planPoi;
@@ -118,6 +121,9 @@ function populatePlanAutoPremium(planList) {
     }
 
     if (selectedPlan) {
+      console.log("selectedPlan:", selectedPlan)
+      
+      console.log("Object.keys(selectedPlan.coverList).length", Object.keys(selectedPlan.coverList).length)
       coverListDisplay.hidden=false
       addCoverDisplay.hidden=false
       planPoiSelect.value = selectedPlan.planPoi;
@@ -155,10 +161,10 @@ function addCoverRow(coverList) {
   // ตรวจสอบทุก dropdown ว่ามีการเลือกหรือไม่
   for (const selectElement of allSelects) {
     if (!selectElement.value) {
-      alert('Please select an option in the previous row before adding a new cover.');
       return; // ไม่อนุญาตให้เพิ่มแถวใหม่
     }
   }
+
   // Create a new row
   const row = document.createElement('tr');
   row.className = 'cover-row';
@@ -186,7 +192,7 @@ function addCoverRow(coverList) {
 
   // Populate dropdown with cover options
   for (const key in coverList) {
-    if (coverList.hasOwnProperty(key)) {
+    if (coverList.hasOwnProperty(key) && coverList[key]?.autoAttached === false) {
       const cover = coverList[key];
       const option = document.createElement('option');
       option.value = cover.id;
@@ -201,7 +207,6 @@ function addCoverRow(coverList) {
   const premiumDisplay = document.createElement('span');
   premiumDisplay.className = 'premium-display';
   premiumDisplay.textContent = ''; // Initial premium display is empty
-  
 
   // Append the dropdown cell
   selectCell.appendChild(selectElement);
@@ -210,41 +215,68 @@ function addCoverRow(coverList) {
   premiumCell.appendChild(premiumDisplay);
   row.appendChild(premiumCell);
 
-  // Append the row to the cover list body
- 
-
   // Update premium value when cover is selected
   selectElement.addEventListener('change', function () {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     premiumDisplay.textContent = selectedOption.dataset.premium 
       ? `Amount: ${selectedOption.dataset.premium} (SGD)`
       : '';
+
+    calculatePremiumSummary(); // Recalculate the total premium after selection
   });
+
+  // Remove Button
   const removeCell = document.createElement("td");
   const removeButton = document.createElement("button");
   removeButton.textContent = "Remove";
   removeButton.type = "button";
   removeButton.className = "button draft-button";
-  removeButton.style.float="right"
+  removeButton.style.float = "right";
 
   removeButton.onclick = function () {
     if (coverListBody.children.length === 1) {
       alert("No cover rows left."); // หรือแสดงข้อความอื่น
-      return 
-      // คุณสามารถปิดใช้งานปุ่ม Add Cover ได้ถ้าต้องการ
-      // document.getElementById("addCoverButton").disabled = true;
+      return;
     }
-    coverListBody.removeChild(row); // ลบแถวออกจาก tbody
+    coverListBody.removeChild(row); 
+    calculatePremiumSummary(); 
   };
+
   removeCell.appendChild(removeButton);
   row.appendChild(removeCell);
-
   coverListBody.appendChild(row);
+
   // Update disabled options initially
-  updateDisabledOptions();
+  updateDisabledOptions(); // Ensure options are disabled when needed
 }
 
 
+function calculatePremiumSummary() {
+  console.log("premiumBaseAmount:", premiumBaseAmount);
+  
+  const premiumAmountInput = document.getElementById("premium-amount");
+  let premiumTotal = premiumBaseAmount;  // Start with the base amount
+
+  const planCoverLists = document.querySelectorAll('.planCoverList');
+
+  // Loop through each select element
+  planCoverLists.forEach(function(selectElement) {
+      const selectedOption = selectElement.options[selectElement.selectedIndex];
+      
+      // If an option is selected and it is not disabled
+      if (selectedOption.value !== "" && !selectedOption.disabled) {
+          // Add the 'data-premium' value of the selected option to the total premium
+          premiumTotal += parseFloat(selectedOption.getAttribute('data-premium')) || 0;
+      }
+  });
+
+  // Update the total premium in the premium amount input field
+  if (premiumAmountInput) {
+      premiumAmountInput.value = premiumTotal ? `${premiumTotal} (SGD)` : '';  // Set premium total in the input field
+  }
+
+  console.log("Total Premium:", premiumTotal);
+}
 // Function to disable selected options in all dropdowns
 function updateDisabledOptions() {
   const selectedValues = Array.from(document.querySelectorAll('.planCoverList'))
