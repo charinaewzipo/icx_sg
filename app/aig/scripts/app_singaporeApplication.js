@@ -448,10 +448,37 @@ function getPlanDetail() {
   const formData = new FormData(document.querySelector("form")); // Assuming the form element is available
   const planSelectElement = document.getElementById("planSelect");
   const selectedOption = planSelectElement.options[planSelectElement.selectedIndex];
-  const PlanDetail = {
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
+  let PlanDetail = {
   planId:formData.get("planId") || "",
   planPoi:formData.get("planPoi") || "",
   planCode: selectedOption.getAttribute("data-plan_group") || "" 
+ }
+ 
+ if(formType==='auto'){
+  let coverList=[]
+  const planCoverLists = document.querySelectorAll('.planCoverList');
+
+  // Loop through each select element
+  planCoverLists.forEach(function(selectElement) {
+      const selectedOption = selectElement.options[selectElement.selectedIndex];
+      
+      // If an option is selected and it is not disabled
+      if (selectedOption.value !== "" && !selectedOption.disabled) {
+        console.log("selectedOption:", selectedOption)
+        const objectCover={
+          id:selectedOption.value,
+          code:selectedOption?.dataset.code||"",
+          selectedFlag:true
+        }
+        coverList.push(objectCover)
+          // Add the 'data-premium' value of the selected option to the total premium
+          // premiumTotal += parseFloat(selectedOption.getAttribute('data-premium')) || 0;
+      }
+  });
+  PlanDetail={...PlanDetail,coverList}
  }
  return PlanDetail
 }
@@ -627,7 +654,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         }
 
       }else{
-        await fetchQuotation(requestBody);
+        // await fetchQuotation(requestBody);
         console.log("fetch quotation")
       }
     });

@@ -198,6 +198,7 @@ function addCoverRow(coverList) {
       option.value = cover.id;
       option.textContent = cover.name;
       option.dataset.premium = cover.premium; // Store premium in the option's dataset
+      option.dataset.code = cover.code; // Store premium in the option's dataset
       selectElement.appendChild(option);
     }
   }
