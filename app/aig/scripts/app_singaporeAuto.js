@@ -464,6 +464,38 @@ function resetPlanSelect() {
       planPoiSelect.value = '';
       premiumAmount.value = '';
   } 
+  const coverListBody = document.getElementById('coverListBody');
+  coverListBody.innerHTML = ''; // Clear previous covers
+    // Create a new row
+  const row = document.createElement('tr');
+  row.className = 'cover-row';
+
+  // Cover Label Cell
+  const labelCell = document.createElement('td');
+  labelCell.style.padding = '0 30px';
+  labelCell.textContent = 'Cover Name: ';
+  row.appendChild(labelCell);
+
+  // Cover Dropdown Cell
+  const selectCell = document.createElement('td');
+  const tdCell = document.createElement('td');
+  const selectElement = document.createElement('select');
+  selectElement.className = 'planCoverList';
+  selectElement.style.maxWidth = '216px';
+
+  // Add the default option
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.textContent = '<-- Please select an option -->';
+  defaultOption.disabled = true;
+  defaultOption.selected = true;
+  selectElement.appendChild(defaultOption);
+  selectCell.appendChild(selectElement);
+  row.appendChild(selectCell);
+  row.appendChild(tdCell);
+  coverListBody.appendChild(row);
+  const premiumAmountInput = document.getElementById('premium-amount');
+  premiumAmountInput.value='';
 }
 
 document.addEventListener("DOMContentLoaded", () => {
