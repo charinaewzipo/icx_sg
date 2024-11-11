@@ -153,7 +153,6 @@ function populateCoverListAutoPremium(coverList) {
 }
 // Function to add a new row for each cover option
 function addCoverRow(coverList,setCoverData) {
-  console.log("addCoverRow:",coverList)
   
   const coverListBody = document.getElementById('coverListBody');
   
@@ -507,6 +506,63 @@ const createElementCover=()=>{
   row.appendChild(tdCell);
   coverListBody.appendChild(row);
 }
+
+async function fetchGetModel(makeValue) {
+  if (!makeValue) return;
+
+  const url = `../scripts/get_model_auto.php?makeValue=${makeValue}`;
+  document.body.classList.add('loading');
+
+  try {
+    // Await the fetch response
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log("data:", data)
+
+    // Ensure the select element exists
+    const ModelSelect = document.querySelector('select[name="insured_auto_vehicle_model"]');
+    if (!ModelSelect) {
+      console.error("Dropdown not found!");
+      return;
+    }
+
+    // Clear existing options
+    ModelSelect.innerHTML = `
+      <option value="">
+        <-- Please select an option -->
+      </option>
+    `;
+
+    // Populate new options from the fetched data
+    if (data && Array.isArray(data)&&data?.length>0) {
+      data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.description;
+        ModelSelect.appendChild(option);
+        ModelSelect.required = true;
+      });
+    }else {
+      // Display a message when no data is available
+      const option = document.createElement('option');
+      option.value = "";
+      option.textContent = "No options available";
+      option.disabled = true;
+      ModelSelect.appendChild(option);
+      ModelSelect.required = false;
+    }
+  } catch (error) {
+    console.error('Error fetching plans:', error);
+  } finally {
+    document.body.classList.remove('loading');
+  }
+}
+const handleAutoMakeChange =  () => {
+  const makeSelect = document.querySelector('select[name="insured_auto_vehicle_make"]');
+  makeSelect.addEventListener('change', async () => {
+    await  fetchGetModel(makeSelect.value)
+  })
+}
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -515,6 +571,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (formType === "auto") {
       attachCustomerIdValidationAuto();
       setupFormListeners();
-      // createElementCover()
+      handleAutoMakeChange()
   } 
 });

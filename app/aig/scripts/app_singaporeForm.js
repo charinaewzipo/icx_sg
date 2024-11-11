@@ -199,6 +199,8 @@ const setDefaultValueForm = async (dbData) => {
   
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   if(dbData?.type=="auto"){
+    const vehicleInfo = insuredData[0].vehicleInfo
+    await fetchGetModel(vehicleInfo.make);
     document.querySelector('select[name="Ncd_Level"]').value = ncdInfo?.ncdLevel;
     document.querySelector('select[name="NoClaimExperience"]').value = ncdInfo?.noClaimExperience || "";
     const haveExPreviousInsurer = document.querySelector('select[name="haveEx-PreviousInsurer"]');
