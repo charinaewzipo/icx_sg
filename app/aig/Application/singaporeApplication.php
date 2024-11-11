@@ -616,11 +616,11 @@ where name='ph occupation'";
               <td style="float:inline-start">isPolicyHolderDriving : <span style="color:red">*</span></td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="isPolicyHolderDrivingYes" name="isPolicyHolderDriving" value="2" checked>
+                  <input type="radio" class="form-check-input" id="isPolicyHolderDrivingYes" name="isPolicyHolderDriving" value="2" onclick="handleChangeIsPolicyHolderDriving(this)">
                   <label class="form-check-label" for="isPolicyHolderDrivingYes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" id="isPolicyHolderDrivingNo" name="isPolicyHolderDriving" value="1">
+                  <input type="radio" class="form-check-input" id="isPolicyHolderDrivingNo" name="isPolicyHolderDriving" value="1" checked onclick="handleChangeIsPolicyHolderDriving(this)">
                   <label class="form-check-label" for="isPolicyHolderDrivingNo">No</label>
                 </div>
               </td>
@@ -883,7 +883,7 @@ where name='Nature of Business'";
             <tr>
               <td>Vehicle Reg Year :<span style="color:red">*</span></td>
               <td>
-                <select name="insured_auto_vehicle_vehicleRegYear">
+                <select name="insured_auto_vehicle_vehicleRegYear" required>
                   <option value="">
                     <-- Please select an option -->
                   </option>
@@ -919,7 +919,7 @@ where name='Nature of Business'";
                 </div>
               </td>
               <th></th>
-              
+
             </tr>
             <tr>
               <td style="float: inline-start;">Off Peak Car : </td>
@@ -960,7 +960,7 @@ where name='Nature of Business'";
               <th>&nbsp;</th>
               <td>Mileage Declaration : <span style="color:red">*</span></td>
               <td>
-                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" required/>
+                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" required />
               </td>
             </tr>
             <tr>
@@ -992,7 +992,7 @@ where name='Nature of Business'";
                   ?>
 
                 </select>
-                         </tr>
+            </tr>
             <tr>
               <td>
                 <h1>Driver Info</h1>
@@ -1006,13 +1006,14 @@ where name='Nature of Business'";
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'driverType'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov WHERE name = 'driverType'";
                   $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
+                  while ($objResult = mysqli_fetch_array($objQuery)) {
+                    // Ensure both $objResult["id"] and 5 are of the same type (integer)
+                    $selected = ((int)$objResult["id"] === 5) ? "selected" : "";
                   ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
+                    <option value="<?php echo $objResult["id"]; ?>" <?php echo $selected; ?>>
+                      <?php echo $objResult["description"]; ?>
                     </option>
                   <?php
                   }
@@ -1030,7 +1031,7 @@ where name='Nature of Business'";
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'driverResidentStatus'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'residentStatus'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -1082,7 +1083,7 @@ where name='Nature of Business'";
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'driverGender'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'gender'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -1123,7 +1124,7 @@ where name='Nature of Business'";
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'driverMaritalStatus'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Marital Status'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -1163,7 +1164,7 @@ where name='Occupation'";
                 </select>
               </td>
               <th></th>
-              
+
             </tr>
             <tr>
               <td style="float: inline-start;">Claim Experience : <span style="color:red">*</span> </td>
@@ -1191,7 +1192,7 @@ where name='Occupation'";
 
           </table>
 
-          <div  id="ncd-info-container">
+          <div id="ncd-info-container">
             <table id="table-form">
               <tr>
                 <td>
@@ -1224,7 +1225,7 @@ where name='Occupation'";
                 <td>&nbsp;</td>
               </tr>
               <tr id="noClaimExperienceRow">
-                <td >No Claim Experience : <span style="color:red">*</span> </td>
+                <td>No Claim Experience : <span style="color:red">*</span> </td>
                 <td>
                   <select name="NoClaimExperience" id="ncdNoExperience" onchange="toggleNcdNoExperience()" required>
                     <option value="">
@@ -1367,57 +1368,57 @@ where name='Occupation'";
           </div>
           <div id="agecondition">
             <table id="table-form">
-            <tr>
+              <tr>
                 <td>
                   <h1>Other Info</h1>
                 </td>
               </tr>
               <tr>
-              <td style="width:185px">Age Condition Basis : <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_auto_vehicle_ageConditionBasis" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'ageConditionBasis'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
+                <td style="width:185px">Age Condition Basis : <span style="color:red">*</span></td>
+                <td>
+                  <select name="insured_auto_vehicle_ageConditionBasis" required>
+                    <option value="">
+                      <-- Please select an option -->
                     </option>
-                  <?php
-                  }
-                  ?>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'ageConditionBasis'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
 
-                </select>
-              </td>
-              <th></th>
-              <td>Mileage Condition : <span style="color:red">*</span></td>
-              <td><select name="insured_auto_vehicle_mileageCondition" required>
-                  <option value="">
-                    <-- Please select an option -->
-                  </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Mileage Condition'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
+                  </select>
+                </td>
+                <th></th>
+                <td>Mileage Condition : <span style="color:red">*</span></td>
+                <td><select name="insured_auto_vehicle_mileageCondition" required>
+                    <option value="">
+                      <-- Please select an option -->
                     </option>
-                  <?php
-                  }
-                  ?>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Mileage Condition'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
 
-                </select>
-              </td>
+                  </select>
+                </td>
               </tr>
             </table>
-            
+
           </div>
           <br>
         </div>
@@ -1466,13 +1467,13 @@ where name='Occupation'";
               <td></td>
               <td></td>
               <td></td>
-          
+
               <td>
 
                 <button type="button" id="addCover" class="button payment" style="float:right;">Add cover</button>
               </td>
             </tr>
-            <tr id="premium-amount-label"  <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+            <tr id="premium-amount-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
               <td>Amount : </td>
               <td>
                 <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="">

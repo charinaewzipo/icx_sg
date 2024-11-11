@@ -271,6 +271,73 @@ const handleKeepChangeButton = () => {
 }
 const handleCloseButton=()=>{ window.close()}
 
+function handleChangeIsPolicyHolderDriving(checkbox) {
+  const yesCheckbox = document.getElementById('isPolicyHolderDrivingYes');
+  const noCheckbox = document.getElementById('isPolicyHolderDrivingNo');
+  
+  // Policyholder information fields
+  const firstName = document.getElementsByName('firstName')[0]; 
+  const gender = document.getElementsByName('gender')[0]; 
+  const nationality = document.getElementsByName('nationality')[0]; 
+  const dateOfBirth = document.getElementsByName('dateOfBirth')[0]; 
+  const maritalStatus = document.getElementsByName('maritalStatus')[0]; 
+  const residentStatus = document.getElementsByName('residentStatus')[0]; 
+  const customerIdType = document.getElementsByName('customerIdType')[0]; 
+  const customerIdNo = document.getElementsByName('customerIdNo')[0]; 
+
+  // Driver information fields
+  const driverNameField = document.getElementsByName('insured_auto_driverInfo_driverName')[0]; 
+  const driverResidentStatus = document.getElementsByName('insured_auto_driverInfo_driverResidentStatus')[0]; 
+  const driverIdType = document.getElementsByName('insured_auto_driverInfo_driverIdType')[0]; 
+  const driverIdNumber = document.getElementsByName('insured_auto_driverInfo_driverIdNumber')[0]; 
+  const driverDOB = document.getElementsByName('insured_auto_driverInfo_driverDOB')[0]; 
+  const driverGender = document.getElementsByName('insured_auto_driverInfo_driverGender')[0]; 
+  const driverNationality = document.getElementsByName('insured_auto_driverInfo_driverNationality')[0]; 
+  const driverMaritalStatus = document.getElementsByName('insured_auto_driverInfo_maritalStatus')[0]; 
+
+  if (checkbox === yesCheckbox && yesCheckbox.checked) {
+    const confirmChange = window.confirm("Do you want to use the Individual Policy Holder Info in the Driver Info section?");
+
+    if (confirmChange) {
+      noCheckbox.checked = false;
+      
+      // Copy values from policyholder fields to driver fields
+      driverNameField.value = firstName.value || "";
+      driverGender.value = gender.value || "";
+      driverNationality.value = nationality.value || "";
+      driverDOB.value = dateOfBirth.value || "";
+      driverMaritalStatus.value = maritalStatus.value || "";
+      driverResidentStatus.value = residentStatus.value || "";
+      driverIdType.value = customerIdType.value || "";
+      driverIdNumber.value = customerIdNo.value || "";
+      
+      console.log("Policy Holder Driving: Yes, Driver information updated.");
+    } else {
+      yesCheckbox.checked = false;
+      noCheckbox.checked = true;
+    }
+
+  } else if (checkbox === noCheckbox && noCheckbox.checked) {
+    yesCheckbox.checked = false;
+
+    // Reset driver fields to empty
+    driverNameField.value = "";
+    driverGender.value = "";
+    driverNationality.value = "";
+    driverDOB.value = "";
+    driverMaritalStatus.value = "";
+    driverResidentStatus.value = "";
+    driverIdType.value = "";
+    driverIdNumber.value = "";
+    
+    console.log("Policy Holder Driving: No, Driver information reset.");
+  } else {
+    console.log("Policy Holder Driving: None selected");
+  }
+}
+
+
+
 function validateCustomerIdNumberAuto() {
   const idTypeSelect = document.querySelector(`select[name="insured_auto_driverInfo_driverIdType"]`);
   const idNumberInput = document.querySelector(`input[name="insured_auto_driverInfo_driverIdNumber"]`);
