@@ -665,6 +665,13 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                 if (!id || !quotationData?.quoteNo) {
                     handlePaymentFrequencyChange(defaultRadio);
                 }
+            const promoInput = document.getElementById("promocode-input")
+            if (promoInput && calllistDetail && productDetail?.udf_field_promo_code) {
+                const promoCodeField = productDetail.udf_field_promo_code;
+                promoInput.value = calllistDetail[promoCodeField] || "";
+            } else {
+                promoInput.value = "";
+            }
         }
 
 
