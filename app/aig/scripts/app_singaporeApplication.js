@@ -155,18 +155,15 @@ const toggleNcdLevel = () => {
 } else {
     noClaimExperienceRow.style.display = "none"; // Hide no claim experience row
     haveExperienceRow.style.display = ""; // Show have experience row
-    ncdNoExperience.value="";
     // Add required attribute back
     const previousInsurerSelect = haveExperienceRow.querySelector('select[name="haveEx-PreviousInsurer"]');
     const previousPolicyNoInput = haveExperienceRow.querySelector('input[name="haveEx-PreviousPolicyNo"]');
 
     if (previousInsurerSelect) {
         previousInsurerSelect.setAttribute('required', ''); // Add required
-        previousInsurerSelect.value=""
     }
     if (previousPolicyNoInput) {
         previousPolicyNoInput.setAttribute('required', ''); // Add required
-        previousPolicyNoInput.value=""
     }
 }
 };
@@ -241,6 +238,7 @@ function handleForm() {
   if (formType === "auto") {
     policyDetail.ncdInfo = {};
     policyDetail.ncdInfo.ncdLevel = Number(formData.get("Ncd_Level"));
+ 
     policyDetail.ncdInfo.previousInsurer = formData.get(
       "haveEx-PreviousInsurer"
     );
@@ -250,7 +248,16 @@ function handleForm() {
     policyDetail.ncdInfo.noClaimExperience = formData.get("NoClaimExperience");
     policyDetail.ncdInfo.noClaimExperienceOther =
       formData.get("otherExperience");
-  } else if (formType === "ah") {
+      if(policyDetail.ncdInfo.ncdLevel<1){
+        policyDetail.ncdInfo.previousInsurer="",
+        policyDetail.ncdInfo.previousPolicyNo=""
+      }else{
+        policyDetail.ncdInfo.noClaimExperience=""
+        policyDetail.ncdInfo.noClaimExperienceOther=""
+      }
+  } 
+  
+  else if (formType === "ah") {
     policyDetail.remarksC = formData.get("RemarkCInput");
   }
 

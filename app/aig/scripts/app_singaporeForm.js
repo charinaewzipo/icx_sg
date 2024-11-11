@@ -187,18 +187,31 @@ const setDefaultValueForm = async (dbData) => {
     await fetchGetFlatType(insuredData[0]?.addressInfo?.dwellingType);
   }
   
-
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
-  document.querySelector('select[name="Ncd_Level"]').value = ncdInfo?.ncdLevel;
-  document.querySelector('select[name="NoClaimExperience"]').value = ncdInfo?.noClaimExperience || "";
-
-  if (ncdInfo?.noClaimExperience === "4") {
-    toggleNcdNoExperience();
-    const otherExperienceSelect = document.querySelector('input[name="otherExperience"]');
-    if (otherExperienceSelect) {
-        otherExperienceSelect.value = ncdInfo?.noClaimExperienceOther || "";
-    }
+  if(dbData?.type=="auto"){
+    document.querySelector('select[name="Ncd_Level"]').value = ncdInfo?.ncdLevel;
+    document.querySelector('select[name="NoClaimExperience"]').value = ncdInfo?.noClaimExperience || "";
+    const haveExPreviousInsurer = document.querySelector('select[name="haveEx-PreviousInsurer"]');
+    const haveExPreviousPolicyNo = document.querySelector('input[name="haveEx-PreviousPolicyNo"]');
+    
+    toggleNcdLevel()
+    if (ncdInfo?.noClaimExperience === "4") {
+      toggleNcdNoExperience();
+      const otherExperienceSelect = document.querySelector('input[name="otherExperience"]');
+      if (otherExperienceSelect) {
+          otherExperienceSelect.value = ncdInfo?.noClaimExperienceOther || "";
+      }
+     
+  }
+  if (haveExPreviousInsurer) {
+    console.log("haveExPreviousInsurer:")
+    haveExPreviousInsurer.value = ncdInfo?.previousInsurer || "";
 }
+if (haveExPreviousPolicyNo) {
+  console.log("haveExPreviousPolicyNo:")
+  haveExPreviousPolicyNo.value = ncdInfo?.previousPolicyNo || "";
+}
+  }
 
   document.querySelector('textarea[name="RemarkCInput"]').value = dbData?.remarksC || "";
 
