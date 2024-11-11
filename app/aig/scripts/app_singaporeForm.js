@@ -123,15 +123,25 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
           await fetchPremium(apiBody);
           for (const option of planSelect.options) {
             if (Number(option.value) === Number(planInfo.planId)) {
-        
                 option.selected = true;  // Select the matching option
                 planPoiSelect.value = option.dataset.planPoi || ''; 
                 premiumAmountInput.value = `${option.dataset.netPremium}(SGD)` || '';  // Update planPoiSelect
                 break;
             }
         }
-      
-     
+        planSelect.dispatchEvent(new Event('change'));
+        if(planInfo?.coverList&&planInfo?.coverList.length>0){
+          const coverListBody = document.getElementById('coverListBody');
+          coverListBody.innerHTML = '';
+          console.log("let selectedPlan;",selectedPlan)
+          planInfo?.coverList.map(cover=>{
+            console.log("cover",cover)
+            addCoverRow(selectedPlan?.coverList,cover)
+          })
+        
+
+
+        }
     }
     
 
@@ -331,7 +341,6 @@ const setInsuredHome = (insuredData) => {
 };
 const setInsuredVehicleList = (insuredData) => {
   console.log("setInsuredList vehicle")
-  toggleNcdLevel()
   if (!insuredData || insuredData.length === 0) return;
   const vehicleInfo = insuredData[0].vehicleInfo;
   document.querySelector('select[name="insured_auto_vehicle_make"]').value =

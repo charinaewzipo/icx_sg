@@ -1,5 +1,5 @@
 let premiumBaseAmount = 0;
-
+let selectedPlan;
 function checkRetrieveCampaignAuto(data){
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -110,7 +110,6 @@ function populatePlanAutoPremium(planList) {
       premiumAmountInput.value = premiumAmount ? `${premiumAmount} (SGD)` : '';
     }
 
-    let selectedPlan;
 
     // Find the plan in planList by planId
     for (const key in planList) {
@@ -137,6 +136,8 @@ function populateCoverListAutoPremium(coverList) {
   coverListBody.innerHTML = ''; // Clear previous covers
   if (coverList) {
     // Initially add one cover row
+    addCoverRow(coverList);
+
     document.getElementById("addCover").addEventListener('click', () => {
       const rowCount = coverListBody.getElementsByClassName('cover-row').length;
       
@@ -147,23 +148,24 @@ function populateCoverListAutoPremium(coverList) {
       }
     });
 
-    // Add the first cover row
-    addCoverRow(coverList);
   }
 
 }
 // Function to add a new row for each cover option
-function addCoverRow(coverList) {
+function addCoverRow(coverList,setCoverData) {
+  console.log("addCoverRow:",coverList)
+  
   const coverListBody = document.getElementById('coverListBody');
   
   const allSelects = coverListBody.querySelectorAll('select');
-
-  // ตรวจสอบทุก dropdown ว่ามีการเลือกหรือไม่
+  if(!setCoverData){
   for (const selectElement of allSelects) {
     if (!selectElement.value) {
       return; // ไม่อนุญาตให้เพิ่มแถวใหม่
     }
   }
+  }
+
 
   // Create a new row
   const row = document.createElement('tr');
@@ -247,6 +249,10 @@ function addCoverRow(coverList) {
   row.appendChild(removeCell);
   coverListBody.appendChild(row);
 
+  if (setCoverData) {
+    selectElement.value = setCoverData.id;
+    selectElement.dispatchEvent(new Event('change'));
+  }
   // Update disabled options initially
   updateDisabledOptions(); // Ensure options are disabled when needed
 }
@@ -465,6 +471,11 @@ function resetPlanSelect() {
       planPoiSelect.value = '';
       premiumAmount.value = '';
   } 
+  createElementCover()
+  const premiumAmountInput = document.getElementById('premium-amount');
+  premiumAmountInput.value='';
+}
+const createElementCover=()=>{
   const coverListBody = document.getElementById('coverListBody');
   coverListBody.innerHTML = ''; // Clear previous covers
     // Create a new row
@@ -495,10 +506,7 @@ function resetPlanSelect() {
   row.appendChild(selectCell);
   row.appendChild(tdCell);
   coverListBody.appendChild(row);
-  const premiumAmountInput = document.getElementById('premium-amount');
-  premiumAmountInput.value='';
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -507,6 +515,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (formType === "auto") {
       attachCustomerIdValidationAuto();
       setupFormListeners();
-
+      // createElementCover()
   } 
 });
