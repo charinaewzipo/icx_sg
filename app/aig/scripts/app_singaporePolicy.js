@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
       paymentContainerAmount.removeAttribute("hidden");
 
       const formElements = document.querySelectorAll(
-        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnEditForm):not(#btnSaveForm)"
+        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnEditForm):not(#btnSaveForm),textarea"
       );
 
       hideFormData(formElements);
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function hideAllFormElements() {
-      const formElements = document.querySelectorAll("input, select, button");
+      const formElements = document.querySelectorAll("input, select, button,textarea");
       hideFormData(formElements);
 
       btnSaveDraftForm.style.display = "none";
