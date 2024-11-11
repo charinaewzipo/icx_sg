@@ -158,7 +158,9 @@ const toggleNcdLevel = () => {
     // Add required attribute back
     const previousInsurerSelect = haveExperienceRow.querySelector('select[name="haveEx-PreviousInsurer"]');
     const previousPolicyNoInput = haveExperienceRow.querySelector('input[name="haveEx-PreviousPolicyNo"]');
-
+    if(ncdNoExperience){
+      ncdNoExperience.removeAttribute('required'); 
+    }
     if (previousInsurerSelect) {
         previousInsurerSelect.setAttribute('required', ''); // Add required
     }
@@ -654,7 +656,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         }
 
       }else{
-        // await fetchQuotation(requestBody);
+        await fetchQuotation(requestBody);
         console.log("fetch quotation")
       }
     });
