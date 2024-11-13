@@ -313,6 +313,17 @@ const handleKeepChangeButton = () => {
 }
 const handleCloseButton=()=>{ window.close()}
 
+const handleChangePaymodeAutomaticRenewal=()=>{
+  const automaticRenewalFlag=document.getElementById('automaticRenewalFlag');
+  const paymentModeSelect=document.getElementById('paymentModeSelect');
+  paymentModeSelect.addEventListener('change',function(){
+    if(paymentModeSelect.value==="124"){
+      automaticRenewalFlag.value="Y"
+    }else{
+       automaticRenewalFlag.value="N"
+    }
+  })
+}
 function handleChangeIsPolicyHolderDriving(checkbox) {
   const yesCheckbox = document.getElementById('isPolicyHolderDrivingYes');
   const noCheckbox = document.getElementById('isPolicyHolderDrivingNo');
@@ -578,5 +589,6 @@ document.addEventListener("DOMContentLoaded", () => {
       attachCustomerIdValidationAuto();
       setupFormListeners();
       handleAutoMakeChange()
+      handleChangePaymodeAutomaticRenewal()
   } 
 });

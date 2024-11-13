@@ -237,8 +237,11 @@ if (haveExPreviousPolicyNo) {
   } else if (dbData?.payment_frequency === 2) {
     paymentFrequencyMonthly.checked = true;
   }
+  
   document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mode || "";
-
+  if(dbData?.type=="auto"){
+    document.querySelector('select[name="Payment_Mode"]').dispatchEvent(new Event('change'));
+  }
   const emailFulfillmentYes = document.querySelector('#emailFulfillmentYes');
   const emailFulfillmentNo = document.querySelector('#emailFulfillmentNo');
 

@@ -354,6 +354,16 @@ error_reporting(E_ALL);
                   <option value="124">Recurring Credit Card</option>
                 </select>
               </td>
+              <th></th>
+              <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Automatic Renewal Flag: </td>
+              <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+                <select name="automaticRenewalFlag " id="automaticRenewalFlag" disabled >
+                  <option value=""> <-- Please select an option --> </option>
+                  <option value="Y">Yes</option>
+                  <option value="N">No</option>
+                </select>
+              </td>
+              
             </tr>
 
           </table>
