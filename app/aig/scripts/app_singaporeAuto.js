@@ -106,8 +106,10 @@ function populatePlanAutoPremium(planList) {
     planPoiSelect.value = planPoi;
 
     const premiumAmountInput = document.getElementById('premium-amount');
+    const premiumAmountInputWithGST = document.getElementById("premium-amount-with-gst");
     if (premiumAmountInput) {
-      premiumAmountInput.value = premiumAmount ? `${premiumAmount} (SGD)` : '';
+      premiumAmountInput.value = premiumBaseAmount ? `${premiumBaseAmount.toFixed(2)} (SGD)` : '';  
+    premiumAmountInputWithGST.value = premiumBaseAmount ? `${(premiumBaseAmount * 1.09).toFixed(2)} (SGD)` : '';  
     }
 
 
@@ -261,6 +263,7 @@ function calculatePremiumSummary() {
   console.log("premiumBaseAmount:", premiumBaseAmount);
   
   const premiumAmountInput = document.getElementById("premium-amount");
+  const premiumAmountInputWithGST = document.getElementById("premium-amount-with-gst");
   let premiumTotal = premiumBaseAmount;  // Start with the base amount
 
   const planCoverLists = document.querySelectorAll('.planCoverList');
@@ -278,7 +281,8 @@ function calculatePremiumSummary() {
 
   // Update the total premium in the premium amount input field
   if (premiumAmountInput) {
-      premiumAmountInput.value = premiumTotal ? `${premiumTotal} (SGD)` : '';  // Set premium total in the input field
+    premiumAmountInput.value = premiumTotal ? `${premiumTotal.toFixed(2)} (SGD)` : '';  
+    premiumAmountInputWithGST.value = premiumTotal ? `${(premiumTotal * 1.09).toFixed(2)} (SGD)` : '';  
   }
 
   console.log("Total Premium:", premiumTotal);
@@ -472,7 +476,9 @@ function resetPlanSelect() {
   } 
   createElementCover()
   const premiumAmountInput = document.getElementById('premium-amount');
+  const premiumAmountInputWithGST = document.getElementById("premium-amount-with-gst");
   premiumAmountInput.value='';
+  premiumAmountInputWithGST.value='';
 }
 const createElementCover=()=>{
   const coverListBody = document.getElementById('coverListBody');
