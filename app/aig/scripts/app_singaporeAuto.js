@@ -295,10 +295,19 @@ function updateDisabledOptions() {
 
   document.querySelectorAll('.planCoverList').forEach(select => {
     Array.from(select.options).forEach(option => {
-      option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
+      const shouldDisable = selectedValues.includes(option.value) && option.value !== select.value;
+
+      if (selectedValues.includes('600000720') && option.value === '1838000221') {
+        option.disabled = true;
+      }else if (selectedValues.includes('1838000221') && option.value === '600000720') {
+        option.disabled = true;
+      }else {
+        option.disabled = shouldDisable;
+      }
     });
   });
 }
+
 
 const handleKeepChangeButton = () => {
   const userConfirmed = window.confirm("Are you sure you want to proceed with recalculation?");
