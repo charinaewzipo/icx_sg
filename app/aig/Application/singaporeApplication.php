@@ -153,6 +153,8 @@ error_reporting(E_ALL);
             alert("The driver's age should be between 23 and 70 years.");
             $(`#datepicker2`).val('');
             return;
+          }else{
+            $("#ageDriver").val(age);
           }
         }
       }));
@@ -1059,10 +1061,37 @@ where name='Nature of Business'";
               <td>DriverId Number: <span style="color:red">*</span></td>
               <td><input type="text" name="insured_auto_driverInfo_driverIdNumber" maxlength="60" required /></td>
               <th>&nbsp;</th>
-              <td>Driver DOB : <span style="color:red">*</span> </td>
+              <td>Driver Occupation: <span style="color:red">*</span></td>
+              <td>
+                <select name="insured_auto_driverInfo_occupation" required>
+                  <option value=""> <-- Please select an option --></option>
+                  <?php
+                  $strSQL = "SELECT name, id, description
+FROM t_aig_sg_lov 
+where name='Occupation'";
+                  $objQuery = mysqli_query($Conn, $strSQL);
+                  while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $data[] = $objResuut;
+                  ?>
+                    <option value="<?php echo $objResuut["id"]; ?>">
+                      <?php echo $objResuut["description"]; ?>
+                    </option>
+                  <?php
+                  }
+
+                  ?>
+                </select>
+              </td>
+            </tr>
+            <tr>
+            <td>Driver DOB : <span style="color:red">*</span> </td>
               <td>
                 <input type="text" id="datepicker2" name="insured_auto_driverInfo_driverDOB" maxlength="10" required>
-
+                <th>&nbsp;</th>
+                <td>Age :</td>
+              <td>
+                <input type="text" id="ageDriver" name="ageDriver" maxlength="4" readonly style="max-width:50px"> years old
+              </td>
             </tr>
             <tr>
               <td>Driver Gender : <span style="color:red">*</span></td>
@@ -1129,31 +1158,7 @@ where name='Nature of Business'";
               <td>Driver Experience : <span style="color:red">*</span></td>
               <td><input type="text" name="insured_auto_driverInfo_drivingExperience" maxlength="2" size="10" required /> <span>year</span></td>
             </tr>
-            <tr>
-              <td>Driver Occupation: <span style="color:red">*</span></td>
-              <td>
-                <select name="insured_auto_driverInfo_occupation" required>
-                  <option value=""> <-- Please select an option --></option>
-                  <?php
-                  $strSQL = "SELECT name, id, description
-FROM t_aig_sg_lov 
-where name='Occupation'";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
-
-                  ?>
-                </select>
-              </td>
-              <th></th>
-
-            </tr>
+            
             <tr>
               <td style="float: inline-start;">Claim Experience : <span style="color:red">*</span> </td>
               <td>
@@ -1372,14 +1377,16 @@ where name='Occupation'";
                     $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'ageConditionBasis'";
                     $objQuery = mysqli_query($Conn, $strSQL);
                     while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $selected = ((int)$objResuut["id"] === 1) ? "selected" : "";
                       $data[] = $objResuut;
                     ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
+                      <option value="<?php echo $objResuut["id"]; ?>" <?php echo $selected; ?>>
                         <?php echo $objResuut["description"]; ?>
                       </option>
                     <?php
                     }
                     ?>
+                    
 
                   </select>
                 </td>
@@ -1393,9 +1400,10 @@ where name='Occupation'";
                     $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Mileage Condition'";
                     $objQuery = mysqli_query($Conn, $strSQL);
                     while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $selected = ((int)$objResuut["id"] === 1838000062) ? "selected" : "";
                       $data[] = $objResuut;
                     ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
+                      <option value="<?php echo $objResuut["id"]; ?>"  <?php echo $selected; ?>>
                         <?php echo $objResuut["description"]; ?>
                       </option>
                     <?php
@@ -1465,6 +1473,12 @@ where name='Occupation'";
               <td>Amount : </td>
               <td>
                 <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="">
+              </td>
+            </tr>
+            <tr id="premium-amount-withgst-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+              <td>Amount (9% GST) : </td>
+              <td>
+                <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
               </td>
             </tr>
             <tr id="comment-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>

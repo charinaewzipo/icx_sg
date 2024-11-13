@@ -402,6 +402,10 @@ const setInsuredVehicleList = (insuredData) => {
   document.querySelector(
     'input[name="insured_auto_driverInfo_driverDOB"]'
   ).value = driverInfo.driverDOB ? isoToFormattedDate(driverInfo.driverDOB):"";
+  if (driverInfo.driverDOB) {
+    const { age } = calculateAge(driverInfo.driverDOB);
+    document.getElementById('ageDriver').value = age;
+  }
   document.querySelector(
     'select[name="insured_auto_driverInfo_driverGender"]'
   ).value = driverInfo.driverGender;
