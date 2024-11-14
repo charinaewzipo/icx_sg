@@ -301,12 +301,28 @@ error_reporting(E_ALL);
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <th></th>
-              <td style="white-space:nowrap;" id="promocode-label">Promo Code:</td>
-              <td id="promocode-label2">
-                <input id="promocode-input" name="campaignCode" type="text" style="display: inline-block; width:216px;" readonly />
-              </td>
+              
             </tr>
+            <table id="promo-table" style="border-spacing:0.5rem 0"> 
+  <tbody>
+    <tr id="promocode-row-1">
+    <td style="white-space:nowrap;width:162px" id="promocode-label">Promo Code:</td>
+      <td>
+        <input id="promocode-input-1" name="campaignCode[]" type="text" style="display: inline-block; width: 130px;">
+      </td>
+      <td>
+        <button type="button" onclick="removePromoCode(1)" class="button draft-button">Remove</button>
+      </td>
+    </tr>
+  </tbody>
+  <tr>
+    <td></td>
+    <td>
 
+      <button type="button" onclick="addPromoCode()" class="button payment" style="float:inline-end">Add Code</button>
+    </td>
+  </tr>
+</table>
 
 
           </table>
@@ -355,7 +371,7 @@ error_reporting(E_ALL);
                 </select>
               </td>
               <th></th>
-              <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Automatic Renewal Flag: </td>
+              <td style="padding-left:48px" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Automatic Renewal Flag: </td>
               <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
                 <select name="automaticRenewalFlag " id="automaticRenewalFlag" disabled >
                   <option value=""> <-- Please select an option --> </option>

@@ -589,6 +589,69 @@ const handleAutoMakeChange =  () => {
     await  fetchGetModel(makeSelect.value)
   })
 }
+let promoCodeCount = 1; // Start with the first promo code
+const maxPromoCodes = 3; // Maximum number of promo codes allowed
+
+function addPromoCode() {
+  // Check if the maximum number of promo codes has been reached
+  if (promoCodeCount >= maxPromoCodes) {
+    alert("You can only add up to 3 promo codes.");
+    return;
+  }
+
+  promoCodeCount++;
+
+  // Get the table body where rows will be added
+  const promoTableBody = document.querySelector("#promo-table tbody");
+
+  // Create a new row for the promo code
+  const newPromoCodeRow = document.createElement("tr");
+  newPromoCodeRow.id = `promocode-row-${promoCodeCount}`;
+
+  // Create a cell for the input
+  const newPromoCodeCell = document.createElement("td");
+  const newPromoCodeCellTd = document.createElement("td");
+  const newPromoCodeInput = document.createElement("input");
+  newPromoCodeInput.id = `promocode-input-${promoCodeCount}`;
+  newPromoCodeInput.name = "campaignCode[]";
+  newPromoCodeInput.type = "text";
+  newPromoCodeInput.style.width = "130px";
+
+  // Append input to cell and cell to row
+  newPromoCodeCell.appendChild(newPromoCodeInput);
+  newPromoCodeRow.appendChild(newPromoCodeCellTd);
+  newPromoCodeRow.appendChild(newPromoCodeCell);
+  
+
+  // Create a cell for the Remove button
+  const removeButtonCell = document.createElement("td");
+  const removeButton = document.createElement("button");
+  removeButton.type = "button";
+  removeButton.textContent = "Remove";
+  removeButton.className = "button draft-button";
+  
+  // Set the onclick handler to remove the row
+  removeButton.onclick = () => removePromoCode(newPromoCodeRow.id);
+
+  // Append button to cell and cell to row
+  removeButtonCell.appendChild(removeButton);
+  newPromoCodeRow.appendChild(removeButtonCell);
+
+  // Append the new row to the table body
+  promoTableBody.appendChild(newPromoCodeRow);
+}
+
+function removePromoCode(rowId) {
+  const rowToRemove = document.getElementById(rowId);
+  if (rowToRemove) {
+    rowToRemove.remove(); // Remove the row directly
+    promoCodeCount--;
+  }else{
+    alert("No promo code rows left")
+  }
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
