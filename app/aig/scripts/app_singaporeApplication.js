@@ -106,6 +106,8 @@ const handleTypeConfirmQuote = () => {
       }
     );
     document.getElementById("remark-c-container").style.display = "none";
+    document.getElementById("promocode-label").style.display = "none";
+    document.getElementById("promocode-label2").style.display = "none";
     isPolicyHolderDrivingRow.style.display = "table-row";
   } else if (formType === "ah") {
     [ncdinfoContainer, properateForm, insuredListHome, insuredListAuto, planInfoContainer].forEach(
@@ -172,6 +174,7 @@ const toggleNcdLevel = () => {
 const toggleNcdNoExperience = () => {
   const ncdNoExperience = document.getElementById("ncdNoExperience").value;
   const displayStyle = ncdNoExperience == "4" ? "block" : "none";
+  document.getElementById("otherExperience-display").style.display = displayStyle;
   document.getElementById("otherExperience").style.display = displayStyle;
 };
 const toggleClaimExperience = (selectedOption) => {

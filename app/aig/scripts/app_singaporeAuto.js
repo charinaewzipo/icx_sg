@@ -327,9 +327,9 @@ const handleChangePaymodeAutomaticRenewal=()=>{
   const paymentModeSelect=document.getElementById('paymentModeSelect');
   paymentModeSelect.addEventListener('change',function(){
     if(paymentModeSelect.value==="124"){
-      automaticRenewalFlag.value="Y"
+      automaticRenewalFlag.value="Yes"
     }else{
-       automaticRenewalFlag.value="N"
+       automaticRenewalFlag.value="No"
     }
   })
 }

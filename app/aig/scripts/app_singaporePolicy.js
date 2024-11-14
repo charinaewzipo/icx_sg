@@ -130,6 +130,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnEditForm = document.getElementById('btnEditForm');
   const btnSaveForm = document.getElementById('btnSaveForm');
   const btnSaveDraftForm = document.getElementById('btnSaveDraftForm');
+  const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
+  const ncdLevel_gears=document.getElementById("ncdLevel_gears");
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
@@ -141,6 +143,8 @@ document.addEventListener("DOMContentLoaded", function () {
     policyidText.style.display = "none"
     policyDisplay.style.display = "none";
     btnEditForm.style.display = "none";
+    ncdLevel_gears_display.style.display = "none";
+    ncdLevel_gears.style.display = "none";
   }
 
   if (id) {

@@ -301,9 +301,12 @@ error_reporting(E_ALL);
               <td style="white-space:nowrap;">Policy Effective Date: <span style="color:red">*</span></td>
               <td><input type="text" id="datepicker5" name="PolicyEffectiveDate" maxlength="10" required style="max-width: 130px;"></td>
               <th></th>
-              
+              <td style="white-space:nowrap;" id="promocode-label">Promo Code:</td>
+              <td id="promocode-label2">
+                <input id="promocode-input" name="campaignCode" type="text" style="display: inline-block; width:216px;" readonly />
+              </td>
             </tr>
-            <table id="promo-table" style="border-spacing:0.5rem 0"> 
+            <table id="promo-table" style="border-spacing:0.5rem 0.2rem" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>> 
   <tbody>
     <tr id="promocode-row-1">
     <td style="white-space:nowrap;width:162px" id="promocode-label">Promo Code:</td>
@@ -316,6 +319,7 @@ error_reporting(E_ALL);
     </tr>
   </tbody>
   <tr>
+    <td></td>
     <td></td>
     <td>
 
@@ -375,8 +379,8 @@ error_reporting(E_ALL);
               <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
                 <select name="automaticRenewalFlag " id="automaticRenewalFlag" disabled >
                   <option value=""> <-- Please select an option --> </option>
-                  <option value="Y">Yes</option>
-                  <option value="N">No</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
                 </select>
               </td>
               
@@ -1242,6 +1246,28 @@ where name='Occupation'";
                   </select>
                 </td>
                 <td>&nbsp;</td>
+                <td id="ncdLevel_gears_display">Ncd Level (GEARS) :  </td>
+                <td>
+
+                  <select name="Ncd_Level_gears" id="ncdLevel_gears" onchange="toggleNcdLevel()" style="text-align:center " disabled>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Level'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>%
+                      </option>
+                    <?php
+                    }
+                    ?>
+
+                  </select>
+                </td>
               </tr>
               <tr id="noClaimExperienceRow">
                 <td>No Claim Experience : <span style="color:red">*</span> </td>
@@ -1265,7 +1291,8 @@ where name='Occupation'";
                   </select>
                 </td>
                 <th>&nbsp;</th>
-                <td id="otherExperience" style="display:none">Other <span style="color:red">*</span> <input type="text" name="otherExperience" maxlength="60" size="30" /></td>
+                <td id="otherExperience-display" style="display:none">Other <span style="color:red">*</span></td>
+                <td> <input type="text" id="otherExperience" name="otherExperience" maxlength="60" size="30" style="display:none"/></td>
               </tr>
               <tr id="haveExperienceRow" style="display:none">
                 <td>Previous Insurer: <span style="color:red">*</span> </td>
