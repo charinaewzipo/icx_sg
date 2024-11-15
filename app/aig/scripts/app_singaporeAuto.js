@@ -662,12 +662,17 @@ function removePromoCode(rowNumber) {
   }
 }
 function initializePromoCodeTable(ArrayPromoCodeField) {
+  let allValuesAreNull = true;
   ArrayPromoCodeField.forEach((field, index) => {
     const defaultValue = calllistDetail[field] || "";
     if(defaultValue){
       addPromoCode(defaultValue);
+      allValuesAreNull = false;
     }
   });
+  if (allValuesAreNull) {
+    addPromoCode()
+  }
 }
 const setDefaultValueFromCallingListAuto = (data) => {
   console.log("data FormCallingList:", data)
