@@ -589,69 +589,108 @@ const handleAutoMakeChange =  () => {
     await  fetchGetModel(makeSelect.value)
   })
 }
-let promoCodeCount = 1; // Start with the first promo code
-const maxPromoCodes = 3; // Maximum number of promo codes allowed
+let promoCodeCount = 0; // เริ่มต้นที่ 1 เพราะมีแถวแรกอยู่แล้วใน HTML
+const maxPromoCodes = 4; // จำนวนสูงสุดที่อนุญาต
 
-function addPromoCode() {
-  // Check if the maximum number of promo codes has been reached
+// ฟังก์ชันสำหรับการเพิ่มแถว Promo Code
+function addPromoCode(defaultValue = "") {
+  console.log("promoCodeCount:", promoCodeCount)
+
+  // ตรวจสอบว่ามี Promo Code ครบ 4 ตัวหรือยัง
   if (promoCodeCount >= maxPromoCodes) {
-    alert("You can only add up to 3 promo codes.");
+    alert("You can only add up to 4 promo codes.");
     return;
   }
 
   promoCodeCount++;
 
-  // Get the table body where rows will be added
+  // หา tbody ของตาราง
   const promoTableBody = document.querySelector("#promo-table tbody");
 
-  // Create a new row for the promo code
+  // สร้างแถวใหม่
   const newPromoCodeRow = document.createElement("tr");
   newPromoCodeRow.id = `promocode-row-${promoCodeCount}`;
 
-  // Create a cell for the input
-  const newPromoCodeCell = document.createElement("td");
-  const newPromoCodeCellTd = document.createElement("td");
-  const newPromoCodeInput = document.createElement("input");
-  newPromoCodeInput.id = `promocode-input-${promoCodeCount}`;
-  newPromoCodeInput.name = "campaignCode[]";
-  newPromoCodeInput.type = "text";
-  newPromoCodeInput.style.width = "130px";
+  // สร้างเซลล์สำหรับป้ายชื่อ Promo Code
+  const labelCell = document.createElement("td");
+  labelCell.style.whiteSpace = "nowrap";
+  labelCell.style.width = "162px";
+  labelCell.textContent = "Promo Code:";
 
-  // Append input to cell and cell to row
-  newPromoCodeCell.appendChild(newPromoCodeInput);
-  newPromoCodeRow.appendChild(newPromoCodeCellTd);
-  newPromoCodeRow.appendChild(newPromoCodeCell);
-  
+  // สร้างเซลล์สำหรับ input
+  const promoCodeCell = document.createElement("td");
+  const promoCodeInput = document.createElement("input");
+  promoCodeInput.id = `promocode-input-${promoCodeCount}`;
+  promoCodeInput.name = "campaignCode[]";
+  promoCodeInput.type = "text";
+  promoCodeInput.style.width = "130px";
+  promoCodeInput.value = defaultValue; // ตั้งค่าเริ่มต้น
 
-  // Create a cell for the Remove button
+  promoCodeCell.appendChild(promoCodeInput);
+
+  // สร้างเซลล์สำหรับปุ่ม Remove
   const removeButtonCell = document.createElement("td");
   const removeButton = document.createElement("button");
   removeButton.type = "button";
   removeButton.textContent = "Remove";
   removeButton.className = "button draft-button";
   
-  // Set the onclick handler to remove the row
-  removeButton.onclick = () => removePromoCode(newPromoCodeRow.id);
-
-  // Append button to cell and cell to row
+  removeButton.setAttribute("data-row-id", promoCodeCount);
+  removeButton.onclick = function () {
+    const rowId = this.getAttribute("data-row-id");
+    removePromoCode(rowId);
+  };
   removeButtonCell.appendChild(removeButton);
+
+  // ใส่เซลล์ทั้งหมดลงในแถวใหม่
+  newPromoCodeRow.appendChild(labelCell);
+  newPromoCodeRow.appendChild(promoCodeCell);
   newPromoCodeRow.appendChild(removeButtonCell);
 
-  // Append the new row to the table body
+  // เพิ่มแถวใหม่ลงใน tbody ของตาราง
   promoTableBody.appendChild(newPromoCodeRow);
 }
 
-function removePromoCode(rowId) {
-  const rowToRemove = document.getElementById(rowId);
-  if (rowToRemove) {
-    rowToRemove.remove(); // Remove the row directly
+// ฟังก์ชันสำหรับการลบแถว Promo Code
+function removePromoCode(rowNumber) {
+  const rowToRemove = document.getElementById(`promocode-row-${rowNumber}`);
+  if (rowToRemove&&promoCodeCount>1) {
+    rowToRemove.remove(); // ลบแถว
     promoCodeCount--;
-  }else{
-    alert("No promo code rows left")
+  } else {
+    alert("No promo code rows left");
   }
 }
+function initializePromoCodeTable(ArrayPromoCodeField) {
+  ArrayPromoCodeField.forEach((field, index) => {
+    const defaultValue = calllistDetail[field] || "";
+    if(defaultValue){
+      addPromoCode(defaultValue);
+    }
+  });
+}
+const setDefaultValueFromCallingListAuto = (data) => {
+  console.log("data FormCallingList:", data)
+  console.log("productDetail:", productDetail)
+  
+  // document.querySelector('input[name="firstName"]').value = data.name;
 
+ 
+  // document.querySelector('input[name="customerIdNo"]').value = data?.personal_id || data?.passport_no;
+  // document.querySelector('input[name="mobileNo"]').value = data.udf1;
+  // document.querySelector('input[name="emailId"]').value = data.email || "";
+  // document.querySelector('input[name="postCode"]').value = data.home_post_cd;
 
+  // document.querySelector('input[name="blockNo"]').value = data.home_addr1 || "";
+  // document.querySelector('input[name="streetName"]').value = data.home_addr2 || "";
+  // document.querySelector('input[name="unitNo"]').value = data.home_addr3 || "";
+  // document.querySelector('input[name="buildingName"]').value = data.home_city || "";
+  // document.querySelector('select[name="maritalStatus"]').value = data.marital_status || "";
+  // document.querySelector('select[name="nationality"]').value = data.nationality || "";
+  
+  // document.getElementById("promocode-input").value=data?.campaignCode||""
+  
+};
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);

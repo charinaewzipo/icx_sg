@@ -514,7 +514,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
 
     async function fetchCallingList() {
     document.body.classList.add('loading');
-    
+
     try {
         const callListId = <?php echo json_encode($_GET["calllist_id"]); ?>;
         console.log("callListId:", callListId);
@@ -543,6 +543,8 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             calllistDetail = result[0]; // Set the call list detail
             checkRenewCampaign(result[0]); // Check renew campaign
             checkRetrieveCampaignAuto(result[0]); // Check renew campaign
+
+           
         }
 
     } catch (error) {
@@ -609,6 +611,7 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         });
     }
     async function handleProductChange(selectElement) {
+
         console.log("handleProductChange:")
         const selectedProductId = selectElement.value;
         select_product = selectedProductId
@@ -660,19 +663,16 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             } else {
                 promoInput.value = "";
             }
-        } else if (responseProduct?.product_group == "Auto"){
-            const defaultRadio = document.querySelector('input[name="Payment_Frequency"]:checked');
-                if (!id || !quotationData?.quoteNo) {
-                    handlePaymentFrequencyChange(defaultRadio);
-                }
-            const promoInput = document.getElementById("promocode-input")
-            if (promoInput && calllistDetail && productDetail?.udf_field_promo_code) {
-                const promoCodeField = productDetail.udf_field_promo_code;
-                promoInput.value = calllistDetail[promoCodeField] || "";
-            } else {
-                promoInput.value = "";
-            }
+        } 
+        else if (responseProduct?.product_group == "Auto"){
+                const promoCodeFieldString  = productDetail.udf_field_promo_code;
+                const ArrayPromoCodeField = promoCodeFieldString.split(",")
+                console.log("ArrayPromoCodeField:", ArrayPromoCodeField)
+                initializePromoCodeTable(ArrayPromoCodeField)
+                document.getElementById('add-code-display').style.display=""
+
         }
+    
 
 
 

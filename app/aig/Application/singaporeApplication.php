@@ -308,21 +308,12 @@ error_reporting(E_ALL);
             </tr>
             <table id="promo-table" style="border-spacing:0.5rem 0.2rem" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>> 
   <tbody>
-    <tr id="promocode-row-1">
-    <td style="white-space:nowrap;width:162px" id="promocode-label">Promo Code:</td>
-      <td>
-        <input id="promocode-input-1" name="campaignCode[]" type="text" style="display: inline-block; width: 130px;">
-      </td>
-      <td>
-        <button type="button" onclick="removePromoCode(1)" class="button draft-button">Remove</button>
-      </td>
-    </tr>
+   
   </tbody>
-  <tr>
+  <tr id="add-code-display" style="display:none">
     <td></td>
     <td></td>
     <td>
-
       <button type="button" onclick="addPromoCode()" class="button payment" style="float:inline-end">Add Code</button>
     </td>
   </tr>
@@ -375,7 +366,7 @@ error_reporting(E_ALL);
                 </select>
               </td>
               <th></th>
-              <td style="padding-left:48px" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Automatic Renewal Flag: </td>
+              <td style="padding-left:47px" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Automatic Renewal Flag: </td>
               <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
                 <select name="automaticRenewalFlag " id="automaticRenewalFlag" disabled >
                   <option value=""> <-- Please select an option --> </option>
@@ -1535,9 +1526,9 @@ where name='Occupation'";
               </td>
             </tr>
             <tr id="comment-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
-              <td style="float: inline-start;">Comments History:</td>
+              <td style="float: inline-start;">Quote Version Memo:</td>
               <td style="white-space:nowrap;">
-                <textarea name="commentHistory" id="commentHistory" rows="4" cols="35" maxlength="2000" readonly></textarea>
+                <textarea name="commentHistory" id="commentHistory" rows="4" cols="35" maxlength="2000" ></textarea>
               </td>
             </tr>
 
