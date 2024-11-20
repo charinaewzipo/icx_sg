@@ -674,28 +674,6 @@ function initializePromoCodeTable(ArrayPromoCodeField) {
     addPromoCode()
   }
 }
-const setDefaultValueFromCallingListAuto = (data) => {
-  console.log("data FormCallingList:", data)
-  console.log("productDetail:", productDetail)
-  
-  // document.querySelector('input[name="firstName"]').value = data.name;
-
- 
-  // document.querySelector('input[name="customerIdNo"]').value = data?.personal_id || data?.passport_no;
-  // document.querySelector('input[name="mobileNo"]').value = data.udf1;
-  // document.querySelector('input[name="emailId"]').value = data.email || "";
-  // document.querySelector('input[name="postCode"]').value = data.home_post_cd;
-
-  // document.querySelector('input[name="blockNo"]').value = data.home_addr1 || "";
-  // document.querySelector('input[name="streetName"]').value = data.home_addr2 || "";
-  // document.querySelector('input[name="unitNo"]').value = data.home_addr3 || "";
-  // document.querySelector('input[name="buildingName"]').value = data.home_city || "";
-  // document.querySelector('select[name="maritalStatus"]').value = data.marital_status || "";
-  // document.querySelector('select[name="nationality"]').value = data.nationality || "";
-  
-  // document.getElementById("promocode-input").value=data?.campaignCode||""
-  
-};
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
