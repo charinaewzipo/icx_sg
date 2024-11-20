@@ -73,7 +73,10 @@ const handleEditQuote = () => {
       );
     }else if(quotationData?.type==="home"){
       formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product),textarea, button:not(#btnSaveForm)");
-    }else{
+    }else if(quotationData?.type==="auto"){
+      formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product):not([name='Ncd_Level_gears']):not([name='insured_auto_vehicle_vehicleUsage']),textarea:not([name='commentHistory']), button:not(#btnSaveForm)");
+    }
+    else{
       formElements = document.querySelectorAll("input, select:not(#planPoiSelect1),textarea, button:not(#btnSaveForm)");
     }
    
@@ -90,6 +93,7 @@ const handleEditQuote = () => {
 
     if(formType==="auto"){
       document.getElementById("premium-amount-label").hidden=false;
+      document.getElementById("premium-amount-withgst-label").hidden=false;
       document.getElementById("payment_amount_label").hidden=true;
 
     }

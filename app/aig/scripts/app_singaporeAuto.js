@@ -368,6 +368,10 @@ function handleChangeIsPolicyHolderDriving(checkbox) {
       driverGender.value = gender.value || "";
       driverNationality.value = nationality.value || "";
       driverDOB.value = dateOfBirth.value || "";
+      if (driverDOB.value) {
+        const { age } = calculateAge(driverDOB.value);
+        document.getElementById('ageDriver').value = age;
+      }
       driverMaritalStatus.value = maritalStatus.value || "";
       driverResidentStatus.value = residentStatus.value || "";
       driverIdType.value = customerIdType.value || "";
