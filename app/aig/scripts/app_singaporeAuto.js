@@ -244,6 +244,7 @@ function addCoverRow(coverList,setCoverData) {
     }
     coverListBody.removeChild(row); 
     calculatePremiumSummary(); 
+    updateDisabledOptions()
   };
 
   removeCell.appendChild(removeButton);
