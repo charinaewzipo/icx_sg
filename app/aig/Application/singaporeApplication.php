@@ -308,8 +308,6 @@ error_reporting(E_ALL);
             </tr>
             <table id="promo-table" style="border-spacing:0.5rem 0.2rem" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>> 
   <tbody>
-   
-  </tbody>
   <tr id="add-code-display" style="display:none">
     <td></td>
     <td></td>
@@ -317,6 +315,8 @@ error_reporting(E_ALL);
       <button type="button" onclick="addPromoCode()" class="button payment" style="float:inline-end">Add Code</button>
     </td>
   </tr>
+  </tbody>
+ 
 </table>
 
 
@@ -956,9 +956,10 @@ where name='Nature of Business'";
                   $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Vehicle Usage'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
+                    $selected = ((int)$objResuut["id"] === 204) ? "selected" : "";
                     $data[] = $objResuut;
                   ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
+                    <option value="<?php echo $objResuut["id"]; ?>" <?php echo $selected; ?>>
                       <?php echo $objResuut["description"]; ?>
                     </option>
                   <?php
