@@ -595,7 +595,7 @@ const handleAutoMakeChange =  () => {
   })
 }
 let promoCodeCount = 0; // เริ่มต้นที่ 1 เพราะมีแถวแรกอยู่แล้วใน HTML
-const maxPromoCodes = 4; // จำนวนสูงสุดที่อนุญาต
+const maxPromoCodes = 3; // จำนวนสูงสุดที่อนุญาต
 
 // ฟังก์ชันสำหรับการเพิ่มแถว Promo Code
 function addPromoCode(defaultValue = "") {
@@ -603,7 +603,7 @@ function addPromoCode(defaultValue = "") {
 
   // ตรวจสอบว่ามี Promo Code ครบ 4 ตัวหรือยัง
   if (promoCodeCount >= maxPromoCodes) {
-    alert("You can only add up to 4 promo codes.");
+    alert("You can only add up to 3 promo codes.");
     return;
   }
 
@@ -629,7 +629,8 @@ function addPromoCode(defaultValue = "") {
   promoCodeInput.name = "campaignCode[]";
   promoCodeInput.type = "text";
   promoCodeInput.style.width = "130px";
-  promoCodeInput.value = defaultValue; // ตั้งค่าเริ่มต้น
+  promoCodeInput.value = defaultValue; 
+  promoCodeInput.readOnly=defaultValue ? true:false
 
   promoCodeCell.appendChild(promoCodeInput);
 
