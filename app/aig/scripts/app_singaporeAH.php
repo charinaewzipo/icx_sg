@@ -982,6 +982,23 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
     const fetchDataCampaignAndCallList=async()=>{
         await fetchCampaignDetail()
         await fetchCallingList()
+        
+        setDefaultProductId()
+    }
+    const setDefaultProductId = () => {
+        console.log("setDefaultProductId:")
+        let currentUrl = window.location.href;
+        const url = new URL(currentUrl);
+        let formType = url.searchParams.get('formType');
+        if (formType === "auto") {
+            if (!id) {
+                const selectProductElement = document.querySelector('select[name="select-product"]');
+                if (selectProductElement) {
+                    selectProductElement.value = "600000080";
+                    handleProductChange(selectProductElement);
+                }
+            }
+        }
     }
     const fillInsuredSectionChild = (insuredData) => {
         const filterchild = insuredData.filter(i => i?.personInfo?.relationToPolicyholder === "2");
