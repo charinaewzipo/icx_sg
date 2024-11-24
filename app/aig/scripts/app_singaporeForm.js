@@ -200,31 +200,31 @@ const setDefaultValueForm = async (dbData) => {
   }
   
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
-  if(dbData?.type=="auto"){
+  if (dbData?.type == "auto") {
     const vehicleInfo = insuredData[0].vehicleInfo
     await fetchGetModel(vehicleInfo.make);
     document.querySelector('select[name="Ncd_Level"]').value = ncdInfo?.ncdLevel;
     document.querySelector('select[name="NoClaimExperience"]').value = ncdInfo?.noClaimExperience || "";
     const haveExPreviousInsurer = document.querySelector('select[name="haveEx-PreviousInsurer"]');
     const haveExPreviousPolicyNo = document.querySelector('input[name="haveEx-PreviousPolicyNo"]');
-    
+
     toggleNcdLevel()
     if (ncdInfo?.noClaimExperience === "4") {
       toggleNcdNoExperience();
       const otherExperienceSelect = document.querySelector('input[name="otherExperience"]');
       if (otherExperienceSelect) {
-          otherExperienceSelect.value = ncdInfo?.noClaimExperienceOther || "";
+        otherExperienceSelect.value = ncdInfo?.noClaimExperienceOther || "";
       }
-     
-  }
-  if (haveExPreviousInsurer) {
-    console.log("haveExPreviousInsurer:")
-    haveExPreviousInsurer.value = ncdInfo?.previousInsurer || "";
-}
-if (haveExPreviousPolicyNo) {
-  console.log("haveExPreviousPolicyNo:")
-  haveExPreviousPolicyNo.value = ncdInfo?.previousPolicyNo || "";
-}
+
+    }
+    if (haveExPreviousInsurer) {
+      console.log("haveExPreviousInsurer:")
+      haveExPreviousInsurer.value = ncdInfo?.previousInsurer || "";
+    }
+    if (haveExPreviousPolicyNo) {
+      console.log("haveExPreviousPolicyNo:")
+      haveExPreviousPolicyNo.value = ncdInfo?.previousPolicyNo || "";
+    }
   }
 
   document.querySelector('textarea[name="RemarkCInput"]').value = dbData?.remarksC || "";
@@ -319,7 +319,7 @@ if (haveExPreviousPolicyNo) {
     case "home":
       return setInsuredHome(insuredData), setDefaultPlanInfo(insuredData,dbData);
     case "auto":
-      return setInsuredVehicleList(insuredData),setDefaultPlanInfoAuto(insuredData,dbData);
+      return setOtherInfoAuto(dbData),setInsuredVehicleList(insuredData),setDefaultPlanInfoAuto(insuredData,dbData);
     case "ah":
       return setInsuredPerson(insuredData, dbData);
     default:
@@ -328,6 +328,15 @@ if (haveExPreviousPolicyNo) {
   }
 
 };
+const setOtherInfoAuto=(dbData)=>{
+  document.querySelector('textarea[name="commentHistory"]').value  = dbData?.quoteVersionMemo||"";
+  document.querySelector('select[name="Ncd_Level_gears"]').value =  dbData?.ncdLevelGEARS;
+  const campaignInfoList = JSON.parse(dbData?.campaignInfoList);
+  document.getElementById("add-code-display").style.display=""
+  campaignInfoList.map(code=>{
+    addPromoCode(code?.campaignCode)
+  })
+}
 const setInsuredHome = (insuredData) => {
   console.log("setInsuredList home");
   if (!insuredData || insuredData.length === 0) return;

@@ -439,12 +439,21 @@ function handleForm() {
   const planDetail = getPlanDetail();
   insuredObject.planInfo = planDetail;
   insuredList.push(insuredObject);
-  const fullForm = {
+  let fullForm = {
     ...policyDetail,
     policyHolderInfo,
     insuredList,
     paymentDetails
   };
+
+
+  if(formType === "auto"){
+    fullForm={...fullForm,
+      quoteVersionMemo: formData.get("commentHistory"),
+      campaignInfoList:getCampaignInfoList()
+    }
+  }
+
   return fullForm;
 }
 
@@ -500,6 +509,23 @@ function getPlanDetail() {
  }
  return PlanDetail
 }
+function getCampaignInfoList() {
+  const promoCodeInputs = document.querySelectorAll('input[name="campaignCode[]"]');
+  const campaignInfoList = [];
+
+  promoCodeInputs.forEach(input => {
+      const promoCodeValue = input.value.trim(); // Get and trim the value of the input field
+      if (promoCodeValue) {
+          campaignInfoList.push({
+              campaignCode: promoCodeValue
+          });
+      }
+  });
+
+  console.log("campaignInfoList:", campaignInfoList);
+  return campaignInfoList;
+}
+
 function populatePlansNormal(productId,planInfo,paymentMode) {
   console.log("planInfo:", planInfo)
   console.log("populatePlansNormal:")

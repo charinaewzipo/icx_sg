@@ -368,7 +368,7 @@ error_reporting(E_ALL);
               <th></th>
               <td style="padding-left:47px" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Automatic Renewal Flag: </td>
               <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
-                <select name="automaticRenewalFlag " id="automaticRenewalFlag" disabled >
+                <select name="automaticRenewalFlag" id="automaticRenewalFlag" disabled >
                   <option value=""> <-- Please select an option --> </option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>

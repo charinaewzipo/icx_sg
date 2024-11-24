@@ -111,6 +111,11 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
 
+    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
+    $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
+    $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
+    $ncdLevelGEARS = isset($response['ncdLevelGEARS']) ? $response['ncdLevelGEARS'] : null;
+
     $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
 
@@ -161,7 +166,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
         quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date,  
-        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id,request_quote_json,response_quote_json";
+        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id,request_quote_json,response_quote_json,quoteVersionMemo,campaignInfoList,ncdLevelGEARS";
 
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
@@ -178,7 +183,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         '$policyEffDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
         $campaign_id, $import_id, $calllist_id,NOW(), '$payment_frequency', '$payment_mode', 
-        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id','$request_quote_json','$response_quote_json'";
+        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id','$request_quote_json','$response_quote_json','$quoteVersionMemo','$campaignInfoList','$ncdLevelGEARS'";
 
     // Add NOW() for quote_create_date if response is not empty
     if (!empty($response)) {
@@ -240,7 +245,10 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
-
+    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
+    $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
+    $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
+    $ncdLevelGEARS = isset($response['ncdLevelGEARS']) ? $response['ncdLevelGEARS'] : null;
     // Response data
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
@@ -298,6 +306,9 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
         efulfillmentFlag = '$efulfillmentFlag',
         request_quote_json= '$request_quote_json',
         response_quote_json= '$response_quote_json',
+        quoteVersionMemo='$quoteVersionMemo',
+        campaignInfoList='$campaignInfoList',
+        ncdLevelGEARS='$ncdLevelGEARS',
         customer_id='$customer_id',          
         update_date = NOW()";
 
@@ -351,6 +362,10 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id)
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
 
+    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
+    $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
+    $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
+    $ncdLevelGEARS = isset($response['ncdLevelGEARS']) ? $response['ncdLevelGEARS'] : null;
     // Response data
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
@@ -409,6 +424,9 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id)
         request_recalculate_json= '$request_recalculate_json',
         response_recalculate_json= '$response_recalculate_json',
         customer_id='$customer_id',          
+        quoteVersionMemo='$quoteVersionMemo',
+        campaignInfoList='$campaignInfoList',
+        ncdLevelGEARS='$ncdLevelGEARS',
         update_date = NOW()";
 
     // Add quote_create_date if response is not null
