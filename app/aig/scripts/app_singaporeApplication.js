@@ -465,25 +465,38 @@ function getPlanDetail() {
  if(formType==='auto'){
   let coverList=[]
   const planCoverLists = document.querySelectorAll('.planCoverList');
-
-  // Loop through each select element
-  planCoverLists.forEach(function(selectElement) {
+  if(selectedPlan){
+    const coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList).filter(cover=>cover?.autoAttached===false)
+    planCoverLists.forEach(function(selectElement) {
       const selectedOption = selectElement.options[selectElement.selectedIndex];
-      
-      // If an option is selected and it is not disabled
       if (selectedOption.value !== "" && !selectedOption.disabled) {
-        console.log("selectedOption:", selectedOption)
         const objectCover={
           id:selectedOption.value,
           code:selectedOption?.dataset.code||"",
           selectedFlag:true
         }
-        coverList.push(objectCover)
-          // Add the 'data-premium' value of the selected option to the total premium
-          // premiumTotal += parseFloat(selectedOption.getAttribute('data-premium')) || 0;
-      }
-  });
-  PlanDetail={...PlanDetail,coverList}
+          coverList.push(objectCover)
+        }
+      });
+      const updateCoverList = coverListDataFilterAutoAttachedFalse.map(item => {
+        const existingCover = coverList.find(cover => cover.id === String(item.id)); 
+        if (existingCover) {
+          return {
+            id: item.id,
+            code: item.code,
+            selectedFlag: true
+          };
+        } else {
+          return {
+            id: item.id,
+            code: item.code,
+            selectedFlag: false
+          };
+        }
+      });
+    PlanDetail={...PlanDetail,coverList:updateCoverList}
+  }
+ 
  }
  return PlanDetail
 }

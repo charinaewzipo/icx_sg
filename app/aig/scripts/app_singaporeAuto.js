@@ -287,6 +287,7 @@ function calculatePremiumSummary() {
   }
 
   console.log("Total Premium:", premiumTotal);
+  console.log("Total premiumAmountInputWithGST:", premiumAmountInputWithGST.value);
 }
 // Function to disable selected options in all dropdowns
 function updateDisabledOptions() {
