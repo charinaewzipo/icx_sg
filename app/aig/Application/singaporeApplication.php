@@ -120,7 +120,7 @@ error_reporting(E_ALL);
   <script src="../scripts/app_singaporePayment.js"></script>
   <script src="../scripts/app_singaporeRenew.js"></script>
   <script src="../scripts/app_singaporeAuto.js"></script>
-
+  <script src="../scripts/app_singaporeLogAPI.js"></script>
 
   <script>
     var datepickerOptions = {
