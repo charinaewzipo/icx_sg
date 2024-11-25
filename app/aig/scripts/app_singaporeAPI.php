@@ -17,7 +17,7 @@ var token = null;
 async function fetchPremium(requestBody) {
   document.body.classList.add('loading');
   const apiUrl = '<?php echo $GLOBALS["aig_api_premium_url"]; ?>';
-
+  const startTime = performance.now(); // เริ่มจับเวลา
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -27,10 +27,11 @@ async function fetchPremium(requestBody) {
       },
       body: JSON.stringify(requestBody),
     });
-
+    const executionTime = performance.now() - startTime; // เวลาที่ใช้
+    const statusCode = response.status;
     const data = await response.json();
     console.log("responseData", data);
-
+    await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
     if (
       data &&
       data.Policy &&
@@ -44,6 +45,8 @@ async function fetchPremium(requestBody) {
     }
   } catch (error) {
     console.error("Error fetching plan data:", error);
+    await logApiCall(apiUrl, requestBody, null, 500, error.message, null,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
+
   } finally {
     // Remove 'loading' class from body after fetch is complete
     document.body.classList.remove('loading');
@@ -54,7 +57,7 @@ async function fetchQuotation(requestBody) {
   document.body.classList.add('loading');
   console.log("Fetching Quotation data...");
   const apiUrl = '<?php echo $GLOBALS["aig_api_create_quote_url"]; ?>';
-
+  const startTime = performance.now(); // เริ่มจับเวลา
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -64,9 +67,11 @@ async function fetchQuotation(requestBody) {
       },
       body: JSON.stringify(requestBody),
     });
-
+    const executionTime = performance.now() - startTime; // เวลาที่ใช้
+    const statusCode = response.status;
     const data = await response.json();
     console.log("data", data);
+    await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
 
     let currentUrl = window.location.href;
     const url = new URL(currentUrl);
@@ -105,6 +110,7 @@ async function fetchQuotation(requestBody) {
   } catch (error) {
     console.error("Error fetching quotation data:", error);
     window.alert("Failed to fetch quotation data. Please try again.");
+    await logApiCall(apiUrl, requestBody, null, 500, error.message, null,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
     throw error; // Re-throw the error to be caught by the caller
   } finally {
     document.body.classList.remove('loading');
@@ -115,7 +121,7 @@ async function fetchPolicy(requestBody) {
   console.log("Fetching Policy data...");
   document.body.classList.add('loading');
   const apiUrl = '<?php echo $GLOBALS["aig_api_create_policy_url"]; ?>';
-
+  const startTime = performance.now(); // เริ่มจับเวลา
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -128,10 +134,10 @@ async function fetchPolicy(requestBody) {
 
     const data = await response.json();
     console.log("data", data);
-
+    const executionTime = performance.now() - startTime; // เวลาที่ใช้
+    const statusCode = response.status;
     // Update policyNo if present, regardless of statusCode
-
-
+    await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
     // Check for specific statusCode N02 and alert accordingly
     if (data?.statusCode === "N02" || data?.statusCode === "P00") {
       if (data?.statusCode === "P00") {
@@ -151,6 +157,7 @@ async function fetchPolicy(requestBody) {
   } catch (error) {
     console.error("Error fetching quotation data:", error);
     window.alert("Failed to fetch quotation data. Please try again.");
+    await logApiCall(apiUrl, requestBody, null, 500, error.message, null,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
     throw error; // Re-throw the error to be caught by the caller
   } finally {
     document.body.classList.remove('loading');
@@ -162,6 +169,8 @@ async function fetchRetrieveQuote(requestBody) {
   console.log("Fetching Policy data...");
   document.body.classList.add('loading');
   const apiUrl = '<?php echo $GLOBALS["aig_api_retrieve_quote_url"]; ?>';
+  const startTime = performance.now(); 
+  let executionTime = null;
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -171,15 +180,20 @@ async function fetchRetrieveQuote(requestBody) {
       },
       body: JSON.stringify(requestBody),
     });
-
-
+    const executionTime = performance.now() - startTime; // เวลาที่ใช้
+    const statusCode = response.status;
+    // Update policyNo if present, regardless of statusCode
+    
     const data = await response.json();
     console.log("data", data);
+    await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
+
     return data;
   } catch (error) {
     console.error("Error fetching quotation data:", error);
     // Optionally, you can alert the user about the error
     window.alert("Failed to fetch quotation data. Please try again.");
+    await logApiCall(apiUrl, requestBody, null, 500, error.message, null,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
     throw error; // Re-throw the error to be caught by the caller
   } finally {
     document.body.classList.remove('loading');
@@ -189,7 +203,7 @@ async function fetchRecalculateQuote(requestBody) {
   console.log("Fetching Recalculate data...");
   document.body.classList.add('loading');
   const apiUrl = '<?php echo $GLOBALS["aig_api_recalculate_quote_url"]; ?>';
-
+  const startTime = performance.now(); // เริ่มจับเวลา
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -202,7 +216,10 @@ async function fetchRecalculateQuote(requestBody) {
 
     const data = await response.json();
     console.log("data", data);
-
+    const executionTime = performance.now() - startTime; // เวลาที่ใช้
+    const statusCode = response.status;
+    // Update policyNo if present, regardless of statusCode
+    await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
     // Check for specific statusCode N02 and alert accordingly
     if (data?.statusCode === "S03") {
       await jQuery.agent.updateRecalQuoteData(requestBody, data, id);
@@ -218,6 +235,7 @@ async function fetchRecalculateQuote(requestBody) {
   } catch (error) {
     console.error("Error fetching quotation data:", error);
     window.alert("Failed to fetch quotation data. Please try again.");
+    await logApiCall(apiUrl, requestBody, null, 500, error.message, null,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
     throw error; // Re-throw the error to be caught by the caller
   } finally {
     document.body.classList.remove('loading');

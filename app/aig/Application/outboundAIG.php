@@ -597,7 +597,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData,$request)
                 insuredList = '$insuredList',
                 premiumPayable = '$premiumPayable',
                 quoteNo = '$quoteNo',
-                campaignCode='$campaignCode'
+                campaignCode='$campaignCode',
                 fullname = '$fullName',
                 customer_id = '$customerIdNo',
                 payment_mode = '$paymentMode',
@@ -990,17 +990,15 @@ function transformDateQuote($dateString)
 }
 
 function convertToISO8601($dateStr) {
-    // Try to parse the ISO 8601 date (e.g., YYYY-MM-DDTHH:MM:SSZ)
-    try {
-        $date = new DateTime($dateStr);
-        // Return the date in 'Y-m-d H:i:s' format
-        return $date->format('Y-m-d 00:00:00');
-    } catch (Exception $e) {
-        // If the ISO 8601 format fails, try parsing as 'd/m/Y'
-        $date = DateTime::createFromFormat('d/m/Y', $dateStr);
-        // Return the date in 'Y-m-d H:i:s' format or null if invalid
-        return $date ? $date->format('Y-m-d 00:00:00') : null;
+    $date = DateTime::createFromFormat('d/m/Y', $dateStr);
+
+    if ($date) {
+        $date->setTime(0, 0, 0);
+        return $date->format('Y-m-d\TH:i:s\Z');
     }
+
+    // หากแปลงไม่สำเร็จ คืนค่า null
+    return null;
 }
 function maskCardNumber($card_number)
 {

@@ -386,14 +386,19 @@ let currentUrl = window.location.href;
   return transformedData;
 };
 const retrieveTransformDate = (dateString) => {
+  const [day, month, year] = dateString.split('/').map(Number);
 
-  const date = moment(dateString, "DD/MM/YYYY", true); // 'true' for strict parsing
-
-  if (date.isValid()) {
-    return date.utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
-  } else {
-    return "Invalid date"; // Indicate that the date is invalid
+  if (!day || !month || !year || month > 12 || day > 31) {
+    return "Invalid date";
   }
+
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  if (isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  return date.toISOString();
 };
 
 $(function () {
