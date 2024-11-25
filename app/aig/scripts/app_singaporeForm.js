@@ -134,19 +134,24 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
           const coverListBody = document.getElementById('coverListBody');
           coverListBody.innerHTML = '';
           console.log("let selectedPlan;",selectedPlan)
-          planInfo?.coverList.map(cover=>{
-            console.log("cover",cover)
-            if(cover?.selectedFlag===true){
-              addCoverRow(selectedPlan?.coverList,cover)
-            }
-          })
-        
-
-
+          if(checkAllValuesSelectedFlagFalse(planInfo?.coverList)){
+            addCoverRow(selectedPlan?.coverList)
+          }else{
+            planInfo?.coverList.map(cover=>{
+              console.log("cover",cover)
+              if(cover?.selectedFlag===true){
+                addCoverRow(selectedPlan?.coverList,cover)
+              }
+            })
+          }
+          
         }
     }
     
 
+};
+const checkAllValuesSelectedFlagFalse = (coverList) => {
+  return coverList.every((cover) => cover?.selectedFlag === false);
 };
 
 
@@ -333,9 +338,13 @@ const setOtherInfoAuto=(dbData)=>{
   document.querySelector('select[name="Ncd_Level_gears"]').value =  dbData?.ncdLevelGEARS;
   const campaignInfoList = JSON.parse(dbData?.campaignInfoList);
   document.getElementById("add-code-display").style.display=""
-  campaignInfoList.map(code=>{
-    addPromoCode(code?.campaignCode)
-  })
+  if(campaignInfoList.length>0){
+    campaignInfoList.map(code=>{
+      addPromoCode(code?.campaignCode)
+    })
+  }else{
+    addPromoCode()
+  }
 }
 const setInsuredHome = (insuredData) => {
   console.log("setInsuredList home");

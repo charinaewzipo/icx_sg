@@ -661,10 +661,16 @@ function addPromoCode(defaultValue = "") {
 // ฟังก์ชันสำหรับการลบแถว Promo Code
 function removePromoCode(rowNumber) {
   const rowToRemove = document.getElementById(`promocode-row-${rowNumber}`);
+  const inputToClear = document.getElementById(`promocode-input-${rowNumber}`);
   if (rowToRemove&&promoCodeCount>1) {
     rowToRemove.remove(); // ลบแถว
     promoCodeCount--;
   } else {
+    inputToClear.value=''
+    inputToClear.readOnly=false
+    inputToClear.style.backgroundColor='white'
+    inputToClear.style.opacity='1'
+    
     alert("No promo code rows left");
   }
 }

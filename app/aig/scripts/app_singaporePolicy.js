@@ -105,7 +105,8 @@ const unhideFormData = (elements) => {
       element.readOnly = false;           // Remove read-only restriction
       element.disabled = false;           // Enable textarea
       element.style.backgroundColor = ""; // Reset background color
-      element.style.border = "";          // Reset border style
+      element.style.border = "";
+      element.style.opacity = "";           // Reset border style
     } else if (tagName === "button") {
       // Enable button elements
       element.disabled = false;           // Ensure button is enabled
