@@ -665,13 +665,12 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
             }
         } 
         else if (responseProduct?.product_group == "Auto"){
-                const promoCodeFieldString  = productDetail.udf_field_promo_code;
-                const ArrayPromoCodeField = promoCodeFieldString.split(",")
-                console.log("ArrayPromoCodeField:", ArrayPromoCodeField)
-                initializePromoCodeTable(ArrayPromoCodeField)
-                document.getElementById('add-code-display').style.display=""
-
                 if(!id){
+                    const promoCodeFieldString  = productDetail.udf_field_promo_code;
+                    const ArrayPromoCodeField = promoCodeFieldString.split(",")
+                    console.log("ArrayPromoCodeField:", ArrayPromoCodeField)
+                    initializePromoCodeTable(ArrayPromoCodeField)
+                    document.getElementById('add-code-display').style.display=""
                     const enginNoField=productDetail.udf_field_engin_no;
                     document.querySelector('input[name="insured_auto_vehicle_engineNo"]').value=calllistDetail[enginNoField]
                 }

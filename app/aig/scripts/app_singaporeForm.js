@@ -333,12 +333,20 @@ const setDefaultValueForm = async (dbData) => {
   }
 
 };
+const handleAlertNCDLevelDifferent=()=>{
+  if(!responsePayment&&quotationData?.type==="auto"){
+    if(Number(quotationData?.ncdInfo?.ncdLevel)!==Number(quotationData?.ncdLevelGEARS)){
+      window.alert("Notice: The NCD percentage provided by GEARS is different from the one you have declared. Please note that if your declared NCD is later validated as lower, you will be responsible for paying any additional premium as required by AIG.")
+    }
+  }
+}
 const setOtherInfoAuto=(dbData)=>{
+
   document.querySelector('textarea[name="commentHistory"]').value  = dbData?.quoteVersionMemo||"";
   document.querySelector('select[name="Ncd_Level_gears"]').value =  dbData?.ncdLevelGEARS;
   const campaignInfoList = JSON.parse(dbData?.campaignInfoList);
   document.getElementById("add-code-display").style.display=""
-  if(campaignInfoList.length>0){
+  if(Array.isArray(campaignInfoList)&&campaignInfoList.length>0){
     campaignInfoList.map(code=>{
       addPromoCode(code?.campaignCode)
     })

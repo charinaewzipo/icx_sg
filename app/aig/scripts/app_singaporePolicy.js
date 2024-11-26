@@ -184,6 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const paymentResponse = await jQuery.agent.getPaymentLogWithId(quotationData?.quoteNo);
             handlePaymentResponse(paymentResponse);
             responsePayment = paymentResponse?.data;
+            handleAlertNCDLevelDifferent()
           } catch (error) {
             console.log("error:", error)
           }

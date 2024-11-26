@@ -114,7 +114,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
     $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
     $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
-    $ncdLevelGEARS = isset($response['ncdLevelGEARS']) ? $response['ncdLevelGEARS'] : null;
+    $ncdLevelGEARS = isset($response['ncdLevel']) ? $response['ncdLevel'] : null;
 
     $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
@@ -248,7 +248,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id)
     $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
     $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
     $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
-    $ncdLevelGEARS = isset($response['ncdLevelGEARS']) ? $response['ncdLevelGEARS'] : null;
+    $ncdLevelGEARS = isset($response['ncdLevel']) ? $response['ncdLevel'] : null;
     // Response data
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
@@ -365,7 +365,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id)
     $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
     $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
     $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
-    $ncdLevelGEARS = isset($response['ncdLevelGEARS']) ? $response['ncdLevelGEARS'] : null;
+    $ncdLevelGEARS = isset($response['ncdLevel']) ? $response['ncdLevel'] : null;
     // Response data
     $policyId = isset($response['policyId']) ? $response['policyId'] : '';
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
