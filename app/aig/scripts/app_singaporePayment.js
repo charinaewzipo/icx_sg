@@ -476,6 +476,18 @@ function clearPauseTime() {
   intervalId = null;
 }
 
+
+const handleCardTypeIPP=()=>{
+  const paymentMode=document.getElementById("paymentModeSelect")
+  const cardTypeDisplay=document.getElementById("cardTypeDisplay")
+  //IPP
+  if(Number(paymentMode.value)===122){
+    cardTypeDisplay.style.display = "table-row";
+  }else{
+    cardTypeDisplay.style.display="none"
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   fetchAgentDetail()
 

@@ -328,7 +328,7 @@ const handleChangePaymodeAutomaticRenewal=()=>{
   const automaticRenewalFlag=document.getElementById('automaticRenewalFlag');
   const paymentModeSelect=document.getElementById('paymentModeSelect');
   paymentModeSelect.addEventListener('change',function(){
-    if(paymentModeSelect.value==="124"){
+    if(Number(paymentModeSelect.value)===124){
       automaticRenewalFlag.value="Yes"
     }else{
        automaticRenewalFlag.value="No"
@@ -405,6 +405,19 @@ function handleChangeIsPolicyHolderDriving(checkbox) {
 }
 
 
+function validateDriverExperience() {
+  const drivingExperienceInput = document.getElementById("drivingExperience");
+
+  drivingExperienceInput.addEventListener("change", function () {
+    const drivingExperience = drivingExperienceInput.value;
+
+    // Validate if the input is numeric and greater than 0
+    if (!drivingExperience || isNaN(drivingExperience) || Number(drivingExperience) <= 0) {
+      window.alert("Driving experience must be a numeric value greater than 0.");
+      drivingExperienceInput.value = ""; // Optional: Clear the input field
+    }
+  });
+}
 
 function validateCustomerIdNumberAuto() {
   const idTypeSelect = document.querySelector(`select[name="insured_auto_driverInfo_driverIdType"]`);
@@ -697,5 +710,9 @@ document.addEventListener("DOMContentLoaded", () => {
       setupFormListeners();
       handleAutoMakeChange()
       handleChangePaymodeAutomaticRenewal()
+      validateDriverExperience()
+      document.getElementById("paymentModeSelect").addEventListener('change',function(){
+        handleCardTypeIPP()
+})
   } 
 });

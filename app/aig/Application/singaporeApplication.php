@@ -363,6 +363,7 @@ error_reporting(E_ALL);
                   <option value=""> <-- Please select an option --> </option>
                   <option value="1001">Credit Card Lump sum</option>
                   <option value="124">Recurring Credit Card</option>
+                  <option value="122" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Credit Card IPP</option>
                 </select>
               </td>
               <th></th>
@@ -375,6 +376,18 @@ error_reporting(E_ALL);
                 </select>
               </td>
               
+            </tr>
+            <tr id='cardTypeDisplay' style="display:none">
+            <td>Card Type: <span style="color:red">*</span></td>
+                    <td>
+                    <select name="cardType" id="cardType" required>
+                  <option value=""> <-- Please select an option --> </option>
+                  <option value="3">Credit Card IPP UOB 6 months</option>
+                  <option value="6">Credit Card IPP DBS 6 months</option>
+                  <option value="4">Credit Card IPP UOB 12 months</option>
+                  <option value="7">Credit Card IPP DBS 12 months</option>
+                </select>
+                    </td>
             </tr>
 
           </table>
@@ -1178,7 +1191,7 @@ where name='Occupation'";
                 </select></td>
               <th>&nbsp;</th>
               <td>Driver Experience : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_driverInfo_drivingExperience" maxlength="2" size="10" required /> <span>year</span></td>
+              <td><input type="text" name="insured_auto_driverInfo_drivingExperience"  id="drivingExperience"  maxlength="4" size="10" required value="1" /> <span>year</span></td>
             </tr>
             
             <tr>
