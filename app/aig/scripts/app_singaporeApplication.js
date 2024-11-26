@@ -452,6 +452,7 @@ function handleForm() {
       quoteVersionMemo: formData.get("commentHistory"),
       campaignInfoList:getCampaignInfoList()
     }
+    campaignDetails={...campaignDetails,cardType:formData.get("cardType")}
   }
 
   return fullForm;

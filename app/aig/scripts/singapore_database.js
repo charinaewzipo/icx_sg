@@ -184,7 +184,7 @@
         }
       });
     },
-    updateQuoteData: function (formData, response, id) {
+    updateQuoteData: function (formData, response, id,campaignDetails) {
       $.ajax({
         url: url,
         type: "POST",
@@ -194,7 +194,8 @@
           formData: formData,
           response: response,
           type: selectedType,
-          id: id
+          id: id,
+          campaignDetails: campaignDetails
         }),
         dataType: "text",
         success: function (response) {
@@ -213,7 +214,7 @@
         }
       });
     },
-    updateRecalQuoteData: function (formData, response, id) {
+    updateRecalQuoteData: function (formData, response, id,campaignDetails) {
       $.ajax({
         url: url,
         type: "POST",
@@ -223,7 +224,8 @@
           formData: formData,
           response: response,
           type: selectedType,
-          id: id
+          id: id,
+          campaignDetails
         }),
         dataType: "text",
         success: function (response) {

@@ -344,6 +344,7 @@ const setOtherInfoAuto=(dbData)=>{
 
   document.querySelector('textarea[name="commentHistory"]').value  = dbData?.quoteVersionMemo||"";
   document.querySelector('select[name="Ncd_Level_gears"]').value =  dbData?.ncdLevelGEARS;
+  document.querySelector('select[name="cardType"]').value =  dbData?.cardType;
   const campaignInfoList = JSON.parse(dbData?.campaignInfoList);
   document.getElementById("add-code-display").style.display=""
   if(Array.isArray(campaignInfoList)&&campaignInfoList.length>0){

@@ -86,7 +86,7 @@ async function fetchQuotation(requestBody) {
 
     // Insert Quotation Data regardless of statusCode
     if (id != null && id !== "") {
-      await jQuery.agent.updateQuoteData(requestBody, data, id);
+      await jQuery.agent.updateQuoteData(requestBody, data, id,campaignDetails);
     } else {
       const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
       if (url.searchParams.has('id')) {
@@ -222,7 +222,7 @@ async function fetchRecalculateQuote(requestBody) {
     await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime,calllistDetail?.calllist_id,campaignDetails?.agent_id,campaignDetails?.import_id);
     // Check for specific statusCode N02 and alert accordingly
     if (data?.statusCode === "S03") {
-      await jQuery.agent.updateRecalQuoteData(requestBody, data, id);
+      await jQuery.agent.updateRecalQuoteData(requestBody, data, id,campaignDetails);
       window.alert(data?.statusMessage || "Successfully!");
       window.location.reload();
     } else {
