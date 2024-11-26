@@ -149,30 +149,34 @@ const handleRetrieveQuote = async () => {
     }
   }
   if (is_firsttime === "1") {
-    handlePaymentGateway(quotationData?.premiumPayable, Number(paymentModeValue));
+    if(formType==="auto"&&Number(paymentModeValue)===122){
+      handlePaymentGatewayIPP(quotationData?.premiumPayable)
+      return
+    }
+      handlePaymentGateway(quotationData?.premiumPayable, Number(paymentModeValue));
+    
   } else {
     const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
     console.log("responseRetrieve:", responseRetrieve);
     console.log("quotationData:", quotationData);
-
+  
     if (!responseRetrieve) {
       alert("Quote Retrieval List Operation failed");
       return;
     }
-
+  
     const { statusCode, quoteList, statusMessage } = responseRetrieve;
     if (statusCode !== "P00") {
       alert(statusMessage);
       return;
     }
-
+  
     let data = quoteList?.[0]?.Policy;
     console.log("data:", data);
     const transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
     const getPlanPoi=quoteList?.[0]?.Policy
     await jQuery.agent.updateRetrieveQuote(data, id, transformedData,objectRetrieve);
-
     const isPremiumPayableMatching =
       parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable);
 
@@ -185,12 +189,57 @@ const handleRetrieveQuote = async () => {
     if (!isPaymentModeMatching) {
       alert("Payment Mode has changed.");
     }
+
+    if(formType==="auto"&&Number(paymentModeValue)===122){
+      handlePaymentGatewayIPP(data?.premiumPayable)
+      return
+    }
     handlePaymentGateway(data?.premiumPayable, data?.paymentDetails[0]?.paymentMode||Number(paymentModeValue));
   }
 
 
 };
+const handlePaymentGatewayIPP = async (premiumPayable) => {
+  let bank=null;
+  let countMonth=null;
+  const cardTypeValue = document.getElementById("cardType").value
+  if(Number(cardTypeValue)===3){
+    bank="uob";
+    countMonth=6;
+  }else if(Number(cardTypeValue)===6){
+    bank="dbs";
+    countMonth=6;
+  }else if(Number(cardTypeValue)===4){
+    bank="uob";
+    countMonth=12;
+  }
+  else if(Number(cardTypeValue)===7){
+    bank="dbs";
+    countMonth=12;
+  }
+  console.log("bank",bank)
+  console.log("countMonth",countMonth)
+  if (premiumPayable) {
+    // const url = `payment.php?amount=${premiumPayable}&is_recurring=${isRecurring}&quoteNo=${quotationData?.quoteNo}`;
+    const url = `payment_2c2p.php?amount=${premiumPayable}&quoteNo=${quotationData?.quoteNo}&bank=${bank}&ipp=${countMonth}`;
 
+    // Open a new window for payment
+    const childWindow = window.open(url, 'childWindow', 'width=600,height=480');
+
+    handleSecurePause();
+
+
+    const checkWindowClosed = setInterval(() => {
+      if (childWindow.closed) {
+        clearInterval(checkWindowClosed);
+        handleUnsecurePause();
+      }
+    }, 1000);
+
+  } else {
+    console.log("No price", premiumPayable);
+  }
+};
 const handlePaymentGateway = async (premiumPayable, paymentMode) => {
   // Retrieve Quote
   const isRecurring = paymentMode === 124 ? 1 : 0;
