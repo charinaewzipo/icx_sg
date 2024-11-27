@@ -351,6 +351,9 @@ const handleCardTypeFromResponse=()=>{
       }else if (cardType==="AMEX"){
         return 26
       }
+    }else if(Number(formData.get('Payment_Mode'))===122){
+      return Number(formData.get('cardType'))
     }
+
   }
 }
