@@ -311,6 +311,7 @@ let currentUrl = window.location.href;
       }
     },
     insuredList: (data.insuredList || []).map((insured, index) => {
+      console.log("insured:", insured)
       // Access the corresponding entry in quotationData using the same index
       const quotationInsured = (quotationData?.insuredList || [])[index] || {};
       console.log("quotationInsured:", quotationInsured)
@@ -381,48 +382,79 @@ let currentUrl = window.location.href;
               // ]:[]
             }
           }
-      } else if (formType === "auto"){
+      } else if (formType === "auto") {
         return {
           "vehicleInfo": {
-            "make": insured?.vehicleInfo?.make || "",
-            "model": insured?.vehicleInfo?.model || "",
-            "vehicleRegYear": "",  // If there's a specific year required, you can provide it here
-            "regNo": insured?.insuredId.toString() || "", // Using insuredId as a registration number
-            "insuringWithCOE": "2",
-            "ageConditionBasis": "1",
-            "offPeakCar": "2",
-            "vehicleUsage": "215",
-            "mileageCondition": insured?.vehicleInfo?.mileageCondition || "",
-            "engineNo": insured?.vehicleInfo?.engineNo || "",
-            "chassisNo": insured?.vehicleInfo?.chassisNo || "",
-            "mileageDeclaration": "",
-            "hirePurchaseCompany": insured?.vehicleInfo?.hirePurchaseCompany || "", // Use the provided hire purchase company
-            "declaredSI": "231"
+            "make": insured?.vehicleInfo?.make || quotationInsured?.vehicleInfo?.make || "",
+            "model": insured?.vehicleInfo?.model || quotationInsured?.vehicleInfo?.model || "",
+            "vehicleRegYear": insured?.vehicleInfo?.vehicleRegYear || quotationInsured?.vehicleInfo?.vehicleRegYear || "",
+            "regNo": insured?.vehicleInfo?.regNo || quotationInsured?.vehicleInfo?.regNo || "",
+            "insuringWithCOE": insured?.vehicleInfo?.insuringWithCOE || quotationInsured?.vehicleInfo?.insuringWithCOE || "",
+            "ageConditionBasis": insured?.vehicleInfo?.ageConditionBasis || quotationInsured?.vehicleInfo?.ageConditionBasis || "",
+            "offPeakCar": insured?.vehicleInfo?.offPeakCar || quotationInsured?.vehicleInfo?.offPeakCar || "",
+            "vehicleUsage": insured?.vehicleInfo?.vehicleUsage || quotationInsured?.vehicleInfo?.vehicleUsage || "",
+            "mileageCondition": insured?.vehicleInfo?.mileageCondition || quotationInsured?.vehicleInfo?.mileageCondition || "",
+            "engineNo": insured?.vehicleInfo?.engineNo || quotationInsured?.vehicleInfo?.engineNo || "",
+            "chassisNo": insured?.vehicleInfo?.chassisNo || quotationInsured?.vehicleInfo?.chassisNo || "",
+            "mileageDeclaration": insured?.vehicleInfo?.mileageDeclaration || quotationInsured?.vehicleInfo?.mileageDeclaration || "",
+            "hirePurchaseCompany": insured?.vehicleInfo?.hirePurchaseCompany || quotationInsured?.vehicleInfo?.hirePurchaseCompany || ""
+
           },
           "driverInfo": [
             {
-              "driverType": "5",
-              "driverDOB": "1993-10-14T00:00:00Z",  // Placeholder, update if necessary
-              "driverGender": "M",  // Placeholder, update if necessary
-              "driverMaritalStatus": "M",  // Placeholder, update if necessary
-              "drivingExperience": "2",  // Placeholder, update if necessary
-              "occupation": "60",  // Placeholder, update if necessary
-              "claimExperience": "N",
-              "claimInfo": [],
-              "driverName": "Test Auto",  // Assuming driver name corresponds with insured name
-              "driverIdNumber": insured?.insuredId.toString() || "S9499999F", // Using insuredId for driver ID
-              "driverIdType": "3",  // Placeholder, update if necessary
-              "driverResidentStatus": "1",  // Placeholder, update if necessary
-              "driverNationality": "6"  // Placeholder, update if necessary
+              "driverType": insured?.driverInfo?.[0]?.driverType || quotationInsured?.driverInfo?.[0]?.driverType || "",
+              "driverDOB": insured?.driverInfo?.[0]?.driverDOB
+                ? retrieveTransformDate(insured?.driverInfo?.[0]?.driverDOB)
+                : retrieveTransformDate(quotationInsured?.driverInfo?.[0]?.driverDOB) || "", 
+              "driverGender": insured?.driverInfo?.[0]?.driverGender || quotationInsured?.driverInfo?.[0]?.driverGender || "",
+              "driverMaritalStatus": insured?.driverInfo?.[0]?.driverMaritalStatus || quotationInsured?.driverInfo?.[0]?.driverMaritalStatus || "",
+              "drivingExperience": insured?.driverInfo?.[0]?.drivingExperience || quotationInsured?.driverInfo?.[0]?.drivingExperience || "",
+              "occupation": insured?.driverInfo?.[0]?.occupation || quotationInsured?.driverInfo?.[0]?.occupation || "",
+              "claimExperience": insured?.driverInfo?.[0]?.claimExperience || quotationInsured?.driverInfo?.[0]?.claimExperience || "",
+              "claimInfo": Array.isArray(insured?.driverInfo?.[0]?.claimInfo) && insured?.driverInfo?.[0]?.claimInfo.length > 0
+                ? insured?.driverInfo?.[0]?.claimInfo.map(claim => ({
+                  claimNature: claim.claimNature || "",
+                  claimsAmount: claim.claimsAmount || "",
+                  dateOfLoss: claim.dateOfLoss ? retrieveTransformDate(claim.dateOfLoss) : "",
+                  insuredLiability: claim.insuredLiability || "",
+                  lossDescription: claim.lossDescription || "",
+                  status: claim.status || ""
+                }))
+                : Array.isArray(quotationInsured?.driverInfo?.[0]?.claimInfo)
+                  ? quotationInsured.driverInfo[0].claimInfo.map(claim => ({
+                    claimNature: claim.claimNature || "",
+                    claimsAmount: claim.claimsAmount || "",
+                    dateOfLoss: claim.dateOfLoss ? retrieveTransformDate(claim.dateOfLoss) : "",
+                    insuredLiability: claim.insuredLiability || "",
+                    lossDescription: claim.lossDescription || "",
+                    status: claim.status || ""
+                  }))
+                  : [],
+              "driverName": insured?.driverInfo?.[0]?.driverName || quotationInsured?.driverInfo?.[0]?.driverName || "",
+              "driverIdNumber": insured?.driverInfo?.[0]?.driverIdNumber || quotationInsured?.driverInfo?.[0]?.driverIdNumber || "",
+              "driverIdType": insured?.driverInfo?.[0]?.driverIdType || quotationInsured?.driverInfo?.[0]?.driverIdType || "",
+              "driverResidentStatus": insured?.driverInfo?.[0]?.driverResidentStatus || quotationInsured?.driverInfo?.[0]?.driverResidentStatus || "",
+              "driverNationality": insured?.driverInfo?.[0]?.driverNationality || quotationInsured?.driverInfo?.[0]?.driverNationality || ""
             }
           ],
           "planInfo": {
-            "planId": insured?.planList[0]?.planId || "1839000040",
-            "planPoi": insured?.planList[0]?.planPoi || "12",
-            "planCode": insured?.planList[0]?.planCode || ""
+            "planId": insured?.planList?.[0]?.planId || quotationInsured?.planList?.[0]?.planId || "",
+            "planPoi": insured?.planList?.[0]?.planPoi || quotationInsured?.planList?.[0]?.planPoi || "",
+            "planCode": insured?.planList?.[0]?.planCode || quotationInsured?.planList?.[0]?.planCode || "",
+            "coverList": (insured.planList[0]?.coverList ? Object.values(insured.planList[0].coverList) : []).length > 0
+                ? Object.values(insured.planList[0].coverList).map(cover => ({
+                  id: cover.id || "",
+                  code: cover.code || null,
+                  name: cover.name || null
+                }))
+                : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
+                  id: cover.id || "",
+                  code: cover.code || null,
+                  name: cover.name || null
+                }))
+            
           }
-        }
-        
+        };
       }
     }),
     paymentDetails: {
@@ -529,11 +561,15 @@ function clearPauseTime() {
 const handleCardTypeIPP=()=>{
   const paymentMode=document.getElementById("paymentModeSelect")
   const cardTypeDisplay=document.getElementById("cardTypeDisplay")
+  const cardTypeSelect = document.getElementById("cardType");
   //IPP
   if(Number(paymentMode.value)===122){
     cardTypeDisplay.style.display = "table-row";
+    cardTypeSelect.setAttribute("required", "required"); // ทำให้ required
   }else{
     cardTypeDisplay.style.display="none"
+    cardTypeSelect.removeAttribute("required"); // ยกเลิก required
+    cardTypeSelect.value = ""; // รีเซ็ตค่า
   }
 }
 

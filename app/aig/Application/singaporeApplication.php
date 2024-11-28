@@ -363,7 +363,7 @@ error_reporting(E_ALL);
                   <option value=""> <-- Please select an option --> </option>
                   <option value="1001">Credit Card Lump sum</option>
                   <option value="124">Recurring Credit Card</option>
-                  <option value="122" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Credit Card IPP</option>
+                  <option value="122" style="display: <?php echo ($formType === 'auto') ? 'block' : 'none'; ?>;">Credit Card IPP</option>
                 </select>
               </td>
               <th></th>
@@ -380,8 +380,8 @@ error_reporting(E_ALL);
             <tr id='cardTypeDisplay' style="display:none">
             <td>Card Type: <span style="color:red">*</span></td>
                     <td>
-                    <select name="cardType" id="cardType" required>
-                  <option value=""> <-- Please select an option --> </option>
+                    <select name="cardType" id="cardType" >
+                  <option value=""> <-- Please select an option </option> -->
                   <option value="3">Credit Card IPP UOB 6 months</option>
                   <option value="6">Credit Card IPP DBS 6 months</option>
                   <option value="4">Credit Card IPP UOB 12 months</option>
