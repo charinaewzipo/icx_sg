@@ -321,7 +321,7 @@ function populatePaymentForm(paymentData) {
 
   // Expiry Date (MM/YY)
   const expiryDateInput = document.querySelector('input[name="payment_expiryDate"]');
-  expiryDateInput.value = `${paymentData.card_expiry_month}/${paymentData.card_expiry_year.slice(-2)}`; // Format as MM/YY
+  expiryDateInput.value = `${paymentData?.card_expiry_month||"XX"}/${paymentData?.card_expiry_year.slice(-2)||"XX"}`; // Format as MM/YY
 
   // Security Code
   // const securityCodeInput = document.querySelector('input[name="payment_securityCode"]');
