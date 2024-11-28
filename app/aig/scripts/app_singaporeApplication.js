@@ -678,15 +678,16 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
           productId: quotationData.productId || "",
           distributionChannel: quotationData.distributionChannel || 0,
           producerCode: quotationData.producerCode || "",
-          policyEffDate: quotationData.policyEffDate ? moment(quotationData.policyEffDate).toISOString() : new Date().toISOString(),
+          policyEffDate: quotationData.policyEffDate
+            ? new Date(`${quotationData.policyEffDate}Z`).toISOString()
+            : new Date().toISOString(), 
           policyHolderInfo: quotationData?.policyHolderInfo,
-        
           remarksC: quotationData.remarksC || "",
           efulfillmentFlag: quotationData.efulfillmentFlag || "1",
           paymentDetails
       };
         console.log("policyRequest:", policyRequest)
-        
+
         await fetchPolicy(policyRequest);
        
       } else if(shouldRecalculate&&!submitButton.hidden){
