@@ -673,6 +673,8 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                     document.getElementById('add-code-display').style.display=""
                     const enginNoField=productDetail.udf_field_engin_no;
                     document.querySelector('input[name="insured_auto_vehicle_engineNo"]').value=calllistDetail[enginNoField]
+                    const vehicleNoField=productDetail.udf_field_vehicle_no;
+                    document.querySelector('input[name="insured_auto_vehicle_chassisNo"]').value=calllistDetail[vehicleNoField]
                 }
 
         }

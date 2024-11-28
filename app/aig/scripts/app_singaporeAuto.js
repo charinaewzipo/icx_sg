@@ -1,30 +1,29 @@
 let premiumBaseAmount = 0;
 let selectedPlan;
-function checkRetrieveCampaignAuto(data){
+function checkRetrieveCampaignAuto(data) {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
-  console.log("checkRetrieveCampaignAuto:")
-  console.log("campaignDetailsFromAPI",campaignDetailsFromAPI)
-  if(!id&&(formType==="auto")){
-    setTimeout(()=>{
-      // handleRetrieveAuto(data)
-    },2000)
+  console.log("checkRetrieveCampaignAuto:", data)
+  console.log("campaignDetailsFromAPI", campaignDetailsFromAPI)
+  if (!id && (formType === "auto")) {
+    setTimeout(() => {
+      const quoteNoField = productDetail?.udf_field_quote_no
+      console.log("quoteNoField:", quoteNoField)
+      console.log("calllistDetail[quoteNoField]", calllistDetail[quoteNoField])
+      if (calllistDetail[quoteNoField]) {
+        handleRetrieveAuto(data)
+      }
+    }, 2000)
   }
 }
 
 async function handleRetrieveAuto(callListData){
+  const quoteNoField=productDetail?.udf_field_quote_no
   const objectRetrieve = {
     "channelType": "10",
-    // "idNo": callListData?.personal_id||callListData?.passport_no,
-    // "policyNo": callListData?.udf4
-//error
-    "idNo": "S9499999F",
-    "policyNo": 724000174122222222222
-    //success
-
-    // "idNo": "S9499999F",
-    // "policyNo": 7240001742
+    "idNo": callListData?.personal_id||callListData?.passport_no,
+    "policyNo": calllistDetail[quoteNoField]
   };
   const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
   console.log("responseRetrieve:", responseRetrieve);
@@ -39,10 +38,10 @@ async function handleRetrieveAuto(callListData){
   const { statusCode, quoteList, statusMessage } = responseRetrieve;
   alert(statusMessage);
   if (statusCode !== "P00") {
-    //policy issuance
-    // setTimeout(()=>{
-    //   window.close(); 
-    // },2000)
+    // policy issuance
+    setTimeout(()=>{
+      window.close(); 
+    },2000)
     return
   }
   if(quoteList&&quoteList.length>0){
@@ -68,9 +67,9 @@ async function handleRetrieveAuto(callListData){
     window.location.href = url.toString();
   }else{
     alert("The quoteList has no data")
-    // setTimeout(()=>{
-    //   window.close(); 
-    // },2000)
+    setTimeout(()=>{
+      window.close(); 
+    },2000)
 
   }
   
