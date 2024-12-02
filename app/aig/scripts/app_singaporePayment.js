@@ -340,12 +340,14 @@ let currentUrl = window.location.href;
                 ? Object.values(insured.planList[0].coverList).map(cover => ({
                   id: cover.id || "",
                   code: cover.code || null,
-                  name: cover.name || null
+                  name: cover.name || null,
+                  selectedFlag :true
                 }))
                 : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
                   id: cover.id || "",
                   code: cover.code || null,
-                  name: cover.name || null
+                  name: cover.name || null,
+                  selectedFlag :true
                 }))
             }
           }
@@ -445,12 +447,14 @@ let currentUrl = window.location.href;
                 ? Object.values(insured.planList[0].coverList).map(cover => ({
                   id: cover.id || "",
                   code: cover.code || null,
-                  name: cover.name || null
+                  name: cover.name || null,
+                  selectedFlag :true
                 }))
                 : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
                   id: cover.id || "",
                   code: cover.code || null,
-                  name: cover.name || null
+                  name: cover.name || null,
+                  selectedFlag :true
                 }))
             
           }
