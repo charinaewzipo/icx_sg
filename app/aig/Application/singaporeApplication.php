@@ -363,7 +363,7 @@ error_reporting(E_ALL);
                   <option value=""> <-- Please select an option --> </option>
                   <option value="1001">Credit Card Lump sum</option>
                   <option value="124">Recurring Credit Card</option>
-                  <!-- <option value="122" style="display: <?php echo ($formType === 'auto') ? 'block' : 'none'; ?>;">Credit Card IPP</option> -->
+                  <option value="122" style="display: <?php echo ($formType === 'auto') ? 'block' : 'none'; ?>;">Credit Card IPP</option>
                 </select>
               </td>
               <th></th>
