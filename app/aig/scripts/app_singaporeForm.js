@@ -119,7 +119,26 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
     const planPoiSelect = document.getElementById('planPoiSelect');
     const premiumAmountInput = document.getElementById('premium-amount');
     if (dbData&&planInfo?.planId) {
-          const apiBody = handlePremiumRequestBody();
+          let apiBody = handlePremiumRequestBody();
+          console.log("apiBody:", apiBody)
+          //caseที่ออกpolicyไปแล้ววมีอยู่แล้ว
+          if(dbData?.policyNo){
+            apiBody = {
+              ...apiBody,
+              insuredList: apiBody.insuredList.map((insured, index) => {
+                  if (index === 0) {
+                      return {
+                          ...insured,
+                          vehicleInfo: {
+                              ...insured.vehicleInfo,
+                              regNo: "A999999", 
+                          },
+                      };
+                  }
+                  return insured; 
+              }),
+          };
+          }
           await fetchPremium(apiBody);
           for (const option of planSelect.options) {
             if (Number(option.value) === Number(planInfo.planId)) {
