@@ -574,6 +574,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData,$request)
     $policyEffDate = isset($response['policyEffDate']) ? convertToISO8601($response['policyEffDate']) : null;
     $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
+    $quoteVersionMemo = isset($response['quoteVersionMemo']) ? $response['quoteVersionMemo'] : '';
    
     // Handle policy holder information
     $policyHolderInfo = isset($formatData['policyHolderInfo']) ? json_encode($formatData['policyHolderInfo']) : '{}';
@@ -620,6 +621,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData,$request)
                 dob = " . ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ",
                 request_retrieve_json='$request_retrieve_json',
                 response_retrieve_json='$response_retrieve_json',
+                quoteVersionMemo='$quoteVersionMemo',
                 update_date = NOW()
             WHERE id = '$id'";
 
@@ -654,7 +656,7 @@ function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails,$
     $policyEffDate = isset($response['policyEffDate']) ? convertToISO8601($response['policyEffDate']) : null;
     $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
-
+    $quoteVersionMemo = isset($response['quoteVersionMemo']) ? $response['quoteVersionMemo'] : '';
     // Add new data fields
     $type = isset($type) ? $type : '';
     $distributionChannel = isset($formatData['distributionChannel']) ? (int)$formatData['distributionChannel'] : 10;
@@ -695,7 +697,7 @@ function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails,$
     $sql = "INSERT INTO t_aig_app 
         (policyId, productId, producerCode, propDate, policyEffDate, policyExpDate, policyHolderInfo, insuredList, 
         premiumPayable, quoteNo, fullname, customer_id, payment_mode, payment_frequency, dob, request_retrieve_json, 
-        response_retrieve_json, update_date, type, distributionChannel, campaignCode, agent_id, campaign_id, import_id, calllist_id) 
+        response_retrieve_json, update_date, type, distributionChannel, campaignCode, agent_id, campaign_id, import_id, calllist_id,quoteVersionMemo) 
         VALUES ('$policyId', '$productId', '$producerCode', " . 
         ($propDate === null ? 'NULL' : "'$propDate'") . ", " . 
         ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ", " . 
@@ -704,7 +706,7 @@ function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails,$
         '$customerIdNo', '$paymentMode', '$paymentFrequency', " . 
         ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ", 
         '$request_retrieve_json', '$response_retrieve_json', NOW(), 
-        '$type', '$distributionChannel', '$campaignCode', '$agent_id', '$campaign_id', '$import_id', '$calllist_id')";
+        '$type', '$distributionChannel', '$campaignCode', '$agent_id', '$campaign_id', '$import_id', '$calllist_id','$quoteVersionMemo')";
 
     // Execute the query
     $result = $dbconn->executeUpdate($sql);
