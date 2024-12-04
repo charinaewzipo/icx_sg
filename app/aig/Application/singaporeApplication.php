@@ -1102,8 +1102,8 @@ where name='Nature of Business'";
                   <option value=""> <-- Please select an option --></option>
                   <?php
                   $strSQL = "SELECT name, id, description
-FROM t_aig_sg_lov 
-where name='Occupation'";
+                    FROM t_aig_sg_lov 
+                    where name='Occupation'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -1539,14 +1539,17 @@ where name='Occupation'";
                 <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
               </td>
             </tr>
-            <tr id="comment-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
-              <td style="float: inline-start;">Quote Version Memo:</td>
+            
+
+
+          </table>
+          <table  id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+          <tr id="comment-label" >
+              <td style="float: inline-start; padding-right:20px">Quote Version Memo:</td>
               <td style="white-space:nowrap;">
-                <textarea name="commentHistory" id="commentHistory" rows="4" cols="35" maxlength="2000" ></textarea>
+                <textarea name="commentHistory" id="commentHistory" rows="6" cols="50" maxlength="4000" ></textarea>
               </td>
             </tr>
-
-
           </table>
         </div>
 

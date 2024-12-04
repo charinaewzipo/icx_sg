@@ -239,7 +239,6 @@ function addCoverRow(coverList,setCoverData) {
   removeButton.onclick = function () {
     if (coverListBody.children.length === 1) {
       alert("No cover rows left.");
-      selectElement.value=''
       updateDisabledOptions() // หรือแสดงข้อความอื่น
       return;
     }
