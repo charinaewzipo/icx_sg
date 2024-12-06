@@ -355,7 +355,7 @@ const setDefaultValueForm = async (dbData) => {
 const handleAlertNCDLevelDifferent=()=>{
   if(!responsePayment&&quotationData?.type==="auto"){
     if(Number(quotationData?.ncdInfo?.ncdLevel)!==Number(quotationData?.ncdLevelGEARS)){
-      window.alert("Notice: The NCD percentage provided by GEARS is different from the one you have declared. Please note that if your declared NCD is later validated as lower, you will be responsible for paying any additional premium as required by AIG.")
+      window.alert("AIG will be writing to your existing insurer to verify your NCD. We will contact you via mail should there be any discrepancy in the NCD and we will recover the premium difference, if any.")
     }
   }
 }
