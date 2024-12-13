@@ -6,14 +6,15 @@ function checkRetrieveCampaignAuto(data) {
   let formType = url.searchParams.get('formType');
   console.log("checkRetrieveCampaignAuto:", data)
   console.log("campaignDetailsFromAPI", campaignDetailsFromAPI)
-  if (!id && (formType === "auto")) {
+  if (!id && (formType === "auto")&&(campaignDetailsFromAPI?.incident_type==="Renewal")) {
     setTimeout(() => {
-      const quoteNoField = productDetail?.udf_field_quote_no
-      console.log("quoteNoField:", quoteNoField)
-      console.log("calllistDetail[quoteNoField]", calllistDetail[quoteNoField])
-      if (calllistDetail[quoteNoField]) {
+      // const quoteNoField = productDetail?.udf_field_quote_no
+      // console.log("quoteNoField:", quoteNoField)
+      // console.log("calllistDetail[quoteNoField]", calllistDetail[quoteNoField])
+      // if (calllistDetail[quoteNoField]) {
+      //   handleRetrieveAuto(data)
+      // }
         handleRetrieveAuto(data)
-      }
     }, 2000)
   }
 }
@@ -25,6 +26,7 @@ async function handleRetrieveAuto(callListData){
     "idNo": callListData?.personal_id||callListData?.passport_no,
     "policyNo": calllistDetail[quoteNoField]
   };
+
   const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
   console.log("responseRetrieve:", responseRetrieve);
   if (!responseRetrieve) {
@@ -688,14 +690,31 @@ function removePromoCode(rowNumber) {
   }
 }
 function initializePromoCodeTable(ArrayPromoCodeField) {
+  console.log("ArrayPromoCodeField:", ArrayPromoCodeField)
   let allValuesAreNull = true;
-  ArrayPromoCodeField.forEach((field, index) => {
-    const defaultValue = calllistDetail[field] || "";
-    if(defaultValue){
-      addPromoCode(defaultValue);
-      allValuesAreNull = false;
-    }
-  });
+  console.log("campaignDetailsFromAPI:", campaignDetailsFromAPI)
+  if ((campaignDetailsFromAPI?.incident_type === "Renewal")) {
+    ArrayPromoCodeField.forEach((field, index) => {
+      const defaultValue = calllistDetail[field] || "";
+      const ArrayDataDefaultValue = defaultValue.split(',')
+      console.log("ArrayDataDefaultValue:", ArrayDataDefaultValue)
+      ArrayDataDefaultValue.forEach((field) => {
+        addPromoCode(field);
+        allValuesAreNull = false;
+      })
+
+    });
+  } else {
+    ArrayPromoCodeField.forEach((field, index) => {
+      const defaultValue = calllistDetail[field] || "";
+      console.log("defaultValue:", defaultValue)
+      if (defaultValue) {
+        addPromoCode(defaultValue);
+        allValuesAreNull = false;
+      }
+    });
+  }
+
   if (allValuesAreNull) {
     addPromoCode()
   }

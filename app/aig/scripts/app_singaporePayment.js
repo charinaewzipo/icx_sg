@@ -100,7 +100,7 @@ function fetchPaymentOption(paymentMode, paymentFrequency) {
 
 const handlePaymentValidateFormHome = () => {
   const form = document.getElementById("application");
-  const formData = new FormData(form); 
+  const formData = new FormData(form);
   let isValid = true;
 
   const fields = form.querySelectorAll("input:not([name='PolicyEffectiveDate']):not([name='dateOfBirth']), select, textarea,button:not(#btnSaveForm)");
@@ -143,40 +143,40 @@ const handleRetrieveQuote = async () => {
     alert("Payment Mode has no value");
     return;
   }
-  if(formType==="home"){
-    if(!handlePaymentValidateFormHome()){
+  if (formType === "home") {
+    if (!handlePaymentValidateFormHome()) {
       return
     }
   }
   if (is_firsttime === "1") {
-    if(formType==="auto"&&Number(paymentModeValue)===122){
+    if (formType === "auto" && Number(paymentModeValue) === 122) {
       handlePaymentGatewayIPP(quotationData?.premiumPayable)
       return
     }
-      handlePaymentGateway(quotationData?.premiumPayable, Number(paymentModeValue));
-    
+    handlePaymentGateway(quotationData?.premiumPayable, Number(paymentModeValue));
+
   } else {
     const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
     console.log("responseRetrieve:", responseRetrieve);
     console.log("quotationData:", quotationData);
-  
+
     if (!responseRetrieve) {
       alert("Quote Retrieval List Operation failed");
       return;
     }
-  
+
     const { statusCode, quoteList, statusMessage } = responseRetrieve;
     if (statusCode !== "P00") {
       alert(statusMessage);
       return;
     }
-  
+
     let data = quoteList?.[0]?.Policy;
     console.log("data:", data);
     const transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
-    const getPlanPoi=quoteList?.[0]?.Policy
-    await jQuery.agent.updateRetrieveQuote(data, id, transformedData,objectRetrieve);
+    const getPlanPoi = quoteList?.[0]?.Policy
+    await jQuery.agent.updateRetrieveQuote(data, id, transformedData, objectRetrieve);
     const isPremiumPayableMatching =
       parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable);
 
@@ -190,35 +190,35 @@ const handleRetrieveQuote = async () => {
       alert("Payment Mode has changed.");
     }
 
-    if(formType==="auto"&&Number(paymentModeValue)===122){
+    if (formType === "auto" && Number(paymentModeValue) === 122) {
       handlePaymentGatewayIPP(data?.premiumPayable)
       return
     }
-    handlePaymentGateway(data?.premiumPayable, data?.paymentDetails[0]?.paymentMode||Number(paymentModeValue));
+    handlePaymentGateway(data?.premiumPayable, data?.paymentDetails[0]?.paymentMode || Number(paymentModeValue));
   }
 
 
 };
 const handlePaymentGatewayIPP = async (premiumPayable) => {
-  let bank=null;
-  let countMonth=null;
+  let bank = null;
+  let countMonth = null;
   const cardTypeValue = document.getElementById("cardType").value
-  if(Number(cardTypeValue)===3){
-    bank="uob";
-    countMonth=6;
-  }else if(Number(cardTypeValue)===6){
-    bank="dbs";
-    countMonth=6;
-  }else if(Number(cardTypeValue)===4){
-    bank="uob";
-    countMonth=12;
+  if (Number(cardTypeValue) === 3) {
+    bank = "uob";
+    countMonth = 6;
+  } else if (Number(cardTypeValue) === 6) {
+    bank = "dbs";
+    countMonth = 6;
+  } else if (Number(cardTypeValue) === 4) {
+    bank = "uob";
+    countMonth = 12;
   }
-  else if(Number(cardTypeValue)===7){
-    bank="dbs";
-    countMonth=12;
+  else if (Number(cardTypeValue) === 7) {
+    bank = "dbs";
+    countMonth = 12;
   }
-  console.log("bank",bank)
-  console.log("countMonth",countMonth)
+  console.log("bank", bank)
+  console.log("countMonth", countMonth)
   if (premiumPayable) {
     // const url = `payment.php?amount=${premiumPayable}&is_recurring=${isRecurring}&quoteNo=${quotationData?.quoteNo}`;
     const url = `payment_2c2p.php?amount=${premiumPayable}&quoteNo=${quotationData?.quoteNo}&bank=${bank}&ipp=${countMonth}`;
@@ -274,22 +274,22 @@ function showAlert(message) {
 }
 
 const transformQuoteData = (data, quotationData) => {
-console.log("data:", data)
-let currentUrl = window.location.href;
+  console.log("data:", data)
+  let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
- 
+
   const transformedData = {
     policyId: data.policyId || quotationData?.policyId || "",
     productId: data.productId || quotationData?.productId || "",
     producerCode: data.producerCode || quotationData?.producerCode || "",
     propDate: data.propDate ? retrieveTransformDate(data.propDate) : "",
     policyEffDate: data.policyEffDate ? retrieveTransformDate(data.policyEffDate) : "",
-    campaignCode:calllistDetail[productDetail?.udf_field_promo_code]||"",
+    campaignCode: calllistDetail[productDetail?.udf_field_promo_code] || "",
     policyHolderInfo: {
       customerType: data.policyHolderInfo?.customerType || quotationData?.policyHolderInfo?.customerType || "0",
       individualPolicyHolderInfo: {
-        courtesyTitle: data.policyHolderInfo?.individualPolicyHolderInfo?.courtesyTitle || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.courtesyTitle||"",
+        courtesyTitle: data.policyHolderInfo?.individualPolicyHolderInfo?.courtesyTitle || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.courtesyTitle || "",
         fullName: data.policyHolderInfo?.individualPolicyHolderInfo?.fullName || quotationData?.fullname || "",
         residentStatus: data.policyHolderInfo?.individualPolicyHolderInfo?.residentStatus || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.residentStatus || "",
         customerIdType: data.policyHolderInfo?.individualPolicyHolderInfo?.customerIdType || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.customerIdType || "0",
@@ -298,7 +298,9 @@ let currentUrl = window.location.href;
         gender: data.policyHolderInfo?.individualPolicyHolderInfo?.gender || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.gender || "",
         dateOfBirth: data.policyHolderInfo?.individualPolicyHolderInfo?.dateOfBirth ? retrieveTransformDate(data.policyHolderInfo?.individualPolicyHolderInfo?.dateOfBirth) : "",
         maritalStatus: data.policyHolderInfo?.individualPolicyHolderInfo?.maritalStatus || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.maritalStatus || "",
-        occupation: data.policyHolderInfo?.individualPolicyHolderInfo?.occupation || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.occupation || "0"
+        occupation: data.policyHolderInfo?.individualPolicyHolderInfo?.occupation || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.occupation || "0",
+        isPolicyHolderDriving: data?.policyHolderInfo?.individualPolicyHolderInfo?.isPolicyHolderDriving || quotationData?.policyHolderInfo?.individualPolicyHolderInfo?.isPolicyHolderDriving||"1"
+    
       },
       contactInfo: {
         postCode: data.policyHolderInfo?.contactInfo?.postCode || quotationData?.policyHolderInfo?.contactInfo?.postCode || "",
@@ -341,49 +343,49 @@ let currentUrl = window.location.href;
                   id: cover.id || "",
                   code: cover.code || null,
                   name: cover.name || null,
-                  selectedFlag :true
+                  selectedFlag: true
                 }))
                 : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
                   id: cover.id || "",
                   code: cover.code || null,
                   name: cover.name || null,
-                  selectedFlag :true
+                  selectedFlag: true
                 }))
             }
           }
         };
       } else if (formType === "home") {
         return {
-            "addressInfo": {
-              "dwellingType": insured?.addressInfo?.dwellingType|| quotationInsured?.addressInfo?.dwellingType||"",
-              "flatType": insured?.addressInfo?.flatType||quotationInsured?.addressInfo?.flatType||"",
-              "ownerOccupiedType":insured?.addressInfo?.ownedOrNot||quotationInsured?.addressInfo?.ownerOccupiedType||"",
-              "floorOccupied": insured?.addressInfo?.floorOccupied||quotationInsured?.addressInfo?.floorOccupied||"",
-              "constructionType": insured?.addressInfo?.constructionType||quotationInsured?.addressInfo?.constructionType||"941",
-              "yearBuilt": insured?.addressInfo?.yearBuilt||quotationInsured?.addressInfo?.yearBuilt||"",
-              "insuredBlockNo": insured?.addressInfo?.insuredBlockNo||quotationInsured?.addressInfo?.insuredBlockNo||"",
-              "insuredStreetName": insured?.addressInfo?.insuredStreetName||quotationInsured?.addressInfo?.insuredStreetName||"",
-              "insuredUnitNo": insured?.addressInfo?.insuredUnitNo||quotationInsured?.addressInfo?.insuredUnitNo||"",
-              "insuredBuildingName": insured?.addressInfo?.insuredBuildingName||quotationInsured?.addressInfo?.insuredBuildingName||"",
-              "insuredPostCode": insured?.addressInfo?.insuredPostCode||quotationInsured?.addressInfo?.insuredPostCode||""
-              // "smokeDetectorAvailable": insured?.addressInfo?.smokeDetectorAvailable||quotationInsured?.addressInfo?.smokeDetectorAvailable||"1",
-              // "autoSprinklerAvailable":insured?.addressInfo?.autoSprinklerAvailable||quotationInsured?.addressInfo?.autoSprinklerAvailable||"1",
-              // "securitySystemAvailable":insured?.addressInfo?.securitySystemAvailable||quotationInsured?.addressInfo?.securitySystemAvailable||"1"
-            },
-            "planInfo": {
-              "planId": insured?.planList[0]?.planId||quotationInsured?.planInfo?.planId||"",
-              "planPoi": insured?.planList[0]?.planPoi ||quotationInsured?.planInfo?.planPoi||"",
-              "planDescription": insured?.planList[0]?.planName||quotationInsured?.planInfo?.planDescription||"",
-              "planCode":insured?.planList[0]?.planCode||""
-              // "coverList":quotationInsured?.planInfo?.coverList.length>0 ? [
-              //   {
-              //     "id": quotationInsured?.planInfo?.coverList[0]?.id||"",
-              //     "code": quotationInsured?.planInfo?.coverList[0]?.code||"",
-              //     "selectedFlag": quotationInsured?.planInfo?.coverList[0]?.selectedFlag||true
-              //   }
-              // ]:[]
-            }
+          "addressInfo": {
+            "dwellingType": insured?.addressInfo?.dwellingType || quotationInsured?.addressInfo?.dwellingType || "",
+            "flatType": insured?.addressInfo?.flatType || quotationInsured?.addressInfo?.flatType || "",
+            "ownerOccupiedType": insured?.addressInfo?.ownedOrNot || quotationInsured?.addressInfo?.ownerOccupiedType || "",
+            "floorOccupied": insured?.addressInfo?.floorOccupied || quotationInsured?.addressInfo?.floorOccupied || "",
+            "constructionType": insured?.addressInfo?.constructionType || quotationInsured?.addressInfo?.constructionType || "941",
+            "yearBuilt": insured?.addressInfo?.yearBuilt || quotationInsured?.addressInfo?.yearBuilt || "",
+            "insuredBlockNo": insured?.addressInfo?.insuredBlockNo || quotationInsured?.addressInfo?.insuredBlockNo || "",
+            "insuredStreetName": insured?.addressInfo?.insuredStreetName || quotationInsured?.addressInfo?.insuredStreetName || "",
+            "insuredUnitNo": insured?.addressInfo?.insuredUnitNo || quotationInsured?.addressInfo?.insuredUnitNo || "",
+            "insuredBuildingName": insured?.addressInfo?.insuredBuildingName || quotationInsured?.addressInfo?.insuredBuildingName || "",
+            "insuredPostCode": insured?.addressInfo?.insuredPostCode || quotationInsured?.addressInfo?.insuredPostCode || ""
+            // "smokeDetectorAvailable": insured?.addressInfo?.smokeDetectorAvailable||quotationInsured?.addressInfo?.smokeDetectorAvailable||"1",
+            // "autoSprinklerAvailable":insured?.addressInfo?.autoSprinklerAvailable||quotationInsured?.addressInfo?.autoSprinklerAvailable||"1",
+            // "securitySystemAvailable":insured?.addressInfo?.securitySystemAvailable||quotationInsured?.addressInfo?.securitySystemAvailable||"1"
+          },
+          "planInfo": {
+            "planId": insured?.planList[0]?.planId || quotationInsured?.planInfo?.planId || "",
+            "planPoi": insured?.planList[0]?.planPoi || quotationInsured?.planInfo?.planPoi || "",
+            "planDescription": insured?.planList[0]?.planName || quotationInsured?.planInfo?.planDescription || "",
+            "planCode": insured?.planList[0]?.planCode || ""
+            // "coverList":quotationInsured?.planInfo?.coverList.length>0 ? [
+            //   {
+            //     "id": quotationInsured?.planInfo?.coverList[0]?.id||"",
+            //     "code": quotationInsured?.planInfo?.coverList[0]?.code||"",
+            //     "selectedFlag": quotationInsured?.planInfo?.coverList[0]?.selectedFlag||true
+            //   }
+            // ]:[]
           }
+        }
       } else if (formType === "auto") {
         return {
           "vehicleInfo": {
@@ -407,7 +409,7 @@ let currentUrl = window.location.href;
               "driverType": insured?.driverInfo?.[0]?.driverType || quotationInsured?.driverInfo?.[0]?.driverType || "",
               "driverDOB": insured?.driverInfo?.[0]?.driverDOB
                 ? retrieveTransformDate(insured?.driverInfo?.[0]?.driverDOB)
-                : retrieveTransformDate(quotationInsured?.driverInfo?.[0]?.driverDOB) || "", 
+                : retrieveTransformDate(quotationInsured?.driverInfo?.[0]?.driverDOB) || "",
               "driverGender": insured?.driverInfo?.[0]?.driverGender || quotationInsured?.driverInfo?.[0]?.driverGender || "",
               "driverMaritalStatus": insured?.driverInfo?.[0]?.driverMaritalStatus || quotationInsured?.driverInfo?.[0]?.driverMaritalStatus || "",
               "drivingExperience": insured?.driverInfo?.[0]?.drivingExperience || quotationInsured?.driverInfo?.[0]?.drivingExperience || "",
@@ -444,19 +446,19 @@ let currentUrl = window.location.href;
             "planPoi": insured?.planList?.[0]?.planPoi || quotationInsured?.planList?.[0]?.planPoi || "",
             "planCode": insured?.planList?.[0]?.planCode || quotationInsured?.planList?.[0]?.planCode || "",
             "coverList": (insured.planList[0]?.coverList ? Object.values(insured.planList[0].coverList) : []).length > 0
-                ? Object.values(insured.planList[0].coverList).map(cover => ({
-                  id: cover.id || "",
-                  code: cover.code || null,
-                  name: cover.name || null,
-                  selectedFlag :true
-                }))
-                : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
-                  id: cover.id || "",
-                  code: cover.code || null,
-                  name: cover.name || null,
-                  selectedFlag :true
-                }))
-            
+              ? Object.values(insured.planList[0].coverList).map(cover => ({
+                id: cover.id || "",
+                code: cover.code || null,
+                name: cover.name || null,
+                selectedFlag: true
+              }))
+              : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
+                id: cover.id || "",
+                code: cover.code || null,
+                name: cover.name || null,
+                selectedFlag: true
+              }))
+
           }
         };
       }
@@ -467,7 +469,19 @@ let currentUrl = window.location.href;
     }
 
   };
-
+  if (formType === "auto") {
+    console.log("transformedData",transformedData)
+    return {
+      ...transformedData, ncdInfo: {
+        ncdLevel: data?.ncdInfo?.ncdLevel || quotationData?.ncdInfo?.ncdLevel || 0,
+        previousInsurer: data?.ncdInfo?.previousInsurer || quotationData?.ncdInfo?.previousInsurer || "",
+        previousPolicyNo: data?.ncdInfo?.previousPolicyNo || quotationData?.ncdInfo?.previousPolicyNo || "",
+        noClaimExperience: data?.ncdInfo?.noClaimExperience || quotationData?.ncdInfo?.noClaimExperience || "",
+        noClaimExperienceOther: data?.ncdInfo?.noClaimExperienceOther || quotationData?.ncdInfo?.noClaimExperienceOther || ""
+      },campaignInfoList:getCampaignInfoList()
+     
+    }
+  }
   return transformedData;
 };
 const retrieveTransformDate = (dateString) => {
@@ -562,16 +576,16 @@ function clearPauseTime() {
 }
 
 
-const handleCardTypeIPP=()=>{
-  const paymentMode=document.getElementById("paymentModeSelect")
-  const cardTypeDisplay=document.getElementById("cardTypeDisplay")
+const handleCardTypeIPP = () => {
+  const paymentMode = document.getElementById("paymentModeSelect")
+  const cardTypeDisplay = document.getElementById("cardTypeDisplay")
   const cardTypeSelect = document.getElementById("cardType");
   //IPP
-  if(Number(paymentMode.value)===122){
+  if (Number(paymentMode.value) === 122) {
     cardTypeDisplay.style.display = "table-row";
     cardTypeSelect.setAttribute("required", "required"); // ทำให้ required
-  }else{
-    cardTypeDisplay.style.display="none"
+  } else {
+    cardTypeDisplay.style.display = "none"
     cardTypeSelect.removeAttribute("required"); // ยกเลิก required
     cardTypeSelect.value = ""; // รีเซ็ตค่า
   }
@@ -584,13 +598,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
-  if(formType === "home"){
+  if (formType === "home") {
 
-    document.getElementById("paymentModeSelect").addEventListener("change", function(event) {
-      const selectedProductId= document.getElementById("select-product")
-      const paymentModeSelect= document.getElementById("paymentModeSelect")
-      if(selectedProductId.value&&paymentModeSelect.value){
-        populatePlansNormal(selectedProductId.value,null,paymentModeSelect.value)
+    document.getElementById("paymentModeSelect").addEventListener("change", function (event) {
+      const selectedProductId = document.getElementById("select-product")
+      const paymentModeSelect = document.getElementById("paymentModeSelect")
+      if (selectedProductId.value && paymentModeSelect.value) {
+        populatePlansNormal(selectedProductId.value, null, paymentModeSelect.value)
       }
     });
   }
