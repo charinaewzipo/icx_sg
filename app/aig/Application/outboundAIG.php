@@ -580,7 +580,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData,$request)
     $policyHolderInfo = isset($formatData['policyHolderInfo']) ? json_encode($formatData['policyHolderInfo']) : '{}';
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
     
-    $ncdInfo = isset($formatData['ncdI$ncdInfo']) ? json_encode($formatData['ncdI$ncdInfo']) : '{}';
+    $ncdInfo = isset($formatData['ncdInfo']) ? json_encode($formatData['ncdInfo']) : '{}';
     $ncdInfo = mysqli_real_escape_string($dbconn->dbconn, $ncdInfo);
 
     $campaignInfoList =  isset($formatData['campaignInfoList']) ? json_encode($formatData['campaignInfoList']) : '{}';

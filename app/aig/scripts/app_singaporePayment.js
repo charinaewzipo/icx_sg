@@ -368,22 +368,13 @@ const transformQuoteData = (data, quotationData) => {
             "insuredUnitNo": insured?.addressInfo?.insuredUnitNo || quotationInsured?.addressInfo?.insuredUnitNo || "",
             "insuredBuildingName": insured?.addressInfo?.insuredBuildingName || quotationInsured?.addressInfo?.insuredBuildingName || "",
             "insuredPostCode": insured?.addressInfo?.insuredPostCode || quotationInsured?.addressInfo?.insuredPostCode || ""
-            // "smokeDetectorAvailable": insured?.addressInfo?.smokeDetectorAvailable||quotationInsured?.addressInfo?.smokeDetectorAvailable||"1",
-            // "autoSprinklerAvailable":insured?.addressInfo?.autoSprinklerAvailable||quotationInsured?.addressInfo?.autoSprinklerAvailable||"1",
-            // "securitySystemAvailable":insured?.addressInfo?.securitySystemAvailable||quotationInsured?.addressInfo?.securitySystemAvailable||"1"
-          },
+            },
           "planInfo": {
             "planId": insured?.planList[0]?.planId || quotationInsured?.planInfo?.planId || "",
             "planPoi": insured?.planList[0]?.planPoi || quotationInsured?.planInfo?.planPoi || "",
             "planDescription": insured?.planList[0]?.planName || quotationInsured?.planInfo?.planDescription || "",
             "planCode": insured?.planList[0]?.planCode || ""
-            // "coverList":quotationInsured?.planInfo?.coverList.length>0 ? [
-            //   {
-            //     "id": quotationInsured?.planInfo?.coverList[0]?.id||"",
-            //     "code": quotationInsured?.planInfo?.coverList[0]?.code||"",
-            //     "selectedFlag": quotationInsured?.planInfo?.coverList[0]?.selectedFlag||true
-            //   }
-            // ]:[]
+            
           }
         }
       } else if (formType === "auto") {
@@ -478,7 +469,7 @@ const transformQuoteData = (data, quotationData) => {
         previousPolicyNo: data?.ncdInfo?.previousPolicyNo || quotationData?.ncdInfo?.previousPolicyNo || "",
         noClaimExperience: data?.ncdInfo?.noClaimExperience || quotationData?.ncdInfo?.noClaimExperience || "",
         noClaimExperienceOther: data?.ncdInfo?.noClaimExperienceOther || quotationData?.ncdInfo?.noClaimExperienceOther || ""
-      },campaignInfoList:getCampaignInfoList()
+      },campaignInfoList:getCampaignInfoList(),campaignCode:""
      
     }
   }
