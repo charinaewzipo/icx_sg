@@ -983,9 +983,9 @@ where name='Nature of Business'";
 
               </td>
               <th>&nbsp;</th>
-              <td>Mileage Declaration : <span style="color:red">*</span></td>
+              <td id='mileageDeclaration-label'>Mileage Declaration : </td>
               <td>
-                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" required />
+                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60"  />
               </td>
             </tr>
             <tr>

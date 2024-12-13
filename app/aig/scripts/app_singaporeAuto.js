@@ -6,7 +6,7 @@ function checkRetrieveCampaignAuto(data) {
   let formType = url.searchParams.get('formType');
   console.log("checkRetrieveCampaignAuto:", data)
   console.log("campaignDetailsFromAPI", campaignDetailsFromAPI)
-  if (!id && (formType === "auto")&&(campaignDetailsFromAPI?.incident_type==="Renewal")) {
+  if (!id && (formType === "auto") && (campaignDetailsFromAPI?.incident_type === "Renewal")) {
     setTimeout(() => {
       // const quoteNoField = productDetail?.udf_field_quote_no
       // console.log("quoteNoField:", quoteNoField)
@@ -14,16 +14,16 @@ function checkRetrieveCampaignAuto(data) {
       // if (calllistDetail[quoteNoField]) {
       //   handleRetrieveAuto(data)
       // }
-        handleRetrieveAuto(data)
+      handleRetrieveAuto(data)
     }, 2000)
   }
 }
 
-async function handleRetrieveAuto(callListData){
-  const quoteNoField=productDetail?.udf_field_quote_no
+async function handleRetrieveAuto(callListData) {
+  const quoteNoField = productDetail?.udf_field_quote_no
   const objectRetrieve = {
     "channelType": "10",
-    "idNo": callListData?.personal_id||callListData?.passport_no,
+    "idNo": callListData?.personal_id || callListData?.passport_no,
     "policyNo": calllistDetail[quoteNoField]
   };
 
@@ -31,9 +31,9 @@ async function handleRetrieveAuto(callListData){
   console.log("responseRetrieve:", responseRetrieve);
   if (!responseRetrieve) {
     alert("Quote Retrieval List Operation failed");
-    setTimeout(()=>{
-      window.close(); 
-    },2000)
+    setTimeout(() => {
+      window.close();
+    }, 2000)
     return;
   }
 
@@ -41,19 +41,19 @@ async function handleRetrieveAuto(callListData){
   alert(statusMessage);
   if (statusCode !== "P00") {
     // policy issuance
-    setTimeout(()=>{
-      window.close(); 
-    },2000)
+    setTimeout(() => {
+      window.close();
+    }, 2000)
     return
   }
-  if(quoteList&&quoteList.length>0){
+  if (quoteList && quoteList.length > 0) {
     let data = quoteList?.[0]?.Policy;
     console.log("data:", data);
-   
+
     await getProductDetail(data?.productId);
     let transformedData = transformQuoteData(data, quotationData);
     console.log("transformedData", transformedData);
-    const responseId =await jQuery.agent.insertRetrieveQuote(data, transformedData,campaignDetails,objectRetrieve);
+    const responseId = await jQuery.agent.insertRetrieveQuote(data, transformedData, campaignDetails, objectRetrieve);
     let currentUrl = window.location.href;
     const url = new URL(currentUrl);
     if (url.searchParams.has('id')) {
@@ -67,14 +67,14 @@ async function handleRetrieveAuto(callListData){
       url.searchParams.append('is_firsttime', '1');
     }
     window.location.href = url.toString();
-  }else{
+  } else {
     alert("The quoteList has no data")
-    setTimeout(()=>{
-      window.close(); 
-    },2000)
+    setTimeout(() => {
+      window.close();
+    }, 2000)
 
   }
-  
+
 }
 
 function populatePlanAutoPremium(planList) {
@@ -95,13 +95,13 @@ function populatePlanAutoPremium(planList) {
   }
 
   // Update planPoiSelect when an option is selected
-  planSelect.addEventListener('change', function() {
-    const coverListDisplay =document.getElementById("coverListDisplay");
-    const addCoverDisplay =document.getElementById("addCoverDisplay");
+  planSelect.addEventListener('change', function () {
+    const coverListDisplay = document.getElementById("coverListDisplay");
+    const addCoverDisplay = document.getElementById("addCoverDisplay");
     const selectedOption = planSelect.options[planSelect.selectedIndex];
     const planPoi = selectedOption.dataset.planPoi || '';
     const premiumAmount = selectedOption.dataset.netPremium || '';
-    premiumBaseAmount=parseFloat(premiumAmount)
+    premiumBaseAmount = parseFloat(premiumAmount)
     const selectedPlanId = selectedOption.value;
     console.log("selectedPlanId:", selectedPlanId)
     planPoiSelect.value = planPoi;
@@ -109,8 +109,8 @@ function populatePlanAutoPremium(planList) {
     const premiumAmountInput = document.getElementById('premium-amount');
     const premiumAmountInputWithGST = document.getElementById("premium-amount-with-gst");
     if (premiumAmountInput) {
-      premiumAmountInput.value = premiumBaseAmount ? `${premiumBaseAmount.toFixed(2)} (SGD)` : '';  
-    premiumAmountInputWithGST.value = premiumBaseAmount ? `${(premiumBaseAmount * 1.09).toFixed(2)} (SGD)` : '';  
+      premiumAmountInput.value = premiumBaseAmount ? `${premiumBaseAmount.toFixed(2)} (SGD)` : '';
+      premiumAmountInputWithGST.value = premiumBaseAmount ? `${(premiumBaseAmount * 1.09).toFixed(2)} (SGD)` : '';
     }
 
 
@@ -124,10 +124,10 @@ function populatePlanAutoPremium(planList) {
 
     if (selectedPlan) {
       console.log("selectedPlan:", selectedPlan)
-      
+
       console.log("Object.keys(selectedPlan.coverList).length", Object.keys(selectedPlan.coverList).length)
-      coverListDisplay.hidden=false
-      addCoverDisplay.hidden=false
+      coverListDisplay.hidden = false
+      addCoverDisplay.hidden = false
       planPoiSelect.value = selectedPlan.planPoi;
       populateCoverListAutoPremium(selectedPlan.coverList);
     }
@@ -143,9 +143,9 @@ function populateCoverListAutoPremium(coverList) {
 
     document.getElementById("addCover").addEventListener('click', () => {
       const rowCount = coverListBody.getElementsByClassName('cover-row').length;
-      
+
       if (rowCount < 10) {
-        addCoverRow(coverList);  
+        addCoverRow(coverList);
       } else {
         alert('You cannot add more than 10 cover rows.');
       }
@@ -155,17 +155,17 @@ function populateCoverListAutoPremium(coverList) {
 
 }
 // Function to add a new row for each cover option
-function addCoverRow(coverList,setCoverData) {
-  
+function addCoverRow(coverList, setCoverData) {
+
   const coverListBody = document.getElementById('coverListBody');
-  
+
   const allSelects = coverListBody.querySelectorAll('select');
-  if(!setCoverData){
-  for (const selectElement of allSelects) {
-    if (!selectElement.value) {
-      return; // ไม่อนุญาตให้เพิ่มแถวใหม่
+  if (!setCoverData) {
+    for (const selectElement of allSelects) {
+      if (!selectElement.value) {
+        return; // ไม่อนุญาตให้เพิ่มแถวใหม่
+      }
     }
-  }
   }
 
 
@@ -223,7 +223,7 @@ function addCoverRow(coverList,setCoverData) {
   // Update premium value when cover is selected
   selectElement.addEventListener('change', function () {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
-    premiumDisplay.textContent = selectedOption.dataset.premium 
+    premiumDisplay.textContent = selectedOption.dataset.premium
       ? `Amount: ${selectedOption.dataset.premium} (SGD)`
       : '';
 
@@ -244,8 +244,8 @@ function addCoverRow(coverList,setCoverData) {
       updateDisabledOptions() // หรือแสดงข้อความอื่น
       return;
     }
-    coverListBody.removeChild(row); 
-    calculatePremiumSummary(); 
+    coverListBody.removeChild(row);
+    calculatePremiumSummary();
     updateDisabledOptions()
   };
 
@@ -264,7 +264,7 @@ function addCoverRow(coverList,setCoverData) {
 
 function calculatePremiumSummary() {
   console.log("premiumBaseAmount:", premiumBaseAmount);
-  
+
   const premiumAmountInput = document.getElementById("premium-amount");
   const premiumAmountInputWithGST = document.getElementById("premium-amount-with-gst");
   let premiumTotal = premiumBaseAmount;  // Start with the base amount
@@ -272,20 +272,20 @@ function calculatePremiumSummary() {
   const planCoverLists = document.querySelectorAll('.planCoverList');
 
   // Loop through each select element
-  planCoverLists.forEach(function(selectElement) {
-      const selectedOption = selectElement.options[selectElement.selectedIndex];
-      
-      // If an option is selected and it is not disabled
-      if (selectedOption.value !== "" && !selectedOption.disabled) {
-          // Add the 'data-premium' value of the selected option to the total premium
-          premiumTotal += parseFloat(selectedOption.getAttribute('data-premium')) || 0;
-      }
+  planCoverLists.forEach(function (selectElement) {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+
+    // If an option is selected and it is not disabled
+    if (selectedOption.value !== "" && !selectedOption.disabled) {
+      // Add the 'data-premium' value of the selected option to the total premium
+      premiumTotal += parseFloat(selectedOption.getAttribute('data-premium')) || 0;
+    }
   });
 
   // Update the total premium in the premium amount input field
   if (premiumAmountInput) {
-    premiumAmountInput.value = premiumTotal ? `${premiumTotal.toFixed(2)} (SGD)` : '';  
-    premiumAmountInputWithGST.value = premiumTotal ? `${(premiumTotal * 1.09).toFixed(2)} (SGD)` : '';  
+    premiumAmountInput.value = premiumTotal ? `${premiumTotal.toFixed(2)} (SGD)` : '';
+    premiumAmountInputWithGST.value = premiumTotal ? `${(premiumTotal * 1.09).toFixed(2)} (SGD)` : '';
   }
 
   console.log("Total Premium:", premiumTotal);
@@ -303,9 +303,9 @@ function updateDisabledOptions() {
 
       if (selectedValues.includes('600000720') && option.value === '1838000221') {
         option.disabled = true;
-      }else if (selectedValues.includes('1838000221') && option.value === '600000720') {
+      } else if (selectedValues.includes('1838000221') && option.value === '600000720') {
         option.disabled = true;
-      }else {
+      } else {
         option.disabled = shouldDisable;
       }
     });
@@ -315,7 +315,7 @@ function updateDisabledOptions() {
 
 const handleKeepChangeButton = () => {
   const userConfirmed = window.confirm("Are you sure you want to proceed with recalculation?");
-  
+
   if (userConfirmed) {
     if (window.opener && !window.opener.closed) {
       window.alert("Fetching Recalculate...");
@@ -324,49 +324,49 @@ const handleKeepChangeButton = () => {
     }
   }
 }
-const handleCloseButton=()=>{ window.close()}
+const handleCloseButton = () => { window.close() }
 
-const handleChangePaymodeAutomaticRenewal=()=>{
-  const automaticRenewalFlag=document.getElementById('automaticRenewalFlag');
-  const paymentModeSelect=document.getElementById('paymentModeSelect');
-  paymentModeSelect.addEventListener('change',function(){
-    if(Number(paymentModeSelect.value)===124){
-      automaticRenewalFlag.value="Yes"
-    }else{
-       automaticRenewalFlag.value="No"
+const handleChangePaymodeAutomaticRenewal = () => {
+  const automaticRenewalFlag = document.getElementById('automaticRenewalFlag');
+  const paymentModeSelect = document.getElementById('paymentModeSelect');
+  paymentModeSelect.addEventListener('change', function () {
+    if (Number(paymentModeSelect.value) === 124) {
+      automaticRenewalFlag.value = "Yes"
+    } else {
+      automaticRenewalFlag.value = "No"
     }
   })
 }
 function handleChangeIsPolicyHolderDriving(checkbox) {
   const yesCheckbox = document.getElementById('isPolicyHolderDrivingYes');
   const noCheckbox = document.getElementById('isPolicyHolderDrivingNo');
-  
+
   // Policyholder information fields
-  const firstName = document.getElementsByName('firstName')[0]; 
-  const gender = document.getElementsByName('gender')[0]; 
-  const nationality = document.getElementsByName('nationality')[0]; 
-  const dateOfBirth = document.getElementsByName('dateOfBirth')[0]; 
-  const maritalStatus = document.getElementsByName('maritalStatus')[0]; 
-  const residentStatus = document.getElementsByName('residentStatus')[0]; 
-  const customerIdType = document.getElementsByName('customerIdType')[0]; 
-  const customerIdNo = document.getElementsByName('customerIdNo')[0]; 
+  const firstName = document.getElementsByName('firstName')[0];
+  const gender = document.getElementsByName('gender')[0];
+  const nationality = document.getElementsByName('nationality')[0];
+  const dateOfBirth = document.getElementsByName('dateOfBirth')[0];
+  const maritalStatus = document.getElementsByName('maritalStatus')[0];
+  const residentStatus = document.getElementsByName('residentStatus')[0];
+  const customerIdType = document.getElementsByName('customerIdType')[0];
+  const customerIdNo = document.getElementsByName('customerIdNo')[0];
 
   // Driver information fields
-  const driverNameField = document.getElementsByName('insured_auto_driverInfo_driverName')[0]; 
-  const driverResidentStatus = document.getElementsByName('insured_auto_driverInfo_driverResidentStatus')[0]; 
-  const driverIdType = document.getElementsByName('insured_auto_driverInfo_driverIdType')[0]; 
-  const driverIdNumber = document.getElementsByName('insured_auto_driverInfo_driverIdNumber')[0]; 
-  const driverDOB = document.getElementsByName('insured_auto_driverInfo_driverDOB')[0]; 
-  const driverGender = document.getElementsByName('insured_auto_driverInfo_driverGender')[0]; 
-  const driverNationality = document.getElementsByName('insured_auto_driverInfo_driverNationality')[0]; 
-  const driverMaritalStatus = document.getElementsByName('insured_auto_driverInfo_maritalStatus')[0]; 
+  const driverNameField = document.getElementsByName('insured_auto_driverInfo_driverName')[0];
+  const driverResidentStatus = document.getElementsByName('insured_auto_driverInfo_driverResidentStatus')[0];
+  const driverIdType = document.getElementsByName('insured_auto_driverInfo_driverIdType')[0];
+  const driverIdNumber = document.getElementsByName('insured_auto_driverInfo_driverIdNumber')[0];
+  const driverDOB = document.getElementsByName('insured_auto_driverInfo_driverDOB')[0];
+  const driverGender = document.getElementsByName('insured_auto_driverInfo_driverGender')[0];
+  const driverNationality = document.getElementsByName('insured_auto_driverInfo_driverNationality')[0];
+  const driverMaritalStatus = document.getElementsByName('insured_auto_driverInfo_maritalStatus')[0];
 
   if (checkbox === yesCheckbox && yesCheckbox.checked) {
     const confirmChange = window.confirm("Do you want to use the Individual Policy Holder Info in the Driver Info section?");
 
     if (confirmChange) {
       noCheckbox.checked = false;
-      
+
       // Copy values from policyholder fields to driver fields
       driverNameField.value = firstName.value || "";
       driverGender.value = gender.value || "";
@@ -380,7 +380,7 @@ function handleChangeIsPolicyHolderDriving(checkbox) {
       driverResidentStatus.value = residentStatus.value || "";
       driverIdType.value = customerIdType.value || "";
       driverIdNumber.value = customerIdNo.value || "";
-      
+
       console.log("Policy Holder Driving: Yes, Driver information updated.");
     } else {
       yesCheckbox.checked = false;
@@ -399,7 +399,7 @@ function handleChangeIsPolicyHolderDriving(checkbox) {
     driverResidentStatus.value = "";
     driverIdType.value = "";
     driverIdNumber.value = "";
-    
+
     console.log("Policy Holder Driving: No, Driver information reset.");
   } else {
     console.log("Policy Holder Driving: None selected");
@@ -457,42 +457,42 @@ function attachCustomerIdValidationAuto() {
 }
 function setupFormListeners() {
   const formFieldNames = [
-      "select-product",
-      "PolicyEffectiveDate",
-      "Ncd_Level",
-      "customerType",
-      "isPolicyHolderDriving",
-      "insured_auto_vehicle_make",
-      "insured_auto_vehicle_model",
-      "insured_auto_vehicle_vehicleRegYear",
-      "insured_auto_vehicle_regNo",
-      "insured_auto_vehicle_insuringWithCOE",
-      "insured_auto_vehicle_ageConditionBasis",
-      "insured_auto_vehicle_offPeakCar",
-      "insured_auto_vehicle_mileageCondition",
-      "insured_auto_driverInfo_driverType",
-      "insured_auto_driverInfo_driverDOB",
-      "insured_auto_driverInfo_driverGender",
-      "insured_auto_driverInfo_maritalStatus",
-      "insured_auto_driverInfo_drivingExperience",
-      "insured_auto_driverInfo_occupation",
-      "insured_auto_driverInfo_claimExperience",
-      "insured_auto_driverInfo_claimInfo_dateOfLoss",
-      "insured_auto_driverInfo_claimInfo_lossDescription",
-      "insured_auto_driverInfo_claimInfo_claimNature",
-      "insured_auto_driverInfo_claimInfo_claimAmount",
-      "insured_auto_driverInfo_claimInfo_claimStatus",
-      "insured_auto_driverInfo_claimInfo_insuredLiability",
+    "select-product",
+    "PolicyEffectiveDate",
+    "Ncd_Level",
+    "customerType",
+    "isPolicyHolderDriving",
+    "insured_auto_vehicle_make",
+    "insured_auto_vehicle_model",
+    "insured_auto_vehicle_vehicleRegYear",
+    "insured_auto_vehicle_regNo",
+    "insured_auto_vehicle_insuringWithCOE",
+    "insured_auto_vehicle_ageConditionBasis",
+    "insured_auto_vehicle_offPeakCar",
+    "insured_auto_vehicle_mileageCondition",
+    "insured_auto_driverInfo_driverType",
+    "insured_auto_driverInfo_driverDOB",
+    "insured_auto_driverInfo_driverGender",
+    "insured_auto_driverInfo_maritalStatus",
+    "insured_auto_driverInfo_drivingExperience",
+    "insured_auto_driverInfo_occupation",
+    "insured_auto_driverInfo_claimExperience",
+    "insured_auto_driverInfo_claimInfo_dateOfLoss",
+    "insured_auto_driverInfo_claimInfo_lossDescription",
+    "insured_auto_driverInfo_claimInfo_claimNature",
+    "insured_auto_driverInfo_claimInfo_claimAmount",
+    "insured_auto_driverInfo_claimInfo_claimStatus",
+    "insured_auto_driverInfo_claimInfo_insuredLiability",
   ];
 
   formFieldNames.forEach(fieldName => {
-      const elements = document.getElementsByName(fieldName);
-      elements.forEach(element => {
-          element.addEventListener("change", () => {
-              console.log(`${fieldName} changed`);
-              resetPlanSelect();
-          });
+    const elements = document.getElementsByName(fieldName);
+    elements.forEach(element => {
+      element.addEventListener("change", () => {
+        console.log(`${fieldName} changed`);
+        resetPlanSelect();
       });
+    });
   });
 }
 
@@ -502,29 +502,29 @@ function resetPlanSelect() {
   const planPoiSelect = document.getElementById('planPoiSelect');
   const premiumAmount = document.getElementById('premium-amount');
   if (planSelect) {
-      console.log("Resetting planSelect dropdown");
-      const defaultOption = planSelect.querySelector('option[value=""]');
-        planSelect.innerHTML = '';
+    console.log("Resetting planSelect dropdown");
+    const defaultOption = planSelect.querySelector('option[value=""]');
+    planSelect.innerHTML = '';
 
-        // Re-add only the default option
-        if (defaultOption) {
-            planSelect.appendChild(defaultOption);
-        }
+    // Re-add only the default option
+    if (defaultOption) {
+      planSelect.appendChild(defaultOption);
+    }
 
-      planSelect.value = '';
-      planPoiSelect.value = '';
-      premiumAmount.value = '';
-  } 
+    planSelect.value = '';
+    planPoiSelect.value = '';
+    premiumAmount.value = '';
+  }
   createElementCover()
   const premiumAmountInput = document.getElementById('premium-amount');
   const premiumAmountInputWithGST = document.getElementById("premium-amount-with-gst");
-  premiumAmountInput.value='';
-  premiumAmountInputWithGST.value='';
+  premiumAmountInput.value = '';
+  premiumAmountInputWithGST.value = '';
 }
-const createElementCover=()=>{
+const createElementCover = () => {
   const coverListBody = document.getElementById('coverListBody');
   coverListBody.innerHTML = ''; // Clear previous covers
-    // Create a new row
+  // Create a new row
   const row = document.createElement('tr');
   row.className = 'cover-row';
 
@@ -581,7 +581,7 @@ async function fetchGetModel(makeValue) {
     `;
 
     // Populate new options from the fetched data
-    if (data && Array.isArray(data)&&data?.length>0) {
+    if (data && Array.isArray(data) && data?.length > 0) {
       data.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
@@ -589,7 +589,7 @@ async function fetchGetModel(makeValue) {
         ModelSelect.appendChild(option);
         ModelSelect.required = true;
       });
-    }else {
+    } else {
       // Display a message when no data is available
       const option = document.createElement('option');
       option.value = "";
@@ -604,10 +604,10 @@ async function fetchGetModel(makeValue) {
     document.body.classList.remove('loading');
   }
 }
-const handleAutoMakeChange =  () => {
+const handleAutoMakeChange = () => {
   const makeSelect = document.querySelector('select[name="insured_auto_vehicle_make"]');
   makeSelect.addEventListener('change', async () => {
-    await  fetchGetModel(makeSelect.value)
+    await fetchGetModel(makeSelect.value)
   })
 }
 let promoCodeCount = 0; // เริ่มต้นที่ 1 เพราะมีแถวแรกอยู่แล้วใน HTML
@@ -645,8 +645,8 @@ function addPromoCode(defaultValue = "") {
   promoCodeInput.name = "campaignCode[]";
   promoCodeInput.type = "text";
   promoCodeInput.style.width = "130px";
-  promoCodeInput.value = defaultValue; 
-  promoCodeInput.readOnly=defaultValue ? true:false
+  promoCodeInput.value = defaultValue;
+  promoCodeInput.readOnly = defaultValue ? true : false
 
   promoCodeCell.appendChild(promoCodeInput);
 
@@ -656,7 +656,7 @@ function addPromoCode(defaultValue = "") {
   removeButton.type = "button";
   removeButton.textContent = "Remove";
   removeButton.className = "button draft-button";
-  
+
   removeButton.setAttribute("data-row-id", promoCodeCount);
   removeButton.onclick = function () {
     const rowId = this.getAttribute("data-row-id");
@@ -677,17 +677,43 @@ function addPromoCode(defaultValue = "") {
 function removePromoCode(rowNumber) {
   const rowToRemove = document.getElementById(`promocode-row-${rowNumber}`);
   const inputToClear = document.getElementById(`promocode-input-${rowNumber}`);
-  if (rowToRemove&&promoCodeCount>1) {
+  if (rowToRemove && promoCodeCount > 1) {
     rowToRemove.remove(); // ลบแถว
     promoCodeCount--;
   } else {
-    inputToClear.value=''
-    inputToClear.readOnly=false
-    inputToClear.style.backgroundColor='white'
-    inputToClear.style.opacity='1'
-    
+    inputToClear.value = ''
+    inputToClear.readOnly = false
+    inputToClear.style.backgroundColor = 'white'
+    inputToClear.style.opacity = '1'
+
     alert("No promo code rows left");
   }
+}
+
+function handleMileageCondition() {
+  const mileageCondition = document.querySelector('select[name="insured_auto_vehicle_mileageCondition"]');
+  const mileageDeclaration = document.querySelector('input[name="insured_auto_vehicle_mileageDeclaration"]');
+  const mileageDeclarationLabel = document.getElementById('mileageDeclaration-label');
+  mileageCondition.addEventListener('change', function () {
+    console.log("mileageCondition:", mileageCondition)
+    if (mileageCondition.value === '1838000062') {
+      mileageDeclaration.required = false;
+      const span = mileageDeclarationLabel.querySelector('span');
+      if (span) {
+        span.remove();
+      }
+    } else {
+      mileageDeclaration.required = true;
+
+      if (!mileageDeclarationLabel.querySelector('span')) {
+        const requiredIndicator = document.createElement('span');
+        requiredIndicator.style.color = 'red';
+        requiredIndicator.textContent = '*';
+        mileageDeclarationLabel.appendChild(requiredIndicator);
+      }
+    }
+  })
+
 }
 function initializePromoCodeTable(ArrayPromoCodeField) {
   console.log("ArrayPromoCodeField:", ArrayPromoCodeField)
@@ -725,13 +751,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let formType = url.searchParams.get('formType');
   console.log("Form type:", formType);
   if (formType === "auto") {
-      attachCustomerIdValidationAuto();
-      setupFormListeners();
-      handleAutoMakeChange()
-      handleChangePaymodeAutomaticRenewal()
-      validateDriverExperience()
-      document.getElementById("paymentModeSelect").addEventListener('change',function(){
-        handleCardTypeIPP()
-})
-  } 
+    attachCustomerIdValidationAuto();
+    setupFormListeners();
+    handleAutoMakeChange()
+    handleChangePaymodeAutomaticRenewal()
+    validateDriverExperience()
+    handleMileageCondition()
+    document.getElementById("paymentModeSelect").addEventListener('change', function () {
+      handleCardTypeIPP()
+    })
+  }
 });
