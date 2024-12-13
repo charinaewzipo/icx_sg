@@ -969,7 +969,7 @@ where name='Nature of Business'";
                   $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'Vehicle Usage'";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $selected = ((int)$objResuut["id"] === 204) ? "selected" : "";
+                    $selected = ((int)$objResuut["id"] === 205) ? "selected" : "";
                     $data[] = $objResuut;
                   ?>
                     <option value="<?php echo $objResuut["id"]; ?>" <?php echo $selected; ?>>
