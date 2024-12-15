@@ -450,7 +450,8 @@ function handleForm() {
   if(formType === "auto"){
     fullForm={...fullForm,
       quoteVersionMemo: formData.get("commentHistory"),
-      campaignInfoList:getCampaignInfoList()
+      campaignInfoList:getCampaignInfoList(),
+      campaignCode:""
     }
     campaignDetails={...campaignDetails,cardType:formData.get("cardType")}
   }

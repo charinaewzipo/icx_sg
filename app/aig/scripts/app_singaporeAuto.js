@@ -20,12 +20,23 @@ function checkRetrieveCampaignAuto(data) {
 }
 
 async function handleRetrieveAuto(callListData) {
-  const quoteNoField = productDetail?.udf_field_quote_no
+  const quoteNoField = productDetail?.udf_field_quote_no || "";
+  const vehicleNoField = productDetail?.udf_field_vehicle_no || "";
+  const enginNoField = productDetail?.udf_field_engin_no || "";
+
+  const idNo = callListData?.personal_id || callListData?.passport_no || "";
+  const policyNo = calllistDetail[quoteNoField] || "";
+  const regNo = policyNo ? "" : calllistDetail[vehicleNoField] || "";
+  const engineNo = idNo ? "" : calllistDetail[enginNoField] || "";
+
   const objectRetrieve = {
-    "channelType": "10",
-    "idNo": callListData?.personal_id || callListData?.passport_no,
-    "policyNo": calllistDetail[quoteNoField]
+    channelType: "10",
+    idNo,
+    policyNo,
+    regNo,
+    engineNo,
   };
+
 
   const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
   console.log("responseRetrieve:", responseRetrieve);
