@@ -1,21 +1,25 @@
 let premiumBaseAmount = 0;
 let selectedPlan;
 function checkRetrieveCampaignAuto(data) {
-  let currentUrl = window.location.href;
-  const url = new URL(currentUrl);
-  let formType = url.searchParams.get('formType');
-  console.log("checkRetrieveCampaignAuto:", data)
-  console.log("campaignDetailsFromAPI", campaignDetailsFromAPI)
-  if (!id && (formType === "auto") && (campaignDetailsFromAPI?.incident_type === "Renewal")) {
+  const currentUrl = new URL(window.location.href);
+  const formType = currentUrl.searchParams.get('formType');
+  console.log("checkRetrieveCampaignAuto:", data);
+  console.log("campaignDetailsFromAPI:", campaignDetailsFromAPI);
+  // Proceed only if the formType is "auto" and id is not set
+  if (!id && formType === "auto") {
     setTimeout(() => {
-      // const quoteNoField = productDetail?.udf_field_quote_no
-      // console.log("quoteNoField:", quoteNoField)
-      // console.log("calllistDetail[quoteNoField]", calllistDetail[quoteNoField])
-      // if (calllistDetail[quoteNoField]) {
-      //   handleRetrieveAuto(data)
-      // }
-      handleRetrieveAuto(data)
-    }, 2000)
+      const quoteNoField = productDetail?.udf_field_quote_no;
+      const quoteNo = calllistDetail[quoteNoField];
+      const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+
+      console.log("quoteNoField:", quoteNoField);
+      console.log("calllistDetail[quoteNoField]:", quoteNo);
+
+      // Check conditions for handling retrieve auto
+      if (quoteNo || isRenewal) {
+        handleRetrieveAuto(data);
+      }
+    }, 2000);
   }
 }
 
@@ -23,11 +27,15 @@ async function handleRetrieveAuto(callListData) {
   const quoteNoField = productDetail?.udf_field_quote_no || "";
   const vehicleNoField = productDetail?.udf_field_vehicle_no || "";
   const enginNoField = productDetail?.udf_field_engin_no || "";
+  const DOBField = productDetail?.udf_field_DOB || "";
+  console.log("DOBField:", DOBField)
 
   const idNo = callListData?.personal_id || callListData?.passport_no || "";
   const policyNo = calllistDetail[quoteNoField] || "";
   const regNo = policyNo ? "" : calllistDetail[vehicleNoField] || "";
-  const engineNo = idNo ? "" : calllistDetail[enginNoField] || "";
+  const dob = idNo ? "": calllistDetail[DOBField] ? transformDate(isoToFormattedDate(calllistDetail[DOBField])):"" 
+  const engineNo = calllistDetail[DOBField] ? "" : calllistDetail[enginNoField] || "";
+
 
   const objectRetrieve = {
     channelType: "10",
@@ -35,6 +43,7 @@ async function handleRetrieveAuto(callListData) {
     policyNo,
     regNo,
     engineNo,
+    dob
   };
 
 
