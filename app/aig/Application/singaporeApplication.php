@@ -912,7 +912,7 @@ where name='Nature of Business'";
                     <-- Please select an option -->
                   </option>
                   <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'vehicleRegYear'";
+                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'vehicleRegYear' order by description desc";
                   $objQuery = mysqli_query($Conn, $strSQL);
                   while ($objResuut = mysqli_fetch_array($objQuery)) {
                     $data[] = $objResuut;
@@ -946,14 +946,14 @@ where name='Nature of Business'";
 
             </tr>
             <tr>
-              <td style="float: inline-start;">Off Peak Car : </td>
+              <td style="float: inline-start;">Off Peak Car : <span style="color:red">*</span></td>
               <td>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" name="insured_auto_vehicle_offPeakCar" value="2" checked>
+                  <input type="radio" class="form-check-input" name="insured_auto_vehicle_offPeakCar" value="2">
                   <label class="form-check-label" for="Yes">Yes</label>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input" name="insured_auto_vehicle_offPeakCar" value="1">
+                  <input type="radio" class="form-check-input" name="insured_auto_vehicle_offPeakCar" value="1" checked>
                   <label class="form-check-label" for="No">No</label>
                 </div>
               </td>
@@ -1321,7 +1321,8 @@ where name='Nature of Business'";
                   </select>
                 </td>
                 <th>&nbsp;</th>
-                <td>Previous PolicyNo: <span style="color:red">*</span> </td>
+                <td><span>Previous Policy No./</span><br>
+                  <span>Vehicle Reg No: <span><span style="color:red">*</span> </td>
                 <td>
                   <input type="text" name="haveEx-PreviousPolicyNo" maxlength="60" size="30" />
                 </td>

@@ -23,6 +23,9 @@ window.onload = function () {
     const recurringOption = paymentModeSelect.querySelector('option[value="124"]')
     if (recurringOption) {
       recurringOption.textContent = "Annual Recurring Credit Card";
+      if(formType==='auto'){
+        recurringOption.disabled=true;
+      }
     }
   }
 };
