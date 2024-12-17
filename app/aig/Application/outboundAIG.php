@@ -241,6 +241,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails)
     //ISO to YYYY-MM-DD HH:MM:SS
     $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
+    $policyExpDateInform = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : null;
 
     $campaignCode = isset($formData['campaignCode']) ? $formData['campaignCode'] : '';
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
@@ -322,7 +323,10 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails)
 
     // Add quote_create_date if response is not null
     if (!empty($response)) {
-        $sql .= ", quote_create_date = NOW() ,policyExpDate='$policyExpDate'";
+        $sql .= ", quote_create_date = NOW(), policyExpDate = " . (is_null($policyExpDate) ? "NULL" : "'$policyExpDate'");
+    }else{
+        //handle auto campaign use expdate form
+        $sql .= ", policyExpDate='$policyExpDateInform'";
     }
 
     // Complete the WHERE clause

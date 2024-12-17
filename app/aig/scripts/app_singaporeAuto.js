@@ -765,6 +765,21 @@ function initializePromoCodeTable(ArrayPromoCodeField) {
     addPromoCode()
   }
 }
+function handleChangeEffectiveDate(){
+  const effectiveDateInput = $("#datepicker5");
+  const expiryDateInput = $("#datepicker6");
+  effectiveDateInput.on("change", function () {
+    const effectiveDateValue = effectiveDateInput.val();
+    if (effectiveDateValue) {
+      const [day, month, year] = effectiveDateValue.split("/");
+      const effectiveDate = new Date(`${year}-${month}-${day}`);
+      effectiveDate.setFullYear(effectiveDate.getFullYear() + 1); // เพิ่ม 1 ปี
+      effectiveDate.setDate(effectiveDate.getDate()-1)
+      expiryDateInput.datepicker("option", "minDate", effectiveDate);
+      expiryDateInput.datepicker("setDate", effectiveDate);
+    }
+  });
+}
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -777,6 +792,7 @@ document.addEventListener("DOMContentLoaded", () => {
     handleChangePaymodeAutomaticRenewal()
     validateDriverExperience()
     handleMileageCondition()
+    handleChangeEffectiveDate()
     document.getElementById("paymentModeSelect").addEventListener('change', function () {
       handleCardTypeIPP()
     })

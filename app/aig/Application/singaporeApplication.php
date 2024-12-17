@@ -169,6 +169,9 @@ error_reporting(E_ALL);
       $("#datepicker5").datepicker($.extend({}, datepickerOptions, {
         minDate: new Date()
       }));
+      $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
+        minDate: new Date()
+      }));
 
       // $("#datepicker6").datepicker($.extend({}, datepickerOptions, {
       //   minDate: new Date()
@@ -305,6 +308,9 @@ error_reporting(E_ALL);
               <td id="promocode-label2">
                 <input id="promocode-input" name="campaignCode" type="text" style="display: inline-block; width:216px;" readonly />
               </td>
+
+              <td style="white-space:nowrap;" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Policy Expiry Date: <span style="color:red">*</span></td>
+              <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" <?php echo ($formType === "auto") ? 'required' : ''; ?> style="max-width: 130px;" ></td>
             </tr>
             <table id="promo-table" style="border-spacing:0.5rem 0.2rem" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>> 
   <tbody>

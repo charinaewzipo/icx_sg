@@ -285,6 +285,7 @@ const transformQuoteData = (data, quotationData) => {
     producerCode: data.producerCode || quotationData?.producerCode || "",
     propDate: data.propDate ? retrieveTransformDate(data.propDate) : "",
     policyEffDate: data.policyEffDate ? retrieveTransformDate(data.policyEffDate) : "",
+    policyExpDate: data.policyExpDate ? retrieveTransformDate(data.policyExpDate) : "",
     campaignCode: calllistDetail[productDetail?.udf_field_promo_code] || "",
     policyHolderInfo: {
       customerType: data.policyHolderInfo?.customerType || quotationData?.policyHolderInfo?.customerType || "0",
@@ -459,7 +460,7 @@ const transformQuoteData = (data, quotationData) => {
       paymentFrequency: data.paymentDetails[0]?.paymentFrequency || quotationData?.payment_frequency || "",
     }
 
-  };
+  };  
   if (formType === "auto") {
     console.log("transformedData",transformedData)
     return {

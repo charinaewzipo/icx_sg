@@ -324,6 +324,8 @@ const setDefaultValueForm = async (dbData) => {
     individualPolicyHolderInfo.contactInfo.postCode;
   document.querySelector('input[name="PolicyEffectiveDate"]').value = dbData.policyEffDate ?
     isoToFormattedDate(dbData.policyEffDate) : ""
+  document.querySelector('input[name="PolicyExpiryDate"]').value = dbData.policyExpDate ?
+    isoToFormattedDate(dbData.policyExpDate) : ""
 
 
   document.querySelector('input[name="campaignCode"]').value =

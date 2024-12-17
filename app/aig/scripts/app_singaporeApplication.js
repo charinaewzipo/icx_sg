@@ -240,6 +240,10 @@ function handleForm() {
     policyEffDate: formData.get("PolicyEffectiveDate")
       ? transformDate(formData.get("PolicyEffectiveDate"))
       : "",
+    policyExpDate: formType==="auto" ?formData.get("PolicyExpiryDate")
+      ? transformDate(formData.get("PolicyExpiryDate"))
+      : "":"" ,
+    
     campaignCode: formData.get("campaignCode"),
     efulfillmentFlag: Number(formData.get('Email_Fulfillment_Flag')),
   };
