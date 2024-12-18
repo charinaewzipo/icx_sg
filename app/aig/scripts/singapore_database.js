@@ -50,7 +50,7 @@
         });
       });
     },
-    insertQuotationData: function (formData, response, campaignDetails) {
+    insertQuotationData: function (formData, response, campaignDetails,premiumCalculationData) {
       return new Promise((resolve, reject) => {
         $.ajax({
           url: url,
@@ -61,7 +61,8 @@
             formData: formData,
             response: response,
             type: selectedType,
-            campaignDetails: campaignDetails
+            campaignDetails: campaignDetails,
+            premiumCalculationData:premiumCalculationData
           }),
           dataType: "text",  // Set to "text" to manually handle parsing
           success: function (responseText) {
@@ -184,7 +185,7 @@
         }
       });
     },
-    updateQuoteData: function (formData, response, id,campaignDetails) {
+    updateQuoteData: function (formData, response, id,campaignDetails,premiumCalculationData) {
       $.ajax({
         url: url,
         type: "POST",
@@ -195,7 +196,8 @@
           response: response,
           type: selectedType,
           id: id,
-          campaignDetails: campaignDetails
+          campaignDetails: campaignDetails,
+          premiumCalculationData:premiumCalculationData
         }),
         dataType: "text",
         success: function (response) {

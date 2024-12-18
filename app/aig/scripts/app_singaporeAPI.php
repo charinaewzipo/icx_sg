@@ -10,7 +10,7 @@ let selectPlanPremium=null;
 let selectCoverPremium=null;
 let calllistDetail = null;
 let campaignDetailsFromAPI=null;
-
+let premiumCalculationData= null;
 var token = null;
 
 
@@ -38,7 +38,9 @@ async function fetchPremium(requestBody) {
       data.Policy.insuredList &&
       data.Policy.insuredList[0]
     ) {
+      premiumCalculationData=data.Policy.insuredList[0].planList;
       await populatePlanAutoPremium(data.Policy.insuredList[0].planList);
+
     } else {
       window.alert(`Error statusCode: ${data?.Policy?.statusCode}\nstatusMessage: ${data?.Policy?.statusMessage}`);
       console.error("Invalid API response:", data);
@@ -86,9 +88,9 @@ async function fetchQuotation(requestBody) {
 
     // Insert Quotation Data regardless of statusCode
     if (id != null && id !== "") {
-      await jQuery.agent.updateQuoteData(requestBody, data, id,campaignDetails);
+      await jQuery.agent.updateQuoteData(requestBody, data, id,campaignDetails,premiumCalculationData);
     } else {
-      const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails);
+      const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails,premiumCalculationData);
       if (url.searchParams.has('id')) {
         url.searchParams.set('id', responseId);
       } else {

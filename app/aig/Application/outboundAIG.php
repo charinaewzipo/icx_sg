@@ -93,7 +93,7 @@ function DBGetPaymentLogWithId($quoteNo)
     // Close the database connection
     $dbconn->dbconn->close();
 }
-function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
+function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$premiumCalculationData)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -145,6 +145,9 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
     $calllist_id = isset($campaignDetails["calllist_id"]) ? (int)$campaignDetails["calllist_id"] : null;
     $cardType = isset($campaignDetails["cardType"]) ? (int)$campaignDetails["cardType"] : null;
 
+    $premiumCalculationData =  isset($premiumCalculationData) ? json_encode($premiumCalculationData) : '{}';
+    $premiumCalculationData = mysqli_real_escape_string($dbconn->dbconn, $premiumCalculationData);
+
     $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
     $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
 
@@ -167,7 +170,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
         quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date,  
-        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id,request_quote_json,response_quote_json,quoteVersionMemo,campaignInfoList,ncdLevelGEARS,cardType";
+        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id,request_quote_json,response_quote_json,quoteVersionMemo,campaignInfoList,ncdLevelGEARS,cardType,response_premium_calculation_json";
 
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
@@ -184,7 +187,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
         '$policyEffDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
         $campaign_id, $import_id, $calllist_id,NOW(), '$payment_frequency', '$payment_mode', 
-        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id','$request_quote_json','$response_quote_json','$quoteVersionMemo','$campaignInfoList','$ncdLevelGEARS','$cardType'";
+        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id','$request_quote_json','$response_quote_json','$quoteVersionMemo','$campaignInfoList','$ncdLevelGEARS','$cardType','$premiumCalculationData'";
 
     // Add NOW() for quote_create_date if response is not empty
     if (!empty($response)) {
@@ -216,7 +219,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails)
 
 
 
-function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails)
+function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$premiumCalculationData)
 {
     $dbconn = new dbconn();
     $res = $dbconn->createConn();
@@ -276,6 +279,9 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails)
 
     $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
     $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
+    
+    $premiumCalculationData =  isset($premiumCalculationData) ? json_encode($premiumCalculationData) : '{}';
+    $premiumCalculationData = mysqli_real_escape_string($dbconn->dbconn, $premiumCalculationData);
 
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
 
@@ -318,7 +324,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails)
         campaignInfoList='$campaignInfoList',
         ncdLevelGEARS='$ncdLevelGEARS',
         cardType='$cardType',
-        customer_id='$customer_id',          
+        customer_id='$customer_id',
+        response_premium_calculation_json='$premiumCalculationData',          
         update_date = NOW()";
 
     // Add quote_create_date if response is not null
@@ -942,14 +949,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response = isset($data['response']) ? $data['response'] : array();
             $campaignDetails = isset($data['campaignDetails']) ? $data['campaignDetails'] : array();
             $type = isset($data['type']) ? $data['type'] : "";
-            DBInsertQuotationData($formData, $response, $type, $campaignDetails);
+            $premiumCalculationData = isset($data['premiumCalculationData']) ? $data['premiumCalculationData'] : array();
+            DBInsertQuotationData($formData, $response, $type, $campaignDetails,$premiumCalculationData);
         } elseif ($data['action'] === 'updateQuoteData') {
             $formData = isset($data['formData']) ? $data['formData'] : array();
             $response = isset($data['response']) ? $data['response'] : array();
             $type = isset($data['type']) ? $data['type'] : "";
             $id = isset($data['id']) ? $data['id'] : "";
             $campaignDetails = isset($data['campaignDetails']) ? $data['campaignDetails'] : array();
-            DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails);
+            $premiumCalculationData = isset($data['premiumCalculationData']) ? $data['premiumCalculationData'] : array();
+            DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$premiumCalculationData);
         } 
         elseif ($data['action'] === 'updateRecalQuoteData') {
             $formData = isset($data['formData']) ? $data['formData'] : array();

@@ -26,7 +26,7 @@ const handleClickDraftButton = async () => {
   console.log("handleClickDraft");
   const requestBody = handleForm();
   try {
-    const responseId = await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails);
+    const responseId = await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails,premiumCalculationData);
     let currentUrl = window.location.href;
     const url = new URL(currentUrl); 
     
@@ -48,7 +48,7 @@ const handleClickDraftButton = async () => {
 const handleClickSaveDraftButton = () => {
   console.log("handleClickSaveDraft")
   const requestBody = handleForm();
-  jQuery.agent.updateQuoteData(requestBody, null, id,campaignDetails);
+  jQuery.agent.updateQuoteData(requestBody, null, id,campaignDetails,premiumCalculationData);
 }
 const handleEditQuote = () => {
   const btnEditForm = document.getElementById('btnEditForm');
