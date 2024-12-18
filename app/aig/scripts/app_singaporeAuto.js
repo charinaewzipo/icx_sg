@@ -8,21 +8,20 @@ function checkRetrieveCampaignAuto(data) {
   // Proceed only if the formType is "auto" and id is not set
   if (!id && formType === "auto") {
     setTimeout(() => {
-      const quoteNoField = productDetail?.udf_field_quote_no;
-      const quoteNo = calllistDetail[quoteNoField];
-      const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
-
-      console.log("quoteNoField:", quoteNoField);
-      console.log("calllistDetail[quoteNoField]:", quoteNo);
-
       // Check conditions for handling retrieve auto
-      if (quoteNo || isRenewal) {
+      if (checkShouldRetrieve()) {
         handleRetrieveAuto(data);
       }
     }, 2000);
   }
 }
-
+function checkShouldRetrieve(){
+  console.log("checkShouldRetrieve:")
+  const quoteNoField = productDetail?.udf_field_quote_no;
+  const quoteNo = calllistDetail[quoteNoField];
+  const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+  return quoteNo || isRenewal
+}
 async function handleRetrieveAuto(callListData) {
   const quoteNoField = productDetail?.udf_field_quote_no || "";
   const vehicleNoField = productDetail?.udf_field_vehicle_no || "";
@@ -101,18 +100,30 @@ function populatePlanAutoPremium(planList) {
   const planSelect = document.getElementById('planSelect');
   const planPoiSelect = document.getElementById('planPoiSelect');
   planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
-
-  for (const key in planList) {
-    if (planList.hasOwnProperty(key)) {
-      const plan = planList[key];
-      const option = document.createElement('option');
-      option.value = plan.planId;
-      option.textContent = `${plan.planDescription} (${plan?.planPoi})`;
-      option.dataset.planPoi = plan.planPoi;
-      option.dataset.netPremium = plan.netPremium;
-      planSelect.appendChild(option);
+  if (checkShouldRetrieve()) {
+    const plan = planList
+    const option = document.createElement('option');
+    option.value = plan.planId;
+    option.textContent = `${plan.planName} (${plan?.planPoi})`;
+    option.dataset.planPoi = plan.planPoi;
+    option.dataset.netPremium = plan.netPremium;
+    planSelect.appendChild(option);
+    selectedPlan=planList
+    populateCoverListAutoPremium();
+  } else {
+    for (const key in planList) {
+      if (planList.hasOwnProperty(key)) {
+        const plan = planList[key];
+        const option = document.createElement('option');
+        option.value = plan.planId;
+        option.textContent = `${plan.planDescription} (${plan?.planPoi})`;
+        option.dataset.planPoi = plan.planPoi;
+        option.dataset.netPremium = plan.netPremium;
+        planSelect.appendChild(option);
+      }
     }
   }
+  
 
   // Update planPoiSelect when an option is selected
   planSelect.addEventListener('change', function () {
@@ -155,6 +166,8 @@ function populatePlanAutoPremium(planList) {
 }
 
 function populateCoverListAutoPremium() {
+  console.log("populateCoverListAutoPremium:")
+  console.log("selectedPlan?.coverList:", selectedPlan?.coverList)
   const coverListBody = document.getElementById('coverListBody');
   coverListBody.innerHTML = ''; // Clear previous covers
   if (selectedPlan?.coverList) {
@@ -215,18 +228,34 @@ function addCoverRow(coverList, setCoverData) {
   selectElement.appendChild(defaultOption);
 
   // Populate dropdown with cover options
-  for (const key in coverList) {
-    if (coverList.hasOwnProperty(key) && coverList[key]?.autoAttached === false) {
-      const cover = coverList[key];
-      const option = document.createElement('option');
-      option.value = cover.id;
-      option.textContent = cover.name;
-      option.dataset.premium = cover.premium; // Store premium in the option's dataset
-      option.dataset.code = cover.code; // Store premium in the option's dataset
-      option.dataset.excess=cover?.standardExcess||""
-      selectElement.appendChild(option);
+  if(checkShouldRetrieve()){
+    for (const key in coverList) {
+      if (coverList.hasOwnProperty(key) ) {
+        const cover = coverList[key];
+        const option = document.createElement('option');
+        option.value = cover.id;
+        option.textContent = cover.name;
+        option.dataset.premium = cover.premium; // Store premium in the option's dataset
+        option.dataset.code = cover.code; // Store premium in the option's dataset
+        option.dataset.excess=cover?.standardExcess||""
+        selectElement.appendChild(option);
+      }
+    }
+  }else{
+    for (const key in coverList) {
+      if (coverList.hasOwnProperty(key) && coverList[key]?.autoAttached === false) {
+        const cover = coverList[key];
+        const option = document.createElement('option');
+        option.value = cover.id;
+        option.textContent = cover.name;
+        option.dataset.premium = cover.premium; // Store premium in the option's dataset
+        option.dataset.code = cover.code; // Store premium in the option's dataset
+        option.dataset.excess=cover?.standardExcess||""
+        selectElement.appendChild(option);
+      }
     }
   }
+  
   const thCellCell = document.createElement('th');
   // Premium Display Cell
   const premiumCell = document.createElement('td');

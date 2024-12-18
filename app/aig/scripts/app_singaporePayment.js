@@ -442,13 +442,16 @@ const transformQuoteData = (data, quotationData) => {
                 id: cover.id || "",
                 code: cover.code || null,
                 name: cover.name || null,
-                selectedFlag: true
+                selectedFlag: true,
+                buyUpOrbuyDownExcess:cover?.standardExcess||null
+
               }))
               : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
                 id: cover.id || "",
                 code: cover.code || null,
                 name: cover.name || null,
-                selectedFlag: true
+                selectedFlag: true,
+                buyUpOrbuyDownExcess:cover?.standardExcess||null
               }))
 
           }

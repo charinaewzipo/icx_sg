@@ -680,6 +680,10 @@ function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails,$
     $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $quoteVersionMemo = isset($response['quoteVersionMemo']) ? $response['quoteVersionMemo'] : '';
+
+    $response_premium_json = isset($response['insuredList'][0]['planList'][0]) ? json_encode($response['insuredList'][0]['planList'][0]) : '{}';
+    $response_premium_json = mysqli_real_escape_string($dbconn->dbconn, $response_premium_json);
+
     // Add new data fields
     $type = isset($type) ? $type : '';
     $distributionChannel = isset($formatData['distributionChannel']) ? (int)$formatData['distributionChannel'] : 10;
@@ -725,7 +729,7 @@ function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails,$
     $sql = "INSERT INTO t_aig_app 
         (policyId, productId, producerCode, propDate, policyEffDate, policyExpDate, policyHolderInfo, insuredList, 
         premiumPayable, quoteNo, fullname, customer_id, payment_mode, payment_frequency, dob, request_retrieve_json, 
-        response_retrieve_json, update_date, type, distributionChannel, campaignCode, agent_id, campaign_id, import_id, calllist_id,quoteVersionMemo,ncdInfo,campaignInfoList) 
+        response_retrieve_json, update_date, type, distributionChannel, campaignCode, agent_id, campaign_id, import_id, calllist_id,quoteVersionMemo,ncdInfo,campaignInfoList,response_premium_calculation_json) 
         VALUES ('$policyId', '$productId', '$producerCode', " . 
         ($propDate === null ? 'NULL' : "'$propDate'") . ", " . 
         ($policyEffDate === null ? 'NULL' : "'$policyEffDate'") . ", " . 
@@ -734,7 +738,7 @@ function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails,$
         '$customerIdNo', '$paymentMode', '$paymentFrequency', " . 
         ($dateOfBirth === null ? 'NULL' : "'$dateOfBirth'") . ", 
         '$request_retrieve_json', '$response_retrieve_json', NOW(), 
-        '$type', '$distributionChannel', '$campaignCode', '$agent_id', '$campaign_id', '$import_id', '$calllist_id','$quoteVersionMemo','$ncdInfo','$campaignInfoList')";
+        '$type', '$distributionChannel', '$campaignCode', '$agent_id', '$campaign_id', '$import_id', '$calllist_id','$quoteVersionMemo','$ncdInfo','$campaignInfoList','$response_premium_json')";
 
     // Execute the query
     $result = $dbconn->executeUpdate($sql);
