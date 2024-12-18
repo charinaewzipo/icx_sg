@@ -1515,7 +1515,13 @@ where name='Nature of Business'";
               </td>
 
             </tr>
-            <tr id="coverListDisplay" hidden>
+            
+            
+
+
+          </table>
+          <table id="table-form" >
+          <tr id="coverListDisplay" hidden>
               <td>Cover List</td>
               <td></td>
             </tr>
@@ -1524,6 +1530,8 @@ where name='Nature of Business'";
             </tbody>
             </tr>
             <tr id="addCoverDisplay" hidden>
+              <td></td>
+              <td></td>
               <td></td>
               <td></td>
               <td></td>
@@ -1540,15 +1548,12 @@ where name='Nature of Business'";
                 <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="">
               </td>
             </tr>
-            <tr id="premium-amount-withgst-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
-              <td>Amount (9% GST) : </td>
+            <tr id="premium-amount-withgst-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?> >
+              <td style='padding-right:32px'>Amount (9% GST) : </td>
               <td>
                 <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
               </td>
             </tr>
-            
-
-
           </table>
           <table  id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
           <tr id="comment-label" >
