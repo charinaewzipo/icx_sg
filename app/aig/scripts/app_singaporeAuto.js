@@ -240,8 +240,8 @@ function addCoverRow(coverList, setCoverData) {
 
   const excessText = document.createElement('span');
   excessText.textContent = ''; // ตั้งข้อความว่างตอนเริ่มต้น
-
   const buyUpOrDownCellInput = document.createElement('input');
+  buyUpOrDownCellInput.className = 'buy-up-down-input';
   buyUpOrDownCellInput.type = 'text';
   buyUpOrDownCellInput.style.width = '80px';
   buyUpOrDownCellInput.hidden=true;

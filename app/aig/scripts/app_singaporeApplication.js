@@ -480,42 +480,57 @@ function getPlanDetail() {
   planCode: selectedOption.getAttribute("data-plan_group") || "" 
  }
  
- if(formType==='auto'){
-  let coverList=[]
-  const planCoverLists = document.querySelectorAll('.planCoverList');
-  if(selectedPlan){
-    const coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList).filter(cover=>cover?.autoAttached===false)
-    planCoverLists.forEach(function(selectElement) {
-      const selectedOption = selectElement.options[selectElement.selectedIndex];
-      if (selectedOption.value !== "" && !selectedOption.disabled) {
-        const objectCover={
-          id:selectedOption.value,
-          code:selectedOption?.dataset.code||"",
-          selectedFlag:true
-        }
-          coverList.push(objectCover)
+  if (formType === 'auto') {
+    let coverList = [];
+    const planCoverLists = document.querySelectorAll('.planCoverList');
+
+    if (selectedPlan) {
+      const coverListDataFilterAutoAttachedFalse = Object.values(selectedPlan?.coverList || {}).filter(
+        (cover) => cover?.autoAttached === false
+      );
+
+      // Iterate through each dropdown and gather selected data
+      planCoverLists.forEach(function (selectElement) {
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        if (selectedOption.value !== "" && !selectedOption.disabled) {
+          const buyUpOrDownInput = selectElement.closest('tr').querySelector('.buy-up-down-input');
+          const excessValue = buyUpOrDownInput ? buyUpOrDownInput.value.trim() : ""; 
+
+          const objectCover = {
+            id: selectedOption.value,
+            code: selectedOption?.dataset.code || "",
+            selectedFlag: true,
+            buyUpOrbuyDownExcess: Number(excessValue) || 0 // Default to null if no value
+          };
+          coverList.push(objectCover);
         }
       });
-      const updateCoverList = coverListDataFilterAutoAttachedFalse.map(item => {
-        const existingCover = coverList.find(cover => cover.id === String(item.id)); 
+
+      // Merge the existing cover list data with the new selections
+      const updateCoverList = coverListDataFilterAutoAttachedFalse.map((item) => {
+        const existingCover = coverList.find((cover) => cover.id === String(item.id));
         if (existingCover) {
           return {
             id: item.id,
             code: item.code,
+            buyUpOrbuyDownExcess: existingCover.buyUpOrbuyDownExcess,
             selectedFlag: true
           };
         } else {
           return {
             id: item.id,
             code: item.code,
+            // buyUpOrbuyDownExcess: item.buyUpOrbuyDownExcess || null,
             selectedFlag: false
           };
         }
       });
-    PlanDetail={...PlanDetail,coverList:updateCoverList}
+
+      // Update the PlanDetail with the updated cover list
+      PlanDetail = { ...PlanDetail, coverList: updateCoverList };
+    }
   }
- 
- }
+
  return PlanDetail
 }
 function getCampaignInfoList() {
