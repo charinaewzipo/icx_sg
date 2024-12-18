@@ -260,8 +260,9 @@ function addCoverRow(coverList, setCoverData) {
 
   removeButton.onclick = function () {
     if (coverListBody.children.length === 1) {
-      alert("No cover rows left.");
-      updateDisabledOptions() // หรือแสดงข้อความอื่น
+      selectElement.value = ""
+      selectElement.dispatchEvent(new Event('change'));
+      updateDisabledOptions()
       return;
     }
     coverListBody.removeChild(row);
@@ -313,6 +314,7 @@ function calculatePremiumSummary() {
 }
 // Function to disable selected options in all dropdowns
 function updateDisabledOptions() {
+  console.log("updateDisabledOptions:")
   const selectedValues = Array.from(document.querySelectorAll('.planCoverList'))
     .map(select => select.value)
     .filter(value => value); // Collect selected values only
@@ -320,12 +322,19 @@ function updateDisabledOptions() {
   document.querySelectorAll('.planCoverList').forEach(select => {
     Array.from(select.options).forEach(option => {
       const shouldDisable = selectedValues.includes(option.value) && option.value !== select.value;
-
+      //handle loyal home cover and enhance loyalty
       if (selectedValues.includes('600000720') && option.value === '1838000221') {
         option.disabled = true;
       } else if (selectedValues.includes('1838000221') && option.value === '600000720') {
         option.disabled = true;
-      } else {
+      }
+      // handle LOU1800,LOU1500
+       else if (selectedValues.includes('1762000072') && option.value === '1762000062') {
+        option.disabled = true;
+      } else if (selectedValues.includes('1762000062') && option.value === '1762000072') {
+        option.disabled = true;
+      }
+      else {
         option.disabled = shouldDisable;
       }
     });
