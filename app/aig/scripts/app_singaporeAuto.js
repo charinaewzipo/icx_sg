@@ -240,14 +240,19 @@ function addCoverRow(coverList, setCoverData) {
   premiumCell.appendChild(premiumDisplay);
   row.appendChild(premiumCell);
 
-  // Update premium value when cover is selected
+
   selectElement.addEventListener('change', function () {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
-    premiumDisplay.textContent = selectedOption.dataset.premium
-      ? `Amount: ${selectedOption.dataset.premium} (SGD)`
-      : '';
-
-    calculatePremiumSummary(); // Recalculate the total premium after selection
+    const quoteNoField=document.getElementById('policyid-input')
+      if(quoteNoField&&quoteNoField.value){
+        premiumDisplay.textContent=''
+      }else{
+        premiumDisplay.textContent = selectedOption.dataset.premium
+        ? `Amount: ${selectedOption.dataset.premium} (SGD)`
+        : '';
+      calculatePremiumSummary(); // Recalculate the total premium after selection
+      }
+    
   });
 
   // Remove Button
@@ -281,7 +286,6 @@ function addCoverRow(coverList, setCoverData) {
   // Update disabled options initially
   updateDisabledOptions(); // Ensure options are disabled when needed
 }
-
 
 function calculatePremiumSummary() {
   console.log("premiumBaseAmount:", premiumBaseAmount);

@@ -91,12 +91,7 @@ const handleEditQuote = () => {
     btnEditForm.hidden=false
     isEditing = true;
 
-    if(formType==="auto"){
-      document.getElementById("premium-amount-label").hidden=false;
-      document.getElementById("premium-amount-withgst-label").hidden=false;
-      document.getElementById("payment_amount_label").hidden=true;
 
-    }
   } else {
     // if(formType==="auto"&&campaignDetailsFromAPI?.incident_type==="Renewal" ){
     //    event.preventDefault();

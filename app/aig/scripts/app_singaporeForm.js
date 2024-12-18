@@ -121,25 +121,14 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
     if (dbData&&planInfo?.planId) {
           let apiBody = handlePremiumRequestBody();
           console.log("apiBody:", apiBody)
-          //caseที่ออกpolicyไปแล้ววมีอยู่แล้ว
-          if(dbData?.policyNo){
-            apiBody = {
-              ...apiBody,
-              insuredList: apiBody.insuredList.map((insured, index) => {
-                  if (index === 0) {
-                      return {
-                          ...insured,
-                          vehicleInfo: {
-                              ...insured.vehicleInfo,
-                              regNo: "A999999", 
-                          },
-                      };
-                  }
-                  return insured; 
-              }),
-          };
+
+          //เช็คว่าหากมีquoteNoแล้ว ไม่ให้ใช้getpremium ไปใช้ในdatabaseแทน
+          if(dbData?.quoteNo){
+            const responsePremium = JSON.parse(dbData?.response_premium_calculation_json);
+            await populatePlanAutoPremium(responsePremium);
+          }else{
+            await fetchPremium(apiBody);
           }
-          await fetchPremium(apiBody);
           for (const option of planSelect.options) {
             if (Number(option.value) === Number(planInfo.planId)) {
                 option.selected = true;  // Select the matching option
