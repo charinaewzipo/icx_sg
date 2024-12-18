@@ -199,6 +199,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (formType === "auto" && quotationData?.quoteNo) {
           document.getElementById("premium-amount-label").hidden = true;
           document.getElementById("premium-amount-withgst-label").hidden = true;
+          document.getElementById("get-premium-button").hidden = true;
+
         }
       } catch (error) {
         console.error("Error occurred:", error);
