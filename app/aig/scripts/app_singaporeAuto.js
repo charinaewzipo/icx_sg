@@ -580,16 +580,23 @@ function setupFormListeners() {
     "insured_auto_driverInfo_claimInfo_claimStatus",
     "insured_auto_driverInfo_claimInfo_insuredLiability",
   ];
-
-  formFieldNames.forEach(fieldName => {
-    const elements = document.getElementsByName(fieldName);
-    elements.forEach(element => {
-      element.addEventListener("change", () => {
-        console.log(`${fieldName} changed`);
-        resetPlanSelect();
+  
+  const quoteNoField = document.getElementById('policyid-input')
+  
+    formFieldNames.forEach(fieldName => {
+      const elements = document.getElementsByName(fieldName);
+      elements.forEach(element => {
+        element.addEventListener("change", () => {
+          console.log(`${fieldName} changed`);
+          if (quoteNoField && quoteNoField.value) {
+          }else{
+            resetPlanSelect();
+          }
+        });
       });
     });
-  });
+  
+  
 }
 
 // Function to reset the planSelect dropdown
