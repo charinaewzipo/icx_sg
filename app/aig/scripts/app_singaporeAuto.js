@@ -268,6 +268,8 @@ function addCoverRow(coverList, setCoverData) {
     const quoteNoField = document.getElementById('policyid-input')
     if (quoteNoField && quoteNoField.value) {
       premiumDisplay.textContent = ''
+      excessText.textContent = 'Excess ';
+      buyUpOrDownCellInput.hidden=false;
     } else {
       if (selectedOption.value) {
         excessText.textContent = 'Excess '; // อัปเดตข้อความ
@@ -311,6 +313,8 @@ function addCoverRow(coverList, setCoverData) {
 
   if (setCoverData) {
     selectElement.value = setCoverData.id;
+    const buyUpOrDownInput = selectElement.closest('tr').querySelector('.buy-up-down-input');
+    buyUpOrDownInput.value=setCoverData?.buyUpOrbuyDownExcess||null
     selectElement.dispatchEvent(new Event('change'));
   }
   // Update disabled options initially
