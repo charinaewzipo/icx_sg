@@ -484,10 +484,16 @@ function getPlanDetail() {
     let coverList = [];
     const planCoverLists = document.querySelectorAll('.planCoverList');
 
+    console.log("selectedPlanselectedPlanselectedPlan:", selectedPlan)
     if (selectedPlan) {
-      const coverListDataFilterAutoAttachedFalse = Object.values(selectedPlan?.coverList || {}).filter(
-        (cover) => cover?.autoAttached === false
-      );
+      let coverListDataFilterAutoAttachedFalse=[]
+      if(checkShouldRetrieve()){
+        coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList || {})
+      }else{
+        coverListDataFilterAutoAttachedFalse = Object.values(selectedPlan?.coverList || {}).filter(
+          (cover) => cover?.autoAttached === false
+        );
+      }
 
       // Iterate through each dropdown and gather selected data
       planCoverLists.forEach(function (selectElement) {
@@ -505,7 +511,7 @@ function getPlanDetail() {
           coverList.push(objectCover);
         }
       });
-
+      console.log("coverListcoverListcoverListcoverList",coverList)
       // Merge the existing cover list data with the new selections
       const updateCoverList = coverListDataFilterAutoAttachedFalse.map((item) => {
         const existingCover = coverList.find((cover) => cover.id === String(item.id));
