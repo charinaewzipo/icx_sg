@@ -144,28 +144,28 @@ function populatePlanAutoPremium(planList) {
 
     if (selectedPlan) {
       console.log("selectedPlan:", selectedPlan)
+      console.log("selectedPlan?.planDescription:", selectedPlan?.planDescription)
 
-      console.log("Object.keys(selectedPlan.coverList).length", Object.keys(selectedPlan.coverList).length)
       coverListDisplay.hidden = false
       addCoverDisplay.hidden = false
       planPoiSelect.value = selectedPlan.planPoi;
-      populateCoverListAutoPremium(selectedPlan.coverList);
+      populateCoverListAutoPremium();
     }
   });
 }
 
-function populateCoverListAutoPremium(coverList) {
+function populateCoverListAutoPremium() {
   const coverListBody = document.getElementById('coverListBody');
   coverListBody.innerHTML = ''; // Clear previous covers
-  if (coverList) {
+  if (selectedPlan?.coverList) {
     // Initially add one cover row
-    addCoverRow(coverList);
+    addCoverRow(selectedPlan?.coverList);
 
     document.getElementById("addCover").addEventListener('click', () => {
       const rowCount = coverListBody.getElementsByClassName('cover-row').length;
 
       if (rowCount < 10) {
-        addCoverRow(coverList);
+        addCoverRow(selectedPlan?.coverList);
       } else {
         alert('You cannot add more than 10 cover rows.');
       }
