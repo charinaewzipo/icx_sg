@@ -195,7 +195,7 @@ function addCoverRow(coverList, setCoverData) {
 
   // Cover Label Cell
   const labelCell = document.createElement('td');
-  labelCell.style.padding = '0 30px';
+  labelCell.style.padding = '0 40px';
   labelCell.textContent = 'Cover Name: ';
   row.appendChild(labelCell);
 
@@ -223,36 +223,66 @@ function addCoverRow(coverList, setCoverData) {
       option.textContent = cover.name;
       option.dataset.premium = cover.premium; // Store premium in the option's dataset
       option.dataset.code = cover.code; // Store premium in the option's dataset
+      option.dataset.excess=cover?.standardExcess||""
       selectElement.appendChild(option);
     }
   }
-
+  const thCellCell = document.createElement('th');
   // Premium Display Cell
   const premiumCell = document.createElement('td');
   const premiumDisplay = document.createElement('span');
   premiumDisplay.className = 'premium-display';
   premiumDisplay.textContent = ''; // Initial premium display is empty
 
+
+  const buyUpOrDownCell = document.createElement('td');
+  buyUpOrDownCell.style.padding = '0 15px 0 20px';
+
+  const excessText = document.createElement('span');
+  excessText.textContent = ''; // ตั้งข้อความว่างตอนเริ่มต้น
+
+  const buyUpOrDownCellInput = document.createElement('input');
+  buyUpOrDownCellInput.type = 'text';
+  buyUpOrDownCellInput.style.width = '80px';
+  buyUpOrDownCellInput.hidden=true;
+  buyUpOrDownCellInput.maxLength='6'
+
+
+  // เพิ่ม text และ input เข้าในเซลล์
+  buyUpOrDownCell.appendChild(excessText);
+  buyUpOrDownCell.appendChild(buyUpOrDownCellInput);
+
   // Append the dropdown cell
   selectCell.appendChild(selectElement);
   row.appendChild(selectCell);
+  row.appendChild(thCellCell)
   row.appendChild(tdCell);
   premiumCell.appendChild(premiumDisplay);
   row.appendChild(premiumCell);
 
+  row.appendChild(buyUpOrDownCell);
+
 
   selectElement.addEventListener('change', function () {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const quoteNoField=document.getElementById('policyid-input')
-      if(quoteNoField&&quoteNoField.value){
-        premiumDisplay.textContent=''
-      }else{
-        premiumDisplay.textContent = selectedOption.dataset.premium
+    const quoteNoField = document.getElementById('policyid-input')
+    if (quoteNoField && quoteNoField.value) {
+      premiumDisplay.textContent = ''
+    } else {
+      if (selectedOption.value) {
+        excessText.textContent = 'Excess '; // อัปเดตข้อความ
+        buyUpOrDownCellInput.value=selectedOption.dataset.excess
+        buyUpOrDownCellInput.hidden=false;
+      } else {
+        excessText.textContent = ''; // ลบข้อความ
+        buyUpOrDownCellInput.value=''
+        buyUpOrDownCellInput.hidden=true;
+      }
+      premiumDisplay.textContent = selectedOption.dataset.premium
         ? `Amount: ${selectedOption.dataset.premium} (SGD)`
         : '';
       calculatePremiumSummary(); // Recalculate the total premium after selection
-      }
-    
+    }
   });
 
   // Remove Button
@@ -563,7 +593,7 @@ const createElementCover = () => {
 
   // Cover Label Cell
   const labelCell = document.createElement('td');
-  labelCell.style.padding = '0 30px';
+  labelCell.style.padding = '0 40px';
   labelCell.textContent = 'Cover Name: ';
   row.appendChild(labelCell);
 
