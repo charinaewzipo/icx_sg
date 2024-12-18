@@ -277,7 +277,6 @@ if (!producerCode) {
       : "",
     ncdInfo: {
       ncdLevel: Number(formData.get("Ncd_Level")),
-
     },
     policyHolderInfo: {
       customerType: formData.get("customerType"),
@@ -314,7 +313,6 @@ if (!producerCode) {
               formData.get("insured_auto_driverInfo_maritalStatus") || "",
             drivingExperience:
               formData.get("insured_auto_driverInfo_drivingExperience") || "",
-            // occupation: "18",
             occupation: formData.get("insured_auto_driverInfo_occupation") || "",
             claimExperience:
               formData.get("insured_auto_driverInfo_claimExperience") || "",
@@ -368,6 +366,7 @@ if (!producerCode) {
     ],
     producerCode: producerCode,
     campaignCode: "",
+    campaignInfoList:getCampaignInfoList(),
   };
  
 
@@ -464,6 +463,7 @@ function validateAndSubmitFormCallPremium() {
     return;
   }
   const apiBody = handlePremiumRequestBody();
+  console.log("apiBody:", apiBody)
   if (apiBody) {
     fetchPremium(apiBody);
   }
