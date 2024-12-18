@@ -125,7 +125,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
     $premiumPayable = isset($response['premiumPayable']) ? $response['premiumPayable'] : 0.00;
     $quoteLapseDate = isset($response['quoteLapseDate']) ? transformDateQuote($response['quoteLapseDate']) : null;
     $policyExpDate = isset($response['policyExpDate']) ? transformDateQuote($response['policyExpDate']) : null;
-    
+    $policyExpDateInform = isset($formData['policyExpDate']) ? isoToDateTime($formData['policyExpDate']) : null;
     // Handle JSON fields
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
@@ -180,7 +180,9 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
     // Conditionally add policyExpDate if it exists in the response
     if ($policyExpDate !== null) {
         $sql .= ", policyExpDate";
-    }
+    }else if($policyExpDateInform!=null){
+        $sql .= ", policyExpDate";
+    } 
 
     $sql .= ") VALUES (
         '$policyId', '$type', $productId, $distributionChannel, '$producerCode', '$propDate',
@@ -197,7 +199,9 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
     // Add policyExpDate value if it exists
     if ($policyExpDate !== null) {
         $sql .= ", '$policyExpDate'";
-    }
+    }else if($policyExpDateInform != null){
+        $sql .= ", '$policyExpDateInform'";
+    } 
 
     $sql .= ")";
 
