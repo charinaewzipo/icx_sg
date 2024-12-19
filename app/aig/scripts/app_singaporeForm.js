@@ -152,6 +152,14 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
               }
             })
           }
+
+
+          const filterBuyUpDown = planInfo?.coverList.find(i=>i.buyUpOrbuyDownExcess!=null)
+          const buyUpDownField = document.getElementById('insured_auto_buy_up_down')
+          if(buyUpDownField){
+            buyUpDownField.value=filterBuyUpDown?.buyUpOrbuyDownExcess||""
+            buyUpDownField.dispatchEvent(new Event('change'))
+          }
           
         }
     }

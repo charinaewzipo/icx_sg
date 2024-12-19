@@ -499,12 +499,12 @@ function getPlanDetail() {
       planCoverLists.forEach(function (selectElement) {
         const selectedOption = selectElement.options[selectElement.selectedIndex];
         if (selectedOption.value !== "" && !selectedOption.disabled) {
-         
+          const excess=document.getElementById('insured_auto_buy_up_down')
           const objectCover = {
             id: selectedOption.value,
             code: selectedOption?.dataset.code || "",
             selectedFlag: true,
-            // buyUpOrbuyDownExcess: Number(excessValue) || 0 // Default to null if no value
+            buyUpOrbuyDownExcess:excess.value ? Number(excess.value):'' // Default to null if no value
           };
           coverList.push(objectCover);
         }
@@ -517,14 +517,14 @@ function getPlanDetail() {
           return {
             id: item.id,
             code: item.code,
-            // buyUpOrbuyDownExcess: existingCover.buyUpOrbuyDownExcess,
+            buyUpOrbuyDownExcess: existingCover.buyUpOrbuyDownExcess,
             selectedFlag: true
           };
         } else {
           return {
             id: item.id,
             code: item.code,
-            // buyUpOrbuyDownExcess: item.buyUpOrbuyDownExcess || null,
+            buyUpOrbuyDownExcess: item.buyUpOrbuyDownExcess || null,
             selectedFlag: false
           };
         }
