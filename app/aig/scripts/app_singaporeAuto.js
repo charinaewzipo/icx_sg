@@ -101,6 +101,12 @@ function populatePlanAutoPremium(planList) {
   const planPoiSelect = document.getElementById('planPoiSelect');
   planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
   if (checkShouldRetrieve()) {
+    //hide ncd gears
+    const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
+    const ncdLevel_gears=document.getElementById("ncdLevel_gears");
+    ncdLevel_gears_display.style.display = "none";
+    ncdLevel_gears.style.display = "none";
+
     const plan = planList
     const option = document.createElement('option');
     option.value = plan.planId;
@@ -857,7 +863,7 @@ function handlePopulateExcessFromAPI(selectedPlan) {
       const arrayExcessRange = extractExcessData?.excessRange?.split(',')
       console.log("arrayExcessRange:", arrayExcessRange)
       buyUpDownField.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
-      arrayExcessRange.forEach(item=>{
+      Array.isArray(arrayExcessRange)&&arrayExcessRange.forEach(item=>{
         const option = document.createElement('option');
         option.value = item;
         option.textContent = item;
