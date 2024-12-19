@@ -499,14 +499,12 @@ function getPlanDetail() {
       planCoverLists.forEach(function (selectElement) {
         const selectedOption = selectElement.options[selectElement.selectedIndex];
         if (selectedOption.value !== "" && !selectedOption.disabled) {
-          const buyUpOrDownInput = selectElement.closest('tr').querySelector('.buy-up-down-input');
-          const excessValue = buyUpOrDownInput ? buyUpOrDownInput.value.trim() : ""; 
-
+         
           const objectCover = {
             id: selectedOption.value,
             code: selectedOption?.dataset.code || "",
             selectedFlag: true,
-            buyUpOrbuyDownExcess: Number(excessValue) || 0 // Default to null if no value
+            // buyUpOrbuyDownExcess: Number(excessValue) || 0 // Default to null if no value
           };
           coverList.push(objectCover);
         }
@@ -519,7 +517,7 @@ function getPlanDetail() {
           return {
             id: item.id,
             code: item.code,
-            buyUpOrbuyDownExcess: existingCover.buyUpOrbuyDownExcess,
+            // buyUpOrbuyDownExcess: existingCover.buyUpOrbuyDownExcess,
             selectedFlag: true
           };
         } else {

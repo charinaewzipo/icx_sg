@@ -153,7 +153,7 @@ error_reporting(E_ALL);
             alert("The driver's age should be between 23 and 70 years.");
             $(`#datepicker2`).val('');
             return;
-          }else{
+          } else {
             $("#ageDriver").val(age);
           }
         }
@@ -310,20 +310,20 @@ error_reporting(E_ALL);
               </td>
 
               <td style="white-space:nowrap;" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Policy Expiry Date: <span style="color:red">*</span></td>
-              <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" <?php echo ($formType === "auto") ? 'required' : ''; ?> style="max-width: 130px;" ></td>
+              <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>><input type="text" id="datepicker6" name="PolicyExpiryDate" maxlength="10" <?php echo ($formType === "auto") ? 'required' : ''; ?> style="max-width: 130px;"></td>
             </tr>
-            <table id="promo-table" style="border-spacing:0.5rem 0.2rem" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>> 
-  <tbody>
-   
-  </tbody>
-  <tr id="add-code-display" style="display:none">
-    <td></td>
-    <td></td>
-    <td>
-      <button type="button" onclick="addPromoCode()" class="button payment" style="float:inline-end">Add Code</button>
-    </td>
-  </tr>
-</table>
+            <table id="promo-table" style="border-spacing:0.5rem 0.2rem" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+              <tbody>
+
+              </tbody>
+              <tr id="add-code-display" style="display:none">
+                <td></td>
+                <td></td>
+                <td>
+                  <button type="button" onclick="addPromoCode()" class="button payment" style="float:inline-end">Add Code</button>
+                </td>
+              </tr>
+            </table>
 
 
           </table>
@@ -375,25 +375,25 @@ error_reporting(E_ALL);
               <th></th>
               <td style="padding-left:47px" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>Automatic Renewal Flag: </td>
               <td <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
-                <select name="automaticRenewalFlag" id="automaticRenewalFlag" disabled >
+                <select name="automaticRenewalFlag" id="automaticRenewalFlag" disabled>
                   <option value=""> <-- Please select an option --> </option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>
               </td>
-              
+
             </tr>
             <tr id='cardTypeDisplay' style="display:none">
-            <td>Card Type: <span style="color:red">*</span></td>
-                    <td>
-                    <select name="cardType" id="cardType" >
+              <td>Card Type: <span style="color:red">*</span></td>
+              <td>
+                <select name="cardType" id="cardType">
                   <option value=""> <-- Please select an option </option> -->
                   <option value="3">Credit Card IPP UOB 6 months</option>
                   <option value="6">Credit Card IPP DBS 6 months</option>
                   <option value="4">Credit Card IPP UOB 12 months</option>
                   <option value="7">Credit Card IPP DBS 12 months</option>
                 </select>
-                    </td>
+              </td>
             </tr>
 
           </table>
@@ -906,7 +906,7 @@ where name='Nature of Business'";
                   <option value="">
                     <-- Please select an option -->
                   </option>
-                  
+
                 </select>
               </td>
             </tr>
@@ -991,7 +991,7 @@ where name='Nature of Business'";
               <th>&nbsp;</th>
               <td id='mileageDeclaration-label'>Mileage Declaration : </td>
               <td>
-                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60"  />
+                <input type="text" name="insured_auto_vehicle_mileageDeclaration" maxlength="60" />
               </td>
             </tr>
             <tr>
@@ -1125,11 +1125,11 @@ where name='Nature of Business'";
               </td>
             </tr>
             <tr>
-            <td>Driver DOB : <span style="color:red">*</span> </td>
+              <td>Driver DOB : <span style="color:red">*</span> </td>
               <td>
                 <input type="text" id="datepicker2" name="insured_auto_driverInfo_driverDOB" maxlength="10" required>
-                <th>&nbsp;</th>
-                <td>Age :</td>
+              <th>&nbsp;</th>
+              <td>Age :</td>
               <td>
                 <input type="text" id="ageDriver" name="ageDriver" maxlength="4" readonly style="max-width:50px"> years old
               </td>
@@ -1197,9 +1197,9 @@ where name='Nature of Business'";
                 </select></td>
               <th>&nbsp;</th>
               <td>Driver Experience : <span style="color:red">*</span></td>
-              <td><input type="text" name="insured_auto_driverInfo_drivingExperience"  id="drivingExperience"  maxlength="4" size="10" required value="1" /> <span>year</span></td>
+              <td><input type="text" name="insured_auto_driverInfo_drivingExperience" id="drivingExperience" maxlength="4" size="10" required value="1" /> <span>year</span></td>
             </tr>
-            
+
             <tr>
               <td style="float: inline-start;">Claim Experience : <span style="color:red">*</span> </td>
               <td>
@@ -1225,119 +1225,6 @@ where name='Nature of Business'";
             </tr>
 
           </table>
-
-          <div id="ncd-info-container">
-            <table id="table-form">
-              <tr>
-                <td>
-                  <h1>Ncd Info</h1>
-                </td>
-              </tr>
-              <tr>
-                <td style="width:185px">Ncd Level: <span style="color:red">*</span> </td>
-                <td>
-
-                  <select name="Ncd_Level" id="ncdLevel" onchange="toggleNcdLevel()" style="text-align:center " required>
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                    <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Level'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                      $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>%
-                      </option>
-                    <?php
-                    }
-                    ?>
-
-                  </select>
-                </td>
-                <td>&nbsp;</td>
-                <td id="ncdLevel_gears_display">Ncd Level (GEARS) :  </td>
-                <td>
-
-                  <select name="Ncd_Level_gears" id="ncdLevel_gears" onchange="toggleNcdLevel()" style="text-align:center " disabled>
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                    <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Level'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                      $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>%
-                      </option>
-                    <?php
-                    }
-                    ?>
-
-                  </select>
-                </td>
-              </tr>
-              <tr id="noClaimExperienceRow">
-                <td>No Claim Experience : <span style="color:red">*</span> </td>
-                <td>
-                  <select name="NoClaimExperience" id="ncdNoExperience" onchange="toggleNcdNoExperience()" required>
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                    <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'noClaimExperience'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                      $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                    }
-                    ?>
-                  </select>
-                </td>
-                <th>&nbsp;</th>
-                <td id="otherExperience-display" style="display:none">Other <span style="color:red">*</span></td>
-                <td> <input type="text" id="otherExperience" name="otherExperience" maxlength="60" size="30" style="display:none"/></td>
-              </tr>
-              <tr id="haveExperienceRow" style="display:none">
-                <td>Previous Insurer: <span style="color:red">*</span> </td>
-                <td>
-                  <select name="haveEx-PreviousInsurer">
-                    <option value="">
-                      <-- Please select an option -->
-                    </option>
-                    <?php
-                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Previous Insurer'";
-                    $objQuery = mysqli_query($Conn, $strSQL);
-                    while ($objResuut = mysqli_fetch_array($objQuery)) {
-                      $data[] = $objResuut;
-                    ?>
-                      <option value="<?php echo $objResuut["id"]; ?>">
-                        <?php echo $objResuut["description"]; ?>
-                      </option>
-                    <?php
-                    }
-                    ?>
-                  </select>
-                </td>
-                <th>&nbsp;</th>
-                <td><span>Previous Policy No./</span><br>
-                  <span>Vehicle Reg No: <span><span style="color:red">*</span> </td>
-                <td>
-                  <input type="text" name="haveEx-PreviousPolicyNo" maxlength="60" size="30" />
-                </td>
-              </tr>
-
-
-
-            </table>
-          </div>
           <div class="table" id="claim-info">
 
             <table id="table-form">
@@ -1424,6 +1311,166 @@ where name='Nature of Business'";
               </tr>
             </table>
           </div>
+          <div id="ncd-info-container">
+            <table id="table-form">
+              <tr>
+                <td>
+                  <h1>Ncd Info</h1>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:185px">Ncd Level: <span style="color:red">*</span> </td>
+                <td>
+
+                  <select name="Ncd_Level" id="ncdLevel" onchange="toggleNcdLevel()" style="text-align:center " required>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Level'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>%
+                      </option>
+                    <?php
+                    }
+                    ?>
+
+                  </select>
+                </td>
+                <td>&nbsp;</td>
+                <td id="ncdLevel_gears_display">Ncd Level (GEARS) : </td>
+                <td>
+
+                  <select name="Ncd_Level_gears" id="ncdLevel_gears" onchange="toggleNcdLevel()" style="text-align:center " disabled>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Level'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>%
+                      </option>
+                    <?php
+                    }
+                    ?>
+
+                  </select>
+                </td>
+              </tr>
+              <tr id="noClaimExperienceRow">
+                <td>No Claim Experience : <span style="color:red">*</span> </td>
+                <td>
+                  <select name="NoClaimExperience" id="ncdNoExperience" onchange="toggleNcdNoExperience()" required>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'noClaimExperience'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
+                  </select>
+                </td>
+                <th>&nbsp;</th>
+                <td id="otherExperience-display" style="display:none">Other <span style="color:red">*</span></td>
+                <td> <input type="text" id="otherExperience" name="otherExperience" maxlength="60" size="30" style="display:none" /></td>
+              </tr>
+              <tr id="haveExperienceRow" style="display:none">
+                <td>Previous Insurer: <span style="color:red">*</span> </td>
+                <td>
+                  <select name="haveEx-PreviousInsurer">
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <?php
+                    $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'NCD Previous Insurer'";
+                    $objQuery = mysqli_query($Conn, $strSQL);
+                    while ($objResuut = mysqli_fetch_array($objQuery)) {
+                      $data[] = $objResuut;
+                    ?>
+                      <option value="<?php echo $objResuut["id"]; ?>">
+                        <?php echo $objResuut["description"]; ?>
+                      </option>
+                    <?php
+                    }
+                    ?>
+                  </select>
+                </td>
+                <th>&nbsp;</th>
+                <td><span>Previous Policy No./</span><br>
+                  <span>Vehicle Reg No: <span><span style="color:red">*</span>
+                </td>
+                <td>
+                  <input type="text" name="haveEx-PreviousPolicyNo" maxlength="60" size="30" />
+                </td>
+              </tr>
+
+
+
+            </table>
+          </div>
+          <div id="excess-section" hidden>
+            <table id="table-form">
+            <tr>
+                <td>
+                  <h1>Excess Info</h1>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:176px">Standard Excess :</td>
+                <td>
+                <td>
+                  <input type="text" name="insured_auto_standard_excess" id='insured_auto_standard_excess' maxlength="60" readonly/>
+                </td>
+                </td>
+              </tr>
+              <tr>
+                <td >Buy Up/Down :</td>
+                <td>
+                <td>
+                <select name="insured_auto_buy_up_down" id='insured_auto_buy_up_down'>
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                  </select>
+                </td>
+                </td>
+              </tr>
+              <tr>
+                <td >UW Excess :</td>
+                <td>
+                <td>
+                  <input type="text" name="insured_auto_uw_excess" id='insured_auto_uw_excess'  maxlength="60" readonly/>
+                </td>
+                </td>
+              </tr>
+              
+              <tr>
+                <td >Final Excess :</td>
+                <td>
+                <td>
+                  <input type="text" name="insured_auto_final_excess" id='insured_auto_final_excess'  maxlength="60" readonly />
+                </td>
+                </td>
+              </tr>
+            </table>
+
+          </div>
           <div id="agecondition">
             <table id="table-form">
               <tr>
@@ -1451,7 +1498,7 @@ where name='Nature of Business'";
                     <?php
                     }
                     ?>
-                    
+
 
                   </select>
                 </td>
@@ -1468,7 +1515,7 @@ where name='Nature of Business'";
                       $selected = ((int)$objResuut["id"] === 1838000062) ? "selected" : "";
                       $data[] = $objResuut;
                     ?>
-                      <option value="<?php echo $objResuut["id"]; ?>"  <?php echo $selected; ?>>
+                      <option value="<?php echo $objResuut["id"]; ?>" <?php echo $selected; ?>>
                         <?php echo $objResuut["description"]; ?>
                       </option>
                     <?php
@@ -1515,13 +1562,13 @@ where name='Nature of Business'";
               </td>
 
             </tr>
-            
-            
+
+
 
 
           </table>
-          <table id="table-form" >
-          <tr id="coverListDisplay" hidden>
+          <table id="table-form">
+            <tr id="coverListDisplay" hidden>
               <td>Cover List</td>
               <td></td>
             </tr>
@@ -1535,7 +1582,7 @@ where name='Nature of Business'";
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
+       
 
               <td>
 
@@ -1548,18 +1595,18 @@ where name='Nature of Business'";
                 <input type="text" name="premium-amount" id="premium-amount" maxlength="10" size="10" readonly="">
               </td>
             </tr>
-            <tr id="premium-amount-withgst-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?> >
+            <tr id="premium-amount-withgst-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
               <td style='padding-right:32px'>Amount (9% GST) : </td>
               <td>
                 <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
               </td>
             </tr>
           </table>
-          <table  id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
-          <tr id="comment-label" >
+          <table id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+            <tr id="comment-label">
               <td style="float: inline-start; padding-right:20px">Quote Version Memo:</td>
               <td style="white-space:nowrap;">
-                <textarea name="commentHistory" id="commentHistory" rows="6" cols="50" maxlength="4000" ></textarea>
+                <textarea name="commentHistory" id="commentHistory" rows="6" cols="50" maxlength="4000"></textarea>
               </td>
             </tr>
           </table>

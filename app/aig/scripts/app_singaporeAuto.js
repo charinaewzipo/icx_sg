@@ -127,6 +127,7 @@ function populatePlanAutoPremium(planList) {
 
   // Update planPoiSelect when an option is selected
   planSelect.addEventListener('change', function () {
+    document.getElementById('excess-section').hidden=false;
     const coverListDisplay = document.getElementById("coverListDisplay");
     const addCoverDisplay = document.getElementById("addCoverDisplay");
     const selectedOption = planSelect.options[planSelect.selectedIndex];
@@ -161,6 +162,7 @@ function populatePlanAutoPremium(planList) {
       addCoverDisplay.hidden = false
       planPoiSelect.value = selectedPlan.planPoi;
       populateCoverListAutoPremium();
+      handlePopulateExcessFromAPI(selectedPlan)
     }
   });
 }
@@ -264,22 +266,6 @@ function addCoverRow(coverList, setCoverData) {
   premiumDisplay.textContent = ''; // Initial premium display is empty
 
 
-  const buyUpOrDownCell = document.createElement('td');
-  buyUpOrDownCell.style.padding = '0 15px 0 20px';
-
-  const excessText = document.createElement('span');
-  excessText.textContent = ''; // ตั้งข้อความว่างตอนเริ่มต้น
-  const buyUpOrDownCellInput = document.createElement('input');
-  buyUpOrDownCellInput.className = 'buy-up-down-input';
-  buyUpOrDownCellInput.type = 'text';
-  buyUpOrDownCellInput.style.width = '80px';
-  buyUpOrDownCellInput.hidden=true;
-  buyUpOrDownCellInput.maxLength='6'
-
-
-  // เพิ่ม text และ input เข้าในเซลล์
-  buyUpOrDownCell.appendChild(excessText);
-  buyUpOrDownCell.appendChild(buyUpOrDownCellInput);
 
   // Append the dropdown cell
   selectCell.appendChild(selectElement);
@@ -289,7 +275,7 @@ function addCoverRow(coverList, setCoverData) {
   premiumCell.appendChild(premiumDisplay);
   row.appendChild(premiumCell);
 
-  row.appendChild(buyUpOrDownCell);
+  // row.appendChild(buyUpOrDownCell);
 
 
   selectElement.addEventListener('change', function () {
@@ -297,18 +283,9 @@ function addCoverRow(coverList, setCoverData) {
     const quoteNoField = document.getElementById('policyid-input')
     if (quoteNoField && quoteNoField.value) {
       premiumDisplay.textContent = ''
-      excessText.textContent = 'Excess ';
-      buyUpOrDownCellInput.hidden=false;
+
     } else {
-      if (selectedOption.value) {
-        excessText.textContent = 'Excess '; // อัปเดตข้อความ
-        buyUpOrDownCellInput.value=selectedOption.dataset.excess
-        buyUpOrDownCellInput.hidden=false;
-      } else {
-        excessText.textContent = ''; // ลบข้อความ
-        buyUpOrDownCellInput.value=''
-        buyUpOrDownCellInput.hidden=true;
-      }
+
       premiumDisplay.textContent = selectedOption.dataset.premium
         ? `Amount: ${selectedOption.dataset.premium} (SGD)`
         : '';
@@ -342,8 +319,6 @@ function addCoverRow(coverList, setCoverData) {
 
   if (setCoverData) {
     selectElement.value = setCoverData.id;
-    const buyUpOrDownInput = selectElement.closest('tr').querySelector('.buy-up-down-input');
-    buyUpOrDownInput.value=setCoverData?.buyUpOrbuyDownExcess||null
     selectElement.dispatchEvent(new Event('change'));
   }
   // Update disabled options initially
@@ -863,6 +838,51 @@ function handleChangeEffectiveDate(){
     }
   });
 }
+
+function handlePopulateExcessFromAPI(selectedPlan) {
+  console.log("selectedPlan:", selectedPlan);
+  const extractExcessData = selectedPlan?.coverList?.['1'];
+  console.log("extractExcessData:", extractExcessData);
+
+  if (extractExcessData) {
+    // Set default values only if elements exist
+    const standardExcessField = document.getElementById('insured_auto_standard_excess');
+    const buyUpDownField = document.getElementById('insured_auto_buy_up_down');
+    const uwExcessField = document.getElementById('insured_auto_uw_excess');
+    const finalExcessField = document.getElementById('insured_auto_final_excess');
+    if (standardExcessField) {
+      standardExcessField.value = extractExcessData?.standardExcess || 0;
+    } 
+    if (buyUpDownField) {
+      const arrayExcessRange = extractExcessData?.excessRange?.split(',')
+      console.log("arrayExcessRange:", arrayExcessRange)
+      buyUpDownField.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
+      arrayExcessRange.forEach(item=>{
+        const option = document.createElement('option');
+        option.value = item;
+        option.textContent = item;
+        buyUpDownField.appendChild(option)
+      })
+    }
+    if (uwExcessField) {
+      uwExcessField.value = extractExcessData?.uwExcess || 0;
+    } 
+
+  
+    buyUpDownField.addEventListener('change', function () {
+      if (standardExcessField && uwExcessField&&buyUpDownField.value) {
+        const sumValue =
+          Number(standardExcessField.value) +
+          Number(buyUpDownField.value) +
+          Number(uwExcessField.value);
+        finalExcessField.value = sumValue;
+      }else{
+        finalExcessField.value=''
+      }
+    });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
