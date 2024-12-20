@@ -829,21 +829,37 @@ function initializePromoCodeTable(ArrayPromoCodeField) {
     addPromoCode()
   }
 }
-function handleChangeEffectiveDate(){
+function handleChangeEffectiveDate() {
   const effectiveDateInput = $("#datepicker5");
   const expiryDateInput = $("#datepicker6");
+
   effectiveDateInput.on("change", function () {
     const effectiveDateValue = effectiveDateInput.val();
+
     if (effectiveDateValue) {
       const [day, month, year] = effectiveDateValue.split("/");
       const effectiveDate = new Date(`${year}-${month}-${day}`);
-      effectiveDate.setFullYear(effectiveDate.getFullYear() + 1); // เพิ่ม 1 ปี
-      effectiveDate.setDate(effectiveDate.getDate()-1)
-      expiryDateInput.datepicker("option", "minDate", effectiveDate);
-      expiryDateInput.datepicker("setDate", effectiveDate);
+      
+      // วันที่ 1 ปีหลังจาก effectiveDate
+      const minDate = new Date(effectiveDate);
+      minDate.setFullYear(minDate.getFullYear() + 1);
+
+      // วันที่ 1 ปี 6 เดือนหลังจาก effectiveDate
+      const maxDate = new Date(effectiveDate);
+      maxDate.setFullYear(maxDate.getFullYear() + 1);
+      maxDate.setMonth(maxDate.getMonth() + 6);
+
+      // ตั้งค่า minDate และ maxDate สำหรับ expiryDateInput
+      expiryDateInput.datepicker("option", "minDate", minDate);
+      expiryDateInput.datepicker("option", "maxDate", maxDate);
+
+      // ตั้งค่าเริ่มต้นให้ expiryDateInput เป็น minDate
+      expiryDateInput.datepicker("setDate", minDate);
     }
   });
 }
+
+
 
 function handlePopulateExcessFromAPI(selectedPlan) {
   console.log("selectedPlan:", selectedPlan);

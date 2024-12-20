@@ -321,6 +321,11 @@ const setDefaultValueForm = async (dbData) => {
     individualPolicyHolderInfo.contactInfo.postCode;
   document.querySelector('input[name="PolicyEffectiveDate"]').value = dbData.policyEffDate ?
     isoToFormattedDate(dbData.policyEffDate) : ""
+    if (dbData?.type === "auto") {
+      const effectiveDateInput = $("#datepicker5")[0]; // ใช้ [0] เพื่อเข้าถึง DOM element ของ jQuery
+      effectiveDateInput.dispatchEvent(new Event('change'));
+    }
+    
   document.querySelector('input[name="PolicyExpiryDate"]').value = dbData.policyExpDate ?
     isoToFormattedDate(dbData.policyExpDate) : ""
 
