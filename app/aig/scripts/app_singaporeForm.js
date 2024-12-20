@@ -352,7 +352,7 @@ const setDefaultValueForm = async (dbData) => {
 
 };
 const handleAlertNCDLevelDifferent=()=>{
-  if(!responsePayment&&quotationData?.type==="auto"){
+  if(!responsePayment&&quotationData?.type==="auto"&& !checkShouldRetrieve()){
     if(Number(quotationData?.ncdInfo?.ncdLevel)!==Number(quotationData?.ncdLevelGEARS)){
       window.alert("AIG will be writing to your existing insurer to verify your NCD. We will contact you via mail should there be any discrepancy in the NCD and we will recover the premium difference, if any.")
     }

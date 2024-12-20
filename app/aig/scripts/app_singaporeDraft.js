@@ -73,8 +73,42 @@ const handleEditQuote = () => {
       );
     }else if(quotationData?.type==="home"){
       formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product),textarea, button:not(#btnSaveForm)");
-    }else if(quotationData?.type==="auto"){
-      formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product):not([name='Ncd_Level_gears']):not([name='automaticRenewalFlag']):not([name='insured_auto_vehicle_vehicleUsage']),button:not(#btnSaveForm),textarea");
+    } else if (quotationData?.type === "auto") {
+      if (checkShouldRetrieve()) {
+        formElements = document.querySelectorAll(
+          "input:not([name='PolicyExpiryDate']):not([name='PolicyEffectiveDate']):not([name='firstName'])" +
+          ":not([name='dateOfBirth']):not([name='customerIdNo']):not([name='insured_auto_vehicle_regNo'])" +
+          ":not([name='isPolicyHolderDriving'])" +
+          ":not([name='insured_auto_driverInfo_driverName']):not([name='insured_auto_driverInfo_driverIdNumber'])" +
+          ":not([name='insured_auto_driverInfo_driverDOB']):not([name='haveEx-PreviousPolicyNo'])" +
+          ":not([name='insured_auto_driverInfo_claimInfo_dateOfLoss']):not([name='insured_auto_driverInfo_claimInfo_lossDescription'])" +
+          ":not([name='insured_auto_driverInfo_claimInfo_claimAmount']):not([name='otherExperience'])" +
+          ":not([name='insured_auto_vehicle_engineNo']):not([name='insured_auto_vehicle_chassisNo']), " +
+      
+          "select:not(#planPoiSelect1):not(#select-product)" +
+          ":not([name='Ncd_Level_gears']):not([name='automaticRenewalFlag'])" +
+          ":not([name='insured_auto_vehicle_vehicleUsage']):not([name='Ncd_Level'])" +
+          ":not([name='NoClaimExperience']):not([name='haveEx-PreviousInsurer'])" +
+          ":not([name='residentStatus']):not([name='customerIdType'])" +
+          ":not([name='nationality']):not([name='courtesyTitle'])" +
+          ":not([name='insured_auto_vehicle_make']):not([name='insured_auto_vehicle_model'])" +
+          ":not([name='insured_auto_driverInfo_driverType']):not([name='insured_auto_driverInfo_driverResidentStatus'])" +
+          ":not([name='insured_auto_driverInfo_driverIdType']):not([name='insured_auto_driverInfo_driverNationality'])" +
+          ":not([name='insured_auto_driverInfo_claimInfo_claimNature']):not([name='insured_auto_driverInfo_claimInfo_claimStatus'])" +
+          ":not([name='insured_auto_driverInfo_claimInfo_insuredLiability']):not([name='insured_auto_driverInfo_claimExperience'])" +
+          ":not([name='insured_auto_vehicle_vehicleRegYear']), " +
+      
+          "button:not(#btnSaveForm), " +
+      
+          "textarea"
+      );
+      
+      
+      }
+      else {
+        formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product):not([name='Ncd_Level_gears']):not([name='automaticRenewalFlag']):not([name='insured_auto_vehicle_vehicleUsage']),button:not(#btnSaveForm),textarea");
+
+      }
     }
     else{
       formElements = document.querySelectorAll("input, select:not(#planPoiSelect1),textarea, button:not(#btnSaveForm)");
