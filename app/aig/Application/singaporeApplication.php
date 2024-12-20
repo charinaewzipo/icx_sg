@@ -1610,6 +1610,44 @@ where name='Nature of Business'";
               </td>
             </tr>
           </table>
+          <div id='additional-info' hidden><table id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+            <tr id="comment-label">
+              <td style="float: inline-start; padding-right:20px">Internal Claim History:</td>
+              <td style="white-space:nowrap;">
+              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
+              </td>
+            </tr>
+            <tr id="comment-label">
+              <td style="float: inline-start; padding-right:20px">Special Text:</td>
+              <td style="white-space:nowrap;">
+              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
+              </td>
+            </tr>
+            <tr id="comment-label">
+              <td style="float: inline-start; padding-right:20px">Remark C (Remark Memo)</td>
+              <td style="white-space:nowrap;">
+              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
+              </td>
+            </tr>
+            <tr id="comment-label">
+              <td style="float: inline-start; padding-right:20px">Comments History</td>
+              <td style="white-space:nowrap;">
+              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
+              </td>
+            </tr>
+            <tr id="comment-label">
+              <td style="float: inline-start; padding-right:20px">Referral Response</td>
+              <td style="white-space:nowrap;">
+              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
+              </td>
+            </tr>
+            <tr id="comment-label">
+              <td style="float: inline-start; padding-right:20px">Discount list</td>
+              <td style="white-space:nowrap;">
+                <textarea name="discountList" id="discountList" rows="6" cols="45" maxlength="4000"></textarea>
+              </td>
+            </tr>
+          </table></div>
         </div>
 
 

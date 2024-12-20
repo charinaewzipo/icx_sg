@@ -104,8 +104,11 @@ function populatePlanAutoPremium(planList) {
     //hide ncd gears
     const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
     const ncdLevel_gears=document.getElementById("ncdLevel_gears");
+    const additionalInfo=document.getElementById("additional-info");
     ncdLevel_gears_display.style.display = "none";
     ncdLevel_gears.style.display = "none";
+    additionalInfo.hidden=false
+    
 
     const plan = planList
     const option = document.createElement('option');

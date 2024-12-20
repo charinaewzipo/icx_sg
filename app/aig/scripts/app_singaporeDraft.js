@@ -100,7 +100,7 @@ const handleEditQuote = () => {
       
           "button:not(#btnSaveForm), " +
       
-          "textarea"
+          "textarea:not([name='discountList'])"
       );
       
       
