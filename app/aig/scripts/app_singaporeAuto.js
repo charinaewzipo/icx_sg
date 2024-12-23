@@ -789,16 +789,19 @@ function handleMileageCondition() {
   const mileageCondition = document.querySelector('select[name="insured_auto_vehicle_mileageCondition"]');
   const mileageDeclaration = document.querySelector('input[name="insured_auto_vehicle_mileageDeclaration"]');
   const mileageDeclarationLabel = document.getElementById('mileageDeclaration-label');
-  mileageCondition.addEventListener('change', function () {
-    console.log("mileageCondition:", mileageCondition)
+
+  function updateMileageCondition() {
     if (mileageCondition.value === '1838000062') {
       mileageDeclaration.required = false;
+      mileageDeclaration.value = '';
+      mileageDeclaration.disabled = true;
       const span = mileageDeclarationLabel.querySelector('span');
       if (span) {
         span.remove();
       }
     } else {
       mileageDeclaration.required = true;
+      mileageDeclaration.disabled = false;
 
       if (!mileageDeclarationLabel.querySelector('span')) {
         const requiredIndicator = document.createElement('span');
@@ -807,8 +810,13 @@ function handleMileageCondition() {
         mileageDeclarationLabel.appendChild(requiredIndicator);
       }
     }
-  })
+  }
 
+  // เพิ่ม Event Listener
+  mileageCondition.addEventListener('change', updateMileageCondition);
+
+  // เรียกใช้ทันทีสำหรับค่าเริ่มต้น
+  updateMileageCondition();
 }
 function initializePromoCodeTable(ArrayPromoCodeField) {
   console.log("ArrayPromoCodeField:", ArrayPromoCodeField)
