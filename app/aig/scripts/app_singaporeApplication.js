@@ -504,7 +504,7 @@ function getPlanDetail() {
             id: selectedOption.value,
             code: selectedOption?.dataset.code || "",
             selectedFlag: true,
-            buyUpOrbuyDownExcess:excess.value ? Number(excess.value):'' // Default to null if no value
+            buyUpOrbuyDownExcess:excess ? Number(excess.value):0 // Default to null if no value
           };
           coverList.push(objectCover);
         }

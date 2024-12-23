@@ -863,6 +863,26 @@ function handleChangeEffectiveDate() {
 }
 
 
+function calculateDenominationsExcess(amount) {
+  const result = [];
+  let current = amount;
+
+  // เพิ่มค่าที่ลดทีละ 50 ไปจนถึง 0
+  while (current >= 0) {
+    result.push(current);
+    current -= 50;
+  }
+
+  // // เพิ่มค่าที่ต่ำกว่า 0 ทีละ 50
+  // current = -50;
+  // while (current >= -amount) {
+  //   result.push(current);
+  //   current -= 50;
+  // }
+
+  return result;
+}
+
 
 function handlePopulateExcessFromAPI(selectedPlan) {
   console.log("selectedPlan:", selectedPlan);
@@ -879,7 +899,7 @@ function handlePopulateExcessFromAPI(selectedPlan) {
       standardExcessField.value = extractExcessData?.standardExcess || 0;
     } 
     if (buyUpDownField) {
-      const arrayExcessRange = extractExcessData?.excessRange?.split(',')
+      const arrayExcessRange = calculateDenominationsExcess(extractExcessData?.standardExcess)
       console.log("arrayExcessRange:", arrayExcessRange)
       buyUpDownField.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
       Array.isArray(arrayExcessRange)&&arrayExcessRange.forEach(item=>{

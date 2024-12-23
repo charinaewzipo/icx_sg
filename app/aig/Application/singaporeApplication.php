@@ -1440,6 +1440,30 @@ where name='Nature of Business'";
                 </td>
               </tr>
               <tr>
+                <td style="width:176px">Min Standard Excess :</td>
+                <td>
+                <td>
+                  <input type="text" name="insured_auto_min_standard_excess" id='insured_auto_min_standard_excess' maxlength="60" readonly/>
+                </td>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:176px">Max Standard Excess :</td>
+                <td>
+                <td>
+                  <input type="text" name="insured_auto_max_standard_excess" id='insured_auto_max_standard_excess' maxlength="60" readonly/>
+                </td>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:176px">Interval Value :</td>
+                <td>
+                <td>
+                  <input type="text" name="insured_auto_interval_value" id='insured_auto_interval_value' maxlength="60" readonly/>
+                </td>
+                </td>
+              </tr>
+              <tr>
                 <td >Buy Up/Down :</td>
                 <td>
                 <td>
