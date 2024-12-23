@@ -15,13 +15,18 @@ function checkRetrieveCampaignAuto(data) {
     }, 2000);
   }
 }
-function checkShouldRetrieve(){
-  console.log("checkShouldRetrieve:")
-  const quoteNoField = productDetail?.udf_field_quote_no;
-  const quoteNo = calllistDetail[quoteNoField];
+function checkShouldRetrieve() {
+  console.log("checkShouldRetrieve:");
+
+  const quoteNoField = productDetail?.udf_field_quote_no || null;
+
+  const quoteNo = quoteNoField ? calllistDetail?.[quoteNoField] : null;
+
   const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
-  return quoteNo || isRenewal
+
+  return quoteNo || isRenewal;
 }
+
 async function handleRetrieveAuto(callListData) {
   const quoteNoField = productDetail?.udf_field_quote_no || "";
   const vehicleNoField = productDetail?.udf_field_vehicle_no || "";

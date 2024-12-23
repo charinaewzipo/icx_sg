@@ -144,18 +144,17 @@ document.addEventListener("DOMContentLoaded", function () {
     policyidText.style.display = "none"
     policyDisplay.style.display = "none";
     btnEditForm.style.display = "none";
+    ncdLevel_gears_display.style.display = "none";
+    ncdLevel_gears.style.display = "none";
+  }
+
+  if (id) {
     if(checkShouldRetrieve()){
       const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
       const ncdLevel_gears=document.getElementById("ncdLevel_gears");
       ncdLevel_gears_display.style.display = "none";
       ncdLevel_gears.style.display = "none";
     }
-    ncdLevel_gears_display.style.display = "none";
-    ncdLevel_gears.style.display = "none";
-  }
-
-  if (id) {
-
     async function handleQuotation(id) {
       try {
         const response = await jQuery.agent.getQuotationWithId(id);
