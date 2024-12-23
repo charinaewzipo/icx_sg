@@ -107,7 +107,10 @@ function populatePlanAutoPremium(planList) {
     const additionalInfo=document.getElementById("additional-info");
     ncdLevel_gears_display.style.display = "none";
     ncdLevel_gears.style.display = "none";
-    additionalInfo.hidden=false
+    const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+    if(isRenewal){
+      additionalInfo.hidden=false
+    }
     
 
     const plan = planList
