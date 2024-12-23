@@ -690,7 +690,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
             cardExpiryMonth: responsePayment.card_expiry_month,
             cardExpiryYear: responsePayment.card_expiry_year,
             paymentDate: new Date(responsePayment.time_of_lastupdate).toISOString(),
-            paymentFrequency: quotationData.payment_frequency,
+            paymentFrequency: Number(formData.get('Payment_Mode'))===122 ? handlePaymentFrequencyIPP():quotationData.payment_frequency,
             paymentAmount: responsePayment.order_amount,
             cardType:handleCardTypeFromResponse(),
             cardNumber: responsePayment.card_number,

@@ -144,6 +144,12 @@ document.addEventListener("DOMContentLoaded", function () {
     policyidText.style.display = "none"
     policyDisplay.style.display = "none";
     btnEditForm.style.display = "none";
+    if(checkShouldRetrieve()){
+      const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
+      const ncdLevel_gears=document.getElementById("ncdLevel_gears");
+      ncdLevel_gears_display.style.display = "none";
+      ncdLevel_gears.style.display = "none";
+    }
     ncdLevel_gears_display.style.display = "none";
     ncdLevel_gears.style.display = "none";
   }
@@ -357,5 +363,18 @@ const handleCardTypeFromResponse=()=>{
       return Number(formData.get('cardType'))
     }
 
+  }
+}
+const handlePaymentFrequencyIPP=()=>{
+  const formData = new FormData(document.getElementById("application"));
+  if(responsePayment){
+    if(Number(formData.get('Payment_Mode'))===122){
+      if(Number(formData.get('cardType'))===3 ||Number(formData.get('cardType'))===6){
+        return 6
+      }else if (Number(formData.get('cardType'))===4 ||Number(formData.get('cardType'))===7){
+        return 12
+      }
+
+    }
   }
 }
