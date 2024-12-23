@@ -442,7 +442,7 @@ const transformQuoteData = (data, quotationData) => {
                 id: cover.id || "",
                 code: cover.code || null,
                 name: cover.name || null,
-                selectedFlag: true,
+                selectedFlag: cover?.selectedFlag||null,
                 buyUpOrbuyDownExcess:cover?.standardExcess||null
 
               }))
@@ -450,7 +450,7 @@ const transformQuoteData = (data, quotationData) => {
                 id: cover.id || "",
                 code: cover.code || null,
                 name: cover.name || null,
-                selectedFlag: true,
+                selectedFlag: cover?.selectedFlag||null,
                 buyUpOrbuyDownExcess:cover?.standardExcess||null
               }))
 
