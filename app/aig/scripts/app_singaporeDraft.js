@@ -102,13 +102,13 @@ const handleEditQuote = () => {
       
           "textarea:not([name='discountList'])"
       );
-      
-      
+
       }
       else {
         formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product):not([name='Ncd_Level_gears']):not([name='automaticRenewalFlag']):not([name='insured_auto_vehicle_vehicleUsage']),button:not(#btnSaveForm),textarea");
 
       }
+  
     }
     else{
       formElements = document.querySelectorAll("input, select:not(#planPoiSelect1),textarea, button:not(#btnSaveForm)");
@@ -119,6 +119,10 @@ const handleEditQuote = () => {
     
     unhideFormData(formElements);
 
+
+    if(formType==='auto'){
+      handleMileageCondition()
+    }
     btnEditForm.textContent = "Save"
     document.getElementById("btnPayment").disabled=true;
     document.getElementById("btnPayment").style.opacity="0.65";
