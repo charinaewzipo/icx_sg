@@ -442,7 +442,7 @@ const transformQuoteData = (data, quotationData) => {
                 id: cover.id || "",
                 code: cover.code || null,
                 name: cover.name || null,
-                selectedFlag: cover?.selectedFlag||null,
+                selectedFlag: cover?.selectedFlag||true,
                 buyUpOrbuyDownExcess:cover?.standardExcess||null
 
               }))
