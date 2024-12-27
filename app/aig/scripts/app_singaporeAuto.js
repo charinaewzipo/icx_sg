@@ -862,6 +862,7 @@ function handleChangeEffectiveDate() {
       // วันที่ 1 ปีหลังจาก effectiveDate
       const minDate = new Date(effectiveDate);
       minDate.setFullYear(minDate.getFullYear() + 1);
+      minDate.setDate(minDate.getDate() - 1); // เพิ่ม 1 วัน
 
       // วันที่ 1 ปี 6 เดือนหลังจาก effectiveDate
       const maxDate = new Date(effectiveDate);
