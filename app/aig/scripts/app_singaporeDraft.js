@@ -74,7 +74,8 @@ const handleEditQuote = () => {
     }else if(quotationData?.type==="home"){
       formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product),textarea, button:not(#btnSaveForm)");
     } else if (quotationData?.type === "auto") {
-      if (checkShouldRetrieve()) {
+      const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+      if (isRenewal) {
         formElements = document.querySelectorAll(
           "input:not([name='PolicyExpiryDate']):not([name='PolicyEffectiveDate']):not([name='firstName'])" +
           ":not([name='dateOfBirth']):not([name='customerIdNo']):not([name='insured_auto_vehicle_regNo'])" +
