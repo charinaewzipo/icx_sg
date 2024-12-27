@@ -890,12 +890,12 @@ function calculateDenominationsExcess(amount) {
     current -= 50;
   }
 
-  // // เพิ่มค่าที่ต่ำกว่า 0 ทีละ 50
-  // current = -50;
-  // while (current >= -amount) {
-  //   result.push(current);
-  //   current -= 50;
-  // }
+  // เพิ่มค่าที่ต่ำกว่า 0 ทีละ 50
+  current = -50;
+  while (current >= -amount) {
+    result.push(current);
+    current -= 50;
+  }
 
   return result;
 }
