@@ -111,6 +111,11 @@ const setDefaultPlanInfo = async (insuredData,dbData) => {
     }
 
 };
+function IsCoverInCoverList(coverList, cover) {
+  return Object.values(coverList).some(
+    existingCover => existingCover.id === cover.id && existingCover.code === cover.code
+  );
+}
 const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
     console.log("insuredData:", insuredData)
     const planInfo = insuredData ? insuredData[0]?.planInfo : {};
@@ -147,8 +152,8 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
           }else{
             planInfo?.coverList.map(cover=>{
               console.log("cover",cover)
-              if(cover?.selectedFlag===true){
-                addCoverRow(selectedPlan?.coverList,cover)
+              if (cover?.selectedFlag === true && IsCoverInCoverList(selectedPlan?.coverList, cover)) {
+                addCoverRow(selectedPlan?.coverList, cover); 
               }
             })
           }
