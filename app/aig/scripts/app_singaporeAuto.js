@@ -880,21 +880,21 @@ function handleChangeEffectiveDate() {
 }
 
 
-function calculateDenominationsExcess(amount) {
+function calculateDenominationsExcess(amount,interval,min,max) {
   const result = [];
-  let current = amount;
+  let current = max;
 
-  // เพิ่มค่าที่ลดทีละ 50 ไปจนถึง 0
-  while (current >= 0) {
+
+  while (current >= min) {
     result.push(current);
-    current -= 50;
+    current -= interval;
   }
 
-  // เพิ่มค่าที่ต่ำกว่า 0 ทีละ 50
-  current = -50;
-  while (current >= -amount) {
+ 
+  current = -interval;
+  while (current >= -max) {
     result.push(current);
-    current -= 50;
+    current -= interval;
   }
 
   return result;
@@ -912,11 +912,23 @@ function handlePopulateExcessFromAPI(selectedPlan) {
     const buyUpDownField = document.getElementById('insured_auto_buy_up_down');
     const uwExcessField = document.getElementById('insured_auto_uw_excess');
     const finalExcessField = document.getElementById('insured_auto_final_excess');
+    const minStandardExcess = document.getElementById('insured_auto_min_standard_excess');
+    const maxStandardExcess = document.getElementById('insured_auto_max_standard_excess');
+    const intervalValue = document.getElementById('insured_auto_interval_value');
     if (standardExcessField) {
       standardExcessField.value = extractExcessData?.standardExcess || 0;
     } 
+    if(minStandardExcess){
+      minStandardExcess.value = extractExcessData?.minStdExcess || 0;
+    }
+    if(maxStandardExcess){
+      maxStandardExcess.value = extractExcessData?.maxStdExcess || 0;
+    }
+    if(intervalValue){
+      intervalValue.value = extractExcessData?.buyUpOrDownIntreval|| 0;
+    }
     if (buyUpDownField) {
-      const arrayExcessRange = calculateDenominationsExcess(extractExcessData?.standardExcess)
+      const arrayExcessRange = calculateDenominationsExcess(extractExcessData?.standardExcess,extractExcessData?.buyUpOrDownIntreval,extractExcessData?.minStdExcess,extractExcessData?.maxStdExcess)
       console.log("arrayExcessRange:", arrayExcessRange)
       buyUpDownField.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
       Array.isArray(arrayExcessRange)&&arrayExcessRange.forEach(item=>{
