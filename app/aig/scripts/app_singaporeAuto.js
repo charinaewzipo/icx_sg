@@ -37,7 +37,7 @@ async function handleRetrieveAuto(callListData) {
   const idNo = callListData?.personal_id || callListData?.passport_no || "";
   const policyNo = calllistDetail[quoteNoField] || "";
   const regNo = policyNo ? "" : calllistDetail[vehicleNoField] || "";
-  const dob = idNo ? "": calllistDetail[DOBField] ? transformDate(isoToFormattedDate(calllistDetail[DOBField])):"" 
+  const dob = idNo ? "": calllistDetail[DOBField] ? (isoToFormattedDate(calllistDetail[DOBField])):"" 
   const engineNo = calllistDetail[DOBField] ? "" : calllistDetail[enginNoField] || "";
 
 
