@@ -77,7 +77,7 @@ const handleEditQuote = () => {
       const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
       if (isRenewal) {
         formElements = document.querySelectorAll(
-          "input:not([name='PolicyExpiryDate']):not([name='PolicyEffectiveDate']):not([name='firstName'])" +
+          "input:not([name='PolicyEffectiveDate']):not([name='firstName'])" +
           ":not([name='dateOfBirth']):not([name='customerIdNo']):not([name='insured_auto_vehicle_regNo'])" +
           ":not([name='isPolicyHolderDriving'])" +
           ":not([name='insured_auto_driverInfo_driverName']):not([name='insured_auto_driverInfo_driverIdNumber'])" +

@@ -892,7 +892,7 @@ function calculateDenominationsExcess(amount,interval,min,max) {
 
  
   current = -interval;
-  while (current >= -max) {
+  while (current >= -amount) {
     result.push(current);
     current -= interval;
   }

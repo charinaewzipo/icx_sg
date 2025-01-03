@@ -511,7 +511,7 @@ function getPlanDetail() {
       });
       console.log("coverListcoverListcoverListcoverList",coverList)
       // Merge the existing cover list data with the new selections
-      const updateCoverList = coverListDataFilterAutoAttachedFalse.map((item) => {
+      let updateCoverList = coverListDataFilterAutoAttachedFalse.map((item) => {
         const existingCover = coverList.find((cover) => cover.id === String(item.id));
         if (existingCover) {
           return {
@@ -529,7 +529,15 @@ function getPlanDetail() {
           };
         }
       });
-
+      //update own damage with buyupdownvalue
+      const excess=document.getElementById('insured_auto_buy_up_down')
+        updateCoverList=[...updateCoverList,  
+          {
+          id: 600000162,
+          code: "00030",
+          buyUpOrbuyDownExcess: excess ? Number(excess.value):0,
+          selectedFlag: true
+      }]
       // Update the PlanDetail with the updated cover list
       PlanDetail = { ...PlanDetail, coverList: updateCoverList };
     }
