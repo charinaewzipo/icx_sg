@@ -102,9 +102,12 @@ async function handleRetrieveAuto(callListData) {
 }
 
 function populatePlanAutoPremium(planList) {
+  console.log("populatePlanAutoPremiumplanList:", planList)
+  console.log("quotationData:", quotationData)
   const planSelect = document.getElementById('planSelect');
   const planPoiSelect = document.getElementById('planPoiSelect');
   planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
+  console.log("objectValue",Object.values(planList).length)
   if (checkShouldRetrieve()) {
     //hide ncd gears
     const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
@@ -116,18 +119,22 @@ function populatePlanAutoPremium(planList) {
     if(isRenewal){
       additionalInfo.hidden=false
     }
-    
-
+  } 
+  const quoteNoFieldForm=document.getElementById('policyid-input')
+  if(quoteNoFieldForm && quoteNoFieldForm.value){
     const plan = planList
     const option = document.createElement('option');
     option.value = plan.planId;
     option.textContent = `${plan.planName} (${plan?.planPoi})`;
     option.dataset.planPoi = plan.planPoi;
     option.dataset.netPremium = plan.netPremium;
+    option.setAttribute('data-plan_group', plan?.planCode||"");
     planSelect.appendChild(option);
     selectedPlan=planList
     populateCoverListAutoPremium();
-  } else {
+   
+  }else{
+  //ใช้premium-calculation
     for (const key in planList) {
       if (planList.hasOwnProperty(key)) {
         const plan = planList[key];
@@ -141,7 +148,6 @@ function populatePlanAutoPremium(planList) {
     }
   }
   
-
   // Update planPoiSelect when an option is selected
   planSelect.addEventListener('change', function () {
     document.getElementById('excess-section').hidden=false;
@@ -247,7 +253,8 @@ function addCoverRow(coverList, setCoverData) {
   selectElement.appendChild(defaultOption);
 
   // Populate dropdown with cover options
-  if(checkShouldRetrieve()){
+  const quoteNoFieldForm=document.getElementById('policyid-input')
+  if(quoteNoFieldForm && quoteNoFieldForm.value){
     for (const key in coverList) {
       if (coverList.hasOwnProperty(key) ) {
         const cover = coverList[key];
@@ -300,9 +307,7 @@ function addCoverRow(coverList, setCoverData) {
     const quoteNoField = document.getElementById('policyid-input')
     if (quoteNoField && quoteNoField.value) {
       premiumDisplay.textContent = ''
-
     } else {
-
       premiumDisplay.textContent = selectedOption.dataset.premium
         ? `Amount: ${selectedOption.dataset.premium} (SGD)`
         : '';
@@ -335,6 +340,7 @@ function addCoverRow(coverList, setCoverData) {
   coverListBody.appendChild(row);
 
   if (setCoverData) {
+    console.log("setCoverData:", setCoverData)
     selectElement.value = setCoverData.id;
     selectElement.dispatchEvent(new Event('change'));
   }

@@ -143,14 +143,14 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
             }
         }
         planSelect.dispatchEvent(new Event('change'));
-        if(planInfo?.coverList&&planInfo?.coverList.length>0){
+        if(planInfo?.coverList){
           const coverListBody = document.getElementById('coverListBody');
           coverListBody.innerHTML = '';
           console.log("let selectedPlan;",selectedPlan)
           if(checkAllValuesSelectedFlagFalse(planInfo?.coverList)){
             addCoverRow(selectedPlan?.coverList)
           }else{
-            planInfo?.coverList.map(cover=>{
+            Object.values(planInfo?.coverList).map(cover=>{
               console.log("cover",cover)
               if (cover?.selectedFlag === true && IsCoverInCoverList(selectedPlan?.coverList, cover)) {
                 addCoverRow(selectedPlan?.coverList, cover); 
@@ -159,7 +159,7 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
           }
 
 
-          const filterBuyUpDown = planInfo?.coverList.find(i=>i.buyUpOrbuyDownExcess!=null)
+          const filterBuyUpDown = Object.values(planInfo?.coverList).find(i=>i.buyUpOrbuyDownExcess!=null)
           const buyUpDownField = document.getElementById('insured_auto_buy_up_down')
           if(buyUpDownField){
             buyUpDownField.value=filterBuyUpDown?.buyUpOrbuyDownExcess||""
@@ -172,7 +172,7 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
 
 };
 const checkAllValuesSelectedFlagFalse = (coverList) => {
-  return coverList.every((cover) => cover?.selectedFlag === false);
+  return Object.values(coverList).every((cover) => cover?.selectedFlag === false);
 };
 
 

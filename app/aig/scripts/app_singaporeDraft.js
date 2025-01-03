@@ -48,7 +48,33 @@ const handleClickDraftButton = async () => {
 const handleClickSaveDraftButton = () => {
   console.log("handleClickSaveDraft")
   const requestBody = handleForm();
-  jQuery.agent.updateQuoteData(requestBody, null, id,campaignDetails,premiumCalculationData);
+  const updateRequestData = {
+    ...requestBody, 
+    insuredList: requestBody.insuredList.map((insured) => {
+      return {
+        ...insured,
+        planInfo: {
+          ...insured.planInfo,
+          coverList: insured.planInfo.coverList.map((cover) =>
+            cover.id === 600000162
+          ? { ...cover, selectedFlag: false }
+          : cover
+        ),
+      },
+        };
+      }),
+    };
+    
+    console.log("updateRequestData:", updateRequestData)
+let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
+  if(formType==='auto'){
+
+    jQuery.agent.updateQuoteData(updateRequestData, null, id,campaignDetails,premiumCalculationData);
+  }else{
+    jQuery.agent.updateQuoteData(requestBody, null, id,campaignDetails,premiumCalculationData);
+  }
 }
 const handleEditQuote = () => {
   const btnEditForm = document.getElementById('btnEditForm');

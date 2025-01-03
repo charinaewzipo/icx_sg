@@ -487,14 +487,14 @@ function getPlanDetail() {
     console.log("selectedPlanselectedPlanselectedPlan:", selectedPlan)
     if (selectedPlan) {
       let coverListDataFilterAutoAttachedFalse=[]
-      if(checkShouldRetrieve()){
-        coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList || {})
-      }else{
-        coverListDataFilterAutoAttachedFalse = Object.values(selectedPlan?.coverList || {}).filter(
-          (cover) => cover?.autoAttached === false
-        );
-      }
-
+      // if(checkShouldRetrieve()){
+      //   coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList || {})
+      // }else{
+      //   coverListDataFilterAutoAttachedFalse = Object.values(selectedPlan?.coverList || {}).filter(
+      //     (cover) => cover?.autoAttached === false
+      //   );
+      // }
+      coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList || {})
       // Iterate through each dropdown and gather selected data
       planCoverLists.forEach(function (selectElement) {
         const selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -531,13 +531,32 @@ function getPlanDetail() {
       });
       //update own damage with buyupdownvalue
       const excess=document.getElementById('insured_auto_buy_up_down')
-        updateCoverList=[...updateCoverList,  
+      const findOwnDamagehaveorNot = updateCoverList.find(i => Number(i.id) === 600000162);
+
+      if (findOwnDamagehaveorNot) {
+        // Update the existing entry
+        updateCoverList = updateCoverList.map(i =>
+          Number(i.id) === 600000162
+            ? {
+              ...i,
+              buyUpOrbuyDownExcess: excess ? Number(excess.value) : 0, // Update the desired fields
+              selectedFlag: true
+            }
+            : i
+        );
+      } else {
+        // Add a new entry if it doesn't exist
+        updateCoverList = [
+          ...updateCoverList,
           {
-          id: 600000162,
-          code: "00030",
-          buyUpOrbuyDownExcess: excess ? Number(excess.value):0,
-          selectedFlag: true
-      }]
+            id: 600000162,
+            code: "00030",
+            buyUpOrbuyDownExcess: excess ? Number(excess.value) : 0,
+            selectedFlag: true
+          }
+        ];
+      }
+
       // Update the PlanDetail with the updated cover list
       PlanDetail = { ...PlanDetail, coverList: updateCoverList };
     }
