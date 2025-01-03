@@ -411,6 +411,9 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
     $insuredList = mysqli_real_escape_string($dbconn->dbconn, $insuredList);
     $request_recalculate_json = mysqli_real_escape_string($dbconn->dbconn, $request_recalculate_json);
     $response_recalculate_json = mysqli_real_escape_string($dbconn->dbconn, $response_recalculate_json);
+    
+    $response_premium_json = isset($response['insuredList'][0]['planList']['1']) ? json_encode($response['insuredList'][0]['planList']['1']) : '{}';
+    $response_premium_json = mysqli_real_escape_string($dbconn->dbconn, $response_premium_json);
 
     $policy_holder_info = isset($formData['policyHolderInfo']) ? $formData['policyHolderInfo'] : [];
     $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
@@ -461,7 +464,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
 
     // Add quote_create_date if response is not null
     if (!empty($response)) {
-        $sql .= ", quote_create_date = NOW() ,policyExpDate='$policyExpDate'";
+        $sql .= ", quote_create_date = NOW() ,policyExpDate='$policyExpDate' ,response_premium_calculation_json='$response_premium_json'";
     }
 
     // Complete the WHERE clause
