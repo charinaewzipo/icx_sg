@@ -909,7 +909,7 @@ function calculateDenominationsExcess(amount,interval,min,max) {
 
 function handlePopulateExcessFromAPI(selectedPlan) {
   console.log("selectedPlan:", selectedPlan);
-  const extractExcessData = selectedPlan?.coverList?.['1'];
+  const extractExcessData = Object.values(selectedPlan?.coverList).filter(i=>Number(i.id)===600000162)[0];
   console.log("extractExcessData:", extractExcessData);
 
   if (extractExcessData) {
@@ -921,47 +921,63 @@ function handlePopulateExcessFromAPI(selectedPlan) {
     const minStandardExcess = document.getElementById('insured_auto_min_standard_excess');
     const maxStandardExcess = document.getElementById('insured_auto_max_standard_excess');
     const intervalValue = document.getElementById('insured_auto_interval_value');
+    
     if (standardExcessField) {
       standardExcessField.value = extractExcessData?.standardExcess || 0;
-    } 
-    if(minStandardExcess){
+    }
+    if (minStandardExcess) {
       minStandardExcess.value = extractExcessData?.minStdExcess || 0;
     }
-    if(maxStandardExcess){
+    if (maxStandardExcess) {
       maxStandardExcess.value = extractExcessData?.maxStdExcess || 0;
     }
-    if(intervalValue){
-      intervalValue.value = extractExcessData?.buyUpOrDownIntreval|| 0;
+    if (intervalValue) {
+      intervalValue.value = extractExcessData?.buyUpOrDownIntreval || 0;
     }
     if (buyUpDownField) {
-      const arrayExcessRange = calculateDenominationsExcess(extractExcessData?.standardExcess,extractExcessData?.buyUpOrDownIntreval,extractExcessData?.minStdExcess,extractExcessData?.maxStdExcess)
-      console.log("arrayExcessRange:", arrayExcessRange)
+      const arrayExcessRange = calculateDenominationsExcess(
+        extractExcessData?.standardExcess,
+        extractExcessData?.buyUpOrDownIntreval,
+        extractExcessData?.minStdExcess,
+        extractExcessData?.maxStdExcess
+      );
+      console.log("arrayExcessRange:", arrayExcessRange);
       buyUpDownField.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
-      Array.isArray(arrayExcessRange)&&arrayExcessRange.forEach(item=>{
+      Array.isArray(arrayExcessRange) && arrayExcessRange.forEach(item => {
         const option = document.createElement('option');
         option.value = item;
         option.textContent = item;
-        buyUpDownField.appendChild(option)
-      })
+        buyUpDownField.appendChild(option);
+      });
     }
     if (uwExcessField) {
       uwExcessField.value = extractExcessData?.uwExcess || 0;
-    } 
+    }
 
-  
+    // Initial calculation for finalExcessField
+    if (standardExcessField && uwExcessField && buyUpDownField) {
+      const sumValue =
+        Number(standardExcessField.value) +
+        Number(buyUpDownField.value || 0) + // Handle empty buyUpDownField value
+        Number(uwExcessField.value);
+      finalExcessField.value = sumValue;
+    }
+
+    // Update finalExcessField on change of buyUpDownField
     buyUpDownField.addEventListener('change', function () {
-      if (standardExcessField && uwExcessField&&buyUpDownField.value) {
+      if (standardExcessField && uwExcessField && (buyUpDownField.value || buyUpDownField.value === '')) {
         const sumValue =
           Number(standardExcessField.value) +
-          Number(buyUpDownField.value) +
+          Number(buyUpDownField.value || 0) + // Handle empty buyUpDownField value
           Number(uwExcessField.value);
         finalExcessField.value = sumValue;
-      }else{
-        finalExcessField.value=''
+      } else {
+        finalExcessField.value = '';
       }
     });
   }
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;

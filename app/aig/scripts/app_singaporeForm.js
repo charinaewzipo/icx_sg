@@ -152,7 +152,7 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
           }else{
             Object.values(planInfo?.coverList).map(cover=>{
               console.log("cover",cover)
-              if (cover?.selectedFlag === true && IsCoverInCoverList(selectedPlan?.coverList, cover)) {
+              if (cover?.selectedFlag === true ) {
                 addCoverRow(selectedPlan?.coverList, cover); 
               }
             })

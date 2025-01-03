@@ -77,6 +77,7 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
 
       let currentUrl = window.location.href;
       const url = new URL(currentUrl);
+      let formType = url.searchParams.get('formType');
 
       if (url.searchParams.has('is_firsttime')) {
         url.searchParams.set('is_firsttime', '1');
@@ -85,17 +86,49 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       }
 
       requestBody = handleForm();
-
+      const planlistfromapi = data?.insuredList[0]?.planList['1'];
+      console.log("planlistfromapi:", planlistfromapi)
+       
       // Insert Quotation Data regardless of statusCode
       if (id != null && id !== "") {
-        await jQuery.agent.updateQuoteData(requestBody, data, id, campaignDetails, premiumCalculationData);
+        if (formType === 'auto' && data?.statusCode === "S03") {
+          const handleRequestBodyAuto = {
+            ...requestBody,
+            insuredList: [{
+                ...requestBody.insuredList[0], // Keep existing properties of the first element
+                planInfo: planlistfromapi // Add or overwrite the planInfo property
+              },
+              ...requestBody.insuredList.slice(1) // Keep the rest of the elements unchanged
+            ]
+          };
+          await jQuery.agent.updateQuoteData(handleRequestBodyAuto, data, id, campaignDetails, planlistfromapi);
+        }else{
+          await jQuery.agent.updateQuoteData(requestBody, data, id, campaignDetails, premiumCalculationData);
+        }
       } else {
-        const responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails, premiumCalculationData);
+     
+        let responseId;
+        if (formType === 'auto' && data?.statusCode === "S03") {
+          const handleRequestBodyAuto = {
+            ...requestBody,
+            insuredList: [{
+                ...requestBody.insuredList[0], // Keep existing properties of the first element
+                planInfo: planlistfromapi // Add or overwrite the planInfo property
+              },
+              ...requestBody.insuredList.slice(1) // Keep the rest of the elements unchanged
+            ]
+          };
+          responseId = await jQuery.agent.insertQuotationData(handleRequestBodyAuto, data, campaignDetails, planlistfromapi);
+        } else {
+          responseId = await jQuery.agent.insertQuotationData(requestBody, data, campaignDetails, premiumCalculationData);
+        }
+
         if (url.searchParams.has('id')) {
           url.searchParams.set('id', responseId);
         } else {
           url.searchParams.append('id', responseId);
         }
+
       }
 
       // Handle different status codes
