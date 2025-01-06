@@ -93,6 +93,17 @@ error_reporting(E_ALL);
       color: #fff !important;
     }
   }
+   #coverListBody {
+            display: block; /* กำหนดให้ tbody แยกออกมา */
+            max-height: 200px; /* กำหนดความสูงของพื้นที่เลื่อน */
+            overflow-y: auto; /* เปิดการเลื่อนในแนวตั้ง */
+            overflow-x: hidden; /* ปิดการเลื่อนในแนวนอน */
+        }
+
+        #coverListBody tr {
+            display: table; /* รักษาโครงสร้างตาราง */
+            table-layout: fixed; /* คงรูปแบบคอลัมน์ */
+        }
 </style>
 
 <head>
@@ -1601,18 +1612,21 @@ where name='Nature of Business'";
             </tbody>
             </tr>
             <tr id="addCoverDisplay" hidden>
+              <!-- <td></td>
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
-              <td></td>
+              <td></td> -->
        
 
               <td>
 
-                <button type="button" id="addCover" class="button payment" style="float:right;">Add cover</button>
+                <button type="button" id="addCover" class="button payment" style="float:right;margin-right:8px">Add cover</button>
               </td>
             </tr>
+            
+          </table>
+          <table id="table-form">
             <tr id="premium-amount-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
               <td>Amount : </td>
               <td>

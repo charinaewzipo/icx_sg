@@ -287,6 +287,7 @@ function addCoverRow(coverList, setCoverData) {
   const premiumCell = document.createElement('td');
   const premiumDisplay = document.createElement('span');
   premiumDisplay.className = 'premium-display';
+  premiumCell.style.width= '150px'
   premiumDisplay.textContent = ''; // Initial premium display is empty
 
 
