@@ -93,17 +93,24 @@ error_reporting(E_ALL);
       color: #fff !important;
     }
   }
-   #coverListBody {
-            display: block; /* กำหนดให้ tbody แยกออกมา */
-            max-height: 200px; /* กำหนดความสูงของพื้นที่เลื่อน */
-            overflow-y: auto; /* เปิดการเลื่อนในแนวตั้ง */
-            overflow-x: hidden; /* ปิดการเลื่อนในแนวนอน */
-        }
 
-        #coverListBody tr {
-            display: table; /* รักษาโครงสร้างตาราง */
-            table-layout: fixed; /* คงรูปแบบคอลัมน์ */
-        }
+  #coverListBody {
+    display: block;
+    /* กำหนดให้ tbody แยกออกมา */
+    max-height: 200px;
+    /* กำหนดความสูงของพื้นที่เลื่อน */
+    overflow-y: auto;
+    /* เปิดการเลื่อนในแนวตั้ง */
+    overflow-x: hidden;
+    /* ปิดการเลื่อนในแนวนอน */
+  }
+
+  #coverListBody tr {
+    display: table;
+    /* รักษาโครงสร้างตาราง */
+    table-layout: fixed;
+    /* คงรูปแบบคอลัมน์ */
+  }
 </style>
 
 <head>
@@ -1437,7 +1444,7 @@ where name='Nature of Business'";
           </div>
           <div id="excess-section" hidden>
             <table id="table-form">
-            <tr>
+              <tr>
                 <td>
                   <h1>Excess Info</h1>
                 </td>
@@ -1446,7 +1453,7 @@ where name='Nature of Business'";
                 <td style="width:176px">Standard Excess :</td>
                 <td>
                 <td>
-                  <input type="text" name="insured_auto_standard_excess" id='insured_auto_standard_excess' maxlength="60" readonly/>
+                  <input type="text" name="insured_auto_standard_excess" id='insured_auto_standard_excess' maxlength="60" readonly />
                 </td>
                 </td>
               </tr>
@@ -1454,7 +1461,7 @@ where name='Nature of Business'";
                 <td style="width:176px">Min Standard Excess :</td>
                 <td>
                 <td>
-                  <input type="text" name="insured_auto_min_standard_excess" id='insured_auto_min_standard_excess' maxlength="60" readonly/>
+                  <input type="text" name="insured_auto_min_standard_excess" id='insured_auto_min_standard_excess' maxlength="60" readonly />
                 </td>
                 </td>
               </tr>
@@ -1462,7 +1469,7 @@ where name='Nature of Business'";
                 <td style="width:176px">Max Standard Excess :</td>
                 <td>
                 <td>
-                  <input type="text" name="insured_auto_max_standard_excess" id='insured_auto_max_standard_excess' maxlength="60" readonly/>
+                  <input type="text" name="insured_auto_max_standard_excess" id='insured_auto_max_standard_excess' maxlength="60" readonly />
                 </td>
                 </td>
               </tr>
@@ -1470,15 +1477,15 @@ where name='Nature of Business'";
                 <td style="width:176px">Interval Value :</td>
                 <td>
                 <td>
-                  <input type="text" name="insured_auto_interval_value" id='insured_auto_interval_value' maxlength="60" readonly/>
+                  <input type="text" name="insured_auto_interval_value" id='insured_auto_interval_value' maxlength="60" readonly />
                 </td>
                 </td>
               </tr>
               <tr>
-                <td >Buy Up/Down :</td>
+                <td>Buy Up/Down :</td>
                 <td>
                 <td>
-                <select name="insured_auto_buy_up_down" id='insured_auto_buy_up_down'>
+                  <select name="insured_auto_buy_up_down" id='insured_auto_buy_up_down'>
                     <option value="">
                       <-- Please select an option -->
                     </option>
@@ -1487,19 +1494,19 @@ where name='Nature of Business'";
                 </td>
               </tr>
               <tr>
-                <td >UW Excess :</td>
+                <td>UW Excess :</td>
                 <td>
                 <td>
-                  <input type="text" name="insured_auto_uw_excess" id='insured_auto_uw_excess'  maxlength="60" readonly/>
+                  <input type="text" name="insured_auto_uw_excess" id='insured_auto_uw_excess' maxlength="60" readonly />
                 </td>
                 </td>
               </tr>
-              
+
               <tr>
-                <td >Final Excess :</td>
+                <td>Final Excess :</td>
                 <td>
                 <td>
-                  <input type="text" name="insured_auto_final_excess" id='insured_auto_final_excess'  maxlength="60" readonly />
+                  <input type="text" name="insured_auto_final_excess" id='insured_auto_final_excess' maxlength="60" readonly />
                 </td>
                 </td>
               </tr>
@@ -1617,14 +1624,14 @@ where name='Nature of Business'";
               <td></td>
               <td></td>
               <td></td> -->
-       
+
 
               <td>
 
                 <button type="button" id="addCover" class="button payment" style="float:right;margin-right:8px">Add cover</button>
               </td>
             </tr>
-            
+
           </table>
           <table id="table-form">
             <tr id="premium-amount-label" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
@@ -1648,44 +1655,57 @@ where name='Nature of Business'";
               </td>
             </tr>
           </table>
-          <div id='additional-info' hidden><table id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
-            <tr id="comment-label">
-              <td style="float: inline-start; padding-right:20px">Internal Claim History:</td>
-              <td style="white-space:nowrap;">
-              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
-              </td>
-            </tr>
-            <tr id="comment-label">
-              <td style="float: inline-start; padding-right:20px">Special Text:</td>
-              <td style="white-space:nowrap;">
-              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
-              </td>
-            </tr>
-            <tr id="comment-label">
-              <td style="float: inline-start; padding-right:20px">Remark C (Remark Memo)</td>
-              <td style="white-space:nowrap;">
-              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
-              </td>
-            </tr>
-            <tr id="comment-label">
-              <td style="float: inline-start; padding-right:20px">Comments History</td>
-              <td style="white-space:nowrap;">
-              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
-              </td>
-            </tr>
-            <tr id="comment-label">
-              <td style="float: inline-start; padding-right:20px">Referral Response</td>
-              <td style="white-space:nowrap;">
-              <input type="text" name="premium-amount-with-gst" id="premium-amount-with-gst" maxlength="10" size="10" readonly="">
-              </td>
-            </tr>
-            <tr id="comment-label">
-              <td style="float: inline-start; padding-right:20px">Discount list</td>
-              <td style="white-space:nowrap;">
-                <textarea name="discountList" id="discountList" rows="6" cols="45" maxlength="4000"></textarea>
-              </td>
-            </tr>
-          </table></div>
+          <div id='additional-info' hidden>
+            <table id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Internal Claim History:</td>
+                <td style="white-space:nowrap;">
+                  <input type="text" name="internal-claim-history" id="internal-claim-history" maxlength="10" size="10" readonly="">
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Special Text:</td>
+                <td style="white-space:nowrap;">
+                <input type="text" name="special-text" id="special-text" readonly style="width:350px"/>
+                
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Remarks</td>
+                <td style="white-space:nowrap;">
+                <input type="text" name="remarks-retrieve" id="remarks-retrieve" readonly style="width:350px"/>
+                
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">RemarksC</td>
+                <td style="white-space:nowrap;">
+                <input type="text" name="remarksC-memo" id="remarksC-memo" readonly style="width:350px"/>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Comments History</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="commentsHistory" id="commentsHistory" readonly
+                  rows="8" cols="70"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Referral Response</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="referral-response" id="referral-response" readonly
+                  rows="8" cols="70"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Discount list</td>
+                <td style="white-space:nowrap;">
+                <textarea name="discountList" id="discountList" readonly
+                  rows="8" cols="70"></textarea>  
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
 
 

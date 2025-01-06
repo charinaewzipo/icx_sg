@@ -979,6 +979,55 @@ function handlePopulateExcessFromAPI(selectedPlan) {
   }
 }
 
+function populateAdditionalInfo(dbData){
+  console.log("dbData",dbData)
+  const responseRetrieve=JSON.parse(dbData?.response_retrieve_json)
+  console.log("responseRetrieve:", responseRetrieve)
+  
+  if(responseRetrieve?.specialText?.specialtext){
+    document.getElementById("special-text").value = responseRetrieve?.specialText?.specialtext||"";
+  }
+  if(responseRetrieve?.remarks){
+    document.getElementById("remarks-retrieve").value = responseRetrieve?.remarks||"";
+  }
+  if(responseRetrieve?.remarksC){
+    document.getElementById("remarksC-memo").value = responseRetrieve?.remarksC||"";
+  }
+  if(Array.isArray(responseRetrieve?.commentsHistory)&&responseRetrieve?.commentsHistory.length>0){
+    const commentsHistory = responseRetrieve?.commentsHistory.map(item => `
+    Send Time: ${item.sendTime}
+    Creator Name: ${item.creatorName}
+    Comments: ${item.comments}
+    ---------------------------------
+    `).join("\n");
+
+    document.getElementById("commentsHistory").value = commentsHistory||"";
+  }
+  if(Array.isArray(responseRetrieve?.referralResponse)&&responseRetrieve?.referralResponse.length>0){
+    const referralResponses = responseRetrieve?.referralResponse.map(item => `
+    Quotation No: ${item.quotationNo}
+    UW Reason: ${item.uwReason}
+    Request User: ${item.uwRequestUserName}
+    Request Time: ${item.uwRequestTime}
+    Response User: ${item.uwResponseUserName}
+    Response Time: ${item.uwResponseTime}
+    Decision: ${item.decision}
+    ---------------------------------
+    `).join("\n");
+
+    document.getElementById("referral-response").value = referralResponses||"";
+  }
+  if(Array.isArray(responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList)&&responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.length>0){
+    const campaignAndDiscountList = responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.map(item => `
+    Name: ${item.name}
+    Amount: ${item.amount}
+    Rate: ${item.rate}
+    ---------------------------------
+    `).join("\n");
+
+    document.getElementById("discountList").value = campaignAndDiscountList||"";
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
