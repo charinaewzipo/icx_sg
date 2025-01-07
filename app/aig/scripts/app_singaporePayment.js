@@ -471,12 +471,16 @@ const transformQuoteData = (data, quotationData) => {
             "planPoi": insured?.planList?.[0]?.planPoi || quotationInsured?.planList?.[0]?.planPoi || "",
             "planCode": insured?.planList?.[0]?.planCode || quotationInsured?.planList?.[0]?.planCode || "",
             "coverList": (insured.planList[0]?.coverList ? Object.values(insured.planList[0].coverList) : []).length > 0
-              ? Object.values(insured.planList[0].coverList).map(cover => ({
+              ? Object.values(insured.planList[0].coverList).map(cover => (
+                {
                 id: cover.id || "",
                 code: cover.code || null,
                 name: cover.name || null,
                 selectedFlag: cover?.selectedFlag||true,
-                buyUpOrbuyDownExcess:cover?.standardExcess||null
+                buyUpOrbuyDownExcess:cover?.buyUpOrbuyDownExcess||null,
+                autoAttached:cover?.autoAttached||null,
+                optionalFlag:cover?.optionalFlag||null,
+                premium:cover?.premium||null
 
               }))
               : (quotationInsured.personInfo?.planInfo?.coverList || []).map(cover => ({
@@ -484,7 +488,10 @@ const transformQuoteData = (data, quotationData) => {
                 code: cover.code || null,
                 name: cover.name || null,
                 selectedFlag: cover?.selectedFlag||null,
-                buyUpOrbuyDownExcess:cover?.standardExcess||null
+                buyUpOrbuyDownExcess:cover?.buyUpOrbuyDownExcess||null,
+                autoAttached:cover?.autoAttached||null,
+                optionalFlag:cover?.optionalFlag||null,
+                premium:cover?.premium||null
               }))
 
           }

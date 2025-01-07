@@ -998,9 +998,9 @@ function populateAdditionalInfo(dbData){
     }
     if(Array.isArray(responseRetrieve?.commentsHistory)&&responseRetrieve?.commentsHistory.length>0){
       const commentsHistory = responseRetrieve?.commentsHistory.map(item => `
-      Send Time: ${item.sendTime}
-      Creator Name: ${item.creatorName}
-      Comments: ${item.comments}
+      Send Time: ${item?.sendTime||""}
+      Creator Name: ${item?.creatorName||""}
+      Comments: ${item?.comments||""}
       ---------------------------------
       `).join("\n");
   
@@ -1008,13 +1008,13 @@ function populateAdditionalInfo(dbData){
     }
     if(Array.isArray(responseRetrieve?.referralResponse)&&responseRetrieve?.referralResponse.length>0){
       const referralResponses = responseRetrieve?.referralResponse.map(item => `
-      Quotation No: ${item.quotationNo}
-      UW Reason: ${item.uwReason}
-      Request User: ${item.uwRequestUserName}
-      Request Time: ${item.uwRequestTime}
-      Response User: ${item.uwResponseUserName}
-      Response Time: ${item.uwResponseTime}
-      Decision: ${item.decision}
+      Quotation No: ${item?.quotationNo||""}
+      UW Reason: ${item?.uwReason||""}
+      Request User: ${item?.uwRequestUserName||""}
+      Request Time: ${item?.uwRequestTime||""}
+      Response User: ${item?.uwResponseUserName||""}
+      Response Time: ${item?.uwResponseTime||""}
+      Decision: ${item?.decision||""}
       ---------------------------------
       `).join("\n");
   
@@ -1022,9 +1022,9 @@ function populateAdditionalInfo(dbData){
     }
     if(Array.isArray(responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList)&&responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.length>0){
       const campaignAndDiscountList = responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.map(item => `
-      Name: ${item.name}
-      Amount: ${item.amount}
-      Rate: ${item.rate}
+      Name: ${item?.name||""}
+      Amount: ${item?.amount||""}
+      Rate: ${item?.rate||""}
       ---------------------------------
       `).join("\n");
   

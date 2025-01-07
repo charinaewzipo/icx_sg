@@ -1660,7 +1660,7 @@ where name='Nature of Business'";
               <tr>
                 <td style="float: inline-start; padding-right:20px">Internal Claim History:</td>
                 <td style="white-space:nowrap;">
-                  <input type="text" name="internal-claim-history" id="internal-claim-history" maxlength="10" size="10" readonly="">
+                  <input type="text" name="internal-claim-history" id="internal-claim-history" readonly style="width:362px">
                 </td>
               </tr>
               <tr>
