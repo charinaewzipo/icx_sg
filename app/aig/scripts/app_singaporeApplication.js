@@ -494,11 +494,12 @@ function getPlanDetail() {
       //     (cover) => cover?.autoAttached === false
       //   );
       // }
-      coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList || {})
+      coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList || {}).filter(cover=>cover?.optionalFlag===true && cover?.premium>0)
       // Iterate through each dropdown and gather selected data
       planCoverLists.forEach(function (selectElement) {
         const selectedOption = selectElement.options[selectElement.selectedIndex];
         if (selectedOption.value !== "" && !selectedOption.disabled) {
+          console.log("selectedOption:", selectedOption)
           const excess=document.getElementById('insured_auto_buy_up_down')
           const objectCover = {
             id: selectedOption.value,
@@ -558,6 +559,7 @@ function getPlanDetail() {
       }
 
       // Update the PlanDetail with the updated cover list
+      console.log("updateCoverList:", updateCoverList)
       PlanDetail = { ...PlanDetail, coverList: updateCoverList };
     }
   }
