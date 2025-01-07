@@ -258,7 +258,7 @@ function addCoverRow(coverList, setCoverData) {
   const quoteNoFieldForm=document.getElementById('policyid-input')
   if(quoteNoFieldForm && quoteNoFieldForm.value){
     for (const key in coverList) {
-      if (coverList.hasOwnProperty(key) ) {
+      if (coverList.hasOwnProperty(key)  && coverList[key]?.optionalFlag === true && coverList[key]?.premium>0) {
         const cover = coverList[key];
         const option = document.createElement('option');
         option.value = cover.id;
