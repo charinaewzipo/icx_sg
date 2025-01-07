@@ -114,8 +114,10 @@ function populatePlanAutoPremium(planList) {
     const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
     const ncdLevel_gears=document.getElementById("ncdLevel_gears");
     const additionalInfo=document.getElementById("additional-info");
+    const noClaimExperienceRow=document.getElementById("noClaimExperienceRow");
     ncdLevel_gears_display.style.display = "none";
     ncdLevel_gears.style.display = "none";
+    noClaimExperienceRow.style.display = "none";
     
     additionalInfo.hidden=false
   } 
