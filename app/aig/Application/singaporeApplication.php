@@ -1666,21 +1666,21 @@ where name='Nature of Business'";
               <tr>
                 <td style="float: inline-start; padding-right:20px">Special Text:</td>
                 <td style="white-space:nowrap;">
-                <input type="text" name="special-text" id="special-text" readonly style="width:350px"/>
+                <input type="text" name="special-text" id="special-text" readonly style="width:362px"/>
                 
                 </td>
               </tr>
               <tr>
                 <td style="float: inline-start; padding-right:20px">Remarks</td>
                 <td style="white-space:nowrap;">
-                <input type="text" name="remarks-retrieve" id="remarks-retrieve" readonly style="width:350px"/>
+                <input type="text" name="remarks-retrieve" id="remarks-retrieve" readonly style="width:362px"/>
                 
                 </td>
               </tr>
               <tr>
                 <td style="float: inline-start; padding-right:20px">RemarksC</td>
                 <td style="white-space:nowrap;">
-                <input type="text" name="remarksC-memo" id="remarksC-memo" readonly style="width:350px"/>
+                <input type="text" name="remarksC-memo" id="remarksC-memo" readonly style="width:362px"/>
                 </td>
               </tr>
               <tr>

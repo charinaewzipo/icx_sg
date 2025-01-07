@@ -426,6 +426,9 @@ const setInsuredVehicleList = (insuredData) => {
   document.querySelector(
     'select[name="insured_auto_vehicle_mileageCondition"]'
   ).value = vehicleInfo.mileageCondition;
+  if(vehicleInfo.mileageCondition){
+    handleMileageCondition()
+  }
   document.querySelector(
     'select[name="insured_auto_vehicle_vehicleUsage"]'
   ).value = vehicleInfo.vehicleUsage;
