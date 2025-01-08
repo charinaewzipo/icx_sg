@@ -953,7 +953,7 @@ function handlePopulateExcessFromAPI(selectedPlan) {
       Array.isArray(arrayExcessRange) && arrayExcessRange.forEach(item => {
         const option = document.createElement('option');
         option.value = item;
-        option.textContent = item;
+        option.textContent = item>0 ? `+${item}`:item;
         buyUpDownField.appendChild(option);
       });
     }
