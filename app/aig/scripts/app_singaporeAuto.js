@@ -203,12 +203,11 @@ function populateCoverListAutoPremium() {
     document.getElementById("addCover").addEventListener('click', () => {
       const rowCount = coverListBody.getElementsByClassName('cover-row').length;
 
-      addCoverRow(selectedPlan?.coverList);
-      // if (rowCount < 10) {
-        //   addCoverRow(selectedPlan?.coverList);
-      // } else {
-      //   alert('You cannot add more than 10 cover rows.');
-      // }
+      if (rowCount < 10) {
+          addCoverRow(selectedPlan?.coverList);
+      } else {
+        alert('You cannot add more than 10 cover rows.');
+      }
     });
 
   }
