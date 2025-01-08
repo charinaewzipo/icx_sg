@@ -86,12 +86,12 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       }
 
       requestBody = handleForm();
-      const planlistfromapi = data?.insuredList[0]?.planList['1'];
-      console.log("planlistfromapi:", planlistfromapi)
-       
+      
       // Insert Quotation Data regardless of statusCode
       if (id != null && id !== "") {
         if (formType === 'auto' && data?.statusCode === "S03") {
+          const planlistfromapi = data?.insuredList[0]?.planList['1'];
+          console.log("planlistfromapi:", planlistfromapi)
           const handleRequestBodyAuto = {
             ...requestBody,
             insuredList: [{
