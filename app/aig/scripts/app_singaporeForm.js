@@ -158,8 +158,7 @@ const setDefaultPlanInfoAuto = async (insuredData,dbData) => {
             })
           }
 
-
-          const filterBuyUpDown = Object.values(planInfo?.coverList).find(i=>i.buyUpOrbuyDownExcess!=null)
+          const filterBuyUpDown = Object.values(planInfo?.coverList).filter(i=>Number(i.id)===600000162)[0];
           const buyUpDownField = document.getElementById('insured_auto_buy_up_down')
           if(buyUpDownField){
             buyUpDownField.value=filterBuyUpDown?.buyUpOrbuyDownExcess||""
