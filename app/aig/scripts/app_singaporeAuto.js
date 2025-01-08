@@ -258,7 +258,7 @@ function addCoverRow(coverList, setCoverData) {
   const quoteNoFieldForm=document.getElementById('policyid-input')
   if(quoteNoFieldForm && quoteNoFieldForm.value){
     for (const key in coverList) {
-      if (coverList.hasOwnProperty(key)  && coverList[key]?.optionalFlag === true && coverList[key]?.premium>0) {
+      if (coverList.hasOwnProperty(key)  && coverList[key]?.optionalFlag === true ) {
         const cover = coverList[key];
         const option = document.createElement('option');
         option.value = cover.id;
@@ -337,9 +337,12 @@ function addCoverRow(coverList, setCoverData) {
     calculatePremiumSummary();
     updateDisabledOptions()
   };
-
-  removeCell.appendChild(removeButton);
-  row.appendChild(removeCell);
+  if (!(setCoverData && setCoverData?.premium === 0)) {
+    removeCell.appendChild(removeButton);
+    row.appendChild(removeCell);
+  } 
+  // removeCell.appendChild(removeButton);
+  // row.appendChild(removeCell);
   coverListBody.appendChild(row);
 
   if (setCoverData) {
@@ -889,9 +892,10 @@ function handleChangeEffectiveDate() {
 }
 
 
-function calculateDenominationsExcess(amount,interval,min,max) {
+function calculateDenominationsExcess(standard,interval,min,max) {
   const result = [];
-  let current = max;
+  const maximumOption=max-standard
+  let current = maximumOption;
 
 
   while (current >= min) {
@@ -901,7 +905,7 @@ function calculateDenominationsExcess(amount,interval,min,max) {
 
  
   current = -interval;
-  while (current >= -amount) {
+  while (current >= -standard) {
     result.push(current);
     current -= interval;
   }

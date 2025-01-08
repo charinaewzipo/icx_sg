@@ -494,7 +494,7 @@ function getPlanDetail() {
       //     (cover) => cover?.autoAttached === false
       //   );
       // }
-      coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList || {}).filter(cover=>cover?.optionalFlag===true && cover?.premium>0)
+      coverListDataFilterAutoAttachedFalse=Object.values(selectedPlan?.coverList || {}).filter(cover=>cover?.optionalFlag===true )
       // Iterate through each dropdown and gather selected data
       planCoverLists.forEach(function (selectElement) {
         const selectedOption = selectElement.options[selectElement.selectedIndex];
