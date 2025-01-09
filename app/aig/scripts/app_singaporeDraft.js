@@ -23,59 +23,127 @@ document.addEventListener("DOMContentLoaded", function () {
 
 })
 const handleClickDraftButton = async () => {
+  //กรณียังไม่มีid
   console.log("handleClickDraft");
   const requestBody = handleForm();
+
   try {
-    const responseId = await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails,premiumCalculationData);
-    let currentUrl = window.location.href;
-    const url = new URL(currentUrl); 
-    
-    if (url.searchParams.has('id')) {
-    
-      url.searchParams.set('id', responseId);
+    let responseId = null;
+    const currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+    const formType = url.searchParams.get("formType");
+
+    if (formType === "auto") {
+      const updateRequestData = {
+        ...requestBody,
+        insuredList:
+          Array.isArray(requestBody.insuredList) && requestBody.insuredList.length > 0
+            ? requestBody.insuredList.map((insured) => {
+                return {
+                  ...insured,
+                  planInfo: {
+                    ...insured.planInfo,
+                    coverList:
+                      insured?.planInfo?.coverList?.length > 0
+                        ? insured.planInfo.coverList.map((cover) =>
+                            Number(cover.id) === 600000162
+                              ? { ...cover, selectedFlag: false }
+                              : cover
+                          )
+                        : [], // Fallback to an empty array
+                  },
+                };
+              })
+            : [], // Fallback if insuredList is empty or not an array
+      };
+
+      console.log("updateRequestData:", updateRequestData);
+      responseId = await jQuery.agent.insertQuotationData(
+        updateRequestData,
+        null,
+        campaignDetails,
+        premiumCalculationData
+      );
     } else {
-    
-      url.searchParams.append('id', responseId);
+      responseId = await jQuery.agent.insertQuotationData(
+        requestBody,
+        null,
+        campaignDetails,
+        premiumCalculationData
+      );
     }
-    
-    window.location.href = url.toString(); 
+
+    if (url.searchParams.has("id")) {
+      url.searchParams.set("id", responseId);
+    } else {
+      url.searchParams.append("id", responseId);
+    }
+
+    window.location.href = url.toString();
   } catch (error) {
     console.error("Error while inserting quotation:", error);
   }
 };
 
 
-const handleClickSaveDraftButton = () => {
-  console.log("handleClickSaveDraft")
-  const requestBody = handleForm();
-  const updateRequestData = {
-    ...requestBody, 
-    insuredList: requestBody.insuredList.map((insured) => {
-      return {
-        ...insured,
-        planInfo: {
-          ...insured.planInfo,
-          coverList: insured.planInfo.coverList.map((cover) =>
-            cover.id === 600000162
-          ? { ...cover, selectedFlag: false }
-          : cover
-        ),
-      },
-        };
-      }),
-    };
-    
-    console.log("updateRequestData:", updateRequestData)
-let currentUrl = window.location.href;
-  const url = new URL(currentUrl);
-  let formType = url.searchParams.get('formType');
-  if(formType==='auto'){
 
-    jQuery.agent.updateQuoteData(updateRequestData, null, id,campaignDetails,premiumCalculationData);
-  }else{
-    jQuery.agent.updateQuoteData(requestBody, null, id,campaignDetails,premiumCalculationData);
+
+const handleClickSaveDraftButton = () => {
+  console.log("handleClickSaveDraft");
+
+  // Retrieve form data
+  const requestBody = handleForm();
+
+  // Safely update request data with validation
+  const updateRequestData = {
+    ...requestBody,
+    insuredList: Array.isArray(requestBody.insuredList)
+      ? requestBody.insuredList.map((insured) => {
+          return {
+            ...insured,
+            planInfo: {
+              ...insured.planInfo,
+              coverList:
+                insured?.planInfo?.coverList?.length > 0
+                  ? insured.planInfo.coverList.map((cover) =>
+                      cover.id === 600000162
+                        ? { ...cover, selectedFlag: false }
+                        : cover
+                    )
+                  : [], // Fallback to an empty array if coverList is undefined or empty
+            },
+          };
+        })
+      : [], // Fallback to an empty array if insuredList is not valid
+  };
+
+  console.log("updateRequestData:", updateRequestData);
+
+  // Get current URL and extract query parameters
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const formType = url.searchParams.get("formType");
+
+  // Determine whether to use the updated request data
+  if (formType === "auto") {
+    jQuery.agent.updateQuoteData(
+      updateRequestData,
+      null,
+      id,
+      campaignDetails,
+      premiumCalculationData
+    );
+  } else {
+    jQuery.agent.updateQuoteData(
+      requestBody,
+      null,
+      id,
+      campaignDetails,
+      premiumCalculationData
+    );
   }
-}
+};
+
 const handleEditQuote = () => {
   const btnEditForm = document.getElementById('btnEditForm');
   console.log("Edit")
