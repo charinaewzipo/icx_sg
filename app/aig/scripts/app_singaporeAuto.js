@@ -337,14 +337,24 @@ function addCoverRow(coverList, setCoverData) {
     updateDisabledOptions()
   };
   if (!(setCoverData && setCoverData?.premium === 0)) {
+   
     removeCell.appendChild(removeButton);
     row.appendChild(removeCell);
-  } 
-  // removeCell.appendChild(removeButton);
-  // row.appendChild(removeCell);
+  }else{
+    selectElement.addEventListener('mousedown', function(event) {
+      event.preventDefault(); // บล็อกการคลิกเลือก
+    });
+    selectElement.style.cursor = 'not-allowed';
+    selectElement.title = "Cannot change or remove";
+    // // เปลี่ยนสีพื้นหลังให้ดูเหมือน disabled
+    // selectElement.style.backgroundColor = 'rgb(233, 236, 239)';
+    // selectElement.style.border = '1px solid rgb(118, 118, 118)';
+    // selectElement.style.opacity = '0.65';
+  }
+
   coverListBody.appendChild(row);
 
-  if (setCoverData) {
+  if (setCoverData&&setCoverData?.selectedFlag===true) {
     console.log("setCoverData:", setCoverData)
     selectElement.value = setCoverData.id;
     selectElement.dispatchEvent(new Event('change'));
