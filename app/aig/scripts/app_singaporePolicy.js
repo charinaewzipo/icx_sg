@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
       paymentContainerAmount.removeAttribute("hidden");
 
       const formElements = document.querySelectorAll(
-        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnEditForm):not(#btnSaveForm),textarea"
+        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnEditForm):not(#btnSaveForm):not(.extend-btn),textarea"
       );
 
       hideFormData(formElements);
@@ -256,7 +256,7 @@ document.addEventListener("DOMContentLoaded", function () {
         cardExpiryContainer.hidden = false;
         populatePaymentForm(paymentResponse?.data)
         const formElements = document.querySelectorAll(
-          "input, select, button:not(#btnSaveForm)"
+          "input, select, button:not(#btnSaveForm):not(.extend-btn)"
         );
         hideFormData(formElements);
         btnEditForm.style.display = "none";

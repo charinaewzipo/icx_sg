@@ -1010,43 +1010,69 @@ function populateAdditionalInfo(dbData){
       document.getElementById("remarksC-memo").value = responseRetrieve?.remarksC||"";
     }
     if(Array.isArray(responseRetrieve?.commentsHistory)&&responseRetrieve?.commentsHistory.length>0){
-      const commentsHistory = responseRetrieve?.commentsHistory.map(item => `
-      Send Time: ${item?.sendTime||""}
-      Creator Name: ${item?.creatorName||""}
-      Comments: ${item?.comments||""}
-      ---------------------------------
-      `).join("\n");
+      const commentsHistory = responseRetrieve?.commentsHistory.map(item => 
+      `Send Time: ${item?.sendTime||""}\nCreator Name: ${item?.creatorName||""}\nComments: ${item?.comments||""}\n---------------------------------`.trim()).join("\n");
   
       document.getElementById("commentsHistory").value = commentsHistory||"";
     }
     if(Array.isArray(responseRetrieve?.referralResponse)&&responseRetrieve?.referralResponse.length>0){
       const referralResponses = responseRetrieve?.referralResponse.map(item => `
-      Quotation No: ${item?.quotationNo||""}
-      UW Reason: ${item?.uwReason||""}
-      Request User: ${item?.uwRequestUserName||""}
-      Request Time: ${item?.uwRequestTime||""}
-      Response User: ${item?.uwResponseUserName||""}
-      Response Time: ${item?.uwResponseTime||""}
-      Decision: ${item?.decision||""}
-      ---------------------------------
-      `).join("\n");
+      Quotation No: ${item?.quotationNo||""}\nUW Reason: ${item?.uwReason||""}\nRequest User: ${item?.uwRequestUserName||""}\nRequest Time: ${item?.uwRequestTime||""}\nResponse User: ${item?.uwResponseUserName||""}\nResponse Time: ${item?.uwResponseTime||""}\nDecision: ${item?.decision||""}\n---------------------------------
+      `.trim()).join("\n");
   
       document.getElementById("referral-response").value = referralResponses||"";
     }
     if(Array.isArray(responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList)&&responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.length>0){
       const campaignAndDiscountList = responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.map(item => `
-      Name: ${item?.name||""}
-      Amount: ${item?.amount||""}
-      Rate: ${item?.rate||""}
-      ---------------------------------
-      `).join("\n");
+      Name: ${item?.name||""}\nAmount: ${item?.amount||""}\nRate: ${item?.rate||""}\n---------------------------------
+      `.trim()).join("\n");
   
       document.getElementById("discountList").value = campaignAndDiscountList||"";
     }
   }
   
 }
+function extendTextarea(textareaId, button) {
+  event.preventDefault();
+  var textarea = document.getElementById(textareaId);
+  if (!textarea.value.trim()) { 
+    button.style.display = "none";  // ซ่อนปุ่ม
+    return; // หยุดการทำงานของฟังก์ชัน
+  }
+  if (textarea.style.height === '180px') {
+    textarea.style.height = '60px';  // ขนาดเล็ก
+    textarea.style.width = '300px'; // ความกว้างกลับเป็นขนาดเริ่มต้น
+    button.innerHTML = "Extend";  // เปลี่ยนข้อความปุ่ม 
+  } else {
+    textarea.style.height = '180px';  // ขยายขนาด
+    textarea.style.width = '525px';   // ขยายความกว้าง
+    button.innerHTML = "Hide";  // เปลี่ยนข้อความปุ่ม
+  }
+}
+function checkTextareaContent(textareaId, buttonClass) {
+  var textarea = document.getElementById(textareaId);
+  var buttons = document.querySelectorAll("." + buttonClass);
 
+  buttons.forEach(function (button) {
+    if (button.getAttribute("data-textarea-id") === textareaId) {
+      if (!textarea.value.trim()) {
+        button.style.display = "none"; // ซ่อนปุ่มหากไม่มีข้อมูล
+      } else {
+        button.style.display = "inline-block"; // แสดงปุ่มหากมีข้อมูล
+      }
+    }
+  });
+}
+function checkTextareaContentBox(){
+  checkTextareaContent("commentHistory", "extend-btn");
+  checkTextareaContent("internal-claim-history", "extend-btn");
+  checkTextareaContent("special-text", "extend-btn");
+  checkTextareaContent("remarks-retrieve", "extend-btn");
+  checkTextareaContent("remarksC-memo", "extend-btn");
+  checkTextareaContent("commentsHistory", "extend-btn");
+  checkTextareaContent("referral-response", "extend-btn");
+  checkTextareaContent("discountList", "extend-btn");
+}
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
@@ -1063,5 +1089,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("paymentModeSelect").addEventListener('change', function () {
       handleCardTypeIPP()
     })
+    setTimeout(()=>{
+      checkTextareaContentBox()
+    },2000)
   }
 });
