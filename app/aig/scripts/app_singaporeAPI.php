@@ -109,6 +109,8 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
      
         let responseId;
         if (formType === 'auto' && data?.statusCode === "S03") {
+          const planlistfromapi = data?.insuredList[0]?.planList['1'];
+          console.log("planlistfromapi:", planlistfromapi)
           const handleRequestBodyAuto = {
             ...requestBody,
             insuredList: [{
