@@ -264,6 +264,7 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
         let formType = url.searchParams.get('formType');
         const planlistfromapi = data?.insuredList[0]?.planList['1']
         if (formType === 'auto') {
+          const planlistfromapi = data?.insuredList[0]?.planList['1']
           const handleRequestBodyAuto = {
             ...requestBody,
             insuredList: [{
