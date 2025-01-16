@@ -41,6 +41,7 @@ $GLOBALS["aig_api_create_quote_url"] = "https://qa.apacnprd.api.aig.com/sg-gatew
 $GLOBALS["aig_api_create_policy_url"] = "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/issue-policy";
 $GLOBALS["aig_api_retrieve_quote_url"] = "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/v3/retrieve-quote";
 $GLOBALS["aig_api_recalculate_quote_url"] = "https://qa.apacnprd.api.aig.com/sg-gateway/eway-rest/reCalculate-Quotation";
+$GLOBALS["aig_api_claimslisting_url"] = "https://qa.apacnprd.api.aig.com/sg-gateway/sg-claims/claimslisting";
 
 //token
 // $GLOBALS['token_url'] = 'https://uatauth1.customerpltfm.aig.com/oauth2/ausuekxpsCZZKg0Cw1d6/v1/token';
