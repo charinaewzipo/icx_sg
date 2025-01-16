@@ -52,6 +52,7 @@ async function handleRetrieveAuto(callListData) {
 
 
   const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
+
   console.log("responseRetrieve:", responseRetrieve);
   if (!responseRetrieve) {
     alert("Quote Retrieval List Operation failed");
@@ -337,7 +338,6 @@ function addCoverRow(coverList, setCoverData) {
     updateDisabledOptions()
   };
   if (!(setCoverData && setCoverData?.premium === 0)) {
-   
     removeCell.appendChild(removeButton);
     row.appendChild(removeCell);
   }else{
@@ -346,10 +346,7 @@ function addCoverRow(coverList, setCoverData) {
     });
     selectElement.style.cursor = 'not-allowed';
     selectElement.title = "Cannot change or remove";
-    // // เปลี่ยนสีพื้นหลังให้ดูเหมือน disabled
-    // selectElement.style.backgroundColor = 'rgb(233, 236, 239)';
-    // selectElement.style.border = '1px solid rgb(118, 118, 118)';
-    // selectElement.style.opacity = '0.65';
+    
   }
 
   coverListBody.appendChild(row);
@@ -513,6 +510,76 @@ function handleChangeIsPolicyHolderDriving(checkbox) {
   } else {
     console.log("Policy Holder Driving: None selected");
   }
+}
+function syncPolicyAndDriverFields() {
+  const policyFields = {
+    firstName: document.getElementsByName('firstName')[0],
+    gender: document.getElementsByName('gender')[0],
+    nationality: document.getElementsByName('nationality')[0],
+    dateOfBirth: document.getElementsByName('dateOfBirth')[0],
+    maritalStatus: document.getElementsByName('maritalStatus')[0],
+    residentStatus: document.getElementsByName('residentStatus')[0],
+    customerIdType: document.getElementsByName('customerIdType')[0],
+    customerIdNo: document.getElementsByName('customerIdNo')[0],
+  };
+
+  const driverFields = {
+    driverNameField: document.getElementsByName('insured_auto_driverInfo_driverName')[0],
+    driverGender: document.getElementsByName('insured_auto_driverInfo_driverGender')[0],
+    driverNationality: document.getElementsByName('insured_auto_driverInfo_driverNationality')[0],
+    driverDOB: document.getElementsByName('insured_auto_driverInfo_driverDOB')[0],
+    driverMaritalStatus: document.getElementsByName('insured_auto_driverInfo_maritalStatus')[0],
+    driverResidentStatus: document.getElementsByName('insured_auto_driverInfo_driverResidentStatus')[0],
+    driverIdType: document.getElementsByName('insured_auto_driverInfo_driverIdType')[0],
+    driverIdNumber: document.getElementsByName('insured_auto_driverInfo_driverIdNumber')[0],
+  };
+
+  function updateDriverFromPolicy() {
+    driverFields.driverNameField.value = policyFields.firstName.value || "";
+    driverFields.driverGender.value = policyFields.gender.value || "";
+    driverFields.driverNationality.value = policyFields.nationality.value || "";
+    driverFields.driverDOB.value = policyFields.dateOfBirth.value || "";
+    driverFields.driverMaritalStatus.value = policyFields.maritalStatus.value || "";
+    driverFields.driverResidentStatus.value = policyFields.residentStatus.value || "";
+    driverFields.driverIdType.value = policyFields.customerIdType.value || "";
+    driverFields.driverIdNumber.value = policyFields.customerIdNo.value || "";
+
+    if (driverFields.driverDOB.value) {
+      const { age } = calculateAge(driverFields.driverDOB.value);
+      document.getElementById('ageDriver').value = age;
+    }
+  }
+
+  function updatePolicyFromDriver() {
+    policyFields.firstName.value = driverFields.driverNameField.value || "";
+    policyFields.gender.value = driverFields.driverGender.value || "";
+    policyFields.nationality.value = driverFields.driverNationality.value || "";
+    policyFields.dateOfBirth.value = driverFields.driverDOB.value || "";
+    policyFields.maritalStatus.value = driverFields.driverMaritalStatus.value || "";
+    policyFields.residentStatus.value = driverFields.driverResidentStatus.value || "";
+    policyFields.customerIdType.value = driverFields.driverIdType.value || "";
+    policyFields.customerIdNo.value = driverFields.driverIdNumber.value || "";
+  }
+
+  // Attach event listeners to policy fields
+  Object.values(policyFields).forEach((field) => {
+    field.addEventListener('input', () => {
+      const yesCheckbox = document.getElementById('isPolicyHolderDrivingYes');
+      if (yesCheckbox.checked) {
+        updateDriverFromPolicy();
+      }
+    });
+  });
+
+  // Attach event listeners to driver fields
+  Object.values(driverFields).forEach((field) => {
+    field.addEventListener('input', () => {
+      const yesCheckbox = document.getElementById('isPolicyHolderDrivingYes');
+      if (yesCheckbox.checked) {
+        updatePolicyFromDriver();
+      }
+    });
+  });
 }
 
 
@@ -1029,9 +1096,84 @@ function populateAdditionalInfo(dbData){
   
       document.getElementById("discountList").value = campaignAndDiscountList||"";
     }
+
+
   }
   
 }
+async function populateAdditionInfoInternalClaimHistory() {
+  const quoteNoFieldForm = document.getElementById('policyid-input');
+  const requestClaimListing = {
+    "Policy": {
+      "PolicyNumber": quoteNoFieldForm?.value || ""
+    }
+  };
+
+  const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+
+  if (quoteNoFieldForm && quoteNoFieldForm.value && isRenewal) {
+    const response = await fetchClaimListing(requestClaimListing);
+    console.log("response:", response);
+    let claimDetails = "";
+
+    // ข้อมูลจาก MsgStatus
+    const msgStatus = response.ClaimDownloadRs?.MsgStatus;
+    if (msgStatus) {
+      const msgStatusDetails = `Message Status Code: ${msgStatus.MsgStatusCd || "N/A"}\nMessage Error Code: ${msgStatus.MsgErrorCd || "N/A"}\nMessage Status Description: ${msgStatus.MsgStatusDesc || "N/A"}\n---------------------------------\n`;
+      claimDetails += msgStatusDetails;
+    }
+
+    const claimsDownloadInfo = response.ClaimDownloadRs?.ClaimsDownloadInfo;
+    if (!claimsDownloadInfo) {
+      console.error("ClaimsDownloadInfo is missing or malformed");
+      claimDetails += "No ClaimsDownloadInfo available.\n---------------------------------\n";
+      // นำข้อมูล MsgStatus มาใส่ใน textarea
+      document.getElementById("internal-claim-history").value = claimDetails.trim();
+      checkTextareaContent("internal-claim-history", "extend-btn");
+      return;
+    }
+
+    console.log('claimsDownloadInfo', Object.entries(claimsDownloadInfo));
+    // ข้อมูล ClaimsOccurrence (หลายรายการหรือรายการเดียว)
+    const claimsOccurrences = Array.isArray(claimsDownloadInfo.ClaimsOccurrence)
+      ? claimsDownloadInfo.ClaimsOccurrence
+      : [claimsDownloadInfo.ClaimsOccurrence]; // ถ้ามีแค่ 1 รายการ, ทำให้เป็น Array
+
+    claimsOccurrences.forEach((occurrence, index) => {
+      claimDetails += `Claim Number ${index + 1}: ${occurrence.ClaimNumber?.trim() || "N/A"}\nLoss Date: ${occurrence.LossDt || "N/A"}\nIncident Description: ${occurrence.IncidentDesc?.trim() || "N/A"}\nTotal Paid Amount: ${parseFloat(occurrence.TotalPaidAmt?.Amt || 0).toFixed(2)}\n---------------------------------\n`;
+    });
+
+    // ข้อมูล ClaimsParty
+    const claimsParty = claimsDownloadInfo.ClaimsParty;
+    if (claimsParty) {
+      const claimsPartyDetails = `Claims Party Role: ${claimsParty.ClaimsPartyInfo?.ClaimsPartyRoleCd || "N/A"}\n---------------------------------\n`;
+      claimDetails += claimsPartyDetails;
+    }
+
+    // ข้อมูล LossInfo
+    const lossInfo = claimsDownloadInfo.LossInfo;
+    if (lossInfo) {
+      const lossInfoDetails = `Coverage Limit: ${lossInfo.Coverage?.Limit?.FormatCurrencyAmt?.Amt ? parseFloat(lossInfo.Coverage?.Limit?.FormatCurrencyAmt?.Amt).toFixed(2) : "N/A"}\nLimit Applies To: ${lossInfo.Coverage?.LimitAppliesToCd || "N/A"}\n---------------------------------\n`;
+      claimDetails += lossInfoDetails;
+    }
+
+    // ข้อมูลจาก TransactionEffectiveDt และ CountryCd
+    const transactionDate = response.ClaimDownloadRs?.TransactionEffectiveDt;
+    const countryCd = response.ClaimDownloadRs?.CountryCd;
+    const transactionDetails = `Transaction Date: ${transactionDate || "N/A"}\nCountry Code: ${countryCd || "N/A"}\n---------------------------------\n`;
+    claimDetails += transactionDetails;
+
+    // นำข้อมูลทั้งหมดมาใส่ใน textarea
+    document.getElementById("internal-claim-history").value = claimDetails.trim();
+
+    checkTextareaContent("internal-claim-history", "extend-btn");
+  }
+}
+
+
+
+
+
 function extendTextarea(textareaId, button) {
   event.preventDefault();
   var textarea = document.getElementById(textareaId);
@@ -1073,11 +1215,11 @@ function checkTextareaContentBox(){
   checkTextareaContent("referral-response", "extend-btn");
   checkTextareaContent("discountList", "extend-btn");
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
-  console.log("Form type:", formType);
   if (formType === "auto") {
     attachCustomerIdValidationAuto();
     setupFormListeners();
@@ -1089,8 +1231,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("paymentModeSelect").addEventListener('change', function () {
       handleCardTypeIPP()
     })
+    syncPolicyAndDriverFields()
     setTimeout(()=>{
       checkTextareaContentBox()
+      populateAdditionInfoInternalClaimHistory()
     },2000)
+   
+  
   }
 });

@@ -262,7 +262,6 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
         let currentUrl = window.location.href;
         const url = new URL(currentUrl);
         let formType = url.searchParams.get('formType');
-        const planlistfromapi = data?.insuredList[0]?.planList['1']
         if (formType === 'auto') {
           const planlistfromapi = data?.insuredList[0]?.planList['1']
           const handleRequestBodyAuto = {
@@ -296,7 +295,40 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       document.body.classList.remove('loading');
     }
   }
+  async function fetchClaimListing(requestBody) {
+    console.log("Fetching claimlisting data...");
+    document.body.classList.add('loading');
+    const apiUrl = '<?php echo $GLOBALS["aig_api_claimslisting_url"]; ?>';
+    const startTime = performance.now();
+    let executionTime = null;
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+      const executionTime = performance.now() - startTime; // เวลาที่ใช้
+      const statusCode = response.status;
+      // Update policyNo if present, regardless of statusCode
 
+      const data = await response.json();
+      console.log("data", data);
+      await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime, calllistDetail?.calllist_id, campaignDetails?.agent_id, campaignDetails?.import_id);
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching claimlisting data:", error);
+      // Optionally, you can alert the user about the error
+      window.alert("Failed to fetch claimlisting data. Please try again.");
+      await logApiCall(apiUrl, requestBody, null, 500, error.message, null, calllistDetail?.calllist_id, campaignDetails?.agent_id, campaignDetails?.import_id);
+      throw error; // Re-throw the error to be caught by the caller
+    } finally {
+      document.body.classList.remove('loading');
+    }
+  }
   const handlePremiumRequestBody = () => {
     const formData = new FormData(document.getElementById("application"));
     let producerCode = "";
