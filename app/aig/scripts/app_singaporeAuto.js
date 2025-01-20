@@ -115,12 +115,14 @@ function populatePlanAutoPremium(planList) {
     const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
     const ncdLevel_gears=document.getElementById("ncdLevel_gears");
     const additionalInfo=document.getElementById("additional-info");
+    const excessSectionOther=document.getElementById("excess-section-other");
     const noClaimExperienceRow=document.getElementById("noClaimExperienceRow");
     ncdLevel_gears_display.style.display = "none";
     ncdLevel_gears.style.display = "none";
     noClaimExperienceRow.style.display = "none";
     
     additionalInfo.hidden=false
+    excessSectionOther.hidden=false
   } 
   const quoteNoFieldForm=document.getElementById('policyid-input')
   if(quoteNoFieldForm && quoteNoFieldForm.value){
@@ -1170,7 +1172,79 @@ async function populateAdditionInfoInternalClaimHistory() {
   }
 }
 
+function populateExcessSectionOther() {
+  console.log("selectedPlan:", selectedPlan)
+  const quoteNoFieldForm = document.getElementById('policyid-input')
+  if (selectedPlan ) {
+    const sectionBody = document.getElementById('section-other-body');
+    // ลบข้อมูลเก่าภายใน tbody
+    sectionBody.innerHTML = "";
+    // ฟังก์ชันสร้าง HTML ตาม Section
+    const renderSection = (title, covers) => {
+      // สร้างแถวชื่อ Section
+      const sectionTitleRow = document.createElement('tr');
+      sectionTitleRow.innerHTML = `<td ><span><strong>${title}</strong></span></td>`;
+      if (title !== 'Section 3') {
+        sectionBody.appendChild(sectionTitleRow);
+      }
 
+      // สร้างแถวสำหรับรายละเอียด
+      const detailRow = document.createElement('tr');
+      let detailHTML = `<td style='padding-bottom:8px'>`;
+      covers.forEach((cover) => {
+        if (cover.name === 'Act of God') {
+          detailHTML += `<span style='padding-right:5px'>Flood Cover - $${cover.finalExcess}</span>  `;
+        } else {
+          detailHTML += `<span style='padding-right:5px'>${cover.name} - $${cover.finalExcess}</span>  `;
+
+        }
+      });
+      detailHTML += `</td>`;
+      detailRow.innerHTML = detailHTML;
+      sectionBody.appendChild(detailRow);
+    };
+
+    const prioritySection1 = ["Fire", "Own Damage", "Theft", "Act of God"];
+    const prioritySection2 = ["Property Damage"];
+    const prioritySection3 = ["Windscreen / Windows"];
+
+    // สร้าง array สำหรับจัดกลุ่ม
+    let section1 = [];
+    let section2 = [];
+    let section3 = [];
+
+    Object.values(selectedPlan?.coverList).forEach((item) => {
+      if (!item.name.includes("Outside Singapore Cover")) { // กรองรายการนี้ออก
+        if (prioritySection1.some(name => item.name.includes(name))) {
+          section1.push(item);
+        } else if (prioritySection2.some(name => item.name.includes(name))) {
+          section2.push(item);
+        } else if (prioritySection3.some(name => item.name.includes(name))) {
+          section3.push(item);
+        }
+      }
+    });
+    section1.sort((a, b) => {
+      return prioritySection1.indexOf(prioritySection1.find(name => a.name.includes(name))) -
+        prioritySection1.indexOf(prioritySection1.find(name => b.name.includes(name)));
+    });
+
+    section2.sort((a, b) => {
+      return prioritySection2.indexOf(prioritySection2.find(name => a.name.includes(name))) -
+        prioritySection2.indexOf(prioritySection2.find(name => b.name.includes(name)));
+    });
+
+    section3.sort((a, b) => {
+      return prioritySection3.indexOf(prioritySection3.find(name => a.name.includes(name))) -
+        prioritySection3.indexOf(prioritySection3.find(name => b.name.includes(name)));
+    });
+
+    // แสดงข้อมูล Section ใน HTML
+    if (section1.length) renderSection("Section 1", section1);
+    if (section2.length) renderSection("Section 2", section2);
+    if (section3.length) renderSection("Section 3", section3);
+  }
+}
 
 
 
@@ -1235,6 +1309,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(()=>{
       checkTextareaContentBox()
       populateAdditionInfoInternalClaimHistory()
+      populateExcessSectionOther()
     },2000)
    
   

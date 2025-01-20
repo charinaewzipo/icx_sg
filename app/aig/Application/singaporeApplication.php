@@ -1513,6 +1513,42 @@ where name='Nature of Business'";
             </table>
 
           </div>
+          <div id="excess-section-other" hidden>
+            <table id="table-form" style="border-spacing: 0.5em 0em">
+              <tbody id='section-other-body' >
+              <!-- <tr>
+                <td>
+                  <span>Section 1</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span>Fire - $0</span>
+                  <span>Own Damage - $600</span>
+                  <span>Theft - $0</span>
+                  <span>Flood Cover - $600</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span>Section 2</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span>Property Damage - $0</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span>Windscreen - $100</span>
+                </td>
+              </tr> -->
+              </tbody>
+            
+            </table>
+
+          </div>
           <div id="agecondition">
             <table id="table-form">
               <tr>
