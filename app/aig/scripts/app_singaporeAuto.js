@@ -155,6 +155,7 @@ function populatePlanAutoPremium(planList) {
   // Update planPoiSelect when an option is selected
   planSelect.addEventListener('change', function () {
     document.getElementById('excess-section').hidden=false;
+   
     const coverListDisplay = document.getElementById("coverListDisplay");
     const addCoverDisplay = document.getElementById("addCoverDisplay");
     const selectedOption = planSelect.options[planSelect.selectedIndex];
@@ -191,6 +192,7 @@ function populatePlanAutoPremium(planList) {
       populateCoverListAutoPremium();
       handlePopulateExcessFromAPI(selectedPlan)
     }
+    populateExcessSectionOther()
   });
 }
 
@@ -1193,9 +1195,9 @@ function populateExcessSectionOther() {
       let detailHTML = `<td style='padding-bottom:8px'>`;
       covers.forEach((cover) => {
         if (cover.name === 'Act of God') {
-          detailHTML += `<span style='padding-right:5px'>Flood Cover - $${cover.finalExcess}</span>  `;
+          detailHTML += `<span style='padding-right:5px'>Flood Cover - $${cover.finalExcess||0}</span>  `;
         } else {
-          detailHTML += `<span style='padding-right:5px'>${cover.name} - $${cover.finalExcess}</span>  `;
+          detailHTML += `<span style='padding-right:5px'>${cover.name} - $${cover.finalExcess||0}</span>  `;
 
         }
       });
@@ -1244,6 +1246,8 @@ function populateExcessSectionOther() {
     if (section2.length) renderSection("Section 2", section2);
     if (section3.length) renderSection("Section 3", section3);
   }
+  const excessSectionOther=document.getElementById("excess-section-other");
+  excessSectionOther.hidden=false
 }
 
 
