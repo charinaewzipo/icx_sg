@@ -1120,60 +1120,71 @@ async function populateAdditionInfoInternalClaimHistory() {
     console.log("response:", response);
     let claimDetails = "";
 
-    // ข้อมูลจาก MsgStatus
+    // MsgStatus details
     const msgStatus = response.ClaimDownloadRs?.MsgStatus;
     if (msgStatus) {
-      const msgStatusDetails = `Message Status Code: ${msgStatus.MsgStatusCd || "N/A"}\nMessage Error Code: ${msgStatus.MsgErrorCd || "N/A"}\nMessage Status Description: ${msgStatus.MsgStatusDesc || "N/A"}\n---------------------------------\n`;
-      claimDetails += msgStatusDetails;
+      claimDetails += `Message Status Code: ${msgStatus.MsgStatusCd || "N/A"}\n` +
+                      `Message Error Code: ${msgStatus.MsgErrorCd || "N/A"}\n` +
+                      `Message Status Description: ${msgStatus.MsgStatusDesc || "N/A"}\n` +
+                      `---------------------------------\n`;
     }
 
     const claimsDownloadInfo = response.ClaimDownloadRs?.ClaimsDownloadInfo;
     if (!claimsDownloadInfo) {
       console.error("ClaimsDownloadInfo is missing or malformed");
       claimDetails += "No ClaimsDownloadInfo available.\n---------------------------------\n";
-      // นำข้อมูล MsgStatus มาใส่ใน textarea
       document.getElementById("internal-claim-history").value = claimDetails.trim();
       checkTextareaContent("internal-claim-history", "extend-btn");
       return;
     }
 
-    console.log('claimsDownloadInfo', Object.entries(claimsDownloadInfo));
-    // ข้อมูล ClaimsOccurrence (หลายรายการหรือรายการเดียว)
+    // Handle ClaimsOccurrence array
     const claimsOccurrences = Array.isArray(claimsDownloadInfo.ClaimsOccurrence)
       ? claimsDownloadInfo.ClaimsOccurrence
-      : [claimsDownloadInfo.ClaimsOccurrence]; // ถ้ามีแค่ 1 รายการ, ทำให้เป็น Array
+      : [claimsDownloadInfo.ClaimsOccurrence];
 
     claimsOccurrences.forEach((occurrence, index) => {
-      claimDetails += `Claim Number ${index + 1}: ${occurrence.ClaimNumber?.trim() || "N/A"}\nLoss Date: ${occurrence.LossDt || "N/A"}\nIncident Description: ${occurrence.IncidentDesc?.trim() || "N/A"}\nTotal Paid Amount: ${parseFloat(occurrence.TotalPaidAmt?.Amt || 0).toFixed(2)}\n---------------------------------\n`;
+      claimDetails += `Claim Number ${index + 1}: ${occurrence.ClaimNumber?.trim() || "N/A"}\n` +
+                      `Loss Date: ${occurrence.LossDt || "N/A"}\n` +
+                      `Incident Description: ${occurrence.IncidentDesc?.trim() || "N/A"}\n` +
+                      `Total Paid Amount: ${parseFloat(occurrence.TotalPaidAmt?.Amt || 0).toFixed(2)}\n` +
+                      `---------------------------------\n`;
     });
 
-    // ข้อมูล ClaimsParty
-    const claimsParty = claimsDownloadInfo.ClaimsParty;
-    if (claimsParty) {
-      const claimsPartyDetails = `Claims Party Role: ${claimsParty.ClaimsPartyInfo?.ClaimsPartyRoleCd || "N/A"}\n---------------------------------\n`;
-      claimDetails += claimsPartyDetails;
-    }
+    // Handle ClaimsParty array
+    const claimsParties = Array.isArray(claimsDownloadInfo.ClaimsParty)
+      ? claimsDownloadInfo.ClaimsParty
+      : [claimsDownloadInfo.ClaimsParty];
 
-    // ข้อมูล LossInfo
-    const lossInfo = claimsDownloadInfo.LossInfo;
-    if (lossInfo) {
-      const lossInfoDetails = `Coverage Limit: ${lossInfo.Coverage?.Limit?.FormatCurrencyAmt?.Amt ? parseFloat(lossInfo.Coverage?.Limit?.FormatCurrencyAmt?.Amt).toFixed(2) : "N/A"}\nLimit Applies To: ${lossInfo.Coverage?.LimitAppliesToCd || "N/A"}\n---------------------------------\n`;
-      claimDetails += lossInfoDetails;
-    }
+    claimsParties.forEach((party, index) => {
+      claimDetails += `Claims Party ${index + 1} Role: ${party.ClaimsPartyInfo?.ClaimsPartyRoleCd || "N/A"}\n` +
+                      `---------------------------------\n`;
+    });
 
-    // ข้อมูลจาก TransactionEffectiveDt และ CountryCd
+    // Handle LossInfo array
+    const lossInfos = Array.isArray(claimsDownloadInfo.LossInfo)
+      ? claimsDownloadInfo.LossInfo
+      : [claimsDownloadInfo.LossInfo];
+
+    lossInfos.forEach((loss, index) => {
+      claimDetails += `Loss Info ${index + 1}:\n` +
+                      `  Coverage Limit: ${loss.Coverage?.Limit?.FormatCurrencyAmt?.Amt ? parseFloat(loss.Coverage.Limit.FormatCurrencyAmt.Amt).toFixed(2) : "N/A"}\n` +
+                      `  Limit Applies To: ${loss.Coverage?.LimitAppliesToCd || "N/A"}\n` +
+                      `---------------------------------\n`;
+    });
+
+    // TransactionEffectiveDt and CountryCd details
     const transactionDate = response.ClaimDownloadRs?.TransactionEffectiveDt;
     const countryCd = response.ClaimDownloadRs?.CountryCd;
-    const transactionDetails = `Transaction Date: ${transactionDate || "N/A"}\nCountry Code: ${countryCd || "N/A"}\n---------------------------------\n`;
-    claimDetails += transactionDetails;
+    claimDetails += `Transaction Date: ${transactionDate || "N/A"}\n` +
+                    `Country Code: ${countryCd || "N/A"}\n` +
+                    `---------------------------------\n`;
 
-    // นำข้อมูลทั้งหมดมาใส่ใน textarea
+    // Populate textarea
     document.getElementById("internal-claim-history").value = claimDetails.trim();
-
     checkTextareaContent("internal-claim-history", "extend-btn");
   }
 }
-
 function populateExcessSectionOther() {
   console.log("selectedPlan:", selectedPlan)
   const quoteNoFieldForm = document.getElementById('policyid-input')
