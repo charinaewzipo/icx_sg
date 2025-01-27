@@ -1185,6 +1185,24 @@ async function populateAdditionInfoInternalClaimHistory() {
     checkTextareaContent("internal-claim-history", "extend-btn");
   }
 }
+function handlePreviousInsurer() {
+  const haveExperienceRow = document.querySelector("#haveExperienceRow");
+  if(haveExperienceRow){
+    const requiredSpans = haveExperienceRow.querySelectorAll("span[style='color:red']");
+
+    // Remove or hide the spans
+    requiredSpans.forEach((span) => {
+      span.style.display = "none"; // Hide the span
+    });
+
+    // Make fields optional
+    const previousInsurerField = haveExperienceRow.querySelector('select[name="haveEx-PreviousInsurer"]');
+    const previousPolicyNoField = haveExperienceRow.querySelector('input[name="haveEx-PreviousPolicyNo"]');
+
+    previousInsurerField?.removeAttribute("required");
+    previousPolicyNoField?.removeAttribute("required");
+  }
+}
 function populateExcessSectionOther() {
   console.log("selectedPlan:", selectedPlan)
   const quoteNoFieldForm = document.getElementById('policyid-input')
@@ -1280,6 +1298,7 @@ function extendTextarea(textareaId, button) {
     button.innerHTML = "Hide";  // เปลี่ยนข้อความปุ่ม
   }
 }
+
 function checkTextareaContent(textareaId, buttonClass) {
   var textarea = document.getElementById(textareaId);
   var buttons = document.querySelectorAll("." + buttonClass);
@@ -1309,6 +1328,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
+  const quoteNoFieldForm = document.getElementById('policyid-input');
   if (formType === "auto") {
     attachCustomerIdValidationAuto();
     setupFormListeners();
@@ -1323,8 +1343,14 @@ document.addEventListener("DOMContentLoaded", () => {
     syncPolicyAndDriverFields()
     setTimeout(()=>{
       checkTextareaContentBox()
-      populateAdditionInfoInternalClaimHistory()
       populateExcessSectionOther()
+      //check isRenewal
+      const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+      if(isRenewal){
+        populateAdditionInfoInternalClaimHistory()
+        handlePreviousInsurer()
+       
+      }
     },2000)
    
   
