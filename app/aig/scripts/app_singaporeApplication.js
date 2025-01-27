@@ -734,7 +734,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
           productId: quotationData.productId || "",
           distributionChannel: quotationData.distributionChannel || 0,
           producerCode: quotationData.producerCode || "",
-          campaignInfoList:formType==='auto' ? getCampaignInfoList():"",
+          campaignInfoList:formType==='auto' ? getCampaignInfoList():[],
           campaignCode:formType==='auto'? "":formData.get('campaignCode'),
           policyEffDate: quotationData.policyEffDate
             ? new Date(`${quotationData.policyEffDate}Z`).toISOString()
