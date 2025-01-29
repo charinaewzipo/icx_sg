@@ -10,8 +10,7 @@ $makeValue = isset($_GET['makeValue']) ? $_GET['makeValue'] : '';
 $nameValue = isset($_GET['nameValue']) ? $_GET['nameValue'] : '';
 
 // Your SQL query to fetch payment modes and card types
-$strSQL = "SELECT *
-FROM t_aig_sg_lov where name='$nameValue' and filterValue='$makeValue'  order by description asc;";
+$strSQL = "SELECT * FROM t_aig_sg_lov where name = '$nameValue' order by description asc;";
 
 // wlog($strSQL);
 $objQuery = mysqli_query($Conn, $strSQL);

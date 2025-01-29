@@ -741,10 +741,10 @@ const createElementCover = () => {
   coverListBody.appendChild(row);
 }
 
-async function fetchGetModel(makeValue) {
+async function fetchGetModel(makeValue,nameValue) {
   if (!makeValue) return;
 
-  const url = `../scripts/get_model_auto.php?makeValue=${makeValue}`;
+  const url = `../scripts/get_model_auto.php?makeValue=${makeValue}&nameValue=${nameValue}`;
   document.body.classList.add('loading');
 
   try {
@@ -791,10 +791,61 @@ async function fetchGetModel(makeValue) {
     document.body.classList.remove('loading');
   }
 }
+async function fetchGetMake(nameValue) {
+
+  const url = `../scripts/get_make_auto.php?nameValue=${nameValue}`;
+  document.body.classList.add('loading');
+
+  try {
+    // Await the fetch response
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log("data:", data)
+
+    // Ensure the select element exists
+    const ModelSelect = document.querySelector('select[name="insured_auto_vehicle_make"]');
+    if (!ModelSelect) {
+      console.error("Dropdown not found!");
+      return;
+    }
+
+    // Clear existing options
+    ModelSelect.innerHTML = `
+      <option value="">
+        <-- Please select an option -->
+      </option>
+    `;
+
+    // Populate new options from the fetched data
+    if (data && Array.isArray(data) && data?.length > 0) {
+      data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.description;
+        ModelSelect.appendChild(option);
+        ModelSelect.required = true;
+      });
+    } else {
+      // Display a message when no data is available
+      const option = document.createElement('option');
+      option.value = "";
+      option.textContent = "No options available";
+      option.disabled = true;
+      ModelSelect.appendChild(option);
+      ModelSelect.required = false;
+    }
+  } catch (error) {
+    console.error('Error fetching plans:', error);
+  } finally {
+    document.body.classList.remove('loading');
+  }
+}
 const handleAutoMakeChange = () => {
   const makeSelect = document.querySelector('select[name="insured_auto_vehicle_make"]');
+  const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+  const nameModel = isRenewal ? 'RNModel':'Model'
   makeSelect.addEventListener('change', async () => {
-    await fetchGetModel(makeSelect.value)
+    await fetchGetModel(makeSelect.value,nameModel)
   })
 }
 let promoCodeCount = 0; // เริ่มต้นที่ 1 เพราะมีแถวแรกอยู่แล้วใน HTML

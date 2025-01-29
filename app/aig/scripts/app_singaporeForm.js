@@ -232,7 +232,9 @@ const setDefaultValueForm = async (dbData) => {
   document.querySelector('input[id="policyid-input"]').value = dbData?.quoteNo || "";
   if (dbData?.type == "auto") {
     const vehicleInfo = insuredData[0].vehicleInfo
-    await fetchGetModel(vehicleInfo.make);
+    const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+    const nameModel = isRenewal ? 'RNModel':'Model'
+    await fetchGetModel(vehicleInfo.make,nameModel);
     document.querySelector('select[name="Ncd_Level"]').value = ncdInfo?.ncdLevel;
     document.querySelector('select[name="NoClaimExperience"]').value = ncdInfo?.noClaimExperience || "";
     const haveExPreviousInsurer = document.querySelector('select[name="haveEx-PreviousInsurer"]');
@@ -405,10 +407,13 @@ const setInsuredHome = (insuredData) => {
   document.querySelector('[name="insured_home_insuredPostCode"]').value = addressInfo?.insuredPostCode || '';
 
 };
-const setInsuredVehicleList = (insuredData) => {
+const setInsuredVehicleList = async(insuredData) => {
   console.log("setInsuredList vehicle")
   if (!insuredData || insuredData.length === 0) return;
   const vehicleInfo = insuredData[0].vehicleInfo;
+  const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+  const nameValue = isRenewal ? 'RNBrand':'brand'
+  await fetchGetMake(nameValue)
   document.querySelector('select[name="insured_auto_vehicle_make"]').value =
     vehicleInfo.make;
   document.querySelector('select[name="insured_auto_vehicle_model"]').value =

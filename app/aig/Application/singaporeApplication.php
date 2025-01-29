@@ -902,18 +902,7 @@ where name='Nature of Business'";
                   <option value="">
                     <-- Please select an option -->
                   </option>
-                  <?php
-                  $strSQL = "SELECT * FROM t_aig_sg_lov where name = 'brand' order by description asc";
-                  $objQuery = mysqli_query($Conn, $strSQL);
-                  while ($objResuut = mysqli_fetch_array($objQuery)) {
-                    $data[] = $objResuut;
-                  ?>
-                    <option value="<?php echo $objResuut["id"]; ?>">
-                      <?php echo $objResuut["description"]; ?>
-                    </option>
-                  <?php
-                  }
-                  ?>
+                  
 
                 </select>
               </td>

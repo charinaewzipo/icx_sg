@@ -984,7 +984,9 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         await fetchCampaignDetail()
         await fetchCallingList()
         
+        //auto
         setDefaultProductId()
+
     }
     const setDefaultProductId = () => {
         console.log("setDefaultProductId:")
@@ -992,6 +994,11 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
         const url = new URL(currentUrl);
         let formType = url.searchParams.get('formType');
         if (formType === "auto") {
+             //fetchMake
+            const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+            const nameValue = isRenewal ? 'RNBrand':'brand'
+            fetchGetMake(nameValue)
+            
             if (!id) {
                 const selectProductElement = document.querySelector('select[name="select-product"]');
                 if (selectProductElement) {
@@ -999,7 +1006,10 @@ AND (description LIKE 'student%' OR description LIKE 'other%')";
                     handleProductChange(selectProductElement);
                 }
             }
+           
         }
+
+
     }
     const fillInsuredSectionChild = (insuredData) => {
         const filterchild = insuredData.filter(i => i?.personInfo?.relationToPolicyholder === "2");
