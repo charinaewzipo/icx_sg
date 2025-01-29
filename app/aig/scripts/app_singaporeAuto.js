@@ -1106,10 +1106,13 @@ function populateAdditionalInfo(dbData){
   
 }
 async function populateAdditionInfoInternalClaimHistory() {
+  function cleanQuoteNo(quoteNo) {
+    return quoteNo.replace(/-\d{2}$/, '');
+}
   const quoteNoFieldForm = document.getElementById('policyid-input');
   const requestClaimListing = {
     "Policy": {
-      "PolicyNumber": quoteNoFieldForm?.value || ""
+      "PolicyNumber": cleanQuoteNo(quoteNoFieldForm?.value) || ""
     }
   };
 
