@@ -1377,6 +1377,15 @@ function checkTextareaContentBox(){
   checkTextareaContent("referral-response", "extend-btn");
   checkTextareaContent("discountList", "extend-btn");
 }
+function handleAlertPromoCodeApplicable(request,response){
+  if(!Array.isArray(request?.campaignInfoList) || !request?.campaignInfoList.length) return
+  request?.campaignInfoList.forEach(campaign=>{
+    const isApplicable=response?.campaignAndDiscountList.find(item=>item?.code === campaign?.campaignCode)
+    if(!isApplicable){
+      alert(`[${campaign.campaignCode}] Promotion is no longer applicable.`)
+    }
+  })
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   let currentUrl = window.location.href;

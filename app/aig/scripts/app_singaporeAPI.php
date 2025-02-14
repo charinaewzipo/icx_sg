@@ -72,6 +72,7 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       const executionTime = performance.now() - startTime; // เวลาที่ใช้
       const statusCode = response.status;
       const data = await response.json();
+      
       console.log("data", data);
       await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime, calllistDetail?.calllist_id, campaignDetails?.agent_id, campaignDetails?.import_id);
 
@@ -136,6 +137,9 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       // Handle different status codes
       if (data?.statusCode === "S03") {
         window.alert(data?.statusMessage || "Successfully!");
+        if(formType ==='auto'){
+          handleAlertPromoCodeApplicable(requestBody,data);
+        }
         window.location.href = url.toString();
       } else {
         window.alert(`Error statusCode: ${data?.statusCode||data?.Policy?.statusCode}\nstatusMessage: ${data?.statusMessage||data?.Policy?.statusMessage}`);
@@ -278,6 +282,9 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
           await jQuery.agent.updateRecalQuoteData(requestBody, data, id, campaignDetails);
         }
         window.alert(data?.statusMessage || "Successfully!");
+        if(formType ==='auto'){
+          handleAlertPromoCodeApplicable(requestBody,data);
+        }
         window.location.reload();
       } else {
         await jQuery.agent.updateRecalQuoteDataFailed(requestBody, data, id);

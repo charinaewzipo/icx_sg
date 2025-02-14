@@ -374,21 +374,54 @@ const handleAlertNCDLevelDifferent=()=>{
     }
   }
 }
-const setOtherInfoAuto=(dbData)=>{
+const setOtherInfoAuto = (dbData) => {
+  document.querySelector('textarea[name="commentHistory"]').value = dbData?.quoteVersionMemo || "";
+  document.querySelector('select[name="Ncd_Level_gears"]').value = dbData?.ncdLevelGEARS || "";
+  document.querySelector('select[name="cardType"]').value = dbData?.cardType || "";
 
-  document.querySelector('textarea[name="commentHistory"]').value  = dbData?.quoteVersionMemo||"";
-  document.querySelector('select[name="Ncd_Level_gears"]').value =  dbData?.ncdLevelGEARS;
-  document.querySelector('select[name="cardType"]').value =  dbData?.cardType;
-  const campaignInfoList = JSON.parse(dbData?.campaignInfoList);
-  document.getElementById("add-code-display").style.display=""
-  if(Array.isArray(campaignInfoList)&&campaignInfoList.length>0){
-    campaignInfoList.map(code=>{
-      addPromoCode(code?.campaignCode)
-    })
-  }else{
-    addPromoCode()
+  let campaignInfoList = [];
+  try {
+    campaignInfoList = JSON.parse(dbData?.campaignInfoList) || [];
+  } catch (error) {
+    console.error("Invalid campaignInfoList JSON:", error);
   }
-}
+
+  let getCampaignCodeFromAnyResponse = null;
+  try {
+    getCampaignCodeFromAnyResponse = dbData?.response_recalculate_json
+      ? JSON.parse(dbData.response_recalculate_json)
+      : dbData?.response_quote_json
+      ? JSON.parse(dbData.response_quote_json)
+      : null;
+  } catch (error) {
+    console.error("Invalid response JSON:", error);
+  }
+
+  console.log("campaignInfoList:", campaignInfoList);
+  console.log("getCampaignCodeFromAnyResponse:", getCampaignCodeFromAnyResponse);
+
+  if (
+    getCampaignCodeFromAnyResponse?.campaignAndDiscountList &&
+    Array.isArray(getCampaignCodeFromAnyResponse.campaignAndDiscountList)
+  ) {
+    const matchingCampaigns = campaignInfoList.filter(campaign =>
+      getCampaignCodeFromAnyResponse?.campaignAndDiscountList?.some(
+        item => item?.code === campaign?.campaignCode
+      )
+    );
+    console.log("matchingCampaigns:", matchingCampaigns)
+    campaignInfoList=matchingCampaigns;
+  }
+
+  document.getElementById("add-code-display").style.display = "";
+
+  if (Array.isArray(campaignInfoList) && campaignInfoList.length > 0) {
+    campaignInfoList.forEach((code) => addPromoCode(code?.campaignCode));
+  } else {
+    addPromoCode();
+  }
+};
+
 const setInsuredHome = (insuredData) => {
   console.log("setInsuredList home");
   if (!insuredData || insuredData.length === 0) return;
