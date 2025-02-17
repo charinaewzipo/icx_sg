@@ -457,9 +457,9 @@ function handleForm() {
   if(formType === "auto"){
     fullForm={...fullForm,
       quoteVersionMemo: formData.get("commentHistory"),
-      campaignInfoList:getCampaignInfoList(),
-      campaignCode:""
+      campaignInfoList:getCampaignInfoList()
     }
+    delete fullForm?.campaignCode;
     campaignDetails={...campaignDetails,cardType:formData.get("cardType")}
   }
 
@@ -729,7 +729,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         ];
         console.log("quotationData:", quotationData)
 
-        const policyRequest ={
+        let policyRequest ={
           policyId: quotationData.policyId || "",
           productId: quotationData.productId || "",
           distributionChannel: quotationData.distributionChannel || 0,
@@ -744,8 +744,12 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
           efulfillmentFlag: quotationData.efulfillmentFlag || "1",
           paymentDetails
       };
-        console.log("policyRequest:", policyRequest)
-
+      if(formType==='auto'){
+        delete policyRequest?.campaignCode
+      }else{
+        delete policyRequest?.campaignInfoList
+      }
+      console.log("policyRequest:", policyRequest)
         await fetchPolicy(policyRequest);
        
       } else if(shouldRecalculate&&!submitButton.hidden){

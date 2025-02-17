@@ -431,7 +431,6 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
         }, ],
       }, ],
       producerCode: producerCode,
-      campaignCode: "",
       campaignInfoList: getCampaignInfoList(),
     };
 
