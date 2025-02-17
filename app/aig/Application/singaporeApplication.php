@@ -157,6 +157,14 @@ error_reporting(E_ALL);
             days
           } = calculateAge(dateText);
           $("#agePolicyHolder").val(age);
+          //for autocampaign
+          const yesCheckbox = document.getElementById('isPolicyHolderDrivingYes');
+          if (yesCheckbox && yesCheckbox.checked) {
+            const DOB= document.getElementsByName('dateOfBirth')[0]
+            const driverDOB= document.getElementsByName('insured_auto_driverInfo_driverDOB')[0]
+            driverDOB.value=DOB.value
+            $("#ageDriver").val(age);
+          }
         }
       }));
 
@@ -173,6 +181,14 @@ error_reporting(E_ALL);
             return;
           } else {
             $("#ageDriver").val(age);
+          }
+          //for autocampaign
+          const yesCheckbox = document.getElementById('isPolicyHolderDrivingYes');
+          if (yesCheckbox && yesCheckbox.checked) {
+            const DOB= document.getElementsByName('dateOfBirth')[0]
+            const driverDOB= document.getElementsByName('insured_auto_driverInfo_driverDOB')[0]
+            DOB.value=driverDOB.value
+            $("#agePolicyHolder").val(age);
           }
         }
       }));
