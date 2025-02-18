@@ -143,7 +143,15 @@ const handleClickSaveDraftButton = () => {
     );
   }
 };
-
+const disableRadioButtons = (radioButtons) => {
+  radioButtons.forEach((radio) => {
+    radio.style.backgroundColor = "#e9ecef"; // สีพื้นหลังเหมือน disabled
+    radio.style.border = "1px solid rgb(118, 118, 118)"; // ขอบสีเทาอ่อน
+    radio.style.opacity = "0.65"; // ซีดลงเพื่อให้เหมือน disabled
+    radio.style.pointerEvents = "none"; // ปิดการโต้ตอบ
+    radio.nextElementSibling.style.color = "#6c757d"; // ทำให้ label เป็นสีเทา
+  });
+};
 const handleEditQuote = () => {
   const btnEditForm = document.getElementById('btnEditForm');
   console.log("Edit")
@@ -173,7 +181,7 @@ const handleEditQuote = () => {
         formElements = document.querySelectorAll(
           "input:not([name='PolicyEffectiveDate']):not([name='firstName'])" +
           ":not([name='dateOfBirth']):not([name='customerIdNo']):not([name='insured_auto_vehicle_regNo'])" +
-          ":not([name='isPolicyHolderDriving'])" +
+          // ":not([name='isPolicyHolderDriving'])" +
           ":not([name='insured_auto_driverInfo_driverName']):not([name='insured_auto_driverInfo_driverIdNumber'])" +
           ":not([name='insured_auto_driverInfo_driverDOB']):not([name='haveEx-PreviousPolicyNo'])" +
           ":not([name='insured_auto_driverInfo_claimInfo_dateOfLoss']):not([name='insured_auto_driverInfo_claimInfo_lossDescription'])" +
@@ -197,7 +205,12 @@ const handleEditQuote = () => {
       
           "textarea:not([name='discountList'])"
       );
-
+      const radioButtons = document.querySelectorAll(
+        'input[type="radio"][name="isPolicyHolderDriving"]'
+      );
+      const trIsPolicyHolder = document.getElementById('isPolicyHolderDrivingRow')
+      trIsPolicyHolder.style.pointerEvents='none'
+      disableRadioButtons(radioButtons);
       }
       else {
         formElements = document.querySelectorAll("input, select:not(#planPoiSelect1):not(#select-product):not([name='Ncd_Level_gears']):not([name='automaticRenewalFlag']):not([name='insured_auto_vehicle_vehicleUsage']),button:not(#btnSaveForm),textarea");
