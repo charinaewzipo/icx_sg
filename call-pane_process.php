@@ -5,7 +5,6 @@ require_once("dbconn.php");
 require_once("util.php");
 require_once("wlog.php");
 
-
 if (isset($_POST['action'])) {
 	switch ($_POST['action']) {
 
@@ -114,7 +113,21 @@ if (isset($_POST['action'])) {
 		case "getQueueFromCalllist":
 			getQueueFromCalllist();
 			break;
-			
+		// active calllist status
+		case "activeList":
+			activeList();
+			break;
+		// get Last Wrapup
+		case "getLastWrapup":
+			getLastWrapup();
+			break;
+		// update Call Trans
+		case "updateCallTrans":
+			updateCallTrans();
+			break;
+		case "queryMultiCampaign":
+			queryMultiCampaign();
+			break;
 	}
 }
 
@@ -560,7 +573,18 @@ function loadpopup_content()
 							   " AND t.calllist_id = ".dbNumberFormat( $_POST['listid'] ).
 							   " ORDER BY t.create_date DESC ";
 				   */
-	$sql = " SELECT t.create_date , t.wrapup_id , t.wrapup_note " .
+	$sql = " SELECT t.create_date,t.wrapup_id,t.wrapup_note," .
+		"(SELECT wrapup_dtl FROM t_wrapup_code WHERE wrapup_code = 
+		(
+		CASE 
+		WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 3), '|', -1) != '' THEN 
+			SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 3), '|', -1)
+		WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 2), '|', -1) != '' THEN 
+			SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 2), '|', -1)
+		ELSE 
+			SUBSTRING_INDEX(t.wrapup_id, '|', 1)
+		END
+		) )AS wrapup_dtl " .
 		" FROM t_call_trans t " .
 		" WHERE t.agent_id = " . dbNumberFormat($tmp['uid']) . " " .
 		" AND t.campaign_id = " . dbNumberFormat($tmp['cmpid']) . " " .
@@ -575,12 +599,12 @@ function loadpopup_content()
 		$tmp3[$count] = array(
 			//"cred" => allthaidatetime_short($rs['create_date']),
 			"cred" => nullToEmpty($rs['create_date']),
-			"wup" => wrapupdtl($rs['wrapup_id']),
+			"wup" => nullToEmpty($rs['wrapup_dtl']),
 			"note" => nullToEmpty($rs['wrapup_note']),
 			//"bill" => nullToEmpty($rs['billsec']) ,
 			//"disp" => nullToEmpty($rs['disposition']) 
 		);
-		wlog("[call-pane_process][loadpopup_content] cal history sql : " . nullToEmpty($rs['create_date']));
+		//wlog("[call-pane_process][loadpopup_content] cal history sql : " . nullToEmpty($rs['create_date']));
 		$count++;
 	}
 
@@ -855,7 +879,7 @@ function save_wrapup()
 
 	$tmp = json_decode($_POST['data'], true);
 
-	wlog("save_wrapup_data : queueid=" . $tmp['queueid'] . " queuecallbackid=" . $tmp['queuecallbackid']);
+	wlog("[call-pane_process][save_wrapup] : queueid = " . $tmp['queueid'] . ", queuecallbackid = " . $tmp['queuecallbackid']);
 
 	$dbconn = new dbconn;
 	$res = $dbconn->createConn();
@@ -1030,7 +1054,8 @@ function save_wrapup()
 				$tmp_val = (object) [
 					// "queueId"=> $queueid,
 					"callbackNumbers" => [
-						"+66" . substr($callbackNumbers, 1, strlen($callbackNumbers) - 1)
+						//"+66" . substr($callbackNumbers, 1, strlen($callbackNumbers) - 1)
+						"+65".$callbackNumbers
 					],
 					"routingData" => (object) [
 						//"queueId" => "99b42124-be5f-4c54-a424-caa0571e06d1",
@@ -1272,7 +1297,7 @@ function cmp_initial()
 	}
 
 	//prepare campaign action 
-	$sql = " SELECT campaign_name , campaign_detail , external_web_url , script_detail, campaign_type, genesys_queueid, genesys_callback_queueid " .
+	$sql = " SELECT campaign_name , campaign_detail,is_multi_campaign , external_web_url , script_detail, campaign_type, genesys_queueid, genesys_callback_queueid " .
 		" FROM t_campaign c " .
 		" LEFT OUTER JOIN t_callscript s ON c.script_id = s.script_id " .
 		" WHERE c.campaign_id =  " . dbNumberFormat($_POST['cmpid']) . " ";
@@ -1284,6 +1309,7 @@ function cmp_initial()
 		$tmp2 = array(
 			"cmpName" => nullToEmpty($rs['campaign_name']),
 			"cmpDetail" => nullToEmpty($rs['campaign_detail']),
+			"cmpisMultiCampaign" => nullToEmpty($rs['is_multi_campaign']),
 			"cmpType" => nullToEmpty($rs['campaign_type']),
 			"geneQueueid" => nullToEmpty($rs['genesys_queueid']),
 			"exturl" => nullToEmpty($rs['external_web_url']),
@@ -1723,13 +1749,24 @@ function query()
 
 
 	//call history list  ( in this campaign );
-	$sql = " SELECT t.call_id , c.first_name , c.last_name , t.wrapup_id , t.wrapup_note ,t.create_date " .
+	$sql = " SELECT t.call_id,c.first_name,c.last_name,t.wrapup_id,t.wrapup_note,t.create_date, " .
+			"(SELECT wrapup_dtl FROM t_wrapup_code WHERE wrapup_code = 
+			(
+			CASE 
+			WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 3), '|', -1) != '' THEN 
+				SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 3), '|', -1)
+			WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 2), '|', -1) != '' THEN 
+				SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 2), '|', -1)
+			ELSE 
+				SUBSTRING_INDEX(t.wrapup_id, '|', 1)
+			END
+			) )AS wrapup_dtl " .
 		" FROM t_call_trans t " .
 		" LEFT OUTER JOIN t_calllist c ON t.calllist_id = c.calllist_id " .
 		" WHERE t.agent_id = " . dbNumberFormat($tmp['uid']) . " " .
 		" AND t.campaign_id = " . dbNumberFormat($_POST['cmpid']) . " ";
 	" ORDER BY t.create_date ";
-
+	wlog("[call-pane_process][call history] sql: " . $sql);
 	$count = 0;
 	$result = $dbconn->executeQuery($sql);
 	while ($rs = mysqli_fetch_array($result)) {
@@ -1738,6 +1775,7 @@ function query()
 			"cid" => nullToEmpty($rs['call_id']),
 			"cname" => nullToEmpty($rs['first_name'] . " " . $rs['last_name']),
 			"wid" => nullToEmpty(wrapupdtl($rs['wrapup_id'])),
+			"wdetail" => nullToEmpty(wrapupdtl($rs['wrapup_dtl'])),
 			"wdtl" => nullToEmpty($rs['wrapup_note']),
 			"cdate" => getDatetimeFromDatetime($rs['create_date'])
 		);
@@ -1799,7 +1837,7 @@ function detail()
 
 function wrapupdtl($pipe_str)
 {
-
+try{
 	// $tmp = json_decode( $_POST['data'] , true); 
 	$dbconn = new dbconn;
 	$res = $dbconn->createConn();
@@ -1810,44 +1848,38 @@ function wrapupdtl($pipe_str)
 	}
 
 	$cachename = 'wrapupdtl|' . $pipe_str;
-$cachettl = 300;
+	$cachettl = 300;
 
-// Check if the data is cached in APCu
-$ans = apcu_fetch($cachename);
+	// Check if the data is cached in APCu
+	$ans = apcu_fetch($cachename);
 
-if (!$ans) {
-    $t = explode("|", $pipe_str);
-    $ans = array();
-    
-    foreach ($t as $k => $v) {
-        if (empty($v)) {
-            break;
-        }
-        
-        $sql = "SELECT wrapup_dtl FROM t_wrapup_code WHERE wrapup_code = " . $v;
-        wlog("[call=pane_process][integration] wrapup_dtl: " . $sql);
-        
-        $result = $dbconn->executeQuery($sql);
-        if ($rs = mysqli_fetch_array($result)) {
-            array_push($ans, $rs['wrapup_dtl']);
-        }
-    }
-    
-    // Store data in APCu cache
-    apcu_store($cachename, $ans, $cachettl);
+	if (!$ans) {
+		$t = explode("|", $pipe_str);
+		$ans = array();
+		
+		foreach ($t as $k => $v) {
+			if (empty($v)) {
+				break;
+			}
+			
+			$sql = "SELECT wrapup_dtl FROM t_wrapup_code WHERE wrapup_code = " . $v;
+			wlog("[call-pane_process][integration] wrapup_dtl: " . $sql);
+			
+			$result = $dbconn->executeQuery($sql);
+			if ($rs = mysqli_fetch_array($result)) {
+				array_push($ans, $rs['wrapup_dtl']);
+			}
+		}
+		// Store data in APCu cache
+		apcu_store($cachename, $ans, $cachettl);
+	}
+
+	// Return the first element of $ans or an empty string if it's empty
+	return !empty($ans) ? $ans[0] : "";
 }
-
-// Return the first element of $ans or an empty string if it's empty
-return !empty($ans) ? $ans[0] : "";
-
-
-
-	//$res = array("result"=>"success");
-	//	echo json_encode($res);   
-
-
-
-
+catch(Exception $e) {
+	return "";
+}
 
 }
 
@@ -1878,7 +1910,7 @@ function geneGetleadfromcontactid()
 			}
 			$insert_q = "INSERT INTO t_calllist_integration (calllist_id, genesys_id, genesys_contactListId, create_date, create_user) VALUES";
 			$insert_q .= " ( " . dbNumberFormat($ret) . ", " . dbformat($contactid) . ", " . dbformat($contactlistid) . ", NOW(), " . dbNumberFormat($uid) . " )";
-			wlog("[call=pane_process][integration] insertLog : " . $insert_q);
+			wlog("[call-pane_process][integration] insertLog : " . $insert_q);
 			$dbconn->executeUpdate($insert_q);
 		}
 	} else if ($contactid) {
@@ -1900,8 +1932,14 @@ function geneCheckcontactid($contactid, $dbconn)
 	if (empty($contactid))
 		return false;
 	$value = false;
-	$sql = " SELECT calllist_id FROM t_calllist_integration WHERE genesys_id = " . dbformat($contactid) . " OR calllist_id = " . dbformat($contactid);
-
+	//$sql = " SELECT calllist_id FROM t_calllist_integration WHERE genesys_id = " . dbformat($contactid) . " OR calllist_id = " . dbformat($contactid);
+	$sql = "SELECT DISTINCT IFNULL(tci.calllist_id, tc.calllist_id) AS calllist_id
+        FROM t_calllist tc
+        LEFT JOIN t_calllist_integration tci ON tc.calllist_id = tci.calllist_id
+        WHERE tc.calllist_id = " . dbformat($contactid) . "
+        OR tci.genesys_id = " . dbformat($contactid) . "
+        OR tci.calllist_id = " . dbformat($contactid) . ";";
+	wlog("[call-pane_process][geneCheckcontactid] sql : " . $sql);
 	$result = $dbconn->executeQuery($sql);
 	if ($rs = mysqli_fetch_array($result)) {
 		$value = $rs['calllist_id'];
@@ -1918,7 +1956,7 @@ function geneTransfer()
 	$gene = new OutboundGenesys();
 	$participants = $gene->getPaticipants($convsersationId);
 	$result = false;
-	wlog("[call=pane_process][integration] geneTransfer : " . print_r($_POST, true));
+	wlog("[call-pane_process][integration] geneTransfer : " . print_r($_POST, true));
 	// var_dump($convsersationId, $participants);
 	// exit();
 	foreach ($participants as $participant) {
@@ -1967,7 +2005,7 @@ function geneRemoveQueue($calllist_id,$userid)
 		'1'
 	 ))";
 	
-	wlog("[call=pane_process][integration] geneRemoveQueue : sql=".$sql);
+	wlog("[call-pane_process][integration] geneRemoveQueue : sql=".$sql);
 	
 	$result = $dbconn->executeQuery($sql);
 	if ($rs = mysqli_fetch_array($result)) {
@@ -1979,7 +2017,7 @@ function geneRemoveQueue($calllist_id,$userid)
 
 	$dbconn->dbClose();
 
-	wlog("[call=pane_process][integration] geneRemoveQueue Result: genesys_queue_id=$genesys_queue_id call_count=$call_count lead_limit=$lead_limit genesys_queueid=$genesys_queueid");
+	wlog("[call-pane_process][integration] geneRemoveQueue Result: genesys_queue_id=$genesys_queue_id call_count=$call_count lead_limit=$lead_limit genesys_queueid=$genesys_queueid");
 
 	if($call_count >= $lead_limit && $call_count > 0 && $lead_limit > 0){
 		if($genesys_queue_id == ""){
@@ -2044,11 +2082,10 @@ function addCallTrans(){
 	}
 	
 	$sql = "CALL sp_call_trans ('$voice_id',$campaign_id,$agent_id,$calllist_id,null,null,null,null);";
+	wlog("[call-pane_process][addCallTrans] sql : " . $sql);
 	$dbconn->executeUpdate($sql);
 	$dbconn->dbClose();
-	wlog("[call-pane_process][addCallTrans] request sql : " . $sql);
 	$data = array("result" => "success");
-	wlog("[call-pane_process][addCallTrans] response sql : " . $sql);
 	echo json_encode($data);
 }
 
@@ -2140,8 +2177,126 @@ function wrapupCallStatus($campaign_id,$calllist_id,$agent_id,$wrapup_code){
 	}
 	
 	$sql = "CALL sp_wrapup_call_status ($campaign_id,$calllist_id,$agent_id,$wrapup_code)";
+	wlog("[call-pane_process][wrapupCallStatus] sql : " . $sql);
 	$dbconn->executeUpdate($sql);
 	$dbconn->dbClose();
-	wlog("[call-pane_process][wrapupCallStatus] sql : " . $sql);
 	$data = array("result" => "success");
+}
+
+function activeList(){
+	$call_id = isset($_POST['call_id']) ? $_POST['call_id'] : null;
+
+	$dbconn = new dbconn;
+	$dbconn->createConn();
+	$res = $dbconn->createConn();
+	if ($res == 404) {
+		$res = array("result" => "dberror", "message" => "Can't connect to database");
+		echo json_encode($res);
+		exit();
+	}
+	
+	$sql = "CALL sp_active_callist_agent ($call_id)";
+	wlog("[call-pane_process][activeList] sql : " . $sql);
+	$dbconn->executeUpdate($sql);
+	$dbconn->dbClose();
+	$data = array("result" => "success");
+}
+
+function getLastWrapup(){
+	$calllist_id = isset($_POST['calllist_id']) ? $_POST['calllist_id'] : null;
+	$agent_id = isset($_POST['agent_id']) ? $_POST['agent_id'] : null;
+	$dbconn = new dbconn;
+	$dbconn->createConn();
+	$res = $dbconn->createConn();
+	if ($res == 404) {
+		$res = array("result" => "dberror", "message" => "Can't connect to database");
+		echo json_encode($res);
+		exit();
+	}
+	$sql = "SELECT last_wrapup_id FROM t_calllist_agent WHERE calllist_id = '$calllist_id' AND agent_id = '$agent_id'";
+	wlog("[call-pane_process][getLastWrapup] sql : " . $sql);
+	$count = 0;
+	$result = $dbconn->executeQuery($sql);
+	while ($rs = mysqli_fetch_array($result)) {
+		$tmp1 = array(
+			"last_wrapup_id" => nullToEmpty($rs['last_wrapup_id'])
+		);
+		$count++;
+	}
+	$dbconn->dbClose();
+	if ($count == 0) {
+		$data = array("result" => "empty");
+	}
+	else {
+		$data = array("result" => "success", "data" => $tmp1);
+	}
+	echo json_encode($data);
+}
+
+function updateCallTrans(){
+	$voice_id = isset($_POST['voice_id']) ? $_POST['voice_id'] : null;
+
+	$dbconn = new dbconn;
+	$dbconn->createConn();
+	$res = $dbconn->createConn();
+	if ($res == 404) {
+		$res = array("result" => "dberror", "message" => "Can't connect to database");
+		echo json_encode($res);
+		exit();
+	}
+	
+	$sql = "UPDATE t_call_trans SET update_date = NOW() WHERE voice_id = '$voice_id' AND update_date IS NULL;";
+	wlog("[call-pane_process][updateCallTrans] sql : " . $sql);
+	$dbconn->executeUpdate($sql);
+	$dbconn->dbClose();
+	$data = array("result" => "success");
+	echo json_encode($data);
+}
+
+function queryMultiCampaign() {
+	$tmp = json_decode($_POST['data'], true);
+	
+	$dbconn = new dbconn;
+	$res = $dbconn->createConn();
+	
+	if ($res == 404) {
+			$res = array("result" => "dberror", "message" => "Can't connect to database");
+			echo json_encode($res);
+			exit();
+	}
+
+	// $campaign_id = dbNumberFormat($tmp['campaign_id']);
+	// $calllist_id = dbNumberFormat($tmp['calllist_id']);
+	// $agent_id = dbNumberFormat($tmp['agent_id']);
+
+	// Check if campaign_id, calllist_id, and import_id are stored as comma-separated values
+	// $sql = "SELECT id, quoteNo 
+	// FROM t_aig_app 
+	// WHERE campaign_id = '$campaign_id' 
+	// 	AND calllist_id = '$calllist_id' 
+	// 	AND agent_id = '$agent_id' 
+	// ";
+	$sql = "SELECT * from t_campaign where cp_type='ah' and is_multi_campaign=1";
+
+
+	wlog("[call-pane_process-Wrapup][init] sql: " . $sql);
+
+	$count = 0;
+	$result = $dbconn->executeQuery($sql);
+	$data = [];
+
+	while ($rs = mysqli_fetch_assoc($result)) {
+			$data[] = [
+					"campaign_id" => nullToEmpty($rs['campaign_id']),
+					"campaign_name" => nullToEmpty($rs['campaign_name']),
+			];
+			$count++;
+	}
+
+	if ($count == 0) {
+			$data = ["result" => "empty"];
+	}
+
+	$dbconn->dbClose();
+	echo json_encode($data);
 }

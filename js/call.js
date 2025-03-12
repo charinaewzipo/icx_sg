@@ -164,6 +164,11 @@
 						$("#time_wrap").timer('resume');
 						$.call.phoneStatus(lastinter.state);
 						//timerAutoWrapup = setTimeout(autoWrapup, 300000);
+						console.log("disconnect interaction.id:",message.data.interaction.id);
+						$.post(url, {
+							"action": "updateCallTrans",
+							"voice_id": message.data.interaction.id
+						});
 					} else if (message.data.category == "connect") {
 						voiceid = message.data.interaction.id;
 						$.call.voiceid = voiceid;
@@ -408,8 +413,8 @@
 					//campaign profile ( popup profile pane )
 					txt = "";
 					for (let i = 0; i < result.pfield.length; i++) {
-						txt = txt + "<tr><td style='vertical-align:middle; text-align:right; color:#676a6c;'>&nbsp;" + result.pfield[i].cn + " : </td>" +
-							"<td style='vertical-align:middle;'><input type='text' name='" + result.pfield[i].fn + "'  autocomplete='off' style='width:100%'></td><tr/>";
+						txt = txt + "<tr><td style='vertical-align:top;text-align:right;color:#676a6c;text-wrap-mode: nowrap;'>&nbsp;" + result.pfield[i].cn + " : </td>" +
+							"<td style='vertical-align:middle;'><textarea name='" + result.pfield[i].fn + "' cols='40'></textarea></td><tr/>";
 					}
 					$('#cmpprofile-table tbody').text('').append(txt);
 
@@ -565,6 +570,7 @@
 						$('[name=listid]').val(listid);
 						$.call.loadpopup_content(listid);
 					});
+					$.call.queryMultiCampaign()
 				} else {
 					$.call.dtList.newlist.ajax.reload();
 				}
@@ -895,7 +901,7 @@
 					let txt = "<thead><tr class='primary'>";
 					let column = $.call.columns.history.all;
 					column.filter(obj => obj.dataC == "voice_id").forEach(obj => {
-						if (agentlv <= 1) {
+						if (agentlv >= 1) {
 							obj.visible = false;
 						} else {
 							obj.render = (data, type, row, meta) => {
@@ -908,6 +914,22 @@
 							}
 						}
 					});
+					/*
+					column.filter(obj => obj.dataC == "status").forEach(obj => {
+						if (agentlv <= 1) {
+							obj.visible = false;
+						} else {
+							obj.render = (data, type, row, meta) => {
+								if (data == 0) {
+									data = '<button type="button" class="btn btn-success" onclick="activeList(' + row[0] + ')">Active</button>';
+								} else {
+									data = 'Active';
+								}
+								return data;
+							}
+						}
+					});
+					*/
 					let left_column = $.call.columns.history.left;
 					let center_column = $.call.columns.history.center;
 					for (let i = 0; i < column.length; i++) {
@@ -1523,6 +1545,7 @@
 						let confirm_id = result.confirm_id.split(",");
 						let callid = $('[name=listid]').val();
 						let cmpid = $('[name=cmpid]').val();
+						let cmpisMultiCampaign = $('[name=cmpisMultiCampaign]').val();
 						let appid = "";
 						if (confirm_id.length == 3) {
 							cmpid = confirm_id[0];
@@ -1534,19 +1557,26 @@
 						let imid = result.impid.id;
 						let txt = "";
 
-						for (let i = 0; i < result.exapp.length; i++) {
-
-							txt += '<li style="width:100px; text-align:center; border-radius:8px; color:#666; cursor:pointer; padding:2px 5px 2px 5px; margin:2px;" >';
-							if (appid) {
-								txt += '<a href="' + result.exapp[i].appu + '?id=' + appid + '" style="text-decoration:none;" target="_blank">';
+						result.exapp.forEach((app) => {
+							let listItem = `<li style="width:100px; text-align:center; border-radius:8px; color:#666; cursor:pointer; padding:2px 5px; margin:2px;">`;
+			
+							if (app.appn === "Application" &&cmpisMultiCampaign==="1") {
+									listItem += `<a href="#" class="popup-trigger" data-cmpid="${cmpid}" data-callid="${callid}" data-aid="${aid}" data-imid="${imid}">`;
+							} else if (appid) {
+									listItem += `<a href="${app.appu}?id=${appid}" style="text-decoration:none;" target="_blank">`;
 							} else {
-								txt += '<a href="' + result.exapp[i].appu + '?campaign_id=' + cmpid + '&calllist_id=' + callid + '&agent_id=' + aid + '&import_id=' + imid + '&formType=ah" target="_blank">';
+									listItem += `<a href="${app.appu}?campaign_id=${cmpid}&calllist_id=${callid}&agent_id=${aid}&import_id=${imid}&formType=ah" target="_blank">`;
 							}
-							txt += '<span class="' + result.exapp[i].appi + '" style="font-size:26px; color:#666;"></span><span style="font-size:12px; display:block;  color:#666;"> ' + result.exapp[i].appn + '</span></a>' +
-								'</li>';
-						}
+			
+							listItem += `<span class="${app.appi}" style="font-size:26px; color:#666;"></span>
+													 <span style="font-size:12px; display:block; color:#666;"> ${app.appn}</span>
+													 </a></li>`;
+			
+							txt += listItem;
+					});
 						ul.html(txt)
-
+						
+			
 					}
 
 
@@ -1912,12 +1942,47 @@
 				} //end success
 			}); //end ajax
 		},
-		makeCall: function (call, callnumber) {
+		makeCall: async function (call, callnumber) {
 			if (!call || !callnumber) return;
 			if (callsts != "") {
 				return;
 			} else {
 				callsts = "oncall";
+			}
+
+			//check Renewal is issued
+			let incident_type  = $('[name=incident_type]').val();
+			if(incident_type == "Renewal"){
+				$body.addClass("loading");
+				let token = localStorage.getItem('accessToken');
+				if(token == null){
+					await getToken();
+					token = localStorage.getItem('accessToken');
+				}
+				let retrieve_quote_url  = $('[name=retrieve_quote_url]').val();
+				let personal_id = $('[name=personal_id]').val();
+				let udf4  = $('[name=udf4]').val();
+				let body = {
+					"channelType": "10",
+					"idNo": personal_id,
+					"policyNo": udf4
+				  };
+				console.log("retrieveQuote request:",retrieve_quote_url,body);
+				let retrieve_quote_result = await retrieveQuote(retrieve_quote_url,token,body);
+				console.log("retrieveQuote result:",retrieve_quote_result);
+				if(retrieve_quote_result.statusCode == 401){
+					await getToken();
+					token = localStorage.getItem('accessToken');
+					console.log("retrieveQuote request:",retrieve_quote_url,body);
+					retrieve_quote_result = await retrieveQuote(retrieve_quote_url,token,body);
+					console.log("retrieveQuote result:",retrieve_quote_result);
+				}
+				if(retrieve_quote_result.data != null){
+					if (await autoWrapupRenewal(retrieve_quote_result.data.statusCode) == true){
+						return;
+					}
+				}
+				$body.removeClass("loading");
 			}
 
 			//makecall genesys
@@ -1938,6 +2003,8 @@
 					"action": "getQueueFromCalllist",
 					"calllist_id": calllist_id
 				}, function (result) {
+					try{
+						console.log("makeCall getQueueFromCalllist result:",result);
 					let response = eval('(' + result + ')');
 					if (response.result == "success") {
 						console.log("getQueueFromCalllist data:",response);
@@ -1961,6 +2028,9 @@
 							softphone.contentWindow.postMessage(JSON.stringify(ctdObj), "*");
 						}
 					} 
+					} catch (e) {
+						console.log("makeCall getQueueFromCalllist error:",e);
+					}
 				});
 			}
 
@@ -2636,10 +2706,93 @@
 
 
 
-		}
+		},
 
 
+		queryMultiCampaign: function () {
+			let campaign_id = $('[name=cmpid]').val();
+			let calllist_id = $('[name=listid]').val();
+			let agent_id = $('[name=uid]').val();
+			
 
+			let formtojson = JSON.stringify({ campaign_id, calllist_id, agent_id });
+	
+			$.ajax({
+					url: url,
+					data: {
+							action: 'queryMultiCampaign',
+							data: formtojson
+					},
+					dataType: 'html',  
+					type: 'POST',
+					success: function (data) {
+						let result = eval('(' + data + ')');
+						
+							if (!result || result === "empty") {
+									console.warn("No applications found");
+									return;
+							}
+							if( $('[name=cmpisMultiCampaign]').val() !== "1" ) {
+								return;
+							}
+						$(document).off('click', '.popup-trigger').on('click', '.popup-trigger', function (e) {
+							e.preventDefault();
+
+							if ($('#popup-box').length) {
+									$('#popup-box').remove();
+									return;
+							}
+
+							let cmpid = $(this).data("cmpid");
+							let callid = $(this).data("callid");
+							let aid = $(this).data("aid");
+							let imid = $(this).data("imid");
+
+							let popup = $('<div id="popup-box"></div>').css({
+									position: 'absolute',
+									top: $(this).offset().top + $(this).outerHeight(),
+									left: $(this).offset().left + 50,
+									backgroundColor: '#fff',
+									padding: '10px',
+									borderRadius: '8px',
+									boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+									zIndex: 1000,
+							});
+
+							let list = $('<ul id="popup-list"></ul>').css({
+									listStyle: 'none',
+									padding: '0',
+									margin: '0',
+							});
+
+							if (Array.isArray(result)) {
+									result.forEach((app) => {
+											let listItem = $('<li style="padding: 10px; cursor: pointer;"></li>')
+													.text(app.campaign_name)
+													.on('click', function () {
+															let url = `/app/aig/Application/check_app.php?campaign_id=${app.campaign_id}&calllist_id=${callid}&agent_id=${aid}&import_id=${imid}&id=`;
+															window.open(url, '_blank');
+													});
+
+											list.append(listItem);
+									});
+							}
+
+							popup.append(list);
+							$('body').append(popup);
+
+							$(document).on('click', function (event) {
+									if (!$(event.target).closest('#popup-box, .popup-trigger').length) {
+											$('#popup-box').remove();
+									}
+							});
+						});
+					},
+					error: function (xhr, status, error) {
+							console.error("AJAX Error:", status, error);
+					}
+			});
+	}
 	} //end jQuery
 
 	function mask(input, pattern) {
@@ -2664,6 +2817,128 @@
 		$('input[type=radio][name=wrapup1][value=909]').prop('checked', true);
 		$.call.saveWrapup();
 		clearTimeout(timerAutoWrapup);
+	}
+
+	async function getToken() {
+		await fetch('getTokenAPI.php', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		})
+		.then(response => response.text())
+		.then(data => {
+			console.log("getToken data:",data); 
+			localStorage.setItem('accessToken', data);
+		})
+		.catch(error => {
+			console.error('getToken error:', error);
+		});
+	}
+
+	async function retrieveQuote(url, token, body) {
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(body)
+			});
+	
+			const data = await response.json();
+			const statusCode = response.status;
+	
+			return {
+				statusCode,
+				data
+			};
+	
+		} catch (error) {
+			console.error('retrieveQuote error:', error);
+			return {
+				statusCode: null,
+				data: null
+			};
+		}
+	}
+
+	async function autoWrapupRenewal(statusCode) {
+		if (statusCode == "N01"){
+			alert("Quote is referred.");
+			$body.removeClass("loading");
+			let calllist_id = $('[name=listid]').val();
+			let agent_id = $('[name=uid]').val();
+			console.log("autoWrapupRenewal :",calllist_id,agent_id);
+			const result = await $.post(url, {
+                "action": "getLastWrapup",
+                "calllist_id": calllist_id,
+                "agent_id": agent_id
+            });
+            console.log("getLastWrapup result:", result);
+            let response = eval('(' + result + ')');
+			console.log("getLastWrapup response:", response);
+            if (response.result === "success") {
+                let last_wrapup_id = response.data.last_wrapup_id;
+                if (last_wrapup_id === "") {
+                    $('input[type=radio][name=wrapup1][value=1]').prop('checked', true).trigger('change');
+                } else {
+                    let wrapup_codes = last_wrapup_id.split("|");
+                    $('input[type=radio][name=wrapup1][value=' + wrapup_codes[0] + ']').prop('checked', true).trigger('change');
+                    if (wrapup_codes[1] !== '') {
+						setTimeout(function() {
+                        	$('input[type=radio][name=wrapup2][value=' + wrapup_codes[1] + ']').prop('checked', true).trigger('change');
+						}, 1000);
+                    }
+                }
+                setTimeout($.call.saveWrapup, 1000);
+                return true;
+            }
+		}
+		if (statusCode == "N18"){
+			alert("Policy has already been issued.");
+			$body.removeClass("loading");
+			$('input[type=radio][name=wrapup1][value=5]').prop('checked', true).trigger('change');
+			setTimeout(function() {
+				$.call.saveWrapup();
+			}, 1000);
+			return true;
+		} 
+		if (statusCode == "N15"){
+			alert("Quote has lapsed.");
+			$body.removeClass("loading");
+			$('input[type=radio][name=wrapup1][value=12]').prop('checked', true).trigger('change');
+			setTimeout(function() {
+				$('input[type=radio][name=wrapup2][value=36]').prop('checked', true).trigger('change');
+			}, 1000);
+			setTimeout(function() {
+				$.call.saveWrapup();
+			}, 1000);
+			return true;
+		} 
+		if (statusCode == "N16"){
+			alert("Quote has been rejected.");
+			$body.removeClass("loading");
+			$('input[type=radio][name=wrapup1][value=12]').prop('checked', true).trigger('change');
+			setTimeout(function() {
+				$('input[type=radio][name=wrapup2][value=36]').prop('checked', true).trigger('change');
+			}, 1000);
+			setTimeout(function() {
+				$.call.saveWrapup();
+			}, 1000);
+			return true;
+		} 
+		
+	}
+
+	window.activeList = function(call_id) {
+		console.log("activeList call_id:",call_id);
+		$.post(url, {
+			"action": "activeList",
+			"call_id": call_id,
+		});
+		$.call.dtList.history.ajax.reload();
 	}
 
 })(jQuery) //end function

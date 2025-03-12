@@ -1,6 +1,7 @@
 <?php
     session_start();
 	require_once("bypasslogin.php");
+	require_once("app/function/settings.php");
     if(!isset($_SESSION["uid"])){
        header('Location:index.php');
 	}else{
@@ -489,6 +490,7 @@ table > tfoot > tr > td{
 		<input type="hidden" name="genesysid" value="<?php echo $genesysid;  ?>">
 		<input type="hidden" name="cmpid">
 		<input type="hidden" name="cmptype">
+		<input type="hidden" name="cmpisMultiCampaign">
 		<input type="hidden" name="queueid">
 		<input type="hidden" name="queuecallbackid">
 		<input type="hidden" name="lastInteraction"> <!--  when click call list  for make  call  -->
@@ -499,6 +501,7 @@ table > tfoot > tr > td{
 		<input type="hidden" name="currentInteraction"> <!--  when click call list  for make  call  -->
 		<input type="hidden" name="uext" value="<?php echo  $pfile['uext']; ?>">
 		<input type="hidden" name="token" value="<?php echo $pfile['tokenid']; ?>">
+		<input type="hidden" name="retrieve_quote_url" value="<?php echo  $GLOBALS["aig_api_retrieve_quote_url"]; ?>">
 		<div class="navbar navbar-default navbar-fixed-top navbar-header" style="z-index:100;">
 			<div class="navbar-inner  pull-left" style="margin-left:15px; ">
 				<ul class="header-profile">
@@ -1403,7 +1406,6 @@ table > tfoot > tr > td{
 
 		<div id="profile-pane" class="content-overlay" style="display:none"></div>
 		<!-- <div id="reminder-pane" class="content-overlay" style="display:none"></div> -->
-
 	</form>
 	<div class="softphone" >
 		<a class="handle ui-slideouttab-handle-rounded">Phone <i class="io ion-ios-telephone"

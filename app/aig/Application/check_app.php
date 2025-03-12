@@ -14,6 +14,7 @@ $import_id = ($_GET["import_id"]) ? intval($_GET["import_id"]) : "";
 $agent_id = ($_GET["agent_id"]) ? intval($_GET["agent_id"]) : "";
 
 $id = ($_GET["id"]) ? intval($_GET["id"]) : "";
+$newapplication = ($_GET["newapplication"]) ? intval($_GET["newapplication"]) : "";
 
 if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
 
@@ -65,7 +66,11 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
       $newapp = "newApplication.php";
   }
 
-  echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id&id=$app_id&formType=$cp_type';</script>";
+  if($newapplication){
+    echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id&id=&formType=$cp_type';</script>";
+  }else{
+    echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id&id=$app_id&formType=$cp_type';</script>";
+  }
   // if ($chk > 0) {
   //   //echo  $SQL;
   //   if ((in_array($AppStatus,["Follow-doc","Follow Doc","QC_Reject","Reconfirm-App","Reconfirm"]) && $lv==1) || $lv>1) {
