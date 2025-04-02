@@ -1,16 +1,21 @@
 <?php
 
 //config Server
-$ServerName = "192.168.30.23";
-$DatabaseName = "tubtim";
-$User = "cms";
-$Password = "cms";
+//$ServerName = "192.168.30.23";
+//$DatabaseName = "tubtim";
+//$User = "cms";
+//$Password = "cms";
 
 //$ServerName = "10.10.10.253";
 //$DatabaseName = "tubtim";
 //$User = "tubtim";
 //$Password = "tubtim2012";
 
+
+$ServerName = "localhost";
+$DatabaseName = "icx_sg";
+$User = "root";
+$Password = "";
 
 $Conn = mysql_connect($ServerName,$User,$Password) or die ("Error ติดต่อฐานข้อมูลไม่ได้");
 
