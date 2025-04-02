@@ -125,9 +125,7 @@ if (isset($_POST['action'])) {
 		case "updateCallTrans":
 			updateCallTrans();
 			break;
-		case "queryMultiCampaign":
-			queryMultiCampaign();
-			break;
+			
 	}
 }
 
@@ -573,23 +571,23 @@ function loadpopup_content()
 							   " AND t.calllist_id = ".dbNumberFormat( $_POST['listid'] ).
 							   " ORDER BY t.create_date DESC ";
 				   */
-	$sql = " SELECT t.create_date,t.wrapup_id,t.wrapup_note," .
-		"(SELECT wrapup_dtl FROM t_wrapup_code WHERE wrapup_code = 
-		(
-		CASE 
-		WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 3), '|', -1) != '' THEN 
-			SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 3), '|', -1)
-		WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 2), '|', -1) != '' THEN 
-			SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 2), '|', -1)
-		ELSE 
-			SUBSTRING_INDEX(t.wrapup_id, '|', 1)
-		END
-		) )AS wrapup_dtl " .
-		" FROM t_call_trans t " .
-		" WHERE t.agent_id = " . dbNumberFormat($tmp['uid']) . " " .
-		" AND t.campaign_id = " . dbNumberFormat($tmp['cmpid']) . " " .
-		" AND t.calllist_id = " . dbNumberFormat($_POST['listid']) .
-		" ORDER BY t.create_date DESC ";
+	$sql = " SELECT COALESCE(CONVERT_TZ(t.create_date, '+00:00', '+08:00'), '0000-00-00 00:00:00') AS create_date,t.wrapup_id,t.wrapup_note," .
+	"(SELECT wrapup_dtl FROM t_wrapup_code WHERE wrapup_code = 
+	(
+	CASE 
+	WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 3), '|', -1) != '' THEN 
+		SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 3), '|', -1)
+	WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 2), '|', -1) != '' THEN 
+		SUBSTRING_INDEX(SUBSTRING_INDEX(t.wrapup_id, '|', 2), '|', -1)
+	ELSE 
+		SUBSTRING_INDEX(t.wrapup_id, '|', 1)
+	END
+	) )AS wrapup_dtl " .
+	" FROM t_call_trans t " .
+	" WHERE t.agent_id = " . dbNumberFormat($tmp['uid']) . " " .
+	" AND t.campaign_id = " . dbNumberFormat($tmp['cmpid']) . " " .
+	" AND t.calllist_id = " . dbNumberFormat($_POST['listid']) .
+	" ORDER BY create_date DESC ";
 
 	wlog("[call-pane_process][loadpopup_content] cal history sql : " . $sql);
 	$count = 0;
@@ -1297,7 +1295,7 @@ function cmp_initial()
 	}
 
 	//prepare campaign action 
-	$sql = " SELECT campaign_name , campaign_detail,is_multi_campaign , external_web_url , script_detail, campaign_type, genesys_queueid, genesys_callback_queueid " .
+	$sql = " SELECT campaign_name , campaign_detail , external_web_url , script_detail, campaign_type, genesys_queueid, genesys_callback_queueid " .
 		" FROM t_campaign c " .
 		" LEFT OUTER JOIN t_callscript s ON c.script_id = s.script_id " .
 		" WHERE c.campaign_id =  " . dbNumberFormat($_POST['cmpid']) . " ";
@@ -1309,7 +1307,6 @@ function cmp_initial()
 		$tmp2 = array(
 			"cmpName" => nullToEmpty($rs['campaign_name']),
 			"cmpDetail" => nullToEmpty($rs['campaign_detail']),
-			"cmpisMultiCampaign" => nullToEmpty($rs['is_multi_campaign']),
 			"cmpType" => nullToEmpty($rs['campaign_type']),
 			"geneQueueid" => nullToEmpty($rs['genesys_queueid']),
 			"exturl" => nullToEmpty($rs['external_web_url']),
@@ -2250,53 +2247,5 @@ function updateCallTrans(){
 	$dbconn->executeUpdate($sql);
 	$dbconn->dbClose();
 	$data = array("result" => "success");
-	echo json_encode($data);
-}
-
-function queryMultiCampaign() {
-	$tmp = json_decode($_POST['data'], true);
-	
-	$dbconn = new dbconn;
-	$res = $dbconn->createConn();
-	
-	if ($res == 404) {
-			$res = array("result" => "dberror", "message" => "Can't connect to database");
-			echo json_encode($res);
-			exit();
-	}
-
-	// $campaign_id = dbNumberFormat($tmp['campaign_id']);
-	// $calllist_id = dbNumberFormat($tmp['calllist_id']);
-	// $agent_id = dbNumberFormat($tmp['agent_id']);
-
-	// Check if campaign_id, calllist_id, and import_id are stored as comma-separated values
-	// $sql = "SELECT id, quoteNo 
-	// FROM t_aig_app 
-	// WHERE campaign_id = '$campaign_id' 
-	// 	AND calllist_id = '$calllist_id' 
-	// 	AND agent_id = '$agent_id' 
-	// ";
-	$sql = "SELECT * from t_campaign where cp_type='ah' and is_multi_campaign=1";
-
-
-	wlog("[call-pane_process-Wrapup][init] sql: " . $sql);
-
-	$count = 0;
-	$result = $dbconn->executeQuery($sql);
-	$data = [];
-
-	while ($rs = mysqli_fetch_assoc($result)) {
-			$data[] = [
-					"campaign_id" => nullToEmpty($rs['campaign_id']),
-					"campaign_name" => nullToEmpty($rs['campaign_name']),
-			];
-			$count++;
-	}
-
-	if ($count == 0) {
-			$data = ["result" => "empty"];
-	}
-
-	$dbconn->dbClose();
 	echo json_encode($data);
 }
