@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const cardExpiryContainer = document.getElementById('card-expiry-container');
 
         cardNumberContainer.hidden = false;
-        cardExpiryContainer.hidden = false;
+        // cardExpiryContainer.hidden = false;
         populatePaymentForm(paymentResponse?.data)
         const formElements = document.querySelectorAll(
           "input, select, button:not(#btnSaveForm):not(.extend-btn)"
