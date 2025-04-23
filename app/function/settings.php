@@ -61,4 +61,8 @@ $GLOBALS['url_create_session'] = "https://ap-gateway.mastercard.com/api/rest/ver
 $GLOBALS['url_get_payment_detail'] = "https://ap-gateway.mastercard.com/api/rest/version/llaatteesstt/merchant/" . $GLOBALS['merchant'];
 $GLOBALS['url_create_token'] = "https://ap-gateway.mastercard.com/api/rest/version/llaatteesstt/merchant/" . $GLOBALS['merchant'];
 
+$GLOBALS['merchant_amex'] = 'TEST9800706855';
+$GLOBALS['username_amex'] = "merchant." . $GLOBALS['merchant_amex'];
+$GLOBALS['password_amex'] = 'c43dfb791c8e0095cf9eebaf9be18c95';
+$GLOBALS['url_get_payment_detail_amex'] = "https://gateway-japa.americanexpress.com/api/rest/version/llaatteesstt/merchant/" . $GLOBALS['merchant_amex'];
 ?>
