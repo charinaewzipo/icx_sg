@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ยืนยันการชำระเงิน</title>
+</head>
+<body>
+  <h3>ยืนยันการชำระเงิน</h3>
+  <p id="quoteNoText">Loading...</p>
+  <button id="confirmBtn">✅ Confirm</button>
+  <button onclick="window.close()">❌ Cancel</button>
+
+  <script>
+    let paymentData = null;
+
+    window.addEventListener("message", (event) => {
+      paymentData = event.data;
+      document.getElementById("quoteNoText").innerText = `คุณต้องการชำระเงินสำหรับ Quote No: ${paymentData.quote_no} ใช่หรือไม่?`;
+    });
+
+    document.getElementById("confirmBtn").addEventListener("click", () => {
+      if (!paymentData) return alert("ข้อมูลไม่ครบ");
+
+      fetch('pay_secureflow_mastercard.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentData)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('✅ ชำระเงินสำเร็จ');
+          window.close();
+        } else {
+          alert('❌ ชำระเงินไม่สำเร็จ');
+          console.warn(data);
+        }
+      })
+      .catch(err => {
+        alert("⚠️ เกิดข้อผิดพลาด");
+        console.error(err);
+      });
+    });
+  </script>
+</body>
+</html>

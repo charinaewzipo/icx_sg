@@ -1,5 +1,7 @@
 let policyid = null
 let statusPayment = null;
+let paymentResponseSecureFlow=null
+
 const hideFormData = (elements) => {
   // Disable datepickers
   disableDatepickers([
@@ -187,7 +189,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (policyId && quotationData?.quoteNo) {
           try {
             const paymentResponse = await jQuery.agent.getPaymentLogWithId(quotationData?.quoteNo);
+            const paymentResponseSecureFlowDetail = await jQuery.agent.getPaymentLogWithIdForCheckToken(quotationData?.quoteNo);
+            paymentResponseSecureFlow=paymentResponseSecureFlowDetail?.data ?? {};
             handlePaymentResponse(paymentResponse);
+            handleCheckTokenSecureFlow(paymentResponseSecureFlowDetail);
             responsePayment = paymentResponse?.data;
             handleAlertNCDLevelDifferent()
           } catch (error) {
@@ -224,6 +229,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnEditForm):not(#btnSaveForm):not(.extend-btn),textarea"
       );
 
+      document.getElementById("payment_checkbox").disabled=true
+
       hideFormData(formElements);
 
     }
@@ -238,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handlePaymentResponse(paymentResponse) {
+      // const secureflowButton = document.getElementById("secure_flow")
       console.log("paymentResponse:", paymentResponse)
       btnSaveDraftForm.style.display = "none";
 
@@ -245,6 +253,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Payment not successful
         btnSaveForm.disabled = true;
         btnSaveForm.style.opacity = "0.65";
+
+        // secureflowButton.disabled = true;
+        // secureflowButton.style.opacity = "0.65";
+
         btnEditForm.style.display = "block";
       } else {
         // Payment successful
@@ -324,11 +336,11 @@ function populatePaymentForm(paymentData) {
 
   // Card Number
   const cardNumberInput = document.querySelector('input[name="payment_cardNumber"]');
-  cardNumberInput.value = paymentData.card_number;
+  cardNumberInput.value = paymentData.card_number||paymentData.payment_token_id;
 
   // Expiry Date (MM/YY)
   const expiryDateInput = document.querySelector('input[name="payment_expiryDate"]');
-  expiryDateInput.value = `${paymentData?.card_expiry_month||"XX"}/${paymentData?.card_expiry_year.slice(-2)||"XX"}`; // Format as MM/YY
+  expiryDateInput.value = `${paymentData?.card_expiry_month || "XX"}/${(paymentData?.card_expiry_year || "").toString().slice(-2) || "XX"}`;
 
   // Security Code
   // const securityCodeInput = document.querySelector('input[name="payment_securityCode"]');

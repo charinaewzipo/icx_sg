@@ -93,6 +93,47 @@ function DBGetPaymentLogWithId($quoteNo)
     // Close the database connection
     $dbconn->dbconn->close();
 }
+function DBGetPaymentLogWithIdForCheckToken($quoteNo)
+{
+    $dbconn = new dbconn();
+    $res = $dbconn->createConn();
+
+    if ($res == "404") {
+        echo json_encode(array("result" => "error", "message" => "Can't connect to database"));
+        exit();
+    }
+
+    // Prepare the SQL query to select data by policyId
+    $sql = "SELECT * FROM t_aig_sg_payment_log
+            WHERE quote_no = ? and result='CREATE' and is_secureflow='1'";
+// wlog("DBGetPaymentLogWithId ".$sql);
+    if ($stmt = $dbconn->dbconn->prepare($sql)) {
+        // Bind the policyId parameter
+        $stmt->bind_param("i", $quoteNo);
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
+        // Fetch the data as an associative array
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+            echo json_encode(array("result" => "success", "data" => $data));
+        } else {
+            echo json_encode(array("result" => "error", "message" => "No data found for the given policyId"));
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        echo json_encode(array("result" => "error", "message" => "Failed to prepare SQL statement"));
+    }
+
+    // Close the database connection
+    $dbconn->dbconn->close();
+}
 function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$premiumCalculationData)
 {
     $dbconn = new dbconn();
@@ -288,6 +329,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
     $premiumCalculationData = mysqli_real_escape_string($dbconn->dbconn, $premiumCalculationData);
 
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
+    $isSecureFlowNotUse = isset($formData['is_secureflow_not_use']) ? $formData['is_secureflow_not_use'] : '';
+    $secureFlowComment = isset($formData['secureflow_comment']) ? $formData['secureflow_comment'] : '';
 
     if (!empty($paymentDetails) && is_array($paymentDetails)) {
         $payment_mode = isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
@@ -300,7 +343,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
     $customer_id = isset($individual_info['customerIdNo']) ? $individual_info['customerIdNo'] : '';
     // Initialize the SQL query
-    $sql = "UPDATE t_aig_app
+
+      $sql = "UPDATE t_aig_app
     SET 
         type = '$type',
         productId = $productId,
@@ -329,7 +373,9 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
         ncdLevelGEARS='$ncdLevelGEARS',
         cardType='$cardType',
         customer_id='$customer_id',
-        response_premium_calculation_json='$premiumCalculationData',          
+        response_premium_calculation_json='$premiumCalculationData',   
+        is_secureflow_not_use='$isSecureFlowNotUse',
+        secureflow_comment='$secureFlowComment',             
         update_date = NOW()";
 
     // Add quote_create_date if response is not null
@@ -419,6 +465,8 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
     $individual_info = isset($policy_holder_info['individualPolicyHolderInfo']) ? $policy_holder_info['individualPolicyHolderInfo'] : [];
 
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
+    $isSecureFlowNotUse = isset($formData['is_secureflow_not_use']) ? $formData['is_secureflow_not_use'] : '';
+    $secureFlowComment = isset($formData['secureflow_comment']) ? $formData['secureflow_comment'] : '';
 
     if (!empty($paymentDetails) && is_array($paymentDetails)) {
         $payment_mode = isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
@@ -460,6 +508,8 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
         campaignInfoList='$campaignInfoList',
         cardType='$cardType',
         ncdLevelGEARS='$ncdLevelGEARS',
+        is_secureflow_not_use='$isSecureFlowNotUse',
+        secureflow_comment='$secureFlowComment',
         update_date = NOW()";
 
     // Add quote_create_date if response is not null
@@ -992,7 +1042,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($data['action'] === 'getPaymentLogWithId') {
             $quoteNo = isset($data['quoteNo']) ? $data['quoteNo'] : 0;
             DBGetPaymentLogWithId($quoteNo);
-        } elseif ($data['action'] === 'updatePolicyNo') {
+        } 
+        elseif ($data['action'] === 'getPaymentLogWithIdForCheckToken') {
+            $quoteNo = isset($data['quoteNo']) ? $data['quoteNo'] : 0;
+            DBGetPaymentLogWithIdForCheckToken($quoteNo);
+        } 
+        elseif ($data['action'] === 'updatePolicyNo') {
             $policyid = isset($data['policyid']) ? $data['policyid'] : "";
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
             $response = isset($data['response']) ? $data['response'] : array();

@@ -72,7 +72,14 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       const executionTime = performance.now() - startTime; // เวลาที่ใช้
       const statusCode = response.status;
       const data = await response.json();
-      
+        //handlesecireflow
+      const isnotsecureflow=document.getElementById("payment_checkbox")
+      const payment_comment=document.getElementById("payment_comment")
+      requestBody = {
+        ...requestBody,
+        is_secureflow_not_use: isnotsecureflow.checked ? "1" : "0",
+        secureflow_comment: payment_comment.value
+      };
       console.log("data", data);
       await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime, calllistDetail?.calllist_id, campaignDetails?.agent_id, campaignDetails?.import_id);
 
@@ -86,8 +93,7 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
         url.searchParams.append('is_firsttime', '1');
       }
 
-      requestBody = handleForm();
-      
+      // requestBody = handleForm();
       // Insert Quotation Data regardless of statusCode
       if (id != null && id !== "") {
         if (formType === 'auto' && data?.statusCode === "S03") {
@@ -256,6 +262,15 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       });
 
       const data = await response.json();
+      //handlesecireflow
+      const isnotsecureflow=document.getElementById("payment_checkbox")
+      const payment_comment=document.getElementById("payment_comment")
+      requestBody = {
+        ...requestBody,
+        is_secureflow_not_use: isnotsecureflow.checked ? "1" : "0",
+        secureflow_comment: payment_comment.value
+      };
+
       console.log("data", data);
       const executionTime = performance.now() - startTime; // เวลาที่ใช้
       const statusCode = response.status;

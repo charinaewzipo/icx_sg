@@ -1,5 +1,4 @@
 let agentDetail = null
-
 function handlePaymentFrequencyChange(radio) {
   console.log("handlePaymentFrequencyChange");
 
@@ -626,6 +625,248 @@ const handleCardTypeIPP = () => {
   }
 }
 
+const handleSecureFlow = () => {
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let formType = url.searchParams.get('formType');
+  const quoteNo=document.getElementById("policyid-input").value
+  const payment_amount=document.getElementById("payment_amount").value
+  const paymentModeValue = document.getElementById("paymentModeSelect").value
+  const voiceId = localStorage.getItem('voiceid');
+  const isRecurring = paymentModeValue === 124 ? 1 : 0;
+  const params = new URLSearchParams({
+    voice_id: voiceId,
+    quote_no: quoteNo,
+    amount: Number(payment_amount.replace("(SGD)","")),
+    is_recurring: isRecurring,
+    payment_frequency: paymentModeValue
+  });
+
+ 
+  if(!voiceId) return window.alert("Please Make Call")
+  if (formType === "auto") {
+    if (!handlePaymentValidateFormAuto()) {
+      return
+    }
+  }
+  if (!paymentModeValue) {
+    alert("Payment Mode has no value");
+    return;
+  }
+  if (formType === "home") {
+    if (!handlePaymentValidateFormHome()) {
+      return
+    }
+  }
+  window.open(
+    `payment_secureflow_mastercard.php?${params.toString()}`,
+    'PaymentWindow',
+    'width=800,height=600'
+  );
+};
+const handleCheckTokenSecureFlow = (paymentResponse) => {
+  const secureflowPaymentbutton = document.getElementById("secure_flow");
+  const btnPaymentMasterCard = document.getElementById("btnPayment");
+  const payment_secure_flow = document.getElementById("payment_secure_flow");
+  const btnEditForm = document.getElementById("btnEditForm");
+  
+  console.log("paymentResponse:", paymentResponse);
+
+  if (paymentResponse?.result === "success") {
+    secureflowPaymentbutton.disabled = true;
+    secureflowPaymentbutton.style.opacity = 0.65;
+
+    btnPaymentMasterCard.disabled = true;
+    btnPaymentMasterCard.style.opacity = 0.65;
+    
+    btnEditForm.disabled = true;
+    btnEditForm.style.opacity = 0.65;
+
+    payment_secure_flow.style.display = "inline";
+    payment_secure_flow.style.opacity = 1;
+  }
+};
+
+const handlePaymentSecureFlow =async () => {
+  console.log("paymentResponseSecureFlow", paymentResponseSecureFlow);
+  let currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  let is_firsttime = url.searchParams.get('is_firsttime');
+  const quoteNo = document.getElementById("policyid-input")?.value?.trim();
+  const rawAmount = document.getElementById("payment_amount")?.value?.replace("(SGD)", "").trim();
+  const paymentModeValue = document.getElementById("paymentModeSelect")?.value;
+  const voice_id = paymentResponseSecureFlow?.payment_order_id;
+  const tokenId = paymentResponseSecureFlow?.payment_token_id;
+
+  const amount = parseFloat(rawAmount);
+  const textresposne = paymentResponseSecureFlow?.response_json;
+  const response = JSON.parse(textresposne);
+  console.log(" response:", response)
+
+  const cardNumber = response?.sourceOfFunds?.provided?.card?.number || '-';
+  const brand = response?.sourceOfFunds?.provided?.card?.brand || '-';
+  const expiry = response?.sourceOfFunds?.provided?.card?.expiry || '-';
+  const result = response?.result || '-';
+  // Validation for required fields
+  if (!quoteNo || isNaN(amount) || !paymentModeValue || !tokenId) {
+    console.log("❌ Validation failed before payment:");
+    console.log("quoteNo:", quoteNo);
+    console.log("amount:", amount, "isNaN(amount):", isNaN(amount));
+    console.log("paymentModeValue:", paymentModeValue);
+    console.log("tokenId:", tokenId);
+
+    alert("กรุณากรอกข้อมูลให้ครบถ้วนก่อนชำระเงิน");
+    return;
+  }
+
+  const isRecurring = paymentModeValue === "124" ? 1 : 0;
+
+
+
+  let payload = {
+    quote_no: quoteNo,
+    voice_id,
+    amount,
+    tokenId,
+    is_recurring: isRecurring,
+    payment_frequency: paymentModeValue,
+    brand:brand
+  };
+  let confirmMessage =   `Please confirm the following payment details:\n\n` +
+  `Payment Token Result: ${result}\n` +
+  `Card: ${cardNumber}\n` +
+  `Brand: ${brand}\n` +
+  `Amount: ${amount}(SGD)\n` 
+
+  if (is_firsttime === "1") {
+    const userConfirmed = window.confirm(confirmMessage);
+    if (!userConfirmed) return;
+    callPaySecureflow(payload)
+  } else {
+    const objectRetrieve = {
+      "channelType": "10",
+      "idNo": quotationData?.customer_id,
+      "policyNo": quotationData?.quoteNo
+    };
+    const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
+    console.log("responseRetrieve:", responseRetrieve);
+    console.log("quotationData:", quotationData);
+
+    if (!responseRetrieve) {
+      alert("Quote Retrieval List Operation failed");
+      return;
+    }
+
+    const { statusCode, quoteList, statusMessage } = responseRetrieve;
+    if (statusCode !== "P00") {
+      alert(statusMessage);
+      return;
+    }
+
+    let data = quoteList?.[0]?.Policy;
+    console.log("data:", data);
+    const transformedData = transformQuoteData(data, quotationData);
+    console.log("transformedData", transformedData);
+    await jQuery.agent.updateRetrieveQuote(data, id, transformedData, objectRetrieve);
+    const isPremiumPayableMatching =
+      parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable);
+
+    const isPaymentModeMatching =
+      Number(data?.paymentDetails[0]?.paymentMode) === Number(paymentModeValue);
+
+    if (!isPremiumPayableMatching) {
+      alert("Premium Payable does not match. It has changed to " + data?.premiumPayable + " " + data?.currency);
+    }
+    if (!isPaymentModeMatching) {
+      alert("Payment Mode has changed.");
+    }
+    payload={...payload,amount:data?.premiumPayable}
+    confirmMessage= `Please confirm the following payment details:\n\n` +
+    `Payment Token Result: ${result}\n` +
+    `Card: ${cardNumber}\n` +
+    `Brand: ${brand}\n` +
+    `Amount: ${payload.amount}(SGD)\n`
+    const userConfirmed = window.confirm(confirmMessage);
+    if (!userConfirmed) return;
+    callPaySecureflow(payload)
+    
+  }
+
+
+};
+const callPaySecureflow=async(payload)=>{
+  document.body.classList.add('loading');
+  fetch('pay_secureflow_mastercard.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(response => response.text())
+  .then(responseText => {
+    console.log("Raw Response:", responseText);
+
+    try {
+      const cleanedResponse = responseText.trim();
+      const jsonResponse = JSON.parse(cleanedResponse);
+      console.log("JSON Response:", jsonResponse);
+
+      if (jsonResponse.success) {
+        alert('Payment successfully!');
+        window.location.reload();
+      } else {
+        // alert(`Payment failed! Error details: ${JSON.stringify(jsonResponse?.gateway_response, null, 2)}`);
+        alert(`Payment failed! Error , Please try again`);
+        console.warn('Payment error response:', jsonResponse);
+      }
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      alert('Error occurred during payment process. Please check the response from the server.');
+    }
+  })
+  .catch(err => {
+    console.error('Fetch error:', err);
+    alert('Error occurred during payment process.');
+  }).finally(()=> document.body.classList.remove('loading'))
+}
+
+
+const handleDisplaySecureFlow=()=>{
+  const defaultPaymentDisplay=document.getElementById("default-payment-display");
+  const alternatePaymentDisplay=document.getElementById("alternate-payment-display");
+  const paymentModeSelect = document.getElementById("paymentModeSelect")
+  const checkboxOpt=document.getElementById("payment_checkbox")
+  const paymentComment=document.getElementById("payment_comment")
+  const interval = setInterval(()=>{
+    if(paymentModeSelect&&paymentModeSelect.value!=""){
+      clearInterval(interval)
+      if(Number(paymentModeSelect.value)===122){
+        defaultPaymentDisplay.style.display="none"
+        alternatePaymentDisplay.style.display="table-row"
+      }else if(quotationData?.is_secureflow_not_use==="1"){
+        checkboxOpt.checked=true;
+        handleCheckbox()
+        paymentComment.value=quotationData?.secureflow_comment||"";
+        alternatePaymentDisplay.style.display="table-row"
+        defaultPaymentDisplay.style.display="table-row"
+
+      }else{
+        defaultPaymentDisplay.style.display="table-row"
+        alternatePaymentDisplay.style.display="none"
+      }
+    }
+  },300) 
+}
+const handleCheckbox=()=>{
+  const checkbox = document.getElementById("payment_checkbox");
+    const commentInput = document.getElementById("payment_comment");
+
+    checkbox.addEventListener("change", () => {
+      commentInput.disabled = !checkbox.checked;
+      if (!checkbox.checked) {
+        commentInput.value = ""; 
+      }
+    });
+}
 document.addEventListener("DOMContentLoaded", () => {
   fetchAgentDetail()
 
@@ -642,5 +883,16 @@ document.addEventListener("DOMContentLoaded", () => {
         populatePlansNormal(selectedProductId.value, null, paymentModeSelect.value)
       }
     });
+    
   }
+
+  //paymentSecureflow
+  handleCheckbox()
+  document.getElementById("paymentModeSelect").addEventListener("change", handleDisplaySecureFlow);
+  setTimeout(() => {
+    handleDisplaySecureFlow()
+  }, 1000);
+  document.getElementById('payment_secure_flow').addEventListener('click', function () {
+    handlePaymentSecureFlow()
+  });
 });

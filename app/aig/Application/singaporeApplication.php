@@ -1761,22 +1761,60 @@ where name='Nature of Business'";
         <fieldset id="form-content">
           <!-- <legend>Payment</legend> -->
 
-          <div class="table">
-            <div class="table-header">
-              <div class="header__item">Payment Type</div>
-              <div class="header__item">Action</div>
-            </div>
-            <div class="table-content">
-              <div class="table-row" style="padding:10px 0px;">
-                <div class="table-data">Online Payment Gateway </div>
-                <div class="table-data">
-                  <!-- <button type="button" class="button payment" id="btnPayment">Payment</button> -->
-                  <button type="button" class="button payment" id="btnPayment" onclick="handleRetrieveQuote()">Payment</button>
-                </div>
-                <!-- <button type="button" onclick="handlePaymentGateway()">Payment</button> -->
-              </div>
-            </div>
-          </div>
+          <div class="table" style="display: table; width: 100%; ">
+  <!-- Table Header -->
+  <div class="table-header" style="display: table-row; font-weight: bold; ">
+    <div class="header__item" style="display: table-cell; width: 40%; padding: 10px;">Payment Type</div>
+    <div class="header__item" style="display: table-cell; width: 35%; padding: 10px;">Action</div>
+    <div class="header__item" style="display: table-cell; width: 25%; padding: 10px;">Other</div>
+  </div>
+
+  <!-- Table Content -->
+  <div class="table-content" style="display: table-row-group;">
+    
+    <!-- Default Payment Row -->
+    <div class="table-row" style="display: table-row;" id="default-payment-display">
+      <div class="table-data" style="display: table-cell; width: 40%; padding: 10px;">
+        Online Payment (Secure Flow)
+      </div>
+      <div class="table-data" style="display: table-cell; width: 35%; padding: 10px;">
+        <button type="button" class="button" id="secure_flow" onclick="handleSecureFlow()" style="width:120px !important">Create Token</button>
+        <button type="button" class="button" id="payment_secure_flow" style="opacity: 0.65;display:none;width:120px !important">Pay by Token</button>
+      </div>
+      <div class="table-data" style="display: table-cell; width: 25%; padding: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 10px;flex-direction:column;">
+        <label style="display: flex; align-items: center; gap: 5px;">
+          <input type="checkbox" id="payment_checkbox"
+                onchange="document.getElementById('payment_comment').disabled = !this.checked;">
+          Opt Manual Payment
+        </label>
+        <input type="text" id="payment_comment"
+              placeholder="Add comment..."
+              style="width: 200px; padding: 5px;"
+              disabled>
+      </div>
+
+      </div>
+    </div>
+
+      <!-- Alternate Payment Row -->
+    <div class="table-row" style="display: table-row;" id="alternate-payment-display">
+      <div class="table-data" style="display: table-cell; width: 40%; padding: 10px;">
+      Online Payment (Manual Pause)-<br>Override Secure Flow
+      </div>
+      <div class="table-data" style="display: table-cell; width: 35%; padding: 10px;">
+        <button type="button" class="button payment" id="btnPayment" onclick="handleRetrieveQuote()" style="width:120px !important">Make payment</button>
+      </div>
+      <div class="table-data" style="display: table-cell; width: 25%; padding: 10px;">
+      -
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
           <!-- <h1 style="padding-left:0.5em">Additional</h1> -->
           <table id="table-form">
             <!-- <tr>

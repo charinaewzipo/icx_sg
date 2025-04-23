@@ -223,14 +223,29 @@ const handleEditQuote = () => {
     }
    
     
-
-    
+    //เพราะไม่อยู่ในform
+   
     unhideFormData(formElements);
 
 
     if(formType==='auto'){
       handleMileageCondition()
     }
+    //paymentsecureflow
+    const secureFlowButton = document.getElementById('secure_flow');
+    const paymentComment = document.getElementById('payment_comment');
+    const paymentCheckbox = document.getElementById('payment_checkbox');
+    paymentCheckbox.addEventListener('change', function () {
+      const isChecked = this.checked;
+      paymentComment.disabled = !isChecked;
+      paymentComment.required = isChecked;
+    });
+    if (secureFlowButton) {
+      secureFlowButton.disabled = true;
+      secureFlowButton.style.opacity = "0.65";
+    }
+
+
     btnEditForm.textContent = "Save"
     document.getElementById("btnPayment").disabled=true;
     document.getElementById("btnPayment").style.opacity="0.65";

@@ -268,8 +268,10 @@ const setDefaultValueForm = async (dbData) => {
   const paymentFrequencyMonthly = document.querySelector('#paymentFrequencyMonthly');
   if (dbData?.payment_frequency === 1) {
     paymentFrequencyAnnual.checked = true;
+    paymentFrequencyAnnual.dispatchEvent(new Event('change'));
   } else if (dbData?.payment_frequency === 2) {
     paymentFrequencyMonthly.checked = true;
+    paymentFrequencyMonthly.dispatchEvent(new Event('change'));
   }
   
   document.querySelector('select[name="Payment_Mode"]').value = dbData?.payment_mode || "";
