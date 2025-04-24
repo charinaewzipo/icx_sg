@@ -28,25 +28,39 @@ $batchNo = 'IP' . date('dmY');
 // echo "access_token=$access_token<br>";
 if ($access_token) {
     $participantData = getParticipantId($genesys_url, $access_token, $voice_id);
+    // echo "</br>";
+    // print_r($participantData);
+    // echo "</br>";
     if ($participantData !== null) {
         $participant_token = $participantData['token'];
-        $participant_brand = strtoupper($participantData['brand_card_type']);
+        $participant_brand = strtoupper($participantData['brand']);
         //เช็คเพื่อตรวจสอบกรณีซ้ำกันของtoken
         $checkSQL = "SELECT COUNT(*) as count FROM t_aig_sg_payment_log WHERE payment_order_id = '$voice_id' and result='CREATE'";
         $result = mysqli_query($Conn, $checkSQL);
         $row = mysqli_fetch_assoc($result);
         if ($row['count'] == 0) {
             // getTokenDetail
+
             if ($participant_brand === 'AMEX') {
+                // echo "</br>";
+                // print_r($participant_brand);
+                // echo "</br>";
                 $url_get_payment_token_detail = $GLOBALS['url_get_payment_detail_amex'] . "/token/$participant_token";
                 $response_get_payment_token_detail = callAPI($username_amex, $password_amex, $url_get_payment_token_detail, "GET", "");
-                $merchant =$merchant_amex;
+                $merchanttt=$merchant_amex;
             } else {
+                // echo "</br>";
+                // print_r($participant_brand);
+                // echo "</br>";
                 $url_get_payment_token_detail = $GLOBALS['url_get_payment_detail'] . "/token/$participant_token";
                 $response_get_payment_token_detail = callAPI($username, $password, $url_get_payment_token_detail, "GET", "");
+                $merchanttt=$merchant;
             }
         
             $response_get_payment_token_detail = json_decode($response_get_payment_token_detail, true);
+            // echo "</br>";
+            // print_r($response_get_payment_token_detail);
+            // echo "</br>";
             if (
                 $response_get_payment_token_detail
                 && $response_get_payment_token_detail['result'] === "SUCCESS"
@@ -64,7 +78,6 @@ if ($access_token) {
                     $Conn,
                     json_encode($response_get_payment_token_detail, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
                 );
-
                 // เตรียม SQL INSERT
                 $SQL = "
                     INSERT INTO t_aig_sg_payment_log (
@@ -95,7 +108,7 @@ if ($access_token) {
                         '$orderId',
                         '$participant_token',
                         '$is_recurring',
-                        '$merchant',
+                        '$merchanttt',
                         '$quote_no',
                         '$batchNo',
                         '$cardtype',
@@ -114,13 +127,21 @@ if ($access_token) {
                 } else {
                     echo "Error inserting record: " . mysqli_error($Conn);
                 }
+                $participantData=null;
             } else {
                 echo "Invalid or unsuccessful API response.";
             }
         } else {
             echo "<div id='paymentResult'>Duplicate entry blocked for payment_token_id = $participant_token<br></div>";
         }
-    }
+         //เคลียค่า
+    $participantData = null;
+    $participant_token = null;
+    $participant_brand = null;
+    $merchanttt = null;
+    $response_get_payment_token_detail = null;
+    }   
+   
 }
 
 
