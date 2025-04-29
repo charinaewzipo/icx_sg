@@ -814,8 +814,8 @@ const callPaySecureflow=async(payload)=>{
         alert('Payment successfully!');
         window.location.reload();
       } else {
-        // alert(`Payment failed! Error details: ${JSON.stringify(jsonResponse?.gateway_response, null, 2)}`);
-        alert(`Payment failed! Error , Please try again`);
+        alert(`Payment failed! Error details:  ${jsonResponse?.message ? JSON.stringify(jsonResponse.message, null, 2) : ""}`);
+        // alert(`Payment failed! Error , Please try again`);
         console.warn('Payment error response:', jsonResponse);
       }
     } catch (error) {

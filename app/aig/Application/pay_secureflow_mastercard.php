@@ -41,75 +41,106 @@ $batchNo = 'IP' . date('dmY');
 // }
 
 if ($access_token) {
-    $payload = [
-        "apiOperation" => "PAY",
-        "order" => [
-            "amount" => $amount,
-            "currency" => 'SGD'
-        ],
-        "sourceOfFunds" => [
-            "type" => "CARD",
-            "token" => $tokenId
-        ]
-    ];
-    $jsonPayload = json_encode($payload, JSON_PRETTY_PRINT);
 
-    if (strtoupper($brand) === 'AMEX') {
-        $url_pay_by_token = $GLOBALS['url_get_payment_detail_amex'] . "/order/$voice_id/transaction/$orderId";
-        $response = callAPI($username_amex, $password_amex, $url_pay_by_token, "PUT", $jsonPayload);
+    $participantData = getParticipantData($genesys_url, $access_token, $voice_id);
+    if ($participantData !== null) {
+        $participant_token = $participantData['token'];
+        $participant_quote_no = $participantData['quote_no'];
+        $participant_id = $participantData['id'];
+        $participant_brand = strtoupper($participantData['brand']);
+
+        // Correct quote number checking
+        if ($participant_quote_no !== $quote_no) {
+            http_response_code(400);
+            echo json_encode([
+                "success" => false,
+                "message" => "Quote number mismatch."
+            ]);
+            exit; 
+        }
+
+        $payload = [
+            "apiOperation" => "PAY",
+            "order" => [
+                "amount" => $amount,
+                "currency" => 'SGD'
+            ],
+            "sourceOfFunds" => [
+                "type" => "CARD",
+                "token" => $tokenId
+            ]
+        ];
+        $jsonPayload = json_encode($payload, JSON_PRETTY_PRINT);
+
+        if (strtoupper($brand) === 'AMEX') {
+            $url_pay_by_token = $GLOBALS['url_get_payment_detail_amex'] . "/order/$voice_id/transaction/$orderId";
+            $response = callAPI($username_amex, $password_amex, $url_pay_by_token, "PUT", $jsonPayload);
+        } else {
+            $url_pay_by_token = $GLOBALS['url_get_payment_detail'] . "/order/$voice_id/transaction/$orderId";
+            $response = callAPI($username, $password, $url_pay_by_token, "PUT", $jsonPayload);
+        }
+
+        $decoded = json_decode($response, true);
+        $response_json = json_encode($decoded);
+
+        $result = $decoded["result"] ?? "UNKNOWN";
+        $gatewayCode = $decoded["response"]['gatewayCode'] ?? "UNKNOWN";
+
+        // Prepare the SQL statement once
+        $stmt = $Conn->prepare("UPDATE t_aig_sg_payment_log SET 
+            result=?, 
+            time_of_lastupdate=NOW(), 
+            response_json=? 
+            WHERE payment_token_id=?");
+
+        // Check if the result and gatewayCode indicate success
+        if ($result === "SUCCESS" && $gatewayCode === "APPROVED") {
+            $status = "SUCCESS";
+        } else {
+            $status = "FAIL";
+        }
+
+        // Bind the parameters for the prepared statement
+        $stmt->bind_param("sss", $status, $response_json, $tokenId);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Check if the query was successful
+        if ($stmt->affected_rows > 0) {
+            echo json_encode([
+                "success" => true,
+                "message" => "Payment success",
+                "gateway_response" => $decoded
+            ]);
+        } else {
+            http_response_code(400);
+            echo json_encode([
+                "success" => false,
+                "message" => "Payment not approved",
+                "gateway_response" => $decoded
+            ]);
+        }
+
+        // Close the prepared statement
+        $stmt->close();
+
     } else {
-        $url_pay_by_token = $GLOBALS['url_get_payment_detail'] . "/order/$voice_id/transaction/$orderId";
-        $response = callAPI($username, $password, $url_pay_by_token, "PUT", $jsonPayload);    
-    }
-
-
-
-
-    $decoded = json_decode($response, true);
-    $response_json = json_encode($decoded);
-    // ตรวจสอบผลลัพธ์ที่ได้
-    $result = $decoded["result"] ?? "UNKNOWN";
-    $gatewayCode = $decoded["response"]['gatewayCode'] ?? "UNKNOWN";
-
- 
-    if ($result === "SUCCESS" && $gatewayCode === "APPROVED") {
-        // อัปเดต log กรณีผ่าน
-        $SQL = "UPDATE t_aig_sg_payment_log SET 
-            result='SUCCESS',
-            time_of_lastupdate=NOW(),
-            response_json='$response_json'
-            WHERE payment_token_id='$tokenId'";
-        mysqli_query($Conn, $SQL);
-    
-        echo json_encode([
-            "success" => true,
-            "message" => "Payment success",
-            "gateway_response" => $decoded
-        ]);
-    } else {
-        // อัปเดต log กรณีไม่ผ่าน
-        $SQL = "UPDATE t_aig_sg_payment_log SET 
-            result='FAIL',
-            time_of_lastupdate=NOW(),
-            response_json='$response_json'
-            WHERE payment_token_id='$tokenId'";
-        mysqli_query($Conn, $SQL);
-    
         http_response_code(400);
         echo json_encode([
             "success" => false,
-            "message" => "Payment not approved",
-            "gateway_response" => $decoded
+            "message" => "Participant data not found."
         ]);
     }
-    
+
 } else {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "❌ Missing required data"
+        "message" => "Missing required access token."
     ]);
 }
+
 
 ?>
 
@@ -153,7 +184,36 @@ function getAccessToken() {
         return null;
     }
 }
+function getParticipantData($genesysUrl, $accessToken, $conversationId)
+{
 
+    $url = "$genesysUrl/api/v2/conversations/calls/$conversationId";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $accessToken
+    ]);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $responseData = json_decode($response, true);
+    if (isset($responseData['participants']) && count($responseData['participants']) > 0) {
+        foreach ($responseData['participants'] as $participant) {
+            if ($participant['purpose'] == 'customer' && $participant['attributes']['result'] == 'SUCCESS') {
+                return [
+                    'token' => $participant['attributes']['Token'] ?? null,
+                    'brand' => $participant['attributes']['Brand'] ?? null,
+                    'quote_no' => $participant['attributes']['quote_no'] ?? null,
+                    'id' => $participant['id'] ?? null,
+                ];
+            }
+        }
+    }
+
+    return null;
+}
 function callAPI($username, $password, $url, $method, $body) {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

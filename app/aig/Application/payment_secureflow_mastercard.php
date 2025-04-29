@@ -27,13 +27,18 @@ $batchNo = 'IP' . date('dmY');
 // echo "voice_id=$voice_id<br>";
 // echo "access_token=$access_token<br>";
 if ($access_token) {
-    $participantData = getParticipantId($genesys_url, $access_token, $voice_id);
+    $participantData = getParticipantData($genesys_url, $access_token, $voice_id);
     // echo "</br>";
     // print_r($participantData);
     // echo "</br>";
     if ($participantData !== null) {
+
+        
         $participant_token = $participantData['token'];
+        $participant_id = $participantData['id'];
         $participant_brand = strtoupper($participantData['brand']);
+        //set quoteNo,amount,...
+        setParticipantAttributes($genesys_url, $access_token, $voice_id, $participant_id, $quote_no, $amount, $is_recurring, $payment_frequency);
         //เช็คเพื่อตรวจสอบกรณีซ้ำกันของtoken
         $checkSQL = "SELECT COUNT(*) as count FROM t_aig_sg_payment_log WHERE payment_order_id = '$voice_id' and result='CREATE'";
         $result = mysqli_query($Conn, $checkSQL);
@@ -178,7 +183,7 @@ if ($access_token) {
                     clearInterval(interval);
 
                     if (window.opener && !window.opener.closed) {
-                        window.opener.showAlert(paymentResult.innerText); // ✅ ส่งข้อความจริงไป showAlert
+                        window.opener.showAlert(paymentResult.innerText);
                         window.close();
                     }
                 }
@@ -231,7 +236,7 @@ function getAccessToken()
     }
 }
 
-function getParticipantId($genesysUrl, $accessToken, $conversationId)
+function getParticipantData($genesysUrl, $accessToken, $conversationId)
 {
 
     $url = "$genesysUrl/api/v2/conversations/calls/$conversationId";
@@ -253,6 +258,7 @@ function getParticipantId($genesysUrl, $accessToken, $conversationId)
                 return [
                     'token' => $participant['attributes']['Token'] ?? null,
                     'brand' => $participant['attributes']['Brand'] ?? null,
+                    'id' => $participant['id'] ?? null,
                 ];
             }
         }
