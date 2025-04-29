@@ -360,7 +360,7 @@ const setDefaultValueForm = async (dbData) => {
     case "home":
       return setInsuredHome(insuredData), setDefaultPlanInfo(insuredData,dbData);
     case "auto":
-      return setOtherInfoAuto(dbData),setInsuredVehicleList(insuredData),setDefaultPlanInfoAuto(insuredData,dbData),populateAdditionalInfo(dbData);
+      return setOtherInfoAuto(dbData),await setInsuredVehicleList(insuredData),await setDefaultPlanInfoAuto(insuredData,dbData),populateAdditionalInfo(dbData);
     case "ah":
       return setInsuredPerson(insuredData, dbData);
     default:
