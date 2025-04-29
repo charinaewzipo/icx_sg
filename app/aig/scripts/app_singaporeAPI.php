@@ -75,14 +75,15 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
         //handlesecireflow
       const isnotsecureflow=document.getElementById("payment_checkbox")
       const payment_comment=document.getElementById("payment_comment")
+   
+      console.log("data", data);
+      await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime, calllistDetail?.calllist_id, campaignDetails?.agent_id, campaignDetails?.import_id);
+     
       requestBody = {
         ...requestBody,
         is_secureflow_not_use: isnotsecureflow.checked ? "1" : "0",
         secureflow_comment: payment_comment.value
       };
-      console.log("data", data);
-      await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime, calllistDetail?.calllist_id, campaignDetails?.agent_id, campaignDetails?.import_id);
-
       let currentUrl = window.location.href;
       const url = new URL(currentUrl);
       let formType = url.searchParams.get('formType');
@@ -265,18 +266,19 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       //handlesecireflow
       const isnotsecureflow=document.getElementById("payment_checkbox")
       const payment_comment=document.getElementById("payment_comment")
-      requestBody = {
-        ...requestBody,
-        is_secureflow_not_use: isnotsecureflow.checked ? "1" : "0",
-        secureflow_comment: payment_comment.value
-      };
-
+  
       console.log("data", data);
       const executionTime = performance.now() - startTime; // เวลาที่ใช้
       const statusCode = response.status;
       // Update policyNo if present, regardless of statusCode
       await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime, calllistDetail?.calllist_id, campaignDetails?.agent_id, campaignDetails?.import_id);
       // Check for specific statusCode N02 and alert accordingly
+      requestBody = {
+        ...requestBody,
+        is_secureflow_not_use: isnotsecureflow.checked ? "1" : "0",
+        secureflow_comment: payment_comment.value
+      };
+
       if (data?.statusCode === "S03") {
         let currentUrl = window.location.href;
         const url = new URL(currentUrl);
