@@ -331,6 +331,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
     $isSecureFlowNotUse = isset($formData['is_secureflow_not_use']) ? $formData['is_secureflow_not_use'] : '';
     $secureFlowComment = isset($formData['secureflow_comment']) ? $formData['secureflow_comment'] : '';
+    $objecthandlingvouchers = isset($formData['objecthandlingvouchers']) ? $formData['objecthandlingvouchers'] : '';
 
     if (!empty($paymentDetails) && is_array($paymentDetails)) {
         $payment_mode = isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
@@ -376,6 +377,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
         response_premium_calculation_json='$premiumCalculationData',   
         is_secureflow_not_use='$isSecureFlowNotUse',
         secureflow_comment='$secureFlowComment',             
+        object_handling_vouchers='$objecthandlingvouchers',             
         update_date = NOW()";
 
     // Add quote_create_date if response is not null
@@ -467,6 +469,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
     $isSecureFlowNotUse = isset($formData['is_secureflow_not_use']) ? $formData['is_secureflow_not_use'] : '';
     $secureFlowComment = isset($formData['secureflow_comment']) ? $formData['secureflow_comment'] : '';
+    $objecthandlingvouchers = isset($formData['objecthandlingvouchers']) ? $formData['objecthandlingvouchers'] : '';
 
     if (!empty($paymentDetails) && is_array($paymentDetails)) {
         $payment_mode = isset($paymentDetails[0]['paymentMode']) ? $paymentDetails[0]['paymentMode'] : null;
@@ -510,6 +513,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
         ncdLevelGEARS='$ncdLevelGEARS',
         is_secureflow_not_use='$isSecureFlowNotUse',
         secureflow_comment='$secureFlowComment',
+        object_handling_vouchers='$objecthandlingvouchers',
         update_date = NOW()";
 
     // Add quote_create_date if response is not null

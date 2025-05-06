@@ -1699,57 +1699,82 @@ where name='Nature of Business'";
             </tr>
           </table>
           <div id='additional-info' hidden>
-          <table id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
-  <tr>
-    <td style="float: inline-start; padding-right:20px">Internal Claim History:</td>
-    <td style="white-space:nowrap;">
-      <textarea name="internal-claim-history" id="internal-claim-history" readonly style="padding-left:5px;height: 60px;width:300px; display: inline-block;"></textarea>
-      <button class="extend-btn" data-textarea-id="internal-claim-history" onclick="extendTextarea('internal-claim-history', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
-    </td>
-  </tr>
-  <tr>
-    <td style="float: inline-start; padding-right:20px">Special Text:</td>
-    <td style="white-space:nowrap;">
-      <textarea name="special-text" id="special-text" readonly style="padding-left:5px;height: 60px;width:300px; display: inline-block;"></textarea>
-      <button class="extend-btn" data-textarea-id="special-text" onclick="extendTextarea('special-text', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
-    </td>
-  </tr>
-  <tr>
-    <td style="float: inline-start; padding-right:20px">Remarks:</td>
-    <td style="white-space:nowrap;">
-      <textarea name="remarks-retrieve" id="remarks-retrieve" readonly style="padding-left:5px;height: 60px;width:300px; display: inline-block;"></textarea>
-      <button class="extend-btn" data-textarea-id="remarks-retrieve" onclick="extendTextarea('remarks-retrieve', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
-    </td>
-  </tr>
-  <tr>
-    <td style="float: inline-start; padding-right:20px">RemarksC</td>
-    <td style="white-space:nowrap;">
-      <textarea name="remarksC-memo" id="remarksC-memo" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
-      <button class="extend-btn" data-textarea-id="remarksC-memo" onclick="extendTextarea('remarksC-memo', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
-    </td>
-  </tr>
-  <tr>
-    <td style="float: inline-start; padding-right:20px">Comments History</td>
-    <td style="white-space:nowrap;">
-      <textarea name="commentsHistory" id="commentsHistory" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
-      <button class="extend-btn" data-textarea-id="commentsHistory" onclick="extendTextarea('commentsHistory', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
-    </td>
-  </tr>
-  <tr>
-    <td style="float: inline-start; padding-right:20px">Referral Response</td>
-    <td style="white-space:nowrap;">
-      <textarea name="referral-response" id="referral-response" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
-      <button class="extend-btn" data-textarea-id="referral-response" onclick="extendTextarea('referral-response', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
-    </td>
-  </tr>
-  <tr>
-    <td style="float: inline-start; padding-right:20px">Discount list</td>
-    <td style="white-space:nowrap;">
-      <textarea name="discountList" id="discountList" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
-      <button class="extend-btn" data-textarea-id="discountList" onclick="extendTextarea('discountList', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
-    </td>
-  </tr>
-</table>
+            <table id="table-form" <?php echo ($formType === "auto") ? 'block' : 'hidden'; ?>>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Internal Claim History:</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="internal-claim-history" id="internal-claim-history" readonly style="padding-left:5px;height: 60px;width:300px; display: inline-block;"></textarea>
+                  <button class="extend-btn" data-textarea-id="internal-claim-history" onclick="extendTextarea('internal-claim-history', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Special Text:</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="special-text" id="special-text" readonly style="padding-left:5px;height: 60px;width:300px; display: inline-block;"></textarea>
+                  <button class="extend-btn" data-textarea-id="special-text" onclick="extendTextarea('special-text', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Remarks:</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="remarks-retrieve" id="remarks-retrieve" readonly style="padding-left:5px;height: 60px;width:300px; display: inline-block;"></textarea>
+                  <button class="extend-btn" data-textarea-id="remarks-retrieve" onclick="extendTextarea('remarks-retrieve', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">RemarksC</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="remarksC-memo" id="remarksC-memo" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
+                  <button class="extend-btn" data-textarea-id="remarksC-memo" onclick="extendTextarea('remarksC-memo', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Comments History</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="commentsHistory" id="commentsHistory" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
+                  <button class="extend-btn" data-textarea-id="commentsHistory" onclick="extendTextarea('commentsHistory', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Referral Response</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="referral-response" id="referral-response" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
+                  <button class="extend-btn" data-textarea-id="referral-response" onclick="extendTextarea('referral-response', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
+                </td>
+              </tr>
+              <tr>
+                <td style="float: inline-start; padding-right:20px">Discount list</td>
+                <td style="white-space:nowrap;">
+                  <textarea name="discountList" id="discountList" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
+                  <button class="extend-btn" data-textarea-id="discountList" onclick="extendTextarea('discountList', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
+                </td>
+              </tr>
+              <tr></tr>
+              <tr>
+                <td>
+                  <h1>Objection Handling<br>Vouchers</h1>
+                </td>
+              </tr>
+              <tr>
+                <td style="width:185px">Promo Code : </td>
+                <td>
+                  <select name="insured_auto_objecthandlingvouchers" >
+                    <option value="">
+                      <-- Please select an option -->
+                    </option>
+                    <option value="OHATAIG150">
+                    OHATAIG150
+                    </option>
+                    <option value="OHATAIG200">
+                    OHATAIG200
+                    </option>
+
+
+                  </select>
+                </td>
+                  </tr>
+                  </br>
+            </table>
 
           </div>
         </div>

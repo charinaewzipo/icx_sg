@@ -75,14 +75,16 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
         //handlesecireflow
       const isnotsecureflow=document.getElementById("payment_checkbox")
       const payment_comment=document.getElementById("payment_comment")
-   
+      const vouncher=document.querySelector(`select[name="insured_auto_objecthandlingvouchers"]`);
+
       console.log("data", data);
       await logApiCall(apiUrl, requestBody, data, statusCode, null, executionTime, calllistDetail?.calllist_id, campaignDetails?.agent_id, campaignDetails?.import_id);
      
       requestBody = {
         ...requestBody,
         is_secureflow_not_use: isnotsecureflow.checked ? "1" : "0",
-        secureflow_comment: payment_comment.value
+        secureflow_comment: payment_comment.value || "",
+        objecthandlingvouchers : vouncher? vouncher.value : ""
       };
       let currentUrl = window.location.href;
       const url = new URL(currentUrl);
@@ -266,7 +268,8 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       //handlesecireflow
       const isnotsecureflow=document.getElementById("payment_checkbox")
       const payment_comment=document.getElementById("payment_comment")
-  
+      const vouncher=document.querySelector(`select[name="insured_auto_objecthandlingvouchers"]`);
+
       console.log("data", data);
       const executionTime = performance.now() - startTime; // เวลาที่ใช้
       const statusCode = response.status;
@@ -276,7 +279,8 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
       requestBody = {
         ...requestBody,
         is_secureflow_not_use: isnotsecureflow.checked ? "1" : "0",
-        secureflow_comment: payment_comment.value
+        secureflow_comment: payment_comment.value || "",
+        objecthandlingvouchers : vouncher? vouncher.value : ""
       };
 
       if (data?.statusCode === "S03") {

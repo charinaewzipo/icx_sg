@@ -568,7 +568,7 @@ function getPlanDetail() {
 }
 function getCampaignInfoList() {
   const promoCodeInputs = document.querySelectorAll('input[name="campaignCode[]"]');
-  const campaignInfoList = [];
+  let campaignInfoList = [];
 
   promoCodeInputs.forEach(input => {
       const promoCodeValue = input.value.trim(); // Get and trim the value of the input field
@@ -580,6 +580,12 @@ function getCampaignInfoList() {
   });
 
   console.log("campaignInfoList:", campaignInfoList);
+  const vouncher=document.querySelector(`select[name="insured_auto_objecthandlingvouchers"]`);
+  if(vouncher&&vouncher.value!==""){
+    campaignInfoList.push({
+      campaignCode:vouncher.value.trim()
+    })
+  }
   return campaignInfoList;
 }
 

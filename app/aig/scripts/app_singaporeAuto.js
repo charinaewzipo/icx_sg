@@ -1152,6 +1152,13 @@ function populateAdditionalInfo(dbData){
       document.getElementById("discountList").value = campaignAndDiscountList||"";
     }
 
+    //objecthandlingVouchers
+    if(dbData?.object_handling_vouchers){
+      const vouncher=document.querySelector(`select[name="insured_auto_objecthandlingvouchers"]`);
+      if(vouncher){
+        vouncher.value=dbData?.object_handling_vouchers
+      }
+    }
 
   }
   
