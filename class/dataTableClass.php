@@ -152,11 +152,7 @@ class DataTable
             if (in_array($datac, array("calllist_id", "last_wrapup_id", "last_wrapup_detail", "number_of_call", "last_wrapup_dt"))) {
                 $column_tmp['db'] = '`a`.`' . $datac . '`';
             } else if (in_array($datac, array("call_id", "wrapup_id", "wrapup_note", "voice_id", "create_date"))) {
-                if ($datac === "create_date") {
-                    $column_tmp['db'] = "CONVERT_TZ(t.create_date, '+00:00', '+08:00') AS create_date";
-                } else {
-                    $column_tmp['db'] = 't.' . $datac . '';
-                }
+                $column_tmp['db'] = 't.' . $datac . '';
             } else if (in_array($datac, array("list_name"))) {
                 $column_tmp['db'] = '`l`.`' . $datac . '`';
             }

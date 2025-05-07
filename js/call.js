@@ -570,7 +570,6 @@
 						$('[name=listid]').val(listid);
 						$.call.loadpopup_content(listid);
 					});
-					$.call.queryMultiCampaign()
 				} else {
 					$.call.dtList.newlist.ajax.reload();
 				}
@@ -912,6 +911,27 @@
 								}
 								return data;
 							}
+						}
+					});
+					column.filter(obj => obj.dataC == "create_date").forEach(obj => {
+						obj.render = function (data, type, row, meta) {
+							if (type === 'display' && data) {
+								// ใช้ JavaScript แปลงเป็น +08:00
+								let date = new Date(data);
+								// ปรับ offset +8 ชั่วโมง (ถ้า date เป็น UTC)
+								date.setHours(date.getHours() + 8);
+					
+								// แสดงผลแบบ YYYY-MM-DD HH:mm:ss
+								let yyyy = date.getFullYear();
+								let mm = String(date.getMonth() + 1).padStart(2, '0');
+								let dd = String(date.getDate()).padStart(2, '0');
+								let hh = String(date.getHours()).padStart(2, '0');
+								let mi = String(date.getMinutes()).padStart(2, '0');
+								let ss = String(date.getSeconds()).padStart(2, '0');
+					
+								return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+							}
+							return data;
 						}
 					});
 					/*
@@ -1545,7 +1565,6 @@
 						let confirm_id = result.confirm_id.split(",");
 						let callid = $('[name=listid]').val();
 						let cmpid = $('[name=cmpid]').val();
-						let cmpisMultiCampaign = $('[name=cmpisMultiCampaign]').val();
 						let appid = "";
 						if (confirm_id.length == 3) {
 							cmpid = confirm_id[0];
@@ -1557,26 +1576,19 @@
 						let imid = result.impid.id;
 						let txt = "";
 
-						result.exapp.forEach((app) => {
-							let listItem = `<li style="width:100px; text-align:center; border-radius:8px; color:#666; cursor:pointer; padding:2px 5px; margin:2px;">`;
-			
-							if (app.appn === "Application" &&cmpisMultiCampaign==="1") {
-									listItem += `<a href="#" class="popup-trigger" data-cmpid="${cmpid}" data-callid="${callid}" data-aid="${aid}" data-imid="${imid}">`;
-							} else if (appid) {
-									listItem += `<a href="${app.appu}?id=${appid}" style="text-decoration:none;" target="_blank">`;
+						for (let i = 0; i < result.exapp.length; i++) {
+
+							txt += '<li style="width:100px; text-align:center; border-radius:8px; color:#666; cursor:pointer; padding:2px 5px 2px 5px; margin:2px;" >';
+							if (appid) {
+								txt += '<a href="' + result.exapp[i].appu + '?id=' + appid + '" style="text-decoration:none;" target="_blank">';
 							} else {
-									listItem += `<a href="${app.appu}?campaign_id=${cmpid}&calllist_id=${callid}&agent_id=${aid}&import_id=${imid}&formType=ah" target="_blank">`;
+								txt += '<a href="' + result.exapp[i].appu + '?campaign_id=' + cmpid + '&calllist_id=' + callid + '&agent_id=' + aid + '&import_id=' + imid + '&formType=ah" target="_blank">';
 							}
-			
-							listItem += `<span class="${app.appi}" style="font-size:26px; color:#666;"></span>
-													 <span style="font-size:12px; display:block; color:#666;"> ${app.appn}</span>
-													 </a></li>`;
-			
-							txt += listItem;
-					});
+							txt += '<span class="' + result.exapp[i].appi + '" style="font-size:26px; color:#666;"></span><span style="font-size:12px; display:block;  color:#666;"> ' + result.exapp[i].appn + '</span></a>' +
+								'</li>';
+						}
 						ul.html(txt)
-						
-			
+
 					}
 
 
@@ -2706,93 +2718,10 @@
 
 
 
-		},
+		}
 
 
-		queryMultiCampaign: function () {
-			let campaign_id = $('[name=cmpid]').val();
-			let calllist_id = $('[name=listid]').val();
-			let agent_id = $('[name=uid]').val();
-			
 
-			let formtojson = JSON.stringify({ campaign_id, calllist_id, agent_id });
-	
-			$.ajax({
-					url: url,
-					data: {
-							action: 'queryMultiCampaign',
-							data: formtojson
-					},
-					dataType: 'html',  
-					type: 'POST',
-					success: function (data) {
-						let result = eval('(' + data + ')');
-						
-							if (!result || result === "empty") {
-									console.warn("No applications found");
-									return;
-							}
-							if( $('[name=cmpisMultiCampaign]').val() !== "1" ) {
-								return;
-							}
-						$(document).off('click', '.popup-trigger').on('click', '.popup-trigger', function (e) {
-							e.preventDefault();
-
-							if ($('#popup-box').length) {
-									$('#popup-box').remove();
-									return;
-							}
-
-							let cmpid = $(this).data("cmpid");
-							let callid = $(this).data("callid");
-							let aid = $(this).data("aid");
-							let imid = $(this).data("imid");
-
-							let popup = $('<div id="popup-box"></div>').css({
-									position: 'absolute',
-									top: $(this).offset().top + $(this).outerHeight(),
-									left: $(this).offset().left + 50,
-									backgroundColor: '#fff',
-									padding: '10px',
-									borderRadius: '8px',
-									boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-									zIndex: 1000,
-							});
-
-							let list = $('<ul id="popup-list"></ul>').css({
-									listStyle: 'none',
-									padding: '0',
-									margin: '0',
-							});
-
-							if (Array.isArray(result)) {
-									result.forEach((app) => {
-											let listItem = $('<li style="padding: 10px; cursor: pointer;"></li>')
-													.text(app.campaign_name)
-													.on('click', function () {
-															let url = `/app/aig/Application/check_app.php?campaign_id=${app.campaign_id}&calllist_id=${callid}&agent_id=${aid}&import_id=${imid}&id=`;
-															window.open(url, '_blank');
-													});
-
-											list.append(listItem);
-									});
-							}
-
-							popup.append(list);
-							$('body').append(popup);
-
-							$(document).on('click', function (event) {
-									if (!$(event.target).closest('#popup-box, .popup-trigger').length) {
-											$('#popup-box').remove();
-									}
-							});
-						});
-					},
-					error: function (xhr, status, error) {
-							console.error("AJAX Error:", status, error);
-					}
-			});
-	}
 	} //end jQuery
 
 	function mask(input, pattern) {
