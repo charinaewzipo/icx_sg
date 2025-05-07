@@ -173,11 +173,14 @@ document.addEventListener("DOMContentLoaded", function () {
         policyid = response?.data?.policyId
         const policyId = response?.data?.policyId;
         const policyNo = response?.data?.policyNo;
-        console.log("policyNo:", policyNo)
         const Amount = document.querySelector('input[name="payment_amount"]');
         if (Amount) {
           Amount.value = `${response?.data?.premiumPayable}(SGD)`;
         }
+        //secureflowDisplay
+        handleDisplaySecureFlow()
+
+
         if (policyId && !policyNo) {
           configureCreatePolicyState();
         } else if (policyNo) {

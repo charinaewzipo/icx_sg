@@ -889,9 +889,6 @@ document.addEventListener("DOMContentLoaded", () => {
   //paymentSecureflow
   handleCheckbox()
   document.getElementById("paymentModeSelect").addEventListener("change", handleDisplaySecureFlow);
-  setTimeout(() => {
-    handleDisplaySecureFlow()
-  }, 1000);
   document.getElementById('payment_secure_flow').addEventListener('click', function () {
     handlePaymentSecureFlow()
   });
