@@ -117,10 +117,12 @@ function populatePlanAutoPremium(planList) {
     const additionalInfo=document.getElementById("additional-info");
     const excessSectionOther=document.getElementById("excess-section-other");
     const noClaimExperienceRow=document.getElementById("noClaimExperienceRow");
+    const ncdNoExperienceElement=document.getElementById("ncdNoExperience")
     ncdLevel_gears_display.style.display = "none";
     ncdLevel_gears.style.display = "none";
     noClaimExperienceRow.style.display = "none";
     
+    ncdNoExperienceElement.required=false;
     additionalInfo.hidden=false
     excessSectionOther.hidden=false
   } 
