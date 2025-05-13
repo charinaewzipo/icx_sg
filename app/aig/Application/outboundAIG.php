@@ -149,6 +149,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
     $productId = isset($formData['productId']) ? (int)$formData['productId'] : 0;
     $type = isset($type) ? $type : '';
     $remarksC = isset($formData['remarksC']) ? $formData['remarksC'] : '';
+    $remarksC = mysqli_real_escape_string($dbconn->dbconn, $remarksC);
     $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
 
@@ -203,6 +204,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
     }
     
     $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
+    $full_name = mysqli_real_escape_string($dbconn->dbconn, $full_name);
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
     $customer_id = isset($individual_info['customerIdNo']) ? $individual_info['customerIdNo'] : '';
     
@@ -283,6 +285,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
     $productId = isset($formData['productId']) ? (int)$formData['productId'] : 0;
     $type = isset($type) ? $type : '';
     $remarksC = isset($formData['remarksC']) ? $formData['remarksC'] : '';
+    $remarksC = mysqli_real_escape_string($dbconn->dbconn, $remarksC);
     $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
 
@@ -331,6 +334,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
     $isSecureFlowNotUse = isset($formData['is_secureflow_not_use']) ? $formData['is_secureflow_not_use'] : '';
     $secureFlowComment = isset($formData['secureflow_comment']) ? $formData['secureflow_comment'] : '';
+    $secureFlowComment = mysqli_real_escape_string($dbconn->dbconn, $secureFlowComment);
     $objecthandlingvouchers = isset($formData['objecthandlingvouchers']) ? $formData['objecthandlingvouchers'] : '';
 
     if (!empty($paymentDetails) && is_array($paymentDetails)) {
@@ -341,6 +345,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
         $payment_frequency = null;
     }
     $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
+    $full_name = mysqli_real_escape_string($dbconn->dbconn, $full_name);
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
     $customer_id = isset($individual_info['customerIdNo']) ? $individual_info['customerIdNo'] : '';
     // Initialize the SQL query
@@ -421,6 +426,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
     $productId = isset($formData['productId']) ? (int)$formData['productId'] : 0;
     $type = isset($type) ? $type : '';
     $remarksC = isset($formData['remarksC']) ? $formData['remarksC'] : '';
+    $remarksC = mysqli_real_escape_string($dbconn->dbconn, $remarksC);
     $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
 
@@ -469,6 +475,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
     $paymentDetails = isset($formData['paymentDetails']) ? $formData['paymentDetails'] : [];
     $isSecureFlowNotUse = isset($formData['is_secureflow_not_use']) ? $formData['is_secureflow_not_use'] : '';
     $secureFlowComment = isset($formData['secureflow_comment']) ? $formData['secureflow_comment'] : '';
+    $secureFlowComment = mysqli_real_escape_string($dbconn->dbconn, $secureFlowComment);
     $objecthandlingvouchers = isset($formData['objecthandlingvouchers']) ? $formData['objecthandlingvouchers'] : '';
 
     if (!empty($paymentDetails) && is_array($paymentDetails)) {
@@ -479,6 +486,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
         $payment_frequency = null;
     }
     $full_name = isset($individual_info['fullName']) ? $individual_info['fullName'] : '';
+    $full_name = mysqli_real_escape_string($dbconn->dbconn, $full_name);
     $date_of_birth = isset($individual_info['dateOfBirth']) ? $individual_info['dateOfBirth'] : '';
     $customer_id = isset($individual_info['customerIdNo']) ? $individual_info['customerIdNo'] : '';
     // Initialize the SQL query
