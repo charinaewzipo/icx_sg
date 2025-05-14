@@ -795,7 +795,7 @@ const handleInsuredCreditDiscountAuto = (responsePayment, dbData) => {
   }
 
   return campaignList
-    .filter(item => item?.type === 2 && item?.includedInPremium)
+    .filter(item => item?.code === 'INSURANCECREDIT')
     .map(item => ({
       batchNo: responsePayment.batch_no,
       orderNo: responsePayment?.payment_order_id,

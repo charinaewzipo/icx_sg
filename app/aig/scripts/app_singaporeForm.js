@@ -482,7 +482,7 @@ const calculatePremiumFromCampaignCode = (dbData) => {
 
   if (Array.isArray(campaignList) && campaignList.length > 0) {
     const filterCampaignIncludePremium = campaignList.filter(
-      i => i?.type === 2 && i?.includedInPremium === true
+      i => i?.code === 'INSURANCECREDIT'
     );
 
     const totalDiscount = filterCampaignIncludePremium.reduce((sum, item) => {

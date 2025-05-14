@@ -352,8 +352,8 @@ function populatePaymentForm(paymentData) {
   // const securityCodeInput = document.querySelector('input[name="payment_securityCode"]');
   // securityCodeInput.value = "XXX";
   const Amount = document.querySelector('input[name="payment_amount"]');
-  Amount.value = `${quotationData.premiumPayable}(${paymentData.order_currency})`;
-  // Amount.value = `${paymentData.order_amount}(${paymentData.order_currency})`;
+  // Amount.value = `${quotationData.premiumPayable}(${paymentData.order_currency})`;
+  Amount.value = `${paymentData.order_amount}(${paymentData.order_currency})`;
 }
 
 const handleCardTypeFromResponse=()=>{

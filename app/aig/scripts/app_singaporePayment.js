@@ -216,21 +216,30 @@ const handleRetrieveQuote = async () => {
 
     const isPaymentModeMatching =
       Number(data?.paymentDetails[0]?.paymentMode) === Number(paymentModeValue);
-
+    const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
       console.log("parseFloat(data?.premiumPayable)",parseFloat(data?.premiumPayable))
       console.log("arseFloat(paymentAmountFromForm)",parseFloat(paymentAmountFromForm))
-    if (!isPremiumPayableMatching) {
-      alert("Premium Payable does not match. It has changed to " + data?.premiumPayable + " " + data?.currency);
+    if(formType === "auto"&&isRenewal){
+      // do nothing
+    }else if (!isPremiumPayableMatching) {
+    alert("Premium Payable does not match. It has changed to " + data?.premiumPayable + " " + data?.currency);
     }
     if (!isPaymentModeMatching) {
       alert("Payment Mode has changed.");
     }
-
+    let amountValue = 0
+    //หากเป็นauto renewal ใช้amount จากform
+    if(formType === "auto"&&isRenewal){
+      amountValue=paymentAmountFromForm
+    }else{
+      amountValue=data?.premiumPayable
+    }
     if (formType === "auto" && Number(paymentModeValue) === 122) {
-      handlePaymentGatewayIPP(data?.premiumPayable)
+     
+      handlePaymentGatewayIPP(amountValue)
       return
     }
-    handlePaymentGateway(data?.premiumPayable, data?.paymentDetails[0]?.paymentMode || Number(paymentModeValue));
+    handlePaymentGateway(amountValue, data?.paymentDetails[0]?.paymentMode || Number(paymentModeValue));
   }
 
 
