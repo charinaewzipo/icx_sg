@@ -716,7 +716,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
       // const shouldRecalculate = submitButton.getAttribute("data-recalculate") === "true";
       console.log("shouldRecalculate:", shouldRecalculate)
       if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
-        const paymentDetails = [
+        let paymentDetails = [
           {
             batchNo: responsePayment.batch_no,
             orderNo: responsePayment?.payment_order_id,
@@ -726,13 +726,21 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
             cardExpiryYear: responsePayment.card_expiry_year,
             paymentDate: new Date(responsePayment.time_of_lastupdate).toISOString(),
             paymentFrequency: Number(formData.get('Payment_Mode'))===122 ? handlePaymentFrequencyIPP():quotationData.payment_frequency,
-            paymentAmount: responsePayment.order_amount,
+            paymentAmount: quotationData.premiumPayable,
             cardType:handleCardTypeFromResponse(),
             cardNumber: responsePayment.card_number,
             currency: responsePayment.order_currency,
             cardTokenNo: responsePayment?.payment_token_id || ""
           },
         ];
+        //สำหรับAuto Renewal
+        if(formType==='auto'){
+          const arrayInsuredCreditDiscount=handleInsuredCreditDiscountAuto(responsePayment,quotationData)
+          if(arrayInsuredCreditDiscount.length>0){
+            paymentDetails=[...paymentDetails,...arrayInsuredCreditDiscount]
+          }
+          
+        }
         console.log("quotationData:", quotationData)
 
         let policyRequest ={
@@ -774,7 +782,28 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
     });
 };
 
+const handleInsuredCreditDiscountAuto = (responsePayment, dbData) => {
+  if (campaignDetailsFromAPI?.incident_type !== "Renewal") return [];
 
+  let campaignList = [];
+  try {
+    const parsed = dbData?.response_recalculate_json && JSON.parse(dbData.response_recalculate_json);
+    campaignList = parsed?.campaignAndDiscountList || [];
+  } catch (error) {
+    console.error("Invalid response_recalculate_json:", error);
+    return [];
+  }
+
+  return campaignList
+    .filter(item => item?.type === 2 && item?.includedInPremium)
+    .map(item => ({
+      batchNo: responsePayment.batch_no,
+      orderNo: responsePayment?.payment_order_id,
+      paymentMode: 126,
+      paymentDate: new Date(responsePayment.time_of_lastupdate).toISOString(),
+      paymentAmount: item?.amount
+    }));
+};
 
 
 document.addEventListener("DOMContentLoaded", () => {

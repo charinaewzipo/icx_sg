@@ -1722,28 +1722,28 @@ where name='Nature of Business'";
                 </td>
               </tr>
               <tr>
-                <td style="float: inline-start; padding-right:20px">RemarksC</td>
+                <td style="float: inline-start; padding-right:20px">RemarksC:</td>
                 <td style="white-space:nowrap;">
                   <textarea name="remarksC-memo" id="remarksC-memo" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
                   <button class="extend-btn" data-textarea-id="remarksC-memo" onclick="extendTextarea('remarksC-memo', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
                 </td>
               </tr>
               <tr>
-                <td style="float: inline-start; padding-right:20px">Comments History</td>
+                <td style="float: inline-start; padding-right:20px">Comments History:</td>
                 <td style="white-space:nowrap;">
                   <textarea name="commentsHistory" id="commentsHistory" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
                   <button class="extend-btn" data-textarea-id="commentsHistory" onclick="extendTextarea('commentsHistory', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
                 </td>
               </tr>
               <tr>
-                <td style="float: inline-start; padding-right:20px">Referral Response</td>
+                <td style="float: inline-start; padding-right:20px">Referral Response:</td>
                 <td style="white-space:nowrap;">
                   <textarea name="referral-response" id="referral-response" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
                   <button class="extend-btn" data-textarea-id="referral-response" onclick="extendTextarea('referral-response', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
                 </td>
               </tr>
               <tr>
-                <td style="float: inline-start; padding-right:20px">Discount list</td>
+                <td style="float: inline-start; padding-right:20px">Discount list:</td>
                 <td style="white-space:nowrap;">
                   <textarea name="discountList" id="discountList" readonly style="padding-left:5px;height: 60px;width:300px"></textarea>
                   <button class="extend-btn" data-textarea-id="discountList" onclick="extendTextarea('discountList', this)" style="display: inline-block; margin-left: 10px; color: gray; border: none; background: none; cursor: pointer;">Extend</button>
@@ -1756,19 +1756,12 @@ where name='Nature of Business'";
                 </td>
               </tr>
               <tr>
-                <td style="width:185px">Promo Code : </td>
+                <td style="width:185px">Promo Code: </td>
                 <td>
                   <select name="insured_auto_objecthandlingvouchers" >
                     <option value="">
                       <-- Please select an option -->
                     </option>
-                    <option value="OHATAIG150">
-                    OHATAIG150
-                    </option>
-                    <option value="OHATAIG200">
-                    OHATAIG200
-                    </option>
-
 
                   </select>
                 </td>
@@ -1886,6 +1879,9 @@ where name='Nature of Business'";
               <td>
                 <input type="text" name="payment_amount" id="payment_amount" maxlength="10" size="10" readonly />
               </td>
+              <td><div id="discount_summary">
+                <!-- ส่วนลดทั้งหมดจะแสดงตรงนี้ -->
+              </div></td>
             </tr>
           </table>
           <br>

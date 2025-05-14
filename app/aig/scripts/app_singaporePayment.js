@@ -165,6 +165,8 @@ const handleRetrieveQuote = async () => {
   let is_firsttime = url.searchParams.get('is_firsttime');
   let formType = url.searchParams.get('formType');
   const paymentModeValue = document.getElementById("paymentModeSelect").value
+  const paymentAmountFromForm = document.getElementById("payment_amount")?.value?.replace("(SGD)", "").trim()
+  
   if (formType === "auto") {
     if (!handlePaymentValidateFormAuto()) {
       return
@@ -182,10 +184,10 @@ const handleRetrieveQuote = async () => {
 
   if (is_firsttime === "1") {
     if (formType === "auto" && Number(paymentModeValue) === 122) {
-      handlePaymentGatewayIPP(quotationData?.premiumPayable)
+      handlePaymentGatewayIPP(paymentAmountFromForm)
       return
     }
-    handlePaymentGateway(quotationData?.premiumPayable, Number(paymentModeValue));
+    handlePaymentGateway(paymentAmountFromForm, Number(paymentModeValue));
 
   } else {
     const responseRetrieve = await fetchRetrieveQuote(objectRetrieve);
@@ -210,11 +212,13 @@ const handleRetrieveQuote = async () => {
     const getPlanPoi = quoteList?.[0]?.Policy
     await jQuery.agent.updateRetrieveQuote(data, id, transformedData, objectRetrieve);
     const isPremiumPayableMatching =
-      parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable);
+      parseFloat(data?.premiumPayable) === parseFloat(paymentAmountFromForm);
 
     const isPaymentModeMatching =
       Number(data?.paymentDetails[0]?.paymentMode) === Number(paymentModeValue);
 
+      console.log("parseFloat(data?.premiumPayable)",parseFloat(data?.premiumPayable))
+      console.log("arseFloat(paymentAmountFromForm)",parseFloat(paymentAmountFromForm))
     if (!isPremiumPayableMatching) {
       alert("Premium Payable does not match. It has changed to " + data?.premiumPayable + " " + data?.currency);
     }
@@ -769,18 +773,34 @@ const handlePaymentSecureFlow =async () => {
     console.log("transformedData", transformedData);
     await jQuery.agent.updateRetrieveQuote(data, id, transformedData, objectRetrieve);
     const isPremiumPayableMatching =
-      parseFloat(data?.premiumPayable) === parseFloat(quotationData?.premiumPayable);
+      parseFloat(data?.premiumPayable) === parseFloat(rawAmount);
 
+    console.log("parseFloat(data?.premiumPayable)",parseFloat(data?.premiumPayable))
+    console.log("parseFloat(rawAmount)",parseFloat(rawAmount))
     const isPaymentModeMatching =
       Number(data?.paymentDetails[0]?.paymentMode) === Number(paymentModeValue);
+    const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
 
-    if (!isPremiumPayableMatching) {
+    let currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+    let formType = url.searchParams.get('formType');
+    //หากเป็นauto renewal ใช้amount จากform
+    if(formType === "auto"&&isRenewal){
+    // do nothing
+    }else if (!isPremiumPayableMatching) {
       alert("Premium Payable does not match. It has changed to " + data?.premiumPayable + " " + data?.currency);
     }
     if (!isPaymentModeMatching) {
       alert("Payment Mode has changed.");
     }
-    payload={...payload,amount:data?.premiumPayable}
+    let amountValue = 0
+    //หากเป็นauto renewal ใช้amount จากform
+    if(formType === "auto"&&isRenewal){
+      amountValue=parseFloat(rawAmount)
+    }else{
+      amountValue=data?.premiumPayable
+    }
+    payload={...payload,amount:amountValue}
     confirmMessage= `Please confirm the following payment details:\n\n` +
     `Payment Token Result: ${result}\n` +
     `Card: ${cardNumber}\n` +

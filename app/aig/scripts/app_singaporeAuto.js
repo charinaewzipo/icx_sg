@@ -1,5 +1,6 @@
 let premiumBaseAmount = 0;
 let selectedPlan;
+let objectHandlingVoucherDetails = null;
 function checkRetrieveCampaignAuto(data) {
   const currentUrl = new URL(window.location.href);
   const formType = currentUrl.searchParams.get('formType');
@@ -37,7 +38,7 @@ async function handleRetrieveAuto(callListData) {
   const idNo = callListData?.personal_id || callListData?.passport_no || "";
   const policyNo = calllistDetail[quoteNoField] || "";
   const regNo = policyNo ? "" : calllistDetail[vehicleNoField] || "";
-  const dob = idNo ? "": calllistDetail[DOBField] ? (isoToFormattedDate(calllistDetail[DOBField])):"" 
+  const dob = idNo ? "" : calllistDetail[DOBField] ? (isoToFormattedDate(calllistDetail[DOBField])) : ""
   const engineNo = calllistDetail[DOBField] ? "" : calllistDetail[enginNoField] || "";
 
 
@@ -108,39 +109,53 @@ function populatePlanAutoPremium(planList) {
   const planSelect = document.getElementById('planSelect');
   const planPoiSelect = document.getElementById('planPoiSelect');
   planSelect.innerHTML = '<option value="">&lt;-- Please select an option --&gt;</option>';
-  console.log("objectValue",Object.values(planList).length)
+  console.log("objectValue", Object.values(planList).length)
   const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
   if (isRenewal) {
     //hide ncd gears
-    const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
-    const ncdLevel_gears=document.getElementById("ncdLevel_gears");
-    const additionalInfo=document.getElementById("additional-info");
-    const excessSectionOther=document.getElementById("excess-section-other");
-    const noClaimExperienceRow=document.getElementById("noClaimExperienceRow");
-    const ncdNoExperienceElement=document.getElementById("ncdNoExperience")
+    const ncdLevel_gears_display = document.getElementById("ncdLevel_gears_display");
+    const ncdLevel_gears = document.getElementById("ncdLevel_gears");
+    const additionalInfo = document.getElementById("additional-info");
+    const excessSectionOther = document.getElementById("excess-section-other");
+    const noClaimExperienceRow = document.getElementById("noClaimExperienceRow");
+    const ncdNoExperienceElement = document.getElementById("ncdNoExperience")
+
+    const previousInsurerSelect = haveExperienceRow.querySelector('select[name="haveEx-PreviousInsurer"]');
+    const previousPolicyNoInput = haveExperienceRow.querySelector('input[name="haveEx-PreviousPolicyNo"]');
+
+    if (previousInsurerSelect) {
+      previousInsurerSelect.removeAttribute('required'); // Remove required
+
+    }
+    if (previousPolicyNoInput) {
+      previousPolicyNoInput.removeAttribute('required'); // Remove required
+    }
     ncdLevel_gears_display.style.display = "none";
     ncdLevel_gears.style.display = "none";
     noClaimExperienceRow.style.display = "none";
-    
-    ncdNoExperienceElement.required=false;
-    additionalInfo.hidden=false
-    excessSectionOther.hidden=false
-  } 
-  const quoteNoFieldForm=document.getElementById('policyid-input')
-  if(quoteNoFieldForm && quoteNoFieldForm.value){
+
+    if (ncdNoExperienceElement) {
+      ncdNoExperienceElement.required = false;
+    }
+
+    additionalInfo.hidden = false
+    excessSectionOther.hidden = false
+  }
+  const quoteNoFieldForm = document.getElementById('policyid-input')
+  if (quoteNoFieldForm && quoteNoFieldForm.value) {
     const plan = planList
     const option = document.createElement('option');
     option.value = plan.planId;
     option.textContent = `${plan.planName} (${plan?.planPoi})`;
     option.dataset.planPoi = plan.planPoi;
     option.dataset.netPremium = plan.netPremium;
-    option.setAttribute('data-plan_group', plan?.planCode||"");
+    option.setAttribute('data-plan_group', plan?.planCode || "");
     planSelect.appendChild(option);
-    selectedPlan=planList
+    selectedPlan = planList
     populateCoverListAutoPremium();
-   
-  }else{
-  //ใช้premium-calculation
+
+  } else {
+    //ใช้premium-calculation
     for (const key in planList) {
       if (planList.hasOwnProperty(key)) {
         const plan = planList[key];
@@ -153,11 +168,11 @@ function populatePlanAutoPremium(planList) {
       }
     }
   }
-  
+
   // Update planPoiSelect when an option is selected
   planSelect.addEventListener('change', function () {
-    document.getElementById('excess-section').hidden=false;
-   
+    document.getElementById('excess-section').hidden = false;
+
     const coverListDisplay = document.getElementById("coverListDisplay");
     const addCoverDisplay = document.getElementById("addCoverDisplay");
     const selectedOption = planSelect.options[planSelect.selectedIndex];
@@ -211,7 +226,7 @@ function populateCoverListAutoPremium() {
       const rowCount = coverListBody.getElementsByClassName('cover-row').length;
 
       if (rowCount < 10) {
-          addCoverRow(selectedPlan?.coverList);
+        addCoverRow(selectedPlan?.coverList);
       } else {
         alert('You cannot add more than 10 cover rows.');
       }
@@ -261,21 +276,21 @@ function addCoverRow(coverList, setCoverData) {
   selectElement.appendChild(defaultOption);
 
   // Populate dropdown with cover options
-  const quoteNoFieldForm=document.getElementById('policyid-input')
-  if(quoteNoFieldForm && quoteNoFieldForm.value){
+  const quoteNoFieldForm = document.getElementById('policyid-input')
+  if (quoteNoFieldForm && quoteNoFieldForm.value) {
     for (const key in coverList) {
-      if (coverList.hasOwnProperty(key)  && coverList[key]?.optionalFlag === true ) {
+      if (coverList.hasOwnProperty(key) && coverList[key]?.optionalFlag === true) {
         const cover = coverList[key];
         const option = document.createElement('option');
         option.value = cover.id;
         option.textContent = cover.name;
         option.dataset.premium = cover.premium; // Store premium in the option's dataset
         option.dataset.code = cover.code; // Store premium in the option's dataset
-        option.dataset.excess=cover?.standardExcess||""
+        option.dataset.excess = cover?.standardExcess || ""
         selectElement.appendChild(option);
       }
     }
-  }else{
+  } else {
     for (const key in coverList) {
       if (coverList.hasOwnProperty(key) && coverList[key]?.autoAttached === false) {
         const cover = coverList[key];
@@ -284,18 +299,18 @@ function addCoverRow(coverList, setCoverData) {
         option.textContent = cover.name;
         option.dataset.premium = cover.premium; // Store premium in the option's dataset
         option.dataset.code = cover.code; // Store premium in the option's dataset
-        option.dataset.excess=cover?.standardExcess||""
+        option.dataset.excess = cover?.standardExcess || ""
         selectElement.appendChild(option);
       }
     }
   }
-  
+
   const thCellCell = document.createElement('th');
   // Premium Display Cell
   const premiumCell = document.createElement('td');
   const premiumDisplay = document.createElement('span');
   premiumDisplay.className = 'premium-display';
-  premiumCell.style.width= '150px'
+  premiumCell.style.width = '150px'
   premiumDisplay.textContent = ''; // Initial premium display is empty
 
 
@@ -346,18 +361,18 @@ function addCoverRow(coverList, setCoverData) {
   if (!(setCoverData && setCoverData?.premium === 0)) {
     removeCell.appendChild(removeButton);
     row.appendChild(removeCell);
-  }else{
-    selectElement.addEventListener('mousedown', function(event) {
+  } else {
+    selectElement.addEventListener('mousedown', function (event) {
       event.preventDefault(); // บล็อกการคลิกเลือก
     });
     selectElement.style.cursor = 'not-allowed';
     selectElement.title = "Cannot change or remove";
-    
+
   }
 
   coverListBody.appendChild(row);
 
-  if (setCoverData&&setCoverData?.selectedFlag===true) {
+  if (setCoverData && setCoverData?.selectedFlag === true) {
     console.log("setCoverData:", setCoverData)
     selectElement.value = setCoverData.id;
     selectElement.dispatchEvent(new Event('change'));
@@ -412,7 +427,7 @@ function updateDisabledOptions() {
         option.disabled = true;
       }
       // handle LOU1800,LOU1500
-       else if (selectedValues.includes('1762000072') && option.value === '1762000062') {
+      else if (selectedValues.includes('1762000072') && option.value === '1762000062') {
         option.disabled = true;
       } else if (selectedValues.includes('1762000062') && option.value === '1762000072') {
         option.disabled = true;
@@ -666,23 +681,23 @@ function setupFormListeners() {
     "insured_auto_driverInfo_claimInfo_claimStatus",
     "insured_auto_driverInfo_claimInfo_insuredLiability",
   ];
-  
+
   const quoteNoField = document.getElementById('policyid-input')
-  
-    formFieldNames.forEach(fieldName => {
-      const elements = document.getElementsByName(fieldName);
-      elements.forEach(element => {
-        element.addEventListener("change", () => {
-          console.log(`${fieldName} changed`);
-          if (quoteNoField && quoteNoField.value) {
-          }else{
-            resetPlanSelect();
-          }
-        });
+
+  formFieldNames.forEach(fieldName => {
+    const elements = document.getElementsByName(fieldName);
+    elements.forEach(element => {
+      element.addEventListener("change", () => {
+        console.log(`${fieldName} changed`);
+        if (quoteNoField && quoteNoField.value) {
+        } else {
+          resetPlanSelect();
+        }
       });
     });
-  
-  
+  });
+
+
 }
 
 // Function to reset the planSelect dropdown
@@ -743,7 +758,7 @@ const createElementCover = () => {
   coverListBody.appendChild(row);
 }
 
-async function fetchGetModel(makeValue,nameValue) {
+async function fetchGetModel(makeValue, nameValue) {
   if (!makeValue) return;
 
   const url = `../scripts/get_model_auto.php?makeValue=${makeValue}&nameValue=${nameValue}`;
@@ -842,12 +857,77 @@ async function fetchGetMake(nameValue) {
     document.body.classList.remove('loading');
   }
 }
+async function fetchGetObjectHandlingVouchers(renewal_year, renewal_premium) {
+
+  const url = `../scripts/get_object_handling_vouchers.php?renewal_year=${renewal_year}&renewal_premium=${renewal_premium}`;
+  document.body.classList.add('loading');
+
+  try {
+    // Await the fetch response
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log("data:", data)
+    objectHandlingVoucherDetails = data;
+    // Ensure the select element exists
+    const objectHandlingSelect = document.querySelector('select[name="insured_auto_objecthandlingvouchers"]');
+    if (!objectHandlingSelect) {
+      console.error("Dropdown not found!");
+      return;
+    }
+
+    // Clear existing options
+    objectHandlingSelect.innerHTML = `
+      <option value="">
+        <-- Please select an option -->
+      </option>
+    `;
+
+    // Populate new options from the fetched data
+    if (data && Array.isArray(data) && data?.length > 0) {
+      data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.promo_code;
+        option.textContent = item.promo_code;
+        objectHandlingSelect.appendChild(option);
+      });
+    } else {
+      // Display a message when no data is available
+      const option = document.createElement('option');
+      option.value = "";
+      option.textContent = "No options available";
+      option.disabled = true;
+      objectHandlingSelect.appendChild(option);
+    }
+  } catch (error) {
+    console.error('Error fetching plans:', error);
+  } finally {
+    document.body.classList.remove('loading');
+  }
+}
+async function fetchGetPlanCodeAuto(plan_code) {
+
+  const url = `../scripts/get_plan_code.php?plan_code=${plan_code}`;
+  document.body.classList.add('loading');
+
+  try {
+    // Await the fetch response
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log("data:", data)
+    return data
+
+  } catch (error) {
+    console.error('Error fetching plans:', error);
+  } finally {
+    document.body.classList.remove('loading');
+  }
+}
 const handleAutoMakeChange = () => {
   const makeSelect = document.querySelector('select[name="insured_auto_vehicle_make"]');
   const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
-  const nameModel = isRenewal ? 'RNModel':'Model'
+  const nameModel = isRenewal ? 'RNModel' : 'Model'
   makeSelect.addEventListener('change', async () => {
-    await fetchGetModel(makeSelect.value,nameModel)
+    await fetchGetModel(makeSelect.value, nameModel)
   })
 }
 let promoCodeCount = 0; // เริ่มต้นที่ 1 เพราะมีแถวแรกอยู่แล้วใน HTML
@@ -1003,7 +1083,7 @@ function handleChangeEffectiveDate() {
     if (effectiveDateValue) {
       const [day, month, year] = effectiveDateValue.split("/");
       const effectiveDate = new Date(`${year}-${month}-${day}`);
-      
+
       // วันที่ 1 ปีหลังจาก effectiveDate
       const minDate = new Date(effectiveDate);
       minDate.setFullYear(minDate.getFullYear() + 1);
@@ -1025,9 +1105,9 @@ function handleChangeEffectiveDate() {
 }
 
 
-function calculateDenominationsExcess(standard,interval,min,max) {
+function calculateDenominationsExcess(standard, interval, min, max) {
   const result = [];
-  const maximumOption=max-standard
+  const maximumOption = max - standard
   let current = maximumOption;
 
 
@@ -1036,7 +1116,7 @@ function calculateDenominationsExcess(standard,interval,min,max) {
     current -= interval;
   }
 
- 
+
   current = -interval;
   while (current >= -standard) {
     result.push(current);
@@ -1049,7 +1129,7 @@ function calculateDenominationsExcess(standard,interval,min,max) {
 
 function handlePopulateExcessFromAPI(selectedPlan) {
   console.log("selectedPlan:", selectedPlan);
-  const extractExcessData = Object.values(selectedPlan?.coverList).filter(i=>Number(i.id)===600000162)[0];
+  const extractExcessData = Object.values(selectedPlan?.coverList).filter(i => Number(i.id) === 600000162)[0];
   console.log("extractExcessData:", extractExcessData);
 
   if (extractExcessData) {
@@ -1061,7 +1141,7 @@ function handlePopulateExcessFromAPI(selectedPlan) {
     const minStandardExcess = document.getElementById('insured_auto_min_standard_excess');
     const maxStandardExcess = document.getElementById('insured_auto_max_standard_excess');
     const intervalValue = document.getElementById('insured_auto_interval_value');
-    
+
     if (standardExcessField) {
       standardExcessField.value = extractExcessData?.standardExcess || 0;
     }
@@ -1086,7 +1166,7 @@ function handlePopulateExcessFromAPI(selectedPlan) {
       Array.isArray(arrayExcessRange) && arrayExcessRange.forEach(item => {
         const option = document.createElement('option');
         option.value = item;
-        option.textContent = item>0 ? `+${item}`:item;
+        option.textContent = item > 0 ? `+${item}` : item;
         buyUpDownField.appendChild(option);
       });
     }
@@ -1118,57 +1198,109 @@ function handlePopulateExcessFromAPI(selectedPlan) {
   }
 }
 
-function populateAdditionalInfo(dbData){
-  console.log("dbData",dbData)
-  const responseRetrieve=JSON.parse(dbData?.response_retrieve_json)
+function populateAdditionalInfo(dbData) {
+  console.log("dbData", dbData)
+  const responseRetrieve = JSON.parse(dbData?.response_retrieve_json)
   console.log("responseRetrieve:", responseRetrieve)
   const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
-  if(isRenewal){
-    if(responseRetrieve?.specialText?.specialtext){
-      document.getElementById("special-text").value = responseRetrieve?.specialText?.specialtext||"";
+  if (isRenewal) {
+    if (responseRetrieve?.specialText?.specialtext) {
+      document.getElementById("special-text").value = responseRetrieve?.specialText?.specialtext || "";
     }
-    if(responseRetrieve?.remarks){
-      document.getElementById("remarks-retrieve").value = responseRetrieve?.remarks||"";
+    if (responseRetrieve?.remarks) {
+      document.getElementById("remarks-retrieve").value = responseRetrieve?.remarks || "";
     }
-    if(responseRetrieve?.remarksC){
-      document.getElementById("remarksC-memo").value = responseRetrieve?.remarksC||"";
+    if (responseRetrieve?.remarksC) {
+      document.getElementById("remarksC-memo").value = responseRetrieve?.remarksC || "";
     }
-    if(Array.isArray(responseRetrieve?.commentsHistory)&&responseRetrieve?.commentsHistory.length>0){
-      const commentsHistory = responseRetrieve?.commentsHistory.map(item => 
-      `Send Time: ${item?.sendTime||""}\nCreator Name: ${item?.creatorName||""}\nComments: ${item?.comments||""}\n---------------------------------`.trim()).join("\n");
-  
-      document.getElementById("commentsHistory").value = commentsHistory||"";
+    if (Array.isArray(responseRetrieve?.commentsHistory) && responseRetrieve?.commentsHistory.length > 0) {
+      const commentsHistory = responseRetrieve?.commentsHistory.map(item =>
+        `Send Time: ${item?.sendTime || ""}\nCreator Name: ${item?.creatorName || ""}\nComments: ${item?.comments || ""}\n---------------------------------`.trim()).join("\n");
+
+      document.getElementById("commentsHistory").value = commentsHistory || "";
     }
-    if(Array.isArray(responseRetrieve?.referralResponse)&&responseRetrieve?.referralResponse.length>0){
+    if (Array.isArray(responseRetrieve?.referralResponse) && responseRetrieve?.referralResponse.length > 0) {
       const referralResponses = responseRetrieve?.referralResponse.map(item => `
-      Quotation No: ${item?.quotationNo||""}\nUW Reason: ${item?.uwReason||""}\nRequest User: ${item?.uwRequestUserName||""}\nRequest Time: ${item?.uwRequestTime||""}\nResponse User: ${item?.uwResponseUserName||""}\nResponse Time: ${item?.uwResponseTime||""}\nDecision: ${item?.decision||""}\n---------------------------------
+      Quotation No: ${item?.quotationNo || ""}\nUW Reason: ${item?.uwReason || ""}\nRequest User: ${item?.uwRequestUserName || ""}\nRequest Time: ${item?.uwRequestTime || ""}\nResponse User: ${item?.uwResponseUserName || ""}\nResponse Time: ${item?.uwResponseTime || ""}\nDecision: ${item?.decision || ""}\n---------------------------------
       `.trim()).join("\n");
-  
-      document.getElementById("referral-response").value = referralResponses||"";
+
+      document.getElementById("referral-response").value = referralResponses || "";
     }
-    if(Array.isArray(responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList)&&responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.length>0){
+    if (Array.isArray(responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList) && responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.length > 0) {
       const campaignAndDiscountList = responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.map(item => `
-      Name: ${item?.name||""}\nAmount: ${item?.amount||""}\nRate: ${item?.rate||""}\n---------------------------------
+      Name: ${item?.name || ""}\nAmount: ${item?.amount || ""}\nRate: ${item?.rate || ""}\n---------------------------------
       `.trim()).join("\n");
-  
-      document.getElementById("discountList").value = campaignAndDiscountList||"";
+
+      document.getElementById("discountList").value = campaignAndDiscountList || "";
     }
 
-    //objecthandlingVouchers
-    if(dbData?.object_handling_vouchers){
-      const vouncher=document.querySelector(`select[name="insured_auto_objecthandlingvouchers"]`);
-      if(vouncher){
-        vouncher.value=dbData?.object_handling_vouchers
-      }
-    }
+
+
+
 
   }
-  
+
+}
+async function populateObjectHandlingVouchers(dbData) {
+  //objecthandlingVouchers
+  const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+  if (!isRenewal) return
+  const responseInsureList = JSON.parse(dbData?.insuredList)
+  let planCode = ""
+  if (Array.isArray(responseInsureList) && responseInsureList.length > 0) {
+    planCode = responseInsureList[0]?.planInfo?.planCode
+  }
+  console.log("planCode", planCode)
+  const paymentAmount = Number(dbData?.premiumPayable || 0);
+  const renewalPremiumFromUdf17 = Number(calllistDetail?.udf17 || 0);
+  const renewalPremium = Number((paymentAmount - renewalPremiumFromUdf17).toFixed(2));
+
+  const policyElement = document.getElementById("policyid-input");
+  let renewalYear = "";
+
+  if (policyElement && policyElement.value) {
+    const year = policyElement.value.split('-')
+    renewalYear = year[1];
+  }
+
+  console.log("renewalPremiumFromUdf17:", renewalPremiumFromUdf17);
+  console.log("renewalPremium:", renewalPremium);
+  console.log("renewalYear:", renewalYear);
+
+  if (planCode) {
+    const isHavePlanCode = await fetchGetPlanCodeAuto(planCode)
+    if (Array.isArray(isHavePlanCode) && isHavePlanCode.length > 0) {
+      console.log("isHavePlanCode:", isHavePlanCode)
+      if (paymentAmount > 900 && renewalPremiumFromUdf17 && renewalPremium > 0 && renewalYear) {
+        await fetchGetObjectHandlingVouchers(Number(renewalYear), renewalPremium);
+      } else {
+        const objectHandlingSelect = document.querySelector('select[name="insured_auto_objecthandlingvouchers"]');
+        if (!objectHandlingSelect) {
+          console.error("Dropdown not found!");
+          return;
+        }
+        // Clear existing options
+        objectHandlingSelect.innerHTML = `
+        <option value="">
+          <-- Please select an option -->
+        </option>
+      `;
+        const option = document.createElement('option');
+        option.value = "";
+        option.textContent = "No options available";
+        option.disabled = true;
+        objectHandlingSelect.appendChild(option);
+
+      }
+    }
+  }
+
+
 }
 async function populateAdditionInfoInternalClaimHistory() {
   function cleanQuoteNo(quoteNo) {
     return quoteNo.replace(/-\d{2}$/, '');
-}
+  }
   const quoteNoFieldForm = document.getElementById('policyid-input');
   const requestClaimListing = {
     "Policy": {
@@ -1179,6 +1311,7 @@ async function populateAdditionInfoInternalClaimHistory() {
   const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
 
   if (quoteNoFieldForm && quoteNoFieldForm.value && isRenewal) {
+    handlePreviousInsurer()
     const response = await fetchClaimListing(requestClaimListing);
     console.log("response:", response);
     let claimDetails = "";
@@ -1187,9 +1320,9 @@ async function populateAdditionInfoInternalClaimHistory() {
     const msgStatus = response.ClaimDownloadRs?.MsgStatus;
     if (msgStatus) {
       claimDetails += `Message Status Code: ${msgStatus.MsgStatusCd || "N/A"}\n` +
-                      `Message Error Code: ${msgStatus.MsgErrorCd || "N/A"}\n` +
-                      `Message Status Description: ${msgStatus.MsgStatusDesc || "N/A"}\n` +
-                      `---------------------------------\n`;
+        `Message Error Code: ${msgStatus.MsgErrorCd || "N/A"}\n` +
+        `Message Status Description: ${msgStatus.MsgStatusDesc || "N/A"}\n` +
+        `---------------------------------\n`;
     }
 
     const claimsDownloadInfo = response.ClaimDownloadRs?.ClaimsDownloadInfo;
@@ -1208,10 +1341,10 @@ async function populateAdditionInfoInternalClaimHistory() {
 
     claimsOccurrences.forEach((occurrence, index) => {
       claimDetails += `Claim Number ${index + 1}: ${occurrence.ClaimNumber?.trim() || "N/A"}\n` +
-                      `Loss Date: ${occurrence.LossDt || "N/A"}\n` +
-                      `Incident Description: ${occurrence.IncidentDesc?.trim() || "N/A"}\n` +
-                      `Total Paid Amount: ${parseFloat(occurrence.TotalPaidAmt?.Amt || 0).toFixed(2)}\n` +
-                      `---------------------------------\n`;
+        `Loss Date: ${occurrence.LossDt || "N/A"}\n` +
+        `Incident Description: ${occurrence.IncidentDesc?.trim() || "N/A"}\n` +
+        `Total Paid Amount: ${parseFloat(occurrence.TotalPaidAmt?.Amt || 0).toFixed(2)}\n` +
+        `---------------------------------\n`;
     });
 
     // Handle ClaimsParty array
@@ -1221,7 +1354,7 @@ async function populateAdditionInfoInternalClaimHistory() {
 
     claimsParties.forEach((party, index) => {
       claimDetails += `Claims Party ${index + 1} Role: ${party.ClaimsPartyInfo?.ClaimsPartyRoleCd || "N/A"}\n` +
-                      `---------------------------------\n`;
+        `---------------------------------\n`;
     });
 
     // Handle LossInfo array
@@ -1231,17 +1364,17 @@ async function populateAdditionInfoInternalClaimHistory() {
 
     lossInfos.forEach((loss, index) => {
       claimDetails += `Loss Info ${index + 1}:\n` +
-                      `  Coverage Limit: ${loss.Coverage?.Limit?.FormatCurrencyAmt?.Amt ? parseFloat(loss.Coverage.Limit.FormatCurrencyAmt.Amt).toFixed(2) : "N/A"}\n` +
-                      `  Limit Applies To: ${loss.Coverage?.LimitAppliesToCd || "N/A"}\n` +
-                      `---------------------------------\n`;
+        `  Coverage Limit: ${loss.Coverage?.Limit?.FormatCurrencyAmt?.Amt ? parseFloat(loss.Coverage.Limit.FormatCurrencyAmt.Amt).toFixed(2) : "N/A"}\n` +
+        `  Limit Applies To: ${loss.Coverage?.LimitAppliesToCd || "N/A"}\n` +
+        `---------------------------------\n`;
     });
 
     // TransactionEffectiveDt and CountryCd details
     const transactionDate = response.ClaimDownloadRs?.TransactionEffectiveDt;
     const countryCd = response.ClaimDownloadRs?.CountryCd;
     claimDetails += `Transaction Date: ${transactionDate || "N/A"}\n` +
-                    `Country Code: ${countryCd || "N/A"}\n` +
-                    `---------------------------------\n`;
+      `Country Code: ${countryCd || "N/A"}\n` +
+      `---------------------------------\n`;
 
     // Populate textarea
     document.getElementById("internal-claim-history").value = claimDetails.trim();
@@ -1250,7 +1383,7 @@ async function populateAdditionInfoInternalClaimHistory() {
 }
 function handlePreviousInsurer() {
   const haveExperienceRow = document.querySelector("#haveExperienceRow");
-  if(haveExperienceRow){
+  if (haveExperienceRow) {
     const requiredSpans = haveExperienceRow.querySelectorAll("span[style='color:red']");
 
     // Remove or hide the spans
@@ -1269,7 +1402,7 @@ function handlePreviousInsurer() {
 function populateExcessSectionOther() {
   console.log("selectedPlan:", selectedPlan)
   const quoteNoFieldForm = document.getElementById('policyid-input')
-  if (selectedPlan ) {
+  if (selectedPlan) {
     const sectionBody = document.getElementById('section-other-body');
     // ลบข้อมูลเก่าภายใน tbody
     sectionBody.innerHTML = "";
@@ -1287,9 +1420,9 @@ function populateExcessSectionOther() {
       let detailHTML = `<td style='padding-bottom:8px'>`;
       covers.forEach((cover) => {
         if (cover.name === 'Act of God') {
-          detailHTML += `<span style='padding-right:5px'>Flood Cover - $${cover.finalExcess||0}</span>  `;
+          detailHTML += `<span style='padding-right:5px'>Flood Cover - $${cover.finalExcess || 0}</span>  `;
         } else {
-          detailHTML += `<span style='padding-right:5px'>${cover.name} - $${cover.finalExcess||0}</span>  `;
+          detailHTML += `<span style='padding-right:5px'>${cover.name} - $${cover.finalExcess || 0}</span>  `;
 
         }
       });
@@ -1338,8 +1471,8 @@ function populateExcessSectionOther() {
     if (section2.length) renderSection("Section 2", section2);
     if (section3.length) renderSection("Section 3", section3);
   }
-  const excessSectionOther=document.getElementById("excess-section-other");
-  excessSectionOther.hidden=false
+  const excessSectionOther = document.getElementById("excess-section-other");
+  excessSectionOther.hidden = false
 }
 
 
@@ -1347,7 +1480,7 @@ function populateExcessSectionOther() {
 function extendTextarea(textareaId, button) {
   event.preventDefault();
   var textarea = document.getElementById(textareaId);
-  if (!textarea.value.trim()) { 
+  if (!textarea.value.trim()) {
     button.style.display = "none";  // ซ่อนปุ่ม
     return; // หยุดการทำงานของฟังก์ชัน
   }
@@ -1376,7 +1509,7 @@ function checkTextareaContent(textareaId, buttonClass) {
     }
   });
 }
-function checkTextareaContentBox(){
+function checkTextareaContentBox() {
   checkTextareaContent("commentHistory", "extend-btn");
   checkTextareaContent("internal-claim-history", "extend-btn");
   checkTextareaContent("special-text", "extend-btn");
@@ -1386,11 +1519,11 @@ function checkTextareaContentBox(){
   checkTextareaContent("referral-response", "extend-btn");
   checkTextareaContent("discountList", "extend-btn");
 }
-function handleAlertPromoCodeApplicable(request,response){
-  if(!Array.isArray(request?.campaignInfoList) || !request?.campaignInfoList.length) return
-  request?.campaignInfoList.forEach(campaign=>{
-    const isApplicable=response?.campaignAndDiscountList.find(item=>item?.code === campaign?.campaignCode)
-    if(!isApplicable){
+function handleAlertPromoCodeApplicable(request, response) {
+  if (!Array.isArray(request?.campaignInfoList) || !request?.campaignInfoList.length) return
+  request?.campaignInfoList.forEach(campaign => {
+    const isApplicable = response?.campaignAndDiscountList.find(item => item?.code === campaign?.campaignCode)
+    if (!isApplicable) {
       alert(`[${campaign.campaignCode}] Promotion is no longer applicable.`)
     }
   })
@@ -1413,18 +1546,5 @@ document.addEventListener("DOMContentLoaded", () => {
       handleCardTypeIPP()
     })
     syncPolicyAndDriverFields()
-    setTimeout(()=>{
-      checkTextareaContentBox()
-      populateExcessSectionOther()
-      //check isRenewal
-      const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
-      if(isRenewal){
-        populateAdditionInfoInternalClaimHistory()
-        handlePreviousInsurer()
-       
-      }
-    },2000)
-   
-  
   }
 });

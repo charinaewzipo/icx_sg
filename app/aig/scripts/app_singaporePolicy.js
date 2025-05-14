@@ -177,6 +177,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (Amount) {
           Amount.value = `${response?.data?.premiumPayable}(SGD)`;
         }
+        if(formType === "auto"){
+          calculatePremiumFromCampaignCode(response?.data)
+        }
         //secureflowDisplay
         handleDisplaySecureFlow()
 
@@ -349,7 +352,8 @@ function populatePaymentForm(paymentData) {
   // const securityCodeInput = document.querySelector('input[name="payment_securityCode"]');
   // securityCodeInput.value = "XXX";
   const Amount = document.querySelector('input[name="payment_amount"]');
-  Amount.value = `${paymentData.order_amount}(${paymentData.order_currency})`;
+  Amount.value = `${quotationData.premiumPayable}(${paymentData.order_currency})`;
+  // Amount.value = `${paymentData.order_amount}(${paymentData.order_currency})`;
 }
 
 const handleCardTypeFromResponse=()=>{

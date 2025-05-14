@@ -360,7 +360,14 @@ const setDefaultValueForm = async (dbData) => {
     case "home":
       return setInsuredHome(insuredData), setDefaultPlanInfo(insuredData,dbData);
     case "auto":
-      return setOtherInfoAuto(dbData),await setInsuredVehicleList(insuredData),await setDefaultPlanInfoAuto(insuredData,dbData),populateAdditionalInfo(dbData);
+      return await setInsuredVehicleList(insuredData),
+        await setDefaultPlanInfoAuto(insuredData, dbData),
+        populateAdditionalInfo(dbData),
+        checkTextareaContentBox(),
+        populateExcessSectionOther(),
+        await populateObjectHandlingVouchers(dbData),
+        populateAdditionInfoInternalClaimHistory(),
+        setCampaignCodeAuto(dbData);
     case "ah":
       return setInsuredPerson(insuredData, dbData);
     default:
@@ -376,7 +383,7 @@ const handleAlertNCDLevelDifferent=()=>{
     }
   }
 }
-const setOtherInfoAuto = (dbData) => {
+const setCampaignCodeAuto = (dbData) => {
   document.querySelector('textarea[name="commentHistory"]').value = dbData?.quoteVersionMemo || "";
   document.querySelector('select[name="Ncd_Level_gears"]').value = dbData?.ncdLevelGEARS || "";
   document.querySelector('select[name="cardType"]').value = dbData?.cardType || "";
@@ -398,8 +405,8 @@ const setOtherInfoAuto = (dbData) => {
   } catch (error) {
     console.error("Invalid response JSON:", error);
   }
-
   console.log("campaignInfoList:", campaignInfoList);
+
   console.log("getCampaignCodeFromAnyResponse:", getCampaignCodeFromAnyResponse);
 
   if (
@@ -417,13 +424,114 @@ const setOtherInfoAuto = (dbData) => {
 
   document.getElementById("add-code-display").style.display = "";
 
+    
+  console.log("objectHandlingVoucherDetails",objectHandlingVoucherDetails)
   if (Array.isArray(campaignInfoList) && campaignInfoList.length > 0) {
-    campaignInfoList.forEach((code) => addPromoCode(code?.campaignCode));
+    const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+
+    if (isRenewal) {
+      const isArrayVoucherDetails = Array.isArray(objectHandlingVoucherDetails);
+
+      // แยกแคมเปญที่ไม่ใช่ object handling voucher
+      const filteredCampaigns = campaignInfoList.filter(campaign =>
+        !(isArrayVoucherDetails && objectHandlingVoucherDetails.some(voucher =>
+          voucher?.promo_code === campaign?.campaignCode
+        ))
+      );
+      filteredCampaigns.forEach(c => addPromoCode(c?.campaignCode));
+      
+      // หาแคมเปญที่ตรงกับ object handling voucher
+      const matchedVoucherCampaign = isArrayVoucherDetails
+        ? campaignInfoList.find(campaign =>
+            objectHandlingVoucherDetails.some(voucher =>
+              voucher?.promo_code === campaign?.campaignCode
+            )
+          )
+        : null;
+      
+      const voucherElement = document.querySelector(`select[name="insured_auto_objecthandlingvouchers"]`);
+      if (voucherElement) {
+        voucherElement.value = matchedVoucherCampaign?.campaignCode || "";
+      }
+      
+
+    } else {
+    campaignInfoList.forEach(c => addPromoCode(c?.campaignCode));
+    }
+
+    
+    
   } else {
     addPromoCode();
   }
 };
+const calculatePremiumFromCampaignCode = (dbData) => {
+  const isRenewal = campaignDetailsFromAPI?.incident_type === "Renewal";
+  if (!isRenewal) return
+  let getCampaignCodeFromRecalculate = null;
+  try {
+    getCampaignCodeFromRecalculate = dbData?.response_recalculate_json
+      ? JSON.parse(dbData.response_recalculate_json)
+      : null
+  } catch (error) {
+    console.error("Invalid response JSON:", error);
+  }
+  console.log("getCampaignCodeFromRecalculate?.campaignAndDiscountList", getCampaignCodeFromRecalculate?.campaignAndDiscountList)
 
+  const campaignList = getCampaignCodeFromRecalculate?.campaignAndDiscountList;
+
+  if (Array.isArray(campaignList) && campaignList.length > 0) {
+    const filterCampaignIncludePremium = campaignList.filter(
+      i => i?.type === 2 && i?.includedInPremium === true
+    );
+
+    const totalDiscount = filterCampaignIncludePremium.reduce((sum, item) => {
+      return sum + (Number(item.amount) || 0);
+    }, 0);
+    console.log("totalDiscount",totalDiscount)
+    // รับค่า input และ div สำหรับแสดงส่วนลด
+    const paymentInput = document.getElementById("payment_amount");
+    const discountSummary = document.getElementById("discount_summary");
+      const originalAmount = Number(dbData?.premiumPayable) || 0; 
+      const finalAmount = (originalAmount - totalDiscount).toFixed(2);
+
+      console.log("originalAmount",originalAmount)
+      console.log("finalAmount",finalAmount)
+      paymentInput.value = `${finalAmount} (SGD)`; // ตั้งค่าคืนพร้อมหน่วย
+    
+
+    // แสดงรายการลดใน HTML
+    if (discountSummary) {
+      discountSummary.innerHTML = ""; // Clear previous content
+    
+      if (filterCampaignIncludePremium.length > 0) {
+        const list = document.createElement("ul");
+        list.style.margin = "0";
+        list.style.paddingLeft = "20px";
+        const liOrigin = document.createElement("li");
+        liOrigin.textContent=`Original Amount: ${originalAmount.toFixed(2)} (SGD)`
+        list.appendChild(liOrigin);
+        filterCampaignIncludePremium.forEach(item => {
+          const li = document.createElement("li");
+          const amount = Number(item.amount);
+          if (!isNaN(amount)) {
+            li.textContent = `Discount from ${item.code}: ${amount.toFixed(2)} (SGD)`;
+            list.appendChild(li);
+          }
+        });
+    
+        if (list.childElementCount > 0) {
+          discountSummary.appendChild(list);
+        } else {
+          discountSummary.textContent = "No valid discounts included in the premium.";
+        }
+      } else {
+        discountSummary.textContent = "No discounts included in the premium.";
+      }
+    }
+    
+  }
+}
 const setInsuredHome = (insuredData) => {
   console.log("setInsuredList home");
   if (!insuredData || insuredData.length === 0) return;
