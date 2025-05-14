@@ -715,6 +715,7 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
       // const submitButton = document.querySelector("#btnEditForm");
       // const shouldRecalculate = submitButton.getAttribute("data-recalculate") === "true";
       console.log("shouldRecalculate:", shouldRecalculate)
+      const paymentAmountFromForm = document.getElementById("payment_amount")?.value?.replace("(SGD)", "").trim()
       if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
         let paymentDetails = [
           {
@@ -726,7 +727,8 @@ if (quotationData?.policyId && responsePayment?.result === "SUCCESS") {
             cardExpiryYear: responsePayment.card_expiry_year,
             paymentDate: new Date(responsePayment.time_of_lastupdate).toISOString(),
             paymentFrequency: Number(formData.get('Payment_Mode'))===122 ? handlePaymentFrequencyIPP():quotationData.payment_frequency,
-            paymentAmount: quotationData.premiumPayable,
+            paymentAmount: paymentAmountFromForm,
+            // paymentAmount: quotationData.premiumPayable,
             cardType:handleCardTypeFromResponse(),
             cardNumber: responsePayment.card_number,
             currency: responsePayment.order_currency,

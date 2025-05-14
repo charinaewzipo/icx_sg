@@ -526,7 +526,7 @@ const calculatePremiumFromCampaignCode = (dbData) => {
           discountSummary.textContent = "No valid discounts included in the premium.";
         }
       } else {
-        discountSummary.textContent = "No discounts included in the premium.";
+        discountSummary.textContent = "";
       }
     }
     

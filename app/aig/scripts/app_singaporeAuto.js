@@ -1226,10 +1226,15 @@ function populateAdditionalInfo(dbData) {
 
       document.getElementById("referral-response").value = referralResponses || "";
     }
-    if (Array.isArray(responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList) && responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.length > 0) {
-      const campaignAndDiscountList = responseRetrieve?.insuredList[0]?.planList[0]?.campaignAndDiscountList.map(item => `
-      Name: ${item?.name || ""}\nAmount: ${item?.amount || ""}\nRate: ${item?.rate || ""}\n---------------------------------
-      `.trim()).join("\n");
+    
+    const campaignList = responseRetrieve?.insuredList?.[0]?.planList?.[0]?.campaignAndDiscountList;
+    if (Array.isArray(campaignList) && campaignList.length > 0) {
+      const campaignAndDiscountList = campaignList
+        .filter(item => item?.selectedFlag === true)
+        .map(item =>
+          `Name: ${item?.name || ""}\nAmount: ${item?.amount || ""}\nRate: ${item?.rate || ""}\n---------------------------------`
+        )
+        .join("\n");
 
       document.getElementById("discountList").value = campaignAndDiscountList || "";
     }
