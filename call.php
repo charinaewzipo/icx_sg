@@ -490,7 +490,9 @@ table > tfoot > tr > td{
 		<input type="hidden" name="genesysid" value="<?php echo $genesysid;  ?>">
 		<input type="hidden" name="cmpid">
 		<input type="hidden" name="cmptype">
-		<input type="hidden" name="cmpisMultiCampaign">
+		<input type="hidden" name="cmpisMultiProduct">
+		<input type="hidden" name="cmpisMultiProduct_udf_field">
+		<input type="hidden" name="cmpCode">
 		<input type="hidden" name="queueid">
 		<input type="hidden" name="queuecallbackid">
 		<input type="hidden" name="lastInteraction"> <!--  when click call list  for make  call  -->

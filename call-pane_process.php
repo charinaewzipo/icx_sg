@@ -125,7 +125,9 @@ if (isset($_POST['action'])) {
 		case "updateCallTrans":
 			updateCallTrans();
 			break;
-			
+		case "queryMultiProductCampaignName":
+			queryMultiProductCampaignName();
+			break;	
 	}
 }
 
@@ -1295,7 +1297,7 @@ function cmp_initial()
 	}
 
 	//prepare campaign action 
-	$sql = " SELECT campaign_name , campaign_detail , external_web_url , script_detail, campaign_type, genesys_queueid, genesys_callback_queueid " .
+		$sql = " SELECT campaign_name ,campaign_code, campaign_detail ,is_multiproduct,multiproduct_udf_field, external_web_url , script_detail, campaign_type, genesys_queueid, genesys_callback_queueid " .
 		" FROM t_campaign c " .
 		" LEFT OUTER JOIN t_callscript s ON c.script_id = s.script_id " .
 		" WHERE c.campaign_id =  " . dbNumberFormat($_POST['cmpid']) . " ";
@@ -1304,9 +1306,12 @@ function cmp_initial()
 	$result = $dbconn->executeQuery($sql);
 	if ($rs = mysqli_fetch_array($result)) {
 
-		$tmp2 = array(
+	$tmp2 = array(
 			"cmpName" => nullToEmpty($rs['campaign_name']),
 			"cmpDetail" => nullToEmpty($rs['campaign_detail']),
+			"cmpCode" => nullToEmpty($rs['campaign_code']),
+			"cmpisMultiProduct" => nullToEmpty($rs['is_multiproduct']),
+			"cmpisMultiProduct_udf_field" => nullToEmpty($rs['multiproduct_udf_field']),
 			"cmpType" => nullToEmpty($rs['campaign_type']),
 			"geneQueueid" => nullToEmpty($rs['genesys_queueid']),
 			"exturl" => nullToEmpty($rs['external_web_url']),
@@ -2247,5 +2252,58 @@ function updateCallTrans(){
 	$dbconn->executeUpdate($sql);
 	$dbconn->dbClose();
 	$data = array("result" => "success");
+	echo json_encode($data);
+}
+function queryMultiProductCampaignName() {
+	$tmp = json_decode($_POST['data'], true);
+
+	$dbconn = new dbconn;
+	$res = $dbconn->createConn();
+
+	if ($res == 404) {
+		echo json_encode(["result" => "dberror", "message" => "Can't connect to database"]);
+		exit();
+	}
+
+	$calllist_id = intval($tmp['calllist_id']); 
+	$cmpisMultiProduct_udf_field = $tmp['cmpisMultiProduct_udf_field']; // เช่น "udf15,udf16,udf17"
+
+	// ดึงข้อมูล udf จาก calllist
+	$sql_udf = "SELECT $cmpisMultiProduct_udf_field FROM t_calllist WHERE calllist_id = '$calllist_id'";
+
+	$result = $dbconn->executeQuery($sql_udf);
+	$rs = mysqli_fetch_assoc($result);
+
+	$conditions = [];
+	foreach ($rs as $val) {
+		$val = trim($val);
+		if ($val !== '') {
+			$safe_val = addslashes($val);
+			$conditions[] = "campaign_name_from_udf LIKE '$safe_val'";
+		}
+	}
+
+	if (empty($conditions)) {
+		echo json_encode(["result" => "empty", "message" => "No UDF values found"]);
+		$dbconn->dbClose();
+		exit();
+	}
+
+	// สร้าง SQL สำหรับค้นหาใน t_campaign
+	$where_clause = implode(' OR ', $conditions);
+	$sql_campaign = "SELECT * FROM t_campaign WHERE $where_clause";
+
+	$result_campaign = $dbconn->executeQuery($sql_campaign);
+	$data = [];
+
+	while ($row = mysqli_fetch_assoc($result_campaign)) {
+		$data[] = $row;
+	}
+
+	if (empty($data)) {
+		$data = ["result" => "empty"];
+	}
+
+	$dbconn->dbClose();
 	echo json_encode($data);
 }

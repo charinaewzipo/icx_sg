@@ -409,6 +409,9 @@
 
 					$("#extweb").attr('href', result.cmp.exturl).text('app name');
 					$("[name=salescript]").val(result.cmp.saleScript);
+					$('[name=cmpisMultiProduct]').val(result.cmp.cmpisMultiProduct);
+					$('[name=cmpCode]').val(result.cmp.cmpCode);
+					$('[name=cmpisMultiProduct_udf_field]').val(result.cmp.cmpisMultiProduct_udf_field);
 
 					//campaign profile ( popup profile pane )
 					txt = "";
@@ -569,6 +572,7 @@
 						let listid = data[0];
 						$('[name=listid]').val(listid);
 						$.call.loadpopup_content(listid);
+						$.call.queryMultiProductCampaignName()
 					});
 				} else {
 					$.call.dtList.newlist.ajax.reload();
@@ -1566,6 +1570,12 @@
 						let callid = $('[name=listid]').val();
 						let cmpid = $('[name=cmpid]').val();
 						let appid = "";
+						let cmpisMultiProduct = $('[name=cmpisMultiProduct]').val();
+						let cmpisMultiProduct_udf_field = $('[name=cmpisMultiProduct_udf_field]').val();
+						let cmpCode = $('[name=cmpCode]').val();
+						console.log(" cmpisMultiProduct:", cmpisMultiProduct)
+						console.log(" cmpisMultiProduct_udf_field:", cmpisMultiProduct_udf_field)
+						console.log(" cmpCode:", cmpCode)
 						if (confirm_id.length == 3) {
 							cmpid = confirm_id[0];
 							appid = confirm_id[1];
@@ -1576,17 +1586,23 @@
 						let imid = result.impid.id;
 						let txt = "";
 
-						for (let i = 0; i < result.exapp.length; i++) {
-
-							txt += '<li style="width:100px; text-align:center; border-radius:8px; color:#666; cursor:pointer; padding:2px 5px 2px 5px; margin:2px;" >';
-							if (appid) {
-								txt += '<a href="' + result.exapp[i].appu + '?id=' + appid + '" style="text-decoration:none;" target="_blank">';
-							} else {
-								txt += '<a href="' + result.exapp[i].appu + '?campaign_id=' + cmpid + '&calllist_id=' + callid + '&agent_id=' + aid + '&import_id=' + imid + '&formType=ah" target="_blank">';
-							}
-							txt += '<span class="' + result.exapp[i].appi + '" style="font-size:26px; color:#666;"></span><span style="font-size:12px; display:block;  color:#666;"> ' + result.exapp[i].appn + '</span></a>' +
-								'</li>';
-						}
+						result.exapp.forEach((app) => {
+								let listItem = `<li style="width:100px; text-align:center; border-radius:8px; color:#666; cursor:pointer; padding:2px 5px; margin:2px;">`;
+				
+								if (app.appn === "Application" &&cmpisMultiProduct==="1") {
+										listItem += `<a href="#" class="popup-trigger" data-cmpid="${cmpid}" data-callid="${callid}" data-aid="${aid}" data-imid="${imid}">`;
+								} else if (appid) {
+										listItem += `<a href="${app.appu}?id=${appid}" style="text-decoration:none;" target="_blank">`;
+								} else {
+										listItem += `<a href="${app.appu}?campaign_id=${cmpid}&calllist_id=${callid}&agent_id=${aid}&import_id=${imid}&formType=ah" target="_blank">`;
+								}
+				
+								listItem += `<span class="${app.appi}" style="font-size:26px; color:#666;"></span>
+														<span style="font-size:12px; display:block; color:#666;"> ${app.appn}</span>
+														</a></li>`;
+				
+								txt += listItem;
+						});
 						ul.html(txt)
 
 					}
@@ -2718,6 +2734,80 @@
 
 
 
+		},
+		queryMultiProductCampaignName: function () {
+			let cmpisMultiProduct_udf_field = $('[name=cmpisMultiProduct_udf_field]').val();
+			let calllist_id = $('[name=listid]').val();
+			let formtojson = JSON.stringify({ cmpisMultiProduct_udf_field,calllist_id});
+
+			$.ajax({
+				url: url,
+				data: {
+					action: 'queryMultiProductCampaignName',
+					data: formtojson
+				},
+				dataType: 'html',
+				type: 'POST',
+				success: function (data) {
+					let result = eval('(' + data + ')');
+					console.log(" result:", result)
+					$(document).off('click', '.popup-trigger').on('click', '.popup-trigger', function (e) {
+						e.preventDefault();
+
+						if ($('#popup-box').length) {
+							$('#popup-box').remove();
+							return;
+						}
+
+						let cmpid = $(this).data("cmpid");
+						let callid = $(this).data("callid");
+						let aid = $(this).data("aid");
+						let imid = $(this).data("imid");
+
+						let popup = $('<div id="popup-box"></div>').css({
+							position: 'absolute',
+							top: $(this).offset().top + $(this).outerHeight(),
+							left: $(this).offset().left + 50,
+							backgroundColor: '#fff',
+							padding: '10px',
+							borderRadius: '8px',
+							boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+							zIndex: 1000,
+						});
+
+						let list = $('<ul id="popup-list"></ul>').css({
+							listStyle: 'none',
+							padding: '0',
+							margin: '0',
+						});
+
+						if (Array.isArray(result)) {
+							result.forEach((app) => {
+								let listItem = $('<li style="padding: 10px; cursor: pointer;"></li>')
+									.text(app.campaign_name)
+									.on('click', function () {
+										let url = `/app/aig/Application/check_app.php?campaign_id=${app.campaign_id}&calllist_id=${callid}&agent_id=${aid}&import_id=${imid}&id=`;
+										window.open(url, '_blank');
+									});
+
+								list.append(listItem);
+							});
+						}
+
+						popup.append(list);
+						$('body').append(popup);
+
+						$(document).on('click', function (event) {
+							if (!$(event.target).closest('#popup-box, .popup-trigger').length) {
+								$('#popup-box').remove();
+							}
+						});
+					});
+				},
+				error: function (xhr, status, error) {
+					console.error("AJAX Error:", status, error);
+				}
+			});
 		}
 
 
