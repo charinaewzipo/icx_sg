@@ -365,6 +365,7 @@ const setDefaultValueForm = async (dbData) => {
         populateAdditionalInfo(dbData),
         checkTextareaContentBox(),
         populateExcessSectionOther(),
+        calculatePremiumFromCampaignCode(dbData),
         await populateObjectHandlingVouchers(dbData),
         populateAdditionInfoInternalClaimHistory(),
         setCampaignCodeAuto(dbData);
@@ -479,7 +480,8 @@ const calculatePremiumFromCampaignCode = (dbData) => {
   console.log("getCampaignCodeFromRecalculate?.campaignAndDiscountList", getCampaignCodeFromRecalculate?.campaignAndDiscountList)
 
   const campaignList = getCampaignCodeFromRecalculate?.campaignAndDiscountList;
-
+  const paymentInput = document.getElementById("payment_amount");
+  paymentInput.value=`${dbData?.premiumPayable}(SGD)`
   if (Array.isArray(campaignList) && campaignList.length > 0) {
     const filterCampaignIncludePremium = campaignList.filter(
       i => i?.code === 'INSURANCECREDIT'
@@ -490,7 +492,7 @@ const calculatePremiumFromCampaignCode = (dbData) => {
     }, 0);
     console.log("totalDiscount",totalDiscount)
     // รับค่า input และ div สำหรับแสดงส่วนลด
-    const paymentInput = document.getElementById("payment_amount");
+
     const discountSummary = document.getElementById("discount_summary");
       const originalAmount = Number(dbData?.premiumPayable) || 0; 
       const finalAmount = (originalAmount - totalDiscount).toFixed(2);

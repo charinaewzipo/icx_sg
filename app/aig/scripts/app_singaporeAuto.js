@@ -1256,9 +1256,17 @@ async function populateObjectHandlingVouchers(dbData) {
     planCode = responseInsureList[0]?.planInfo?.planCode
   }
   console.log("planCode", planCode)
-  const paymentAmount = Number(dbData?.premiumPayable || 0);
-  const renewalPremiumFromUdf17 = Number(calllistDetail?.udf17 || 0);
-  const renewalPremium = Number((paymentAmount - renewalPremiumFromUdf17).toFixed(2));
+  const paymentAmount = document.getElementById("payment_amount")?.value?.replace("(SGD)", "").trim()
+
+  let renewalPremiumFromUdf17 = Number(calllistDetail?.udf17 || 0);
+
+  const renewalYearFromUdf18 = Number(calllistDetail?.udf18 || 1);
+  console.log("renewalYearFromUdf18:", renewalYearFromUdf18);
+
+  const renewalPremiumPerYear = renewalPremiumFromUdf17 / renewalYearFromUdf18;
+  console.log("renewalPremiumPerYear:", renewalPremiumPerYear.toFixed(2));
+
+  const renewalPremium = Number((Number(paymentAmount) - renewalPremiumPerYear).toFixed(2));
 
   const policyElement = document.getElementById("policyid-input");
   let renewalYear = "";
@@ -1268,7 +1276,6 @@ async function populateObjectHandlingVouchers(dbData) {
     renewalYear = year[1];
   }
 
-  console.log("renewalPremiumFromUdf17:", renewalPremiumFromUdf17);
   console.log("renewalPremium:", renewalPremium);
   console.log("renewalYear:", renewalYear);
 
