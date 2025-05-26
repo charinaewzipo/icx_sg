@@ -2737,8 +2737,9 @@
 		},
 		queryMultiProductCampaignName: function () {
 			let cmpisMultiProduct_udf_field = $('[name=cmpisMultiProduct_udf_field]').val();
+			if(!cmpisMultiProduct_udf_field) return;
 			let calllist_id = $('[name=listid]').val();
-			let formtojson = JSON.stringify({ cmpisMultiProduct_udf_field,calllist_id});
+			let formtojson = JSON.stringify({ cmpisMultiProduct_udf_field, calllist_id });
 
 			$.ajax({
 				url: url,
@@ -2750,63 +2751,114 @@
 				type: 'POST',
 				success: function (data) {
 					let result = eval('(' + data + ')');
-					console.log(" result:", result)
+					console.log("result:", result);
+						$('#popup-box').remove();
+					// สร้าง popup และซ่อนไว้ก่อน
+					let popup = $('<div id="popup-box"></div>').css({
+						display: 'none',
+						position: 'absolute',
+						backgroundColor: '#fff',
+						padding: '10px',
+						borderRadius: '8px',
+						boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+						zIndex: 1000,
+					});
+
+					let list = $('<ul id="popup-list"></ul>').css({
+						listStyle: 'none',
+						padding: '0',
+						margin: '0',
+					});
+
+					if (Array.isArray(result)) {
+						result.forEach((app) => {
+							let listItem = $(`<li style="padding: 10px; cursor: pointer;" data-campaign_id="${app.campaign_id}"></li>`)
+								.text(app.campaign_name);
+							list.append(listItem);
+						});
+					}
+
+					popup.append(list);
+					$('body').append(popup);
+
+					// คลิกปุ่มเพื่อแสดง popup
 					$(document).off('click', '.popup-trigger').on('click', '.popup-trigger', function (e) {
 						e.preventDefault();
-
-						if ($('#popup-box').length) {
-							$('#popup-box').remove();
-							return;
-						}
 
 						let cmpid = $(this).data("cmpid");
 						let callid = $(this).data("callid");
 						let aid = $(this).data("aid");
 						let imid = $(this).data("imid");
 
-						let popup = $('<div id="popup-box"></div>').css({
-							position: 'absolute',
-							top: $(this).offset().top + $(this).outerHeight(),
-							left: $(this).offset().left + 50,
-							backgroundColor: '#fff',
-							padding: '10px',
-							borderRadius: '8px',
-							boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-							zIndex: 1000,
-						});
+						let triggerOffset = $(this).offset();
+						let top = triggerOffset.top + $(this).outerHeight();
+						let left = triggerOffset.left + 50;
 
-						let list = $('<ul id="popup-list"></ul>').css({
-							listStyle: 'none',
-							padding: '0',
-							margin: '0',
-						});
+						$('#popup-box').css({ top: top, left: left }).fadeIn(150);
 
-						if (Array.isArray(result)) {
-							result.forEach((app) => {
-								let listItem = $('<li style="padding: 10px; cursor: pointer;"></li>')
-									.text(app.campaign_name)
-									.on('click', function () {
-										let url = `/app/aig/Application/check_app.php?campaign_id=${app.campaign_id}&calllist_id=${callid}&agent_id=${aid}&import_id=${imid}&id=`;
-										window.open(url, '_blank');
-									});
-
-								list.append(listItem);
-							});
-						}
-
-						popup.append(list);
-						$('body').append(popup);
-
-						$(document).on('click', function (event) {
-							if (!$(event.target).closest('#popup-box, .popup-trigger').length) {
-								$('#popup-box').remove();
+						// เพิ่ม event ให้ list items ตอนคลิก .popup-trigger
+						$('#popup-box li').off('click').on('click', function () {
+							let campaign_id = $(this).data("campaign_id");
+							let url = `/app/aig/Application/check_app.php?campaign_id=${campaign_id}&calllist_id=${callid}&agent_id=${aid}&import_id=${imid}&id=`;
+							const win = window.open('', '_blank');
+							if (win) {
+								win.opener = window;
+								win.location.href = url;
 							}
+							$('#popup-box').fadeOut(150);
+							
 						});
+						$.call.queryCheckAppIdByCalllistId(result);
+
 					});
+
+					$(document).on('click', function (event) {
+						if (!$(event.target).closest('#popup-box, .popup-trigger').length) {
+							$('#popup-box').fadeOut(150);
+						}
+					});
+
+
 				},
 				error: function (xhr, status, error) {
 					console.error("AJAX Error:", status, error);
 				}
+			});
+		}
+,
+
+		queryCheckAppIdByCalllistId: function (campaignList) {
+			let calllist_id = $('[name=listid]').val();
+			let formtojson = JSON.stringify({ calllist_id});
+
+			$.ajax({
+				url: url,
+				data: {
+					action: 'queryCheckAppIdByCalllistId',
+					data: formtojson
+				},
+				dataType: 'html',
+				type: 'POST',
+				success: function (data) {
+					let result = eval('(' + data + ')');
+					console.log(" queryCheckAppIdByCalllistId:", result)
+					console.log(" campaignList:", campaignList)
+					let count =result.length||0
+					console.log("count",count)
+					const listItems = document.querySelectorAll('#popup-list li');
+					listItems.forEach((li,index) => {
+						if (count===index) {
+							li.style.pointerEvents = 'auto';
+							li.style.opacity = '1';
+						} else {
+							li.style.pointerEvents = 'none'; // ปิดการคลิก
+							li.style.opacity = '0.5';        // ทำให้จาง
+						}
+					});
+				},
+				error: function (xhr, status, error) {
+					console.error("AJAX Error:", status, error);
+				},
 			});
 		}
 

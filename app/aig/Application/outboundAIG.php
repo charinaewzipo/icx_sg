@@ -152,7 +152,9 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
     $remarksC = mysqli_real_escape_string($dbconn->dbconn, $remarksC);
     $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
-
+    $is_reject_product = isset($formData['is_reject_product']) ? (int)$formData['is_reject_product'] : 0;
+    $reject_product_comment = isset($formData['reject_product_comment']) ? $formData['reject_product_comment'] : '';
+    $reject_product_comment = mysqli_real_escape_string($dbconn->dbconn, $reject_product_comment);
     $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
     $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
     $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
@@ -213,7 +215,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
         policyId, type, productId, distributionChannel, producerCode, propDate, policyEffDate,
         campaignCode, ncdInfo, policyHolderInfo, insuredList, quoteNo, premiumPayable,
         quoteLapseDate, remarksC, agent_id, campaign_id, import_id, calllist_id, update_date,  
-        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id,request_quote_json,response_quote_json,quoteVersionMemo,campaignInfoList,ncdLevelGEARS,cardType,response_premium_calculation_json";
+        payment_frequency, payment_mode, fullname, dob, efulfillmentFlag, customer_id,request_quote_json,response_quote_json,quoteVersionMemo,campaignInfoList,ncdLevelGEARS,cardType,response_premium_calculation_json,is_reject_product,reject_product_comment";
 
     // Add quote_create_date field if response is not empty
     if (!empty($response)) {
@@ -232,7 +234,7 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
         '$policyEffDate', '$campaignCode', '$ncdInfo', '$policyHolderInfo',
         '$insuredList', '$quoteNo', $premiumPayable, '$quoteLapseDate', '$remarksC', $agent_id,
         $campaign_id, $import_id, $calllist_id,NOW(), '$payment_frequency', '$payment_mode', 
-        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id','$request_quote_json','$response_quote_json','$quoteVersionMemo','$campaignInfoList','$ncdLevelGEARS','$cardType','$premiumCalculationData'";
+        '$full_name', '$date_of_birth', '$efulfillmentFlag', '$customer_id','$request_quote_json','$response_quote_json','$quoteVersionMemo','$campaignInfoList','$ncdLevelGEARS','$cardType','$premiumCalculationData','$is_reject_product','$reject_product_comment'";
 
     // Add NOW() for quote_create_date if response is not empty
     if (!empty($response)) {
@@ -288,7 +290,10 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
     $remarksC = mysqli_real_escape_string($dbconn->dbconn, $remarksC);
     $distributionChannel = isset($formData['distributionChannel']) ? (int)$formData['distributionChannel'] : 0;
     $producerCode = isset($formData['producerCode']) ? $formData['producerCode'] : null;
-
+    $is_reject_product = isset($formData['is_reject_product']) ? (int)$formData['is_reject_product'] : 0;
+    $reject_product_comment = isset($formData['reject_product_comment']) ? $formData['reject_product_comment'] : '';
+    $reject_product_comment = mysqli_real_escape_string($dbconn->dbconn, $reject_product_comment);
+   
     //ISO to YYYY-MM-DD HH:MM:SS
     $propDate = isset($formData['propDate']) ? isoToDateTime($formData['propDate']) : null;
     $policyEffDate = isset($formData['policyEffDate']) ? isoToDateTime($formData['policyEffDate']) : null;
@@ -383,6 +388,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
         is_secureflow_not_use='$isSecureFlowNotUse',
         secureflow_comment='$secureFlowComment',             
         object_handling_vouchers='$objecthandlingvouchers',             
+        is_reject_product='$is_reject_product',             
+        reject_product_comment='$reject_product_comment',             
         update_date = NOW()";
 
     // Add quote_create_date if response is not null

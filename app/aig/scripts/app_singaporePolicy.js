@@ -135,6 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnSaveDraftForm = document.getElementById('btnSaveDraftForm');
   const ncdLevel_gears_display=document.getElementById("ncdLevel_gears_display");
   const ncdLevel_gears=document.getElementById("ncdLevel_gears");
+  const rejectButton=document.getElementById("btnReject");
   let currentUrl = window.location.href;
   const url = new URL(currentUrl);
   let formType = url.searchParams.get('formType');
@@ -167,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Response:", response);
         await getProductDetail(response?.data?.productId);
         await setDefaultValueForm(response?.data);
-
+        handleRejectAlert(response?.data)
         const extractData = extractQuotationData(response?.data);
         quotationData = extractData;
         policyid = response?.data?.policyId
@@ -232,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
       paymentContainerAmount.removeAttribute("hidden");
 
       const formElements = document.querySelectorAll(
-        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnEditForm):not(#btnSaveForm):not(.extend-btn),textarea"
+        "input:not(#payment-container-amount input), select:not(#payment-container-amount select), button:not(#payment-container-amount button):not(#btnEditForm):not(#btnSaveForm):not(.extend-btn):not(#btnReject),textarea"
       );
 
       document.getElementById("payment_checkbox").disabled=true
@@ -247,6 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       btnSaveDraftForm.style.display = "none";
       btnSaveForm.style.display = "none";
+      rejectButton.style.display='none';
       remarkCTextArea.disabled = true;
     }
 
@@ -254,7 +256,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // const secureflowButton = document.getElementById("secure_flow")
       console.log("paymentResponse:", paymentResponse)
       btnSaveDraftForm.style.display = "none";
-
+    
       if (paymentResponse?.data?.result !== "SUCCESS") {
         // Payment not successful
         btnSaveForm.disabled = true;
@@ -264,12 +266,13 @@ document.addEventListener("DOMContentLoaded", function () {
         // secureflowButton.style.opacity = "0.65";
 
         btnEditForm.style.display = "block";
+      
       } else {
         // Payment successful
         console.log("paymentResponse:", paymentResponse)
         const cardNumberContainer = document.getElementById('card-number-container');
         const cardExpiryContainer = document.getElementById('card-expiry-container');
-
+        rejectButton.style.display='none';
         cardNumberContainer.hidden = false;
         // cardExpiryContainer.hidden = false;
         populatePaymentForm(paymentResponse?.data)

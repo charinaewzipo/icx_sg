@@ -93,6 +93,15 @@ error_reporting(E_ALL);
       color: #fff !important;
     }
   }
+  .reject-button {
+    background-color: red !important;
+    /* border: 1px solid #52525e !important; */
+    &:hover {
+      /* background-color:#fff !important; */
+      /* color: black !important; */
+      opacity: 0.7;
+    }
+  }
 
   #coverListBody {
     display: block;
@@ -1892,7 +1901,7 @@ where name='Nature of Business'";
 
       <div style="display: flex; justify-content: center;padding:1em 0px; gap:10px">
         <input type="hidden" name="action" id="formAction" value="">
-
+        <button  <?php echo ($formType === "ah") ? 'block' : 'hidden'; ?> type="button" class="button reject-button" id="btnReject" onclick="handleRejectButton()">Reject</button>
         <button type="button" class="button draft-button" id="btnDraftForm" onclick="handleClickDraftButton()">Save</button>
         <button type="button" class="button draft-button" id="btnSaveDraftForm" onclick="handleClickSaveDraftButton()" hidden>Save</button>
         <button hidden type="submit" class="button edit" id="btnEditForm" onclick="handleEditQuote()" data-recalculate="true">Edit</button>

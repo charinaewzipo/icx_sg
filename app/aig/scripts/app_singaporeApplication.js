@@ -929,3 +929,67 @@ function handleAddChildButtonVisibility(productDetail) {
     addButton.style.display = 'none';
   }
 }
+
+async function handleRejectButton() {
+  const reasons = prompt("Please enter the reason for rejection:");
+  if (reasons === null) return; // User cancelled
+  if (reasons.trim() === "") {
+    alert("You must enter a reason.");
+    return;
+  }
+
+  const campaignName = campaignDetailsFromAPI?.campaign_name || "this campaign";
+  const confirmReject = confirm(
+    `Are you sure you want to reject "${campaignName}"?\nNote: You will not be able to edit it anymore.`
+  );
+  if (!confirmReject) return;
+
+  const requestBody = {
+    ...handleForm(),
+    is_reject_product: 1,
+    reject_product_comment: reasons,
+  };
+
+  try {
+    const id = new URL(window.location.href).searchParams.get("id");
+
+    const result = id
+      ? await jQuery.agent.updateQuoteData(requestBody, null, id, campaignDetails, null)
+      : await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails, null);
+
+
+  } catch (error) {
+    console.error("Error while submitting rejection:", error);
+    alert("Something went wrong while processing your request. Please try again.");
+  } finally{
+    setTimeout(() => {
+    alert(`Campaign "${campaignName}" rejected successfully.`);
+      window.close();
+  }, 2000);
+  }
+}
+
+function handleRejectAlert(dbData) {
+  console.log("handleRejectAlert:", dbData);
+
+  const isRejected = Number(dbData?.is_reject_product) === 1;
+
+  if (isRejected) {
+    alert("You cannot edit this campaign anymore.");
+
+    try {
+      window.open('', '_self', '');
+      window.close();
+
+      setTimeout(() => {
+        if (!window.closed) {
+          console.warn("window.close() did not work. Redirecting instead.");
+          window.location.href = "about:blank"; // หรือ redirect ไปยังหน้าหลัก
+        }
+      }, 500);
+    } catch (e) {
+      console.error("Error attempting to close the window:", e);
+      window.location.href = "about:blank";
+    }
+  }
+}

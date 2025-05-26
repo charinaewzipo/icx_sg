@@ -4,6 +4,9 @@ require_once("class/dataTableClass.php");
 require_once("dbconn.php");
 require_once("util.php");
 require_once("wlog.php");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 if (isset($_POST['action'])) {
 	switch ($_POST['action']) {
@@ -127,6 +130,9 @@ if (isset($_POST['action'])) {
 			break;
 		case "queryMultiProductCampaignName":
 			queryMultiProductCampaignName();
+			break;	
+		case "queryCheckAppIdByCalllistId":
+			queryCheckAppIdByCalllistId();
 			break;	
 	}
 }
@@ -2268,18 +2274,22 @@ function queryMultiProductCampaignName() {
 	$calllist_id = intval($tmp['calllist_id']); 
 	$cmpisMultiProduct_udf_field = $tmp['cmpisMultiProduct_udf_field']; // เช่น "udf15,udf16,udf17"
 
+	if (empty($cmpisMultiProduct_udf_field)) {
+		exit();
+	}
 	// ดึงข้อมูล udf จาก calllist
 	$sql_udf = "SELECT $cmpisMultiProduct_udf_field FROM t_calllist WHERE calllist_id = '$calllist_id'";
-
 	$result = $dbconn->executeQuery($sql_udf);
 	$rs = mysqli_fetch_assoc($result);
 
 	$conditions = [];
+	$order_values = [];
 	foreach ($rs as $val) {
 		$val = trim($val);
 		if ($val !== '') {
-			$safe_val = addslashes($val);
-			$conditions[] = "campaign_name_from_udf LIKE '$safe_val'";
+     	$safe_val = addslashes($val);
+      $conditions[] = "campaign_name_from_udf LIKE '$safe_val'";
+      $order_values[] = "'$safe_val'";
 		}
 	}
 
@@ -2291,7 +2301,8 @@ function queryMultiProductCampaignName() {
 
 	// สร้าง SQL สำหรับค้นหาใน t_campaign
 	$where_clause = implode(' OR ', $conditions);
-	$sql_campaign = "SELECT * FROM t_campaign WHERE $where_clause";
+	$order_clause = implode(', ', $order_values);
+	$sql_campaign = "SELECT * FROM t_campaign WHERE $where_clause ORDER BY FIELD(campaign_name_from_udf, $order_clause)";
 
 	$result_campaign = $dbconn->executeQuery($sql_campaign);
 	$data = [];
@@ -2304,6 +2315,48 @@ function queryMultiProductCampaignName() {
 		$data = ["result" => "empty"];
 	}
 
+	$dbconn->dbClose();
+	echo json_encode($data);
+}
+function queryCheckAppIdByCalllistId() {
+	$tmp = json_decode($_POST['data'], true);
+	
+	$dbconn = new dbconn;
+	$res = $dbconn->createConn();
+	
+	if ($res == 404) {
+			$res = array("result" => "dberror", "message" => "Can't connect to database");
+			echo json_encode($res);
+			exit();
+	}
+
+	// $campaign_id = dbNumberFormat($tmp['campaign_id']);
+	$calllist_id = dbNumberFormat($tmp['calllist_id']);
+	// $agent_id = dbNumberFormat($tmp['agent_id']);
+
+	// Check if campaign_id, calllist_id, and import_id are stored as comma-separated values
+	// $sql = "SELECT id, quoteNo 
+	// FROM t_aig_app 
+	// WHERE campaign_id = '$campaign_id' 
+	// 	AND calllist_id = '$calllist_id' 
+	// 	AND agent_id = '$agent_id' 
+	// ";
+	$sql = "SELECT * from t_aig_app where calllist_id='$calllist_id' and is_reject_product='1'";
+
+
+	wlog("[call-pane_process-Wrapup][init] sql: " . $sql);
+
+	$result = $dbconn->executeQuery($sql);
+
+	$data = [];
+
+	
+	while ($rs = mysqli_fetch_assoc($result)) {
+			$data[] =$rs;
+	}
+	if (empty($data)) {
+			$data = ["result" => "empty"];
+	}
 	$dbconn->dbClose();
 	echo json_encode($data);
 }
