@@ -1260,7 +1260,10 @@ async function populateObjectHandlingVouchers(dbData) {
 
   let renewalPremiumFromUdf17 = Number(calllistDetail?.udf17 || 0);
 
-  const renewalYearFromUdf18 = Number(calllistDetail?.udf18 || 1);
+  const check_calllist_udf18 = calllistDetail?.udf18 ?? "";  // ถ้า undefined หรือ null จะใช้ "" แทน
+  const customerDetailUdf18 = check_calllist_udf18.replace("year", "").trim();
+  console.log("customerDetailUdf18:", customerDetailUdf18);
+  const renewalYearFromUdf18 = Number(customerDetailUdf18 || 1);
   console.log("renewalYearFromUdf18:", renewalYearFromUdf18);
 
   const renewalPremiumPerYear = renewalPremiumFromUdf17 / renewalYearFromUdf18;
