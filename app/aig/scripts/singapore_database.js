@@ -156,7 +156,7 @@
         });
       });
     },
-    updatePolicyNo: function (policyid, policyNo,formData,response) {
+    updatePolicyNo: function (policyid, policyNo,formData,response,campaignDetails) {
       $.ajax({
         url: url,
         type: "POST",
@@ -167,6 +167,7 @@
           policyNo: policyNo,
           formData: formData,
           response: response,
+          campaignDetails: campaignDetails,
         }),
         dataType: "json",
         success: function (response) {

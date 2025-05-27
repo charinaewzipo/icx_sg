@@ -370,6 +370,7 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
         remarksC = '$remarksC',
         policyId = '$policyId',
         quoteNo = '$quoteNo',
+        agent_id= '$agent_id',
         premiumPayable = '$premiumPayable',
         quoteLapseDate = " . ($quoteLapseDate === null ? 'NULL' : "'$quoteLapseDate'") . ",
         payment_frequency = '$payment_frequency', 
@@ -512,6 +513,7 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
         remarksC = '$remarksC',
         policyId = '$policyId',
         quoteNo = '$quoteNo',
+        agent_id= '$agent_id',
         premiumPayable = '$premiumPayable',
         quoteLapseDate = " . ($quoteLapseDate === null ? 'NULL' : "'$quoteLapseDate'") . ",
         payment_frequency = '$payment_frequency', 
@@ -599,7 +601,7 @@ function DBUpdateRecalQuoteDataFailed($formData, $response, $id)
         echo json_encode(array("result" => "success", "message" => "Data updated successfully"));
     }
 }
-function DBUpdatePolicyNo($policyid, $policyNo,$formData,$response)
+function DBUpdatePolicyNo($policyid, $policyNo,$formData,$response,$campaignDetails)
 {
     // Initialize database connection
     $dbconn = new dbconn();
@@ -607,6 +609,10 @@ function DBUpdatePolicyNo($policyid, $policyNo,$formData,$response)
     $request_policy_json = json_encode($formData); // Convert to JSON string
     $response_policy_json = json_encode($response); // Convert to JSON string
     // Escape the strings for safe query execution
+    $agent_id = isset($campaignDetails["agent_id"]) ? (int)$campaignDetails["agent_id"] : null;
+    $campaign_id = isset($campaignDetails["campaign_id"]) ? (int)$campaignDetails["campaign_id"] : null;
+    $import_id = isset($campaignDetails["import_id"]) ? (int)$campaignDetails["import_id"] : null;
+    $calllist_id = isset($campaignDetails["calllist_id"]) ? (int)$campaignDetails["calllist_id"] : null;
 
     $request_policy_json = mysqli_real_escape_string($dbconn->dbconn, $request_policy_json);
     $response_policy_json = mysqli_real_escape_string($dbconn->dbconn, $response_policy_json);
@@ -616,7 +622,7 @@ function DBUpdatePolicyNo($policyid, $policyNo,$formData,$response)
     }
 
     $sql = "UPDATE t_aig_app 
-            SET policyNo = ?, policy_create_date = NOW(), update_date = NOW() ,request_policy_json='$request_policy_json',response_policy_json='$response_policy_json'
+            SET policyNo = ?, policy_create_date = NOW(),agent_id='$agent_id', update_date = NOW() ,request_policy_json='$request_policy_json',response_policy_json='$response_policy_json'
             WHERE policyId = ?";
 wlog("DBUpdatePolicyNo ".$sql);
     if ($stmt = $dbconn->dbconn->prepare($sql)) {
@@ -1073,7 +1079,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $policyNo = isset($data['policyNo']) ? $data['policyNo'] : "";
             $response = isset($data['response']) ? $data['response'] : array();
             $formData = isset($data['formData']) ? $data['formData'] : array();
-            DBUpdatePolicyNo($policyid, $policyNo,$formData,$response);
+            $campaignDetails = isset($data['campaignDetails']) ? $data['campaignDetails'] : array();
+
+            DBUpdatePolicyNo($policyid, $policyNo,$formData,$response,$campaignDetails);
         } elseif ($data['action'] === 'insertPaymentLog') {
             $request = isset($data['request']) ? $data['request'] : array();
             $response = isset($data['response']) ? $data['response'] : array();

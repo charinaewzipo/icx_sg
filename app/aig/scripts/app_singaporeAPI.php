@@ -196,7 +196,7 @@ include_once '../../../app/function/settings.php'; // Update with the correct pa
           window.alert(data?.statusMessage || "Successfully!");
         }
         if (data?.policyNo) {
-          await jQuery.agent.updatePolicyNo(policyid, data?.policyNo, requestBody, data);
+          await jQuery.agent.updatePolicyNo(policyid, data?.policyNo, requestBody, data,campaignDetails);
         }
         window.location.reload();
       } else {
