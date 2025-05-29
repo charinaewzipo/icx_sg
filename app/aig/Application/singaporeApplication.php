@@ -101,8 +101,70 @@ error_reporting(E_ALL);
       /* color: black !important; */
       opacity: 0.7;
     }
+  
+  }
+ #rejectModal {
+    display: none;
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 24px;
+    z-index: 1000;
+    /* font-family: "Segoe UI", sans-serif; */
   }
 
+  #rejectModal h2 {
+    margin-top: 0;
+    /* font-size: 20px; */
+    /* color: #333; */
+    margin-bottom: 16px;
+  }
+
+  #rejectModal label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+    color: #444;
+  }
+
+  #rejectModal select,
+  #rejectModal input[type="text"] {
+    width: 100%;
+    padding: 2px;
+    margin-top: 5px;
+    margin-bottom: 16px;
+    border: 1px solid inherit;
+    /* border-radius: 6px; */
+    /* font-size: 14px; */
+  }
+
+  #rejectModal button {
+    padding: 10px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 8px;
+  }
+
+  #rejectModal button:first-of-type {
+    background-color: red;
+    color: white;
+  }
+
+  #rejectModal button:last-of-type {
+    background-color: #52525e;
+    color: white;
+  }
+
+  #rejectModal button:hover {
+    opacity: 0.9;
+  }
   #coverListBody {
     display: block;
     /* กำหนดให้ tbody แยกออกมา */
@@ -1912,7 +1974,34 @@ where name='Nature of Business'";
 
     </form>
   </div>
+<div id="rejectModal">
+  <h2>Reject Campaign</h2>
+  <label for="rejectReason">Select a reason for rejection:</label>
+  <select id="rejectReason" onchange="handleReasonChange()">
+    <option value="">-- Please select an option --</option>
+    <option>Cannot afford premium</option>
+    <option>Already upgraded/covered</option>
+    <option>Coverage level too low</option>
+    <option>No interest in product</option>
+    <option>Prefer to deal with own agent</option>
+    <option>Premium rates too high</option>
+    <option>Rejected by company / underwriting</option>
+    <option>Unhappy experience with company</option>
+    <option>Renewal via other means</option>
+    <option>Rejected due to medical condition</option>
+    <option value="Other">Other (refer to Notes)</option>
+  </select>
 
+  <div id="otherReasonContainer" style="display:none;">
+    <label for="otherReason">Please specify:</label>
+    <input type="text" id="otherReason" placeholder="Please enter reason here" />
+  </div>
+
+  <div style="text-align: right;">
+    <button onclick="submitRejectReason()">Submit</button>
+    <button onclick="closeRejectModal()">Cancel</button>
+  </div>
+</div>
 
 
 </body>

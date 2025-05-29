@@ -929,44 +929,81 @@ function handleAddChildButtonVisibility(productDetail) {
     addButton.style.display = 'none';
   }
 }
+let rejectResolve;
 
-async function handleRejectButton() {
-  const reasons = prompt("Please enter the reason for rejection:");
-  if (reasons === null) return; // User cancelled
-  if (reasons.trim() === "") {
-    alert("You must enter a reason.");
+function handleRejectButton() {
+  return new Promise((resolve) => {
+    rejectResolve = resolve;
+    document.getElementById("rejectModal").style.display = "block";
+  }).then(async (reasons) => {
+    if (!reasons) return;
+
+    const campaignName = campaignDetailsFromAPI?.campaign_name || "this campaign";
+    const confirmReject = confirm(
+      `Are you sure you want to reject "${campaignName}"?\nNote: You will not be able to edit it anymore.`
+    );
+    if (!confirmReject) return;
+
+    const requestBody = {
+      ...handleForm(),
+      is_reject_product: 1,
+      reject_product_comment: reasons,
+    };
+
+    try {
+      const id = new URL(window.location.href).searchParams.get("id");
+      const result = id
+        ? await jQuery.agent.updateQuoteData(requestBody, null, id, campaignDetails, null)
+        : await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails, null);
+    } catch (error) {
+      console.error("Error while submitting rejection:", error);
+      alert("Something went wrong while processing your request. Please try again.");
+    } finally {
+      document.body.classList.add('loading');
+      setTimeout(() => {
+      alert(`Campaign "${campaignName}" rejected successfully.`);
+      document.body.classList.remove('loading');
+      window.close();
+      }, 3000);
+    }
+  });
+}
+
+function handleReasonChange() {
+  const selected = document.getElementById("rejectReason").value;
+  const otherContainer = document.getElementById("otherReasonContainer");
+  if (selected === "Other") {
+    otherContainer.style.display = "block";
+  } else {
+    otherContainer.style.display = "none";
+    document.getElementById("otherReason").value = "";
+  }
+}
+
+function submitRejectReason() {
+  const reason = document.getElementById("rejectReason").value;
+  if (!reason) {
+    alert("You must select a reason.");
     return;
   }
 
-  const campaignName = campaignDetailsFromAPI?.campaign_name || "this campaign";
-  const confirmReject = confirm(
-    `Are you sure you want to reject "${campaignName}"?\nNote: You will not be able to edit it anymore.`
-  );
-  if (!confirmReject) return;
-
-  const requestBody = {
-    ...handleForm(),
-    is_reject_product: 1,
-    reject_product_comment: reasons,
-  };
-
-  try {
-    const id = new URL(window.location.href).searchParams.get("id");
-
-    const result = id
-      ? await jQuery.agent.updateQuoteData(requestBody, null, id, campaignDetails, null)
-      : await jQuery.agent.insertQuotationData(requestBody, null, campaignDetails, null);
-
-
-  } catch (error) {
-    console.error("Error while submitting rejection:", error);
-    alert("Something went wrong while processing your request. Please try again.");
-  } finally{
-    setTimeout(() => {
-    alert(`Campaign "${campaignName}" rejected successfully.`);
-      window.close();
-  }, 2000);
+  let finalReason = reason;
+  if (reason === "Other") {
+    const other = document.getElementById("otherReason").value.trim();
+    if (!other) {
+      alert("Please specify your reason in the text box.");
+      return;
+    }
+    finalReason = other;
   }
+
+  document.getElementById("rejectModal").style.display = "none";
+  rejectResolve(finalReason);
+}
+
+function closeRejectModal() {
+  document.getElementById("rejectModal").style.display = "none";
+  rejectResolve(null);
 }
 
 function handleRejectAlert(dbData) {
