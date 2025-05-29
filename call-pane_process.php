@@ -2277,33 +2277,57 @@ function queryMultiProductCampaignName() {
 	if (empty($cmpisMultiProduct_udf_field)) {
 		exit();
 	}
+
 	// ดึงข้อมูล udf จาก calllist
 	$sql_udf = "SELECT $cmpisMultiProduct_udf_field FROM t_calllist WHERE calllist_id = '$calllist_id'";
 	$result = $dbconn->executeQuery($sql_udf);
 	$rs = mysqli_fetch_assoc($result);
 
+	$special_name = "Complete Accident and Health Plan";
+
 	$conditions = [];
 	$order_values = [];
+	$special_condition = "";
+	$other_conditions = [];
+
 	foreach ($rs as $val) {
 		$val = trim($val);
 		if ($val !== '') {
-     	$safe_val = addslashes($val);
-      $conditions[] = "campaign_name_from_udf LIKE '$safe_val'";
-      $order_values[] = "'$safe_val'";
+			$safe_val = addslashes($val);
+			$order_values[] = "'$safe_val'";
+			
+			if ($safe_val === $special_name) {
+				$special_condition = "(campaign_name_from_udf LIKE '$safe_val' AND campaign_id = (
+					SELECT campaign_id FROM t_calllist_agent WHERE calllist_id = '$calllist_id'
+				))";
+			} else {
+				$other_conditions[] = "campaign_name_from_udf LIKE '$safe_val'";
+			}
 		}
 	}
 
-	if (empty($conditions)) {
+	if (empty($special_condition) && empty($other_conditions)) {
 		echo json_encode(["result" => "empty", "message" => "No UDF values found"]);
 		$dbconn->dbClose();
 		exit();
 	}
 
-	// สร้าง SQL สำหรับค้นหาใน t_campaign
-	$where_clause = implode(' OR ', $conditions);
-	$order_clause = implode(', ', $order_values);
-	$sql_campaign = "SELECT * FROM t_campaign WHERE $where_clause ORDER BY FIELD(campaign_name_from_udf, $order_clause)";
+	// สร้าง WHERE clause เฉพาะ
+	$where_clauses = [];
+	if (!empty($special_condition)) $where_clauses[] = $special_condition;
+	if (!empty($other_conditions)) $where_clauses[] = "(" . implode(' OR ', $other_conditions) . ")";
+	$where_clause = implode(" OR ", $where_clauses);
 
+	$order_clause = implode(", ", $order_values);
+
+	// Final SQL
+	$sql_campaign = "
+		SELECT * 
+		FROM t_campaign 
+		WHERE $where_clause 
+		ORDER BY FIELD(campaign_name_from_udf, $order_clause)";
+	
+	wlog('sql_campaign: ' . $sql_campaign);
 	$result_campaign = $dbconn->executeQuery($sql_campaign);
 	$data = [];
 
