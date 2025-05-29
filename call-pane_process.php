@@ -4,9 +4,7 @@ require_once("class/dataTableClass.php");
 require_once("dbconn.php");
 require_once("util.php");
 require_once("wlog.php");
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 
 if (isset($_POST['action'])) {
 	switch ($_POST['action']) {
