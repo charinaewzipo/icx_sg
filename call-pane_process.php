@@ -2287,14 +2287,14 @@ function queryMultiProductCampaignName() {
 	$order_values = [];
 	$special_condition = "";
 	$other_conditions = [];
-
+	$index = 0 ;
 	foreach ($rs as $val) {
 		$val = trim($val);
 		if ($val !== '') {
 			$safe_val = addslashes($val);
 			$order_values[] = "'$safe_val'";
 			
-			if ($safe_val === $special_name) {
+			if ($safe_val === $special_name && $index===0) {
 				$special_condition = "(campaign_name_from_udf LIKE '$safe_val' AND campaign_id = (
 					SELECT campaign_id FROM t_calllist_agent WHERE calllist_id = '$calllist_id'
 				))";
@@ -2302,6 +2302,7 @@ function queryMultiProductCampaignName() {
 				$other_conditions[] = "campaign_name_from_udf LIKE '$safe_val'";
 			}
 		}
+		$index++;
 	}
 
 	if (empty($special_condition) && empty($other_conditions)) {

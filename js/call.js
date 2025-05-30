@@ -2771,11 +2771,22 @@
 					});
 
 					if (Array.isArray(result)) {
-						result.forEach((app) => {
-							let listItem = $(`<li style="padding: 10px; cursor: pointer;" data-campaign_id="${app.campaign_id}"></li>`)
-								.text(app.campaign_name);
-							list.append(listItem);
-						});
+							// เช็คว่ามีทั้ง campaign_id 4 และ 5 หรือไม่
+							const has4 = result.some(item => item.campaign_id == 4);
+							const has5 = result.some(item => item.campaign_id == 5);
+
+							let filteredResult = result;
+
+							if (has4 && has5) {
+									// กรองให้เหลือเฉพาะ campaign_id 4 เท่านั้น
+									filteredResult = result.filter(item => item.campaign_id != 5);
+							}
+
+							filteredResult.forEach((app) => {
+									let listItem = $(`<li style="padding: 10px; cursor: pointer;" data-campaign_id="${app.campaign_id}"></li>`)
+											.text(app.campaign_name);
+									list.append(listItem);
+							});
 					}
 
 					popup.append(list);
