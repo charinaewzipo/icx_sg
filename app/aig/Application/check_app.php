@@ -11,12 +11,12 @@ $lv = intval($_SESSION["pfile"]["lv"]);
 $campaign_id = ($_GET["campaign_id"]) ? intval($_GET["campaign_id"]) : "";
 $calllist_id = ($_GET["calllist_id"]) ? intval($_GET["calllist_id"]) : "";
 $import_id = ($_GET["import_id"]) ? intval($_GET["import_id"]) : "";
-$agent_id = ($_GET["agent_id"]) ? intval($_GET["agent_id"]) : "";
+$agent_id_self = ($_GET["agent_id"]) ? intval($_GET["agent_id"]) : "";
 
 $id = ($_GET["id"]) ? intval($_GET["id"]) : "";
 $newapplication = ($_GET["newapplication"]) ? intval($_GET["newapplication"]) : "";
 
-if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
+if (($campaign_id && $import_id && $agent_id_self && $calllist_id) || $id) {
 
 
   $SQL = "";
@@ -41,7 +41,7 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
     $calllist_id = $row["calllist_id"];
     $campaign_id = ($tmp_campid)?$tmp_campid:$campaign_id;
   }
-
+  $agent_id_uid = ($agent_id_self) ? $agent_id_self : $agent_id;
   $SQL2 = "SELECT cp_type FROM t_campaign WHERE campaign_id = '$campaign_id'";
   wlog($SQL2);
   $result2 = mysqli_query($Conn, $SQL2) or die("ไม่สามารถเรียกดูข้อมูลแคมเปญได้");
@@ -67,9 +67,9 @@ if (($campaign_id && $import_id && $agent_id && $calllist_id) || $id) {
   }
 
   if($newapplication){
-    echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id&id=&formType=$cp_type';</script>";
+    echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id_uid&import_id=$import_id&id=&formType=$cp_type';</script>";
   }else{
-    echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id&import_id=$import_id&id=$app_id&formType=$cp_type';</script>";
+    echo "<script>window.location='singaporeApplication.php?campaign_id=$campaign_id&calllist_id=$calllist_id&agent_id=$agent_id_uid&import_id=$import_id&id=$app_id&formType=$cp_type';</script>";
   }
   // if ($chk > 0) {
   //   //echo  $SQL;
