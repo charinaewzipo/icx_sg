@@ -155,7 +155,9 @@ function DBInsertQuotationData($formData, $response, $type, $campaignDetails,$pr
     $is_reject_product = isset($formData['is_reject_product']) ? (int)$formData['is_reject_product'] : 0;
     $reject_product_comment = isset($formData['reject_product_comment']) ? $formData['reject_product_comment'] : '';
     $reject_product_comment = mysqli_real_escape_string($dbconn->dbconn, $reject_product_comment);
-    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
+    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : '';
+    $quoteVersionMemo = mysqli_real_escape_string($dbconn->dbconn, (string) $quoteVersionMemo);
+
     $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
     $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
     $ncdLevelGEARS = isset($response['ncdLevel']) ? $response['ncdLevel'] : null;
@@ -303,7 +305,8 @@ function DBUpdateQuoteData($formData, $response, $type, $id,$campaignDetails,$pr
     $ncdInfo = isset($formData['ncdInfo']) ? json_encode($formData['ncdInfo']) : '{}';
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
-    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
+    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : '';
+    $quoteVersionMemo = mysqli_real_escape_string($dbconn->dbconn, (string) $quoteVersionMemo);
     $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
     $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
     $ncdLevelGEARS = isset($response['ncdLevel']) ? $response['ncdLevel'] : null;
@@ -447,7 +450,8 @@ function DBUpdateRecalQuoteData($formData, $response, $type, $id,$campaignDetail
     $policyHolderInfo = isset($formData['policyHolderInfo']) ? json_encode($formData['policyHolderInfo']) : '{}';
     $insuredList = isset($formData['insuredList']) ? json_encode($formData['insuredList']) : '{}';
 
-    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : null;
+    $quoteVersionMemo = isset($formData['quoteVersionMemo']) ? $formData['quoteVersionMemo'] : '';
+    $quoteVersionMemo = mysqli_real_escape_string($dbconn->dbconn, (string) $quoteVersionMemo);
     $campaignInfoList =  isset($formData['campaignInfoList']) ? json_encode($formData['campaignInfoList']) : '{}';
     $campaignInfoList = mysqli_real_escape_string($dbconn->dbconn, $campaignInfoList);
     $ncdLevelGEARS = isset($response['ncdLevel']) ? $response['ncdLevel'] : null;
@@ -668,7 +672,7 @@ function DBUpdateQuoteRetrieve($response, $id,$formatData,$request)
     $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $quoteVersionMemo = isset($response['quoteVersionMemo']) ? $response['quoteVersionMemo'] : '';
-   
+    $quoteVersionMemo = mysqli_real_escape_string($dbconn->dbconn, (string) $quoteVersionMemo);
     // Handle policy holder information
     $policyHolderInfo = isset($formatData['policyHolderInfo']) ? json_encode($formatData['policyHolderInfo']) : '{}';
     $policyHolderInfo = mysqli_real_escape_string($dbconn->dbconn, $policyHolderInfo);
@@ -759,7 +763,7 @@ function DBInsertRetrieveQuote($response, $formatData, $type, $campaignDetails,$
     $policyExpDate = isset($response['policyExpDate']) ? convertToISO8601($response['policyExpDate']) : null;
     $quoteNo = isset($response['quoteNo']) ? $response['quoteNo'] : '';
     $quoteVersionMemo = isset($response['quoteVersionMemo']) ? $response['quoteVersionMemo'] : '';
-
+    $quoteVersionMemo = mysqli_real_escape_string($dbconn->dbconn, (string) $quoteVersionMemo);
     $response_premium_json = isset($response['insuredList'][0]['planList'][0]) ? json_encode($response['insuredList'][0]['planList'][0]) : '{}';
     $response_premium_json = mysqli_real_escape_string($dbconn->dbconn, $response_premium_json);
 
