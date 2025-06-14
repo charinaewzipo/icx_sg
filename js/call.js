@@ -635,6 +635,7 @@
 						let listid = data[0];
 						$('[name=listid]').val(listid);
 						$.call.loadpopup_content(listid);
+						$.call.queryMultiProductCampaignName()
 					});
 				} else {
 					$.call.dtList.nocontact.ajax.reload();
@@ -696,6 +697,7 @@
 						let listid = data[0];
 						$('[name=listid]').val(listid);
 						$.call.loadpopup_content(listid);
+						$.call.queryMultiProductCampaignName()
 					});
 				} else {
 					$.call.dtList.callback.ajax.reload();
@@ -761,6 +763,7 @@
 						let listid = data[0];
 						$('[name=listid]').val(listid);
 						$.call.loadpopup_content(listid);
+						$.call.queryMultiProductCampaignName()
 					});
 				} else {
 					$.call.dtList.follow.ajax.reload();
@@ -824,6 +827,7 @@
 						let listid = data[0];
 						$('[name=listid]').val(listid);
 						$.call.loadpopup_content(listid);
+						$.call.queryMultiProductCampaignName()
 					});
 				} else {
 					$.call.dtList.success.ajax.reload();
@@ -887,6 +891,7 @@
 						let listid = data[0];
 						$('[name=listid]').val(listid);
 						$.call.loadpopup_content(listid);
+						$.call.queryMultiProductCampaignName()
 					});
 				} else {
 					$.call.dtList.reconfirm.ajax.reload();
